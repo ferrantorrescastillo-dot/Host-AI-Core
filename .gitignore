@@ -31,3 +31,8 @@ env/
 # Sistema operativo
 Thumbs.db
 .DS_Store
+# AI_CORE generated output
+TEMP/
+
+# Documentación personal
+Documentos/AI.docx
