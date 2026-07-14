@@ -12,15 +12,26 @@ class LanzadorPiloto01:
     """Punto de entrada único y estable de Host AI para el piloto privado."""
 
     def __init__(self, base_dir: Optional[Path] = None):
+        """Inicializa el lanzador y asegura que `base_dir` esté en `sys.path`.
+
+        `base_dir` puede ser `None` — por defecto se usa el directorio de trabajo
+        actual resuelto.
+        """
         self.base_dir = Path(base_dir or Path.cwd()).resolve()
         ruta = str(self.base_dir)
         if ruta not in sys.path:
             sys.path.insert(0, ruta)
 
     def abrir_modo_piloto(self) -> None:
+        """Inicia la consola de piloto tras validar la auditoría mínima.
+
+        Se importa localmente `HostAICore` y `ConsolaPiloto01` para evitar
+        sobrecargar el import en el módulo y mantener el comportamiento.
+        """
         auditoria = AuditorArranquePiloto01(self.base_dir).ejecutar(importar_modulos=False)
         if not auditoria["ok"]:
             raise RuntimeError("La línea base requiere revisión antes de abrir el modo piloto.")
+
         from CORE.host_ai_core import HostAICore
         from APP.consola_piloto_01 import ConsolaPiloto01
 
@@ -32,6 +43,10 @@ class LanzadorPiloto01:
         HostAILauncher(self.base_dir).ejecutar()
 
     def mostrar_auditoria(self, print_fn: Callable[..., None] = print) -> dict:
+        """Ejecuta y muestra la auditoría de arranque.
+
+        Devuelve el diccionario resultado para permitir usos programáticos.
+        """
         resultado = AuditorArranquePiloto01(self.base_dir).ejecutar(importar_modulos=True)
         print_fn("\nAUDITORÍA DE ARRANQUE PILOTO-0.1")
         print_fn("=" * 70)
@@ -41,6 +56,7 @@ class LanzadorPiloto01:
         return resultado
 
     def certificar(self, print_fn: Callable[..., None] = print) -> dict:
+        """Ejecuta la certificación y muestra los enlaces al informe si existen."""
         resultado = CertificadorPiloto01(self.base_dir).ejecutar(guardar_informe=True)
         print_fn("\n" + CertificadorPiloto01.formatear(resultado))
         if resultado.get("informe_json"):
@@ -53,7 +69,14 @@ class LanzadorPiloto01:
         input_fn: Callable[[str], str] = input,
         print_fn: Callable[..., None] = print,
     ) -> None:
+        """Bucle principal que muestra el menú y delega en los manejadores.
+
+        Separé la renderización del menú y el manejo de opciones para mejorar
+        la lectura manteniendo el comportamiento original.
+        """
+
         while True:
+            # Renderización del menú
             print_fn("=" * 70)
             print_fn("HOST AI 6.0 — LÍNEA BASE PILOTO")
             print_fn("=" * 70)
@@ -62,7 +85,10 @@ class LanzadorPiloto01:
             print_fn("8. Auditoría de arranque")
             print_fn("9. Certificar PILOTO-0.1")
             print_fn("0. Salir")
+
             opcion = input_fn("Elige una opción: ").strip()
+
+            # Manejo de la opción seleccionada (mismos comandos que antes)
             try:
                 if opcion == "1":
                     self.abrir_modo_piloto()
