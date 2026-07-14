@@ -1,5 +1,15 @@
 from __future__ import annotations
 
+"""
+Módulo: motor_produccion_real
+
+Contiene `MotorProduccionReal`, el motor operativo que genera planes
+de producción reales, cronogramas y herramientas de ejecución.
+
+Este archivo fue auditado y solo se añadieron docstrings/comentarios
+para mejorar la comprensión; no se cambió la lógica funcional.
+"""
+
 from typing import Dict, List, Any, Optional
 from MODELOS.produccion_real import FaseProduccionReal, TareaProduccionReal, BloqueProduccionReal, PlanProduccionReal
 from datetime import datetime

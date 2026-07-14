@@ -1,5 +1,15 @@
 from __future__ import annotations
 
+"""
+Módulo: motor_produccion_completa
+
+Contiene `MotorProduccionCompleta`, responsable del análisis amplio de un
+evento para producir necesidades, simulaciones y pedidos sugeridos.
+
+Solo se añadieron docstrings informativos en esta auditoría; no se cambió
+la lógica funcional.
+"""
+
 from typing import Dict, List, Any
 from MODELOS.produccion_completa import NecesidadProduccion, InformeProduccionCompleta
 

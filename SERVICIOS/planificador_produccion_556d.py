@@ -1,5 +1,12 @@
 from __future__ import annotations
 
+"""
+Módulo: planificador_produccion_556d
+
+Generador de planes preliminares de producción a partir de entradas de recetas
+y explosiones de ingredientes. Documentación añadida para claridad.
+"""
+
 import math
 from pathlib import Path
 from typing import Any, Dict, List

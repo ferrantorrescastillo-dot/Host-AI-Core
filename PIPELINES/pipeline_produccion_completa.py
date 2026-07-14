@@ -1,3 +1,10 @@
+"""
+Pipeline: produccion_completa
+
+Conecta análisis de evento, stock, compras y simulación en un solo pipeline.
+Docstring añadido para la auditoría; no hay cambios en la lógica.
+"""
+
 from MODELOS.api_interna import SolicitudPipeline, ResultadoPipeline
 from PIPELINES.base_pipeline import BasePipeline
 

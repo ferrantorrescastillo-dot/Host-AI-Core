@@ -1,4 +1,13 @@
 from __future__ import annotations
+
+"""
+Módulo: control_ejecucion_produccion
+
+Control inteligente de ejecución de producción. Compara planificación y avance
+real para detectar bloqueos, retrasos y riesgos operativos. Añadidos comentarios
+documentales durante la auditoría sin alterar comportamiento.
+"""
+
 from typing import Dict, Any, List
 from pathlib import Path
 import json

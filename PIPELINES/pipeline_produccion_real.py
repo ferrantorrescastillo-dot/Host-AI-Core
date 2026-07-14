@@ -1,5 +1,12 @@
 from __future__ import annotations
 
+"""
+Pipeline: produccion_real
+
+Enlaza `MotorProduccionReal` con la infraestructura de pipelines del proyecto.
+Solo docstrings añadidos durante la auditoría para mejorar trazabilidad.
+"""
+
 from MODELOS.api_interna import SolicitudPipeline, ResultadoPipeline
 from PIPELINES.base_pipeline import BasePipeline
 
