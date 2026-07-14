@@ -214,8 +214,7 @@ class HostAICore:
         self.base_dir = base_dir or Path(__file__).resolve().parents[1]
         self.diccionario_path = self.base_dir / "DATOS" / "diccionarios" / "diccionario_gastronomico_universal.json"
         self.diccionario = self._cargar_diccionario()
-        # Inicializaciones agrupadas para mejorar legibilidad manteniendo el
-        # mismo orden de creación e instanciación de dependencias.
+        # Crear DB local y continuar con inicializaciones en métodos privados.
         self.db = BaseDatosLocal(self.base_dir)
         self._inicializar_servicios()
         self._inicializar_motores()
@@ -228,12 +227,7 @@ class HostAICore:
         self.orquestador = OrquestadorHostAI(self)
 
     def _registrar_pipelines(self):
-        """Registra todos los pipelines disponibles en Host AI 3.0.
-
-        Mantiene la lista en un metodo separado para que ``__init__`` no mezcle
-        inicializacion de servicios con registro de capacidades. No cambia el
-        orden ni las instancias registradas respecto a la version anterior.
-        """
+        """Registrar pipelines disponibles; conserva el orden original."""
         self.registro_pipelines.registrar(PipelineEvento(self))
         self.registro_pipelines.registrar(PipelineCompras(self))
         self.registro_pipelines.registrar(PipelineStock(self))
@@ -325,11 +319,9 @@ class HostAICore:
         self.registro_pipelines.registrar(PipelineCierreIAConversacional308(self))
 
     def _inicializar_servicios(self) -> None:
-        """Inicializa servicios y utilidades relacionados con importación,
-        OCR, analizadores y componentes auxiliares.
+        """Inicializa servicios auxiliares (importadores, OCR, analizadores).
 
-        Extraer este bloque a un método privado mejora lectura sin alterar el
-        orden ni las instancias creadas en la versión original.
+        Mantiene el mismo orden y las mismas instancias.
         """
         self.lector_excel = LectorUniversalExcel(self.base_dir)
         self.detector_excel = DetectorDocumentosExcel(self.lector_excel)
@@ -416,10 +408,7 @@ class HostAICore:
         self.cierre_ia_conversacional_308 = CierreIAConversacional308Servicio(self)
 
     def _inicializar_motores(self) -> None:
-        """Inicializa motores de dominio (memoria, compras, stock, producción, etc.).
-
-        Mantiene el orden original para conservar dependencias implícitas.
-        """
+        """Inicializa motores de dominio en el orden original."""
         self.memoria = MotorMemoriaOperacional(self.base_dir)
         self.compras = MotorCompras(self.db)
         self.stock = MotorStock(self.db)
