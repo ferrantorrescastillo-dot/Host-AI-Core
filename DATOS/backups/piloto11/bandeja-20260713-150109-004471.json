@@ -1,0 +1,35 @@
+{
+  "version": "PILOTO-1.1",
+  "actualizado_en": "2026-07-13T15:01:08",
+  "tareas": [
+    {
+      "id": "TAREA-AABC7BAB45",
+      "titulo": "Producir / preparar Carrillera de ternera",
+      "tipo": "PRODUCCION",
+      "descripcion": "Boda prueba RR1 · 23.76 kg",
+      "prioridad": 90,
+      "estado": "PENDIENTE",
+      "origen": "planes_produccion",
+      "referencia": "C:\\PROYECTO HOST IA\\Proyecto Host AI  6.0\\Host AI 6.0\\DATOS\\db\\planes_produccion.json",
+      "metadatos": {
+        "plan_id": "PLANPR-BE545287E9",
+        "tarea_id": "TAREAPR-D7174C5E3E",
+        "evento_id": "EVT-278D20DD",
+        "clave_origen": "produccion:TAREAPR-D7174C5E3E"
+      },
+      "creado_en": "2026-07-13T15:01:08",
+      "actualizado_en": "2026-07-13T15:01:08",
+      "iniciado_en": "",
+      "completado_en": "",
+      "aplazado_hasta": "",
+      "notas": [],
+      "historial": [
+        {
+          "fecha": "2026-07-13T15:01:08",
+          "accion": "CREADA",
+          "detalle": "planes_produccion"
+        }
+      ]
+    }
+  ]
+}

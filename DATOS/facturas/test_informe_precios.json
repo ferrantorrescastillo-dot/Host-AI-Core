@@ -1,0 +1,95 @@
+{
+  "resultado_pipeline": {
+    "ok": true,
+    "pipeline": "base_actualizacion_precios_factura",
+    "accion": "preparar_informe",
+    "mensaje": "Informe precios: 1 actualizables, 0 para revisar.",
+    "datos": {
+      "total_cambios": 1,
+      "actualizables": 1,
+      "requieren_revision": 0,
+      "sin_precio_anterior": 1,
+      "cambios": [
+        {
+          "articulo_id": "ART-CARRILLERA",
+          "nombre_articulo": "Carrillera de ternera",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "",
+          "precio_anterior": 0.0,
+          "precio_nuevo": 8.45,
+          "unidad": "kg",
+          "diferencia": 8.45,
+          "variacion_porcentaje": 0.0,
+          "numero_factura": "F-1",
+          "fecha_factura": "08/07/2026",
+          "origen_linea": {
+            "articulo_id": "ART-CARRILLERA",
+            "nombre_articulo": "Carrillera de ternera",
+            "proveedor_id": "PROV-MAKRO",
+            "unidad": "kg",
+            "precio_unitario": 8.45,
+            "numero_factura": "F-1",
+            "fecha_factura": "08/07/2026"
+          },
+          "accion_sugerida": "actualizar",
+          "requiere_revision": false,
+          "avisos": [
+            "No hay precio anterior."
+          ],
+          "id": "CAMBPREC-4862548F98",
+          "creado_en": "2026-07-08T10:49:34"
+        }
+      ],
+      "avisos_generales": [],
+      "id": "INFUPDPREC-3BE358F16F",
+      "creado_en": "2026-07-08T10:49:34",
+      "lectura_host_ai": "Informe precios: 1 actualizables, 0 para revisar."
+    },
+    "acciones_recomendadas": [
+      "Revisar cambios marcados."
+    ],
+    "requiere_aprobacion": false,
+    "errores": [],
+    "id": "RES-5F853B7C2D",
+    "creado_en": "2026-07-08T10:49:34"
+  },
+  "total_cambios": 1,
+  "actualizables": 1,
+  "requieren_revision": 0,
+  "sin_precio_anterior": 1,
+  "cambios": [
+    {
+      "articulo_id": "ART-CARRILLERA",
+      "nombre_articulo": "Carrillera de ternera",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "",
+      "precio_anterior": 0.0,
+      "precio_nuevo": 8.45,
+      "unidad": "kg",
+      "diferencia": 8.45,
+      "variacion_porcentaje": 0.0,
+      "numero_factura": "F-1",
+      "fecha_factura": "08/07/2026",
+      "origen_linea": {
+        "articulo_id": "ART-CARRILLERA",
+        "nombre_articulo": "Carrillera de ternera",
+        "proveedor_id": "PROV-MAKRO",
+        "unidad": "kg",
+        "precio_unitario": 8.45,
+        "numero_factura": "F-1",
+        "fecha_factura": "08/07/2026"
+      },
+      "accion_sugerida": "actualizar",
+      "requiere_revision": false,
+      "avisos": [
+        "No hay precio anterior."
+      ],
+      "id": "CAMBPREC-4862548F98",
+      "creado_en": "2026-07-08T10:49:34"
+    }
+  ],
+  "avisos_generales": [],
+  "id": "INFUPDPREC-3BE358F16F",
+  "creado_en": "2026-07-08T10:49:34",
+  "lectura_host_ai": "Informe precios: 1 actualizables, 0 para revisar."
+}

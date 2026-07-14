@@ -1,0 +1,5 @@
+M1.3 + M1.2 + M1.1 + REGRESIÓN I1.3
+60 passed in 9.03s
+Compilación: OK
+Diagnóstico: OK | Estado final: CERRADO
+Catálogo real de recetas: SIN CAMBIOS

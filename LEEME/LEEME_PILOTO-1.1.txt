@@ -1,0 +1,12 @@
+PILOTO-1.1 — BANDEJA DE TRABAJO OPERATIVA
+
+INSTALACIÓN
+1. Haz copia de seguridad de Host AI.
+2. Copia el contenido del ZIP encima del proyecto con PILOTO-1 instalado.
+3. Ejecuta python main.py.
+4. Entra en 1. Modo Piloto privado.
+5. Entra en 1. Bandeja de trabajo y apertura del día.
+6. Ejecuta 9. Diagnóstico aislado.
+
+La bandeja guarda sus datos en DATOS/piloto/bandeja_trabajo/bandeja.json.
+No elimina ni modifica automáticamente datos de stock, producción, eventos o compras.

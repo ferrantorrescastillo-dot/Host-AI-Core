@@ -1,0 +1,48 @@
+[
+  {
+    "codigo": "A.P-BRIOX",
+    "nombre": "A.P BRIOX DE CURRI, SECRETO A BAJA TEMPERATURA Y CEBOLLITA ENCURTIDA.",
+    "unidad": "ud",
+    "precio": 2.5
+  },
+  {
+    "codigo": "ART000001",
+    "nombre": "Leche entera",
+    "observaciones": "Unidad: l. Alta controlada por M1.2.",
+    "proveedor": null,
+    "familia": "Lácteos",
+    "precio": 1.1,
+    "activo": true,
+    "origen": "MUR_M1.2",
+    "fecha_importacion": "2026-07-13T00:35:12",
+    "unidad": "l",
+    "estado_calidad": "COMPLETA",
+    "fecha_actualizacion": "2026-07-13T00:35:12"
+  },
+  {
+    "codigo": "ART000002",
+    "nombre": "Nuez moscada",
+    "observaciones": "Unidad: kg. Alta controlada por M1.2.",
+    "proveedor": null,
+    "familia": "Especias",
+    "precio": null,
+    "activo": true,
+    "origen": "MUR_M1.2",
+    "fecha_importacion": "2026-07-13T00:35:12",
+    "unidad": "kg",
+    "estado_calidad": "PENDIENTE",
+    "fecha_actualizacion": "2026-07-13T00:35:12"
+  },
+  {
+    "codigo": "M.P-MANTEQUILLA",
+    "nombre": "Mantequilla",
+    "unidad": "kg",
+    "precio": 8.0
+  },
+  {
+    "codigo": "M.P-PATATA",
+    "nombre": "Patata monalisa",
+    "unidad": "kg",
+    "precio": 1.2
+  }
+]

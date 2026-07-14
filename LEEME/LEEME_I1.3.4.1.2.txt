@@ -1,0 +1,8 @@
+HOST AI — I1.3.4.1.2
+
+1. Haz copia de seguridad del proyecto.
+2. Copia el contenido del ZIP encima de la versión con I1.3.4.1.1.
+3. Abre Excel / Importaciones.
+4. Selecciona la opción 25.
+5. Selecciona el Excel y pulsa A para simular todos los menús confirmados.
+6. La opción sigue siendo solo simulación: no importa ni modifica datos reales.

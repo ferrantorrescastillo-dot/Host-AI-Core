@@ -1,0 +1,61 @@
+[
+  {
+    "menu_id": "M1",
+    "nombre": "Menú diagnóstico",
+    "secciones": [
+      {
+        "seccion_id": "S1",
+        "nombre": "Principal"
+      },
+      {
+        "seccion_id": "SEC-16822AA168F4",
+        "nombre": "Postre"
+      }
+    ],
+    "platos": [
+      {
+        "plato_id": "P1",
+        "nombre": "Crema catalana",
+        "seccion": "Postre",
+        "componentes": [
+          {
+            "componente_id": "COMP-4533EF889D4E",
+            "rol": "RECETA_PRINCIPAL",
+            "nombre": "Crema catalana",
+            "receta_id": "R1",
+            "plato_id": "P1"
+          }
+        ]
+      },
+      {
+        "plato_id": "P2",
+        "nombre": "Plato ambiguo",
+        "seccion": "Principal",
+        "componentes": []
+      }
+    ],
+    "articulos_directos": [
+      {
+        "nombre": "Pan"
+      }
+    ],
+    "bebidas": [],
+    "complementos": [],
+    "servicios": [],
+    "economico": {
+      "precio_venta": 20,
+      "coste_total": 6,
+      "food_cost_pct": 30.0,
+      "beneficio": 14.0
+    },
+    "resumen": {
+      "secciones": 2,
+      "platos": 2,
+      "componentes": 1,
+      "articulos_directos": 1,
+      "bebidas": 0,
+      "complementos": 0
+    },
+    "actualizado_en": "2026-07-13T09:48:38.733434+00:00"
+  }
+]

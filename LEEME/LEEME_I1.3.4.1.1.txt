@@ -1,0 +1,18 @@
+HOST AI — I1.3.4.1.1 DETECCIÓN Y SIMULACIÓN MULTIMENÚ
+
+INSTALACIÓN
+1. Haz una copia de seguridad del proyecto.
+2. Copia el contenido del ZIP encima de la versión certificada con I1.3.4.1.
+3. Abre Host AI > Excel / Importaciones.
+4. Selecciona la opción 24.
+
+USO
+- Introduce la ruta del Excel.
+- Host AI mostrará todas las hojas de menú confirmadas o probables.
+- Pulsa A para simular todos los menús confirmados.
+- Selecciona N para elegir uno o varios por número.
+
+SEGURIDAD
+- No crea ni actualiza menús.
+- No modifica recetas, artículos o relaciones.
+- No dispone de confirmación de importación.

@@ -1,0 +1,16 @@
+I1.3.4.1.2 — RESULTADO DE CERTIFICACIÓN
+======================================
+Tests automatizados: 112
+Superados: 112
+Fallos: 0
+
+Excel real:
+Hojas: 21
+Menús: 11
+Elementos clasificados: 158
+Acciones: 253
+Ejecutables: 237
+Bloqueadas: 16
+Bebidas separadas: 13
+IDs únicos: sí
+Escrituras: 0

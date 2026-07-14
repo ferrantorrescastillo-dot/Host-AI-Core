@@ -1,0 +1,13 @@
+{
+  "restaurante": "Mas Boronat",
+  "iva_default": 10.0,
+  "moneda": "EUR",
+  "idioma": "es",
+  "ruta_datos": "DATOS",
+  "ruta_documentos": "Documentos",
+  "ruta_logs": "LOGS",
+  "ocr_activo": false,
+  "ia_activa": false,
+  "proveedor_default": "",
+  "modo_entorno": "desarrollo"
+}

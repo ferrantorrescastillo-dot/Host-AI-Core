@@ -1,0 +1,23 @@
+HOST AI 6.0.4 — P3.2 SEGUIMIENTO DEL SERVICIO
+
+INSTALACIÓN
+1. Haz una copia de tu carpeta actual de Host AI.
+2. Descomprime este ZIP.
+3. Copia las carpetas APP, MODELOS, MOTORES y TESTS encima de tu proyecto.
+4. Acepta sustituir los archivos existentes.
+5. Ejecuta: python main.py
+
+REQUISITO
+Tu versión debe contener P1, P2 y P3.1.
+
+NUEVAS FUNCIONES
+En Producción > Ejecutar producción encontrarás:
+- Actualizar porcentaje de avance.
+- Registrar incidencias, retrasos y bloqueos.
+- Resolver bloqueos.
+- Gestionar checklist.
+- Añadir observaciones o replanificar.
+- Ver tareas pendientes y alertas.
+
+VALIDACIÓN
+55 passed, 0 failed.

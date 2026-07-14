@@ -1,0 +1,831 @@
+[
+  {
+    "evento_id": "EVT-278D20DD",
+    "evento": "Boda prueba RR1",
+    "pax": 120,
+    "nombre": "Boda prueba RR1",
+    "fecha": "",
+    "responsable": "",
+    "observaciones": "",
+    "tareas": [
+      {
+        "titulo": "Producir / preparar Carrillera de ternera",
+        "receta_id": "REC-CARRILLERA",
+        "receta": "Carrillera de ternera",
+        "cantidad": 23.76,
+        "unidad": "kg",
+        "fases": [
+          {
+            "nombre": "Limpiar y racionar",
+            "duracion_min": 45,
+            "tipo": "preparacion",
+            "recurso": "mesa_trabajo",
+            "responsable": "cocinero",
+            "dependencia": "",
+            "receta_id": "REC-CARRILLERA",
+            "notas": "23.76 kg",
+            "id": "FASEPR-118E5F5C7E"
+          },
+          {
+            "nombre": "Marcar / preparar cocción",
+            "duracion_min": 40,
+            "tipo": "coccion",
+            "recurso": "fuego",
+            "responsable": "cocinero",
+            "dependencia": "",
+            "receta_id": "REC-CARRILLERA",
+            "notas": "",
+            "id": "FASEPR-F1FB124045"
+          },
+          {
+            "nombre": "Cocción lenta",
+            "duracion_min": 180,
+            "tipo": "coccion",
+            "recurso": "horno",
+            "responsable": "cocinero",
+            "dependencia": "",
+            "receta_id": "REC-CARRILLERA",
+            "notas": "",
+            "id": "FASEPR-249949B6E6"
+          },
+          {
+            "nombre": "Abatir",
+            "duracion_min": 45,
+            "tipo": "abatido",
+            "recurso": "abatidor",
+            "responsable": "ayudante",
+            "dependencia": "",
+            "receta_id": "REC-CARRILLERA",
+            "notas": "",
+            "id": "FASEPR-CEEEA0F254"
+          },
+          {
+            "nombre": "Porcionar y envasar",
+            "duracion_min": 45,
+            "tipo": "envasado",
+            "recurso": "mesa_trabajo",
+            "responsable": "ayudante",
+            "dependencia": "",
+            "receta_id": "REC-CARRILLERA",
+            "notas": "",
+            "id": "FASEPR-73C95C4BC3"
+          }
+        ],
+        "prioridad": 90,
+        "origen": "escandallo_evento",
+        "estado_ejecucion": "pendiente",
+        "iniciado_en": "",
+        "pausado_en": "",
+        "finalizado_en": "",
+        "cronometro_iniciado_en": "",
+        "segundos_acumulados": 0,
+        "progreso_manual": 0.0,
+        "retraso_min": 0,
+        "bloqueo": "Stock insuficiente para cerrar la producción",
+        "observaciones_ejecucion": "",
+        "incidencias": [
+          {
+            "id": "INC-20260713162736742109",
+            "tipo": "bloqueo",
+            "descripcion": "Stock insuficiente para cerrar la producción",
+            "minutos_retraso": 0,
+            "creado_en": "2026-07-13T16:27:36"
+          }
+        ],
+        "checklist": [],
+        "id": "TAREAPR-D7174C5E3E",
+        "duracion_total_min": 355
+      },
+      {
+        "titulo": "Producir / preparar Demi-glace",
+        "receta_id": "REC-CARRILLERA",
+        "receta": "Demi-glace",
+        "cantidad": 9.6,
+        "unidad": "L",
+        "fases": [
+          {
+            "nombre": "Preparar base",
+            "duracion_min": 30,
+            "tipo": "preparacion",
+            "recurso": "mesa_trabajo",
+            "responsable": "cocinero",
+            "dependencia": "",
+            "receta_id": "REC-CARRILLERA",
+            "notas": "9.6 L",
+            "id": "FASEPR-2756904BB0"
+          },
+          {
+            "nombre": "Cocinar / reducir",
+            "duracion_min": 120,
+            "tipo": "coccion",
+            "recurso": "fuego",
+            "responsable": "cocinero",
+            "dependencia": "",
+            "receta_id": "REC-CARRILLERA",
+            "notas": "",
+            "id": "FASEPR-A62F01D16A"
+          },
+          {
+            "nombre": "Colar y abatir",
+            "duracion_min": 30,
+            "tipo": "abatido",
+            "recurso": "abatidor",
+            "responsable": "cocinero",
+            "dependencia": "",
+            "receta_id": "REC-CARRILLERA",
+            "notas": "",
+            "id": "FASEPR-377FDAC69B"
+          },
+          {
+            "nombre": "Envasar y etiquetar",
+            "duracion_min": 20,
+            "tipo": "envasado",
+            "recurso": "mesa_trabajo",
+            "responsable": "ayudante",
+            "dependencia": "",
+            "receta_id": "REC-CARRILLERA",
+            "notas": "",
+            "id": "FASEPR-2093FC3F96"
+          }
+        ],
+        "prioridad": 90,
+        "origen": "escandallo_evento",
+        "estado_ejecucion": "pendiente",
+        "iniciado_en": "",
+        "pausado_en": "",
+        "finalizado_en": "",
+        "cronometro_iniciado_en": "",
+        "segundos_acumulados": 0,
+        "progreso_manual": 0.0,
+        "retraso_min": 0,
+        "bloqueo": "",
+        "observaciones_ejecucion": "",
+        "incidencias": [],
+        "checklist": [],
+        "id": "TAREAPR-1F0E475488",
+        "duracion_total_min": 200
+      },
+      {
+        "titulo": "Carga, transporte y montaje",
+        "receta_id": "",
+        "receta": "Logística",
+        "cantidad": 0.0,
+        "unidad": "",
+        "fases": [
+          {
+            "nombre": "Preparar cajas y etiquetado final",
+            "duracion_min": 30,
+            "tipo": "logistica",
+            "recurso": "mesa_trabajo",
+            "responsable": "ayudante",
+            "dependencia": "",
+            "receta_id": "",
+            "notas": "",
+            "id": "FASEPR-78FC0F8128"
+          },
+          {
+            "nombre": "Cargar vehículo",
+            "duracion_min": 30,
+            "tipo": "logistica",
+            "recurso": "transporte",
+            "responsable": "equipo",
+            "dependencia": "",
+            "receta_id": "",
+            "notas": "",
+            "id": "FASEPR-6817B2FC9A"
+          },
+          {
+            "nombre": "Montaje cocina evento",
+            "duracion_min": 60,
+            "tipo": "logistica",
+            "recurso": "evento",
+            "responsable": "equipo",
+            "dependencia": "",
+            "receta_id": "",
+            "notas": "",
+            "id": "FASEPR-D609B595B6"
+          }
+        ],
+        "prioridad": 70,
+        "origen": "logistica",
+        "estado_ejecucion": "pendiente",
+        "iniciado_en": "",
+        "pausado_en": "",
+        "finalizado_en": "",
+        "cronometro_iniciado_en": "",
+        "segundos_acumulados": 0,
+        "progreso_manual": 0.0,
+        "retraso_min": 0,
+        "bloqueo": "",
+        "observaciones_ejecucion": "",
+        "incidencias": [],
+        "checklist": [],
+        "id": "TAREAPR-F05BEDE7E5",
+        "duracion_total_min": 120
+      },
+      {
+        "titulo": "Cierre y retorno",
+        "receta_id": "",
+        "receta": "Cierre",
+        "cantidad": 0.0,
+        "unidad": "",
+        "fases": [
+          {
+            "nombre": "Recoger material",
+            "duracion_min": 40,
+            "tipo": "cierre",
+            "recurso": "evento",
+            "responsable": "equipo",
+            "dependencia": "",
+            "receta_id": "",
+            "notas": "",
+            "id": "FASEPR-935464C4B3"
+          },
+          {
+            "nombre": "Limpieza y retorno",
+            "duracion_min": 50,
+            "tipo": "cierre",
+            "recurso": "transporte",
+            "responsable": "equipo",
+            "dependencia": "",
+            "receta_id": "",
+            "notas": "",
+            "id": "FASEPR-3ECDF20767"
+          }
+        ],
+        "prioridad": 40,
+        "origen": "cierre",
+        "estado_ejecucion": "pendiente",
+        "iniciado_en": "",
+        "pausado_en": "",
+        "finalizado_en": "",
+        "cronometro_iniciado_en": "",
+        "segundos_acumulados": 0,
+        "progreso_manual": 0.0,
+        "retraso_min": 0,
+        "bloqueo": "",
+        "observaciones_ejecucion": "",
+        "incidencias": [],
+        "checklist": [],
+        "id": "TAREAPR-7369E57D2F",
+        "duracion_total_min": 90
+      }
+    ],
+    "cronograma": [
+      {
+        "inicio": "8:00",
+        "fin": "08:45",
+        "titulo": "Producir / preparar Carrillera de ternera - Limpiar y racionar",
+        "tipo": "preparacion",
+        "recurso": "mesa_trabajo",
+        "responsable": "cocinero",
+        "tarea_id": "TAREAPR-D7174C5E3E",
+        "fase_id": "FASEPR-118E5F5C7E",
+        "receta_id": "REC-CARRILLERA",
+        "notas": "23.76 kg",
+        "id": "BLOQPR-2DA2E5F62B"
+      },
+      {
+        "inicio": "08:45",
+        "fin": "09:25",
+        "titulo": "Producir / preparar Carrillera de ternera - Marcar / preparar cocción",
+        "tipo": "coccion",
+        "recurso": "fuego",
+        "responsable": "cocinero",
+        "tarea_id": "TAREAPR-D7174C5E3E",
+        "fase_id": "FASEPR-F1FB124045",
+        "receta_id": "REC-CARRILLERA",
+        "notas": "",
+        "id": "BLOQPR-65732A2B43"
+      },
+      {
+        "inicio": "09:25",
+        "fin": "12:25",
+        "titulo": "Producir / preparar Carrillera de ternera - Cocción lenta",
+        "tipo": "coccion",
+        "recurso": "horno",
+        "responsable": "cocinero",
+        "tarea_id": "TAREAPR-D7174C5E3E",
+        "fase_id": "FASEPR-249949B6E6",
+        "receta_id": "REC-CARRILLERA",
+        "notas": "",
+        "id": "BLOQPR-EC62AD0FAD"
+      },
+      {
+        "inicio": "12:25",
+        "fin": "13:10",
+        "titulo": "Producir / preparar Carrillera de ternera - Abatir",
+        "tipo": "abatido",
+        "recurso": "abatidor",
+        "responsable": "ayudante",
+        "tarea_id": "TAREAPR-D7174C5E3E",
+        "fase_id": "FASEPR-CEEEA0F254",
+        "receta_id": "REC-CARRILLERA",
+        "notas": "",
+        "id": "BLOQPR-57192282C4"
+      },
+      {
+        "inicio": "13:10",
+        "fin": "13:55",
+        "titulo": "Producir / preparar Carrillera de ternera - Porcionar y envasar",
+        "tipo": "envasado",
+        "recurso": "mesa_trabajo",
+        "responsable": "ayudante",
+        "tarea_id": "TAREAPR-D7174C5E3E",
+        "fase_id": "FASEPR-73C95C4BC3",
+        "receta_id": "REC-CARRILLERA",
+        "notas": "",
+        "id": "BLOQPR-28367911EA"
+      },
+      {
+        "inicio": "13:55",
+        "fin": "14:25",
+        "titulo": "Producir / preparar Demi-glace - Preparar base",
+        "tipo": "preparacion",
+        "recurso": "mesa_trabajo",
+        "responsable": "cocinero",
+        "tarea_id": "TAREAPR-1F0E475488",
+        "fase_id": "FASEPR-2756904BB0",
+        "receta_id": "REC-CARRILLERA",
+        "notas": "9.6 L",
+        "id": "BLOQPR-7ED3808344"
+      },
+      {
+        "inicio": "14:25",
+        "fin": "16:25",
+        "titulo": "Producir / preparar Demi-glace - Cocinar / reducir",
+        "tipo": "coccion",
+        "recurso": "fuego",
+        "responsable": "cocinero",
+        "tarea_id": "TAREAPR-1F0E475488",
+        "fase_id": "FASEPR-A62F01D16A",
+        "receta_id": "REC-CARRILLERA",
+        "notas": "",
+        "id": "BLOQPR-9B887F56E8"
+      },
+      {
+        "inicio": "16:25",
+        "fin": "16:55",
+        "titulo": "Producir / preparar Demi-glace - Colar y abatir",
+        "tipo": "abatido",
+        "recurso": "abatidor",
+        "responsable": "cocinero",
+        "tarea_id": "TAREAPR-1F0E475488",
+        "fase_id": "FASEPR-377FDAC69B",
+        "receta_id": "REC-CARRILLERA",
+        "notas": "",
+        "id": "BLOQPR-A8DB93E01E"
+      },
+      {
+        "inicio": "16:55",
+        "fin": "17:15",
+        "titulo": "Producir / preparar Demi-glace - Envasar y etiquetar",
+        "tipo": "envasado",
+        "recurso": "mesa_trabajo",
+        "responsable": "ayudante",
+        "tarea_id": "TAREAPR-1F0E475488",
+        "fase_id": "FASEPR-2093FC3F96",
+        "receta_id": "REC-CARRILLERA",
+        "notas": "",
+        "id": "BLOQPR-B20C3CD694"
+      },
+      {
+        "inicio": "17:15",
+        "fin": "17:45",
+        "titulo": "Carga, transporte y montaje - Preparar cajas y etiquetado final",
+        "tipo": "logistica",
+        "recurso": "mesa_trabajo",
+        "responsable": "ayudante",
+        "tarea_id": "TAREAPR-F05BEDE7E5",
+        "fase_id": "FASEPR-78FC0F8128",
+        "receta_id": "",
+        "notas": "",
+        "id": "BLOQPR-3E356A3BDF"
+      },
+      {
+        "inicio": "17:45",
+        "fin": "18:15",
+        "titulo": "Carga, transporte y montaje - Cargar vehículo",
+        "tipo": "logistica",
+        "recurso": "transporte",
+        "responsable": "equipo",
+        "tarea_id": "TAREAPR-F05BEDE7E5",
+        "fase_id": "FASEPR-6817B2FC9A",
+        "receta_id": "",
+        "notas": "",
+        "id": "BLOQPR-3A4C0EF75B"
+      },
+      {
+        "inicio": "18:15",
+        "fin": "19:15",
+        "titulo": "Carga, transporte y montaje - Montaje cocina evento",
+        "tipo": "logistica",
+        "recurso": "evento",
+        "responsable": "equipo",
+        "tarea_id": "TAREAPR-F05BEDE7E5",
+        "fase_id": "FASEPR-D609B595B6",
+        "receta_id": "",
+        "notas": "",
+        "id": "BLOQPR-B09A59FCA8"
+      },
+      {
+        "inicio": "19:15",
+        "fin": "19:55",
+        "titulo": "Cierre y retorno - Recoger material",
+        "tipo": "cierre",
+        "recurso": "evento",
+        "responsable": "equipo",
+        "tarea_id": "TAREAPR-7369E57D2F",
+        "fase_id": "FASEPR-935464C4B3",
+        "receta_id": "",
+        "notas": "",
+        "id": "BLOQPR-1C85AE0736"
+      },
+      {
+        "inicio": "19:55",
+        "fin": "20:45",
+        "titulo": "Cierre y retorno - Limpieza y retorno",
+        "tipo": "cierre",
+        "recurso": "transporte",
+        "responsable": "equipo",
+        "tarea_id": "TAREAPR-7369E57D2F",
+        "fase_id": "FASEPR-3ECDF20767",
+        "receta_id": "",
+        "notas": "",
+        "id": "BLOQPR-28AD8DA4C6"
+      }
+    ],
+    "avisos": [],
+    "configuracion_planificacion": {
+      "jornada_horas": 7.5,
+      "cocineros": 2,
+      "hora_inicio": "8:00"
+    },
+    "planificacion_inteligente": {
+      "version": "3.0.6.3",
+      "total_elaboraciones": 4,
+      "total_bloques": 6,
+      "dias_necesarios": 1,
+      "minutos_activos": 690,
+      "minutos_pasivos": 75,
+      "ocupacion_pct": 76.67,
+      "estado_plan": "ok",
+      "bloques": [
+        {
+          "clave": "TAREAPR-D7174C5E3E",
+          "nombre": "Producir / preparar Carrillera de ternera",
+          "dia": 1,
+          "inicio_min": 0,
+          "fin_min": 310,
+          "duracion_min": 310,
+          "tipo_tiempo": "activo",
+          "recurso": "mesa_trabajo",
+          "prioridad": "critica",
+          "dependencias": [],
+          "datos": {
+            "id": "TAREAPR-D7174C5E3E",
+            "clave": "TAREAPR-D7174C5E3E",
+            "nombre": "Producir / preparar Carrillera de ternera",
+            "prioridad": "critica",
+            "dependencias": [],
+            "recursos": [
+              "mesa_trabajo",
+              "fuego",
+              "horno",
+              "abatidor"
+            ],
+            "tiempo_activo_min": 310,
+            "tiempo_pasivo_min": 45,
+            "tiempo_total_min": 355,
+            "tarea_id": "TAREAPR-D7174C5E3E"
+          }
+        },
+        {
+          "clave": "TAREAPR-D7174C5E3E_pasivo",
+          "nombre": "Producir / preparar Carrillera de ternera",
+          "dia": 1,
+          "inicio_min": 310,
+          "fin_min": 355,
+          "duracion_min": 45,
+          "tipo_tiempo": "pasivo",
+          "recurso": "mesa_trabajo",
+          "prioridad": "critica",
+          "dependencias": [],
+          "datos": {
+            "id": "TAREAPR-D7174C5E3E",
+            "clave": "TAREAPR-D7174C5E3E",
+            "nombre": "Producir / preparar Carrillera de ternera",
+            "prioridad": "critica",
+            "dependencias": [],
+            "recursos": [
+              "mesa_trabajo",
+              "fuego",
+              "horno",
+              "abatidor"
+            ],
+            "tiempo_activo_min": 310,
+            "tiempo_pasivo_min": 45,
+            "tiempo_total_min": 355,
+            "tarea_id": "TAREAPR-D7174C5E3E"
+          }
+        },
+        {
+          "clave": "TAREAPR-1F0E475488",
+          "nombre": "Producir / preparar Demi-glace",
+          "dia": 1,
+          "inicio_min": 310,
+          "fin_min": 480,
+          "duracion_min": 170,
+          "tipo_tiempo": "activo",
+          "recurso": "mesa_trabajo",
+          "prioridad": "critica",
+          "dependencias": [],
+          "datos": {
+            "id": "TAREAPR-1F0E475488",
+            "clave": "TAREAPR-1F0E475488",
+            "nombre": "Producir / preparar Demi-glace",
+            "prioridad": "critica",
+            "dependencias": [],
+            "recursos": [
+              "mesa_trabajo",
+              "fuego",
+              "abatidor"
+            ],
+            "tiempo_activo_min": 170,
+            "tiempo_pasivo_min": 30,
+            "tiempo_total_min": 200,
+            "tarea_id": "TAREAPR-1F0E475488"
+          }
+        },
+        {
+          "clave": "TAREAPR-1F0E475488_pasivo",
+          "nombre": "Producir / preparar Demi-glace",
+          "dia": 1,
+          "inicio_min": 480,
+          "fin_min": 510,
+          "duracion_min": 30,
+          "tipo_tiempo": "pasivo",
+          "recurso": "mesa_trabajo",
+          "prioridad": "critica",
+          "dependencias": [],
+          "datos": {
+            "id": "TAREAPR-1F0E475488",
+            "clave": "TAREAPR-1F0E475488",
+            "nombre": "Producir / preparar Demi-glace",
+            "prioridad": "critica",
+            "dependencias": [],
+            "recursos": [
+              "mesa_trabajo",
+              "fuego",
+              "abatidor"
+            ],
+            "tiempo_activo_min": 170,
+            "tiempo_pasivo_min": 30,
+            "tiempo_total_min": 200,
+            "tarea_id": "TAREAPR-1F0E475488"
+          }
+        },
+        {
+          "clave": "TAREAPR-F05BEDE7E5",
+          "nombre": "Carga, transporte y montaje",
+          "dia": 1,
+          "inicio_min": 480,
+          "fin_min": 600,
+          "duracion_min": 120,
+          "tipo_tiempo": "activo",
+          "recurso": "mesa_trabajo",
+          "prioridad": "alta",
+          "dependencias": [],
+          "datos": {
+            "id": "TAREAPR-F05BEDE7E5",
+            "clave": "TAREAPR-F05BEDE7E5",
+            "nombre": "Carga, transporte y montaje",
+            "prioridad": "alta",
+            "dependencias": [],
+            "recursos": [
+              "mesa_trabajo",
+              "transporte",
+              "evento"
+            ],
+            "tiempo_activo_min": 120,
+            "tiempo_pasivo_min": 0,
+            "tiempo_total_min": 120,
+            "tarea_id": "TAREAPR-F05BEDE7E5"
+          }
+        },
+        {
+          "clave": "TAREAPR-7369E57D2F",
+          "nombre": "Cierre y retorno",
+          "dia": 1,
+          "inicio_min": 600,
+          "fin_min": 690,
+          "duracion_min": 90,
+          "tipo_tiempo": "activo",
+          "recurso": "evento",
+          "prioridad": "normal",
+          "dependencias": [],
+          "datos": {
+            "id": "TAREAPR-7369E57D2F",
+            "clave": "TAREAPR-7369E57D2F",
+            "nombre": "Cierre y retorno",
+            "prioridad": "normal",
+            "dependencias": [],
+            "recursos": [
+              "evento",
+              "transporte"
+            ],
+            "tiempo_activo_min": 90,
+            "tiempo_pasivo_min": 0,
+            "tiempo_total_min": 90,
+            "tarea_id": "TAREAPR-7369E57D2F"
+          }
+        }
+      ],
+      "resumen": {
+        "jornada_horas": 7.5,
+        "cocineros": 2,
+        "hora_inicio": "8:00",
+        "capacidad_activa_dia_min": 900,
+        "prioridades": {
+          "critica": 2,
+          "alta": 1,
+          "normal": 1
+        },
+        "recursos": [
+          "abatidor",
+          "evento",
+          "fuego",
+          "horno",
+          "mesa_trabajo",
+          "transporte"
+        ],
+        "dependencias_detectadas": 0
+      },
+      "lectura_host_ai": "Planificación inteligente de producción: 4 elaboraciones, 6 bloques, 1 día(s) y estado ok."
+    },
+    "asignacion_recursos": {
+      "version": "3.0.6.4",
+      "total_asignaciones": 4,
+      "cocineros": 2,
+      "dias_necesarios": 2,
+      "carga_por_cocinero": {
+        "Cocinero 1": 310,
+        "Cocinero 2": 380
+      },
+      "conflictos": [
+        {
+          "tipo": "recurso_saturado",
+          "gravedad": "aviso",
+          "dia": 2,
+          "recurso": "mesa_trabajo",
+          "elaboraciones": [
+            "Producir / preparar Demi-glace",
+            "Carga, transporte y montaje"
+          ],
+          "lectura_host_ai": "Recurso mesa_trabajo solapado en día 2."
+        }
+      ],
+      "estado_asignacion": "critico",
+      "asignaciones": [
+        {
+          "cocinero": "Cocinero 1",
+          "dia": 1,
+          "inicio_min": 0,
+          "fin_min": 310,
+          "duracion_min": 310,
+          "clave": "TAREAPR-D7174C5E3E",
+          "elaboracion": "Producir / preparar Carrillera de ternera",
+          "tarea": "produccion_activa",
+          "recurso": "mesa_trabajo",
+          "prioridad": "critica",
+          "riesgo": "alto",
+          "datos": {
+            "id": "TAREAPR-D7174C5E3E",
+            "clave": "TAREAPR-D7174C5E3E",
+            "nombre": "Producir / preparar Carrillera de ternera",
+            "prioridad": "critica",
+            "dependencias": [],
+            "recursos": [
+              "mesa_trabajo",
+              "fuego",
+              "horno",
+              "abatidor"
+            ],
+            "tiempo_activo_min": 310,
+            "tiempo_pasivo_min": 45,
+            "tiempo_total_min": 355,
+            "tarea_id": "TAREAPR-D7174C5E3E"
+          }
+        },
+        {
+          "cocinero": "Cocinero 2",
+          "dia": 2,
+          "inicio_min": 0,
+          "fin_min": 170,
+          "duracion_min": 170,
+          "clave": "TAREAPR-1F0E475488",
+          "elaboracion": "Producir / preparar Demi-glace",
+          "tarea": "produccion_activa",
+          "recurso": "mesa_trabajo",
+          "prioridad": "critica",
+          "riesgo": "alto",
+          "datos": {
+            "id": "TAREAPR-1F0E475488",
+            "clave": "TAREAPR-1F0E475488",
+            "nombre": "Producir / preparar Demi-glace",
+            "prioridad": "critica",
+            "dependencias": [],
+            "recursos": [
+              "mesa_trabajo",
+              "fuego",
+              "abatidor"
+            ],
+            "tiempo_activo_min": 170,
+            "tiempo_pasivo_min": 30,
+            "tiempo_total_min": 200,
+            "tarea_id": "TAREAPR-1F0E475488"
+          }
+        },
+        {
+          "cocinero": "Cocinero 2",
+          "dia": 2,
+          "inicio_min": 0,
+          "fin_min": 120,
+          "duracion_min": 120,
+          "clave": "TAREAPR-F05BEDE7E5",
+          "elaboracion": "Carga, transporte y montaje",
+          "tarea": "produccion_activa",
+          "recurso": "mesa_trabajo",
+          "prioridad": "alta",
+          "riesgo": "medio",
+          "datos": {
+            "id": "TAREAPR-F05BEDE7E5",
+            "clave": "TAREAPR-F05BEDE7E5",
+            "nombre": "Carga, transporte y montaje",
+            "prioridad": "alta",
+            "dependencias": [],
+            "recursos": [
+              "mesa_trabajo",
+              "transporte",
+              "evento"
+            ],
+            "tiempo_activo_min": 120,
+            "tiempo_pasivo_min": 0,
+            "tiempo_total_min": 120,
+            "tarea_id": "TAREAPR-F05BEDE7E5"
+          }
+        },
+        {
+          "cocinero": "Cocinero 2",
+          "dia": 2,
+          "inicio_min": 0,
+          "fin_min": 90,
+          "duracion_min": 90,
+          "clave": "TAREAPR-7369E57D2F",
+          "elaboracion": "Cierre y retorno",
+          "tarea": "produccion_activa",
+          "recurso": "evento",
+          "prioridad": "normal",
+          "riesgo": "normal",
+          "datos": {
+            "id": "TAREAPR-7369E57D2F",
+            "clave": "TAREAPR-7369E57D2F",
+            "nombre": "Cierre y retorno",
+            "prioridad": "normal",
+            "dependencias": [],
+            "recursos": [
+              "evento",
+              "transporte"
+            ],
+            "tiempo_activo_min": 90,
+            "tiempo_pasivo_min": 0,
+            "tiempo_total_min": 90,
+            "tarea_id": "TAREAPR-7369E57D2F"
+          }
+        }
+      ],
+      "resumen": {
+        "jornada_horas": 7.5,
+        "capacidad_por_cocinero_min": 450,
+        "recursos_usados": [
+          "evento",
+          "mesa_trabajo"
+        ],
+        "conflictos_detectados": 1,
+        "cocinero_mas_cargado_min": 380
+      },
+      "lectura_host_ai": "Asignación inteligente de producción: 4 tareas activas, 1 conflicto(s), estado critico."
+    },
+    "propuesta_optimizacion": {},
+    "historial_optimizacion": [],
+    "propuesta_optimizacion_recursos": {},
+    "historial_optimizacion_recursos": [],
+    "propuesta_recomendaciones": {},
+    "historial_recomendaciones": [],
+    "estado": "planificado",
+    "id": "PLANPR-BE545287E9",
+    "creado_en": "2026-07-11T13:12:51",
+    "actualizado_en": "2026-07-13T16:27:36",
+    "duracion_total_min": 765
+  }
+]

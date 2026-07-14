@@ -1,0 +1,70 @@
+{
+  "version": "I1.3.2.4",
+  "esquema": 1,
+  "decisiones": {
+    "parmentier patata": {
+      "aprendizaje_id": "CUL-0A4D3C03440B",
+      "texto_origen": "parmentier patata",
+      "clave_normalizada": "parmentier patata",
+      "rol": "GUARNICION",
+      "accion": "PROPONER_NUEVA_RECETA",
+      "nombre_destino": "Parmentier de patata",
+      "tipo_destino": "PROPUESTA_RECETA",
+      "entidad_id": "",
+      "confianza": 1.0,
+      "estado": "ACTIVO",
+      "origen": "migracion_i1323",
+      "usos": 10,
+      "creado_en": "2026-07-12T20:18:18+00:00",
+      "actualizado_en": "2026-07-13T01:16:07+00:00",
+      "ultimo_uso_en": "2026-07-13T01:16:07+00:00",
+      "historial": [
+        {
+          "fecha": "2026-07-12T20:18:18+00:00",
+          "evento": "CREADO",
+          "origen": "migracion_i1323"
+        },
+        {
+          "fecha": "2026-07-12T20:18:19+00:00",
+          "evento": "APLICADO_AUTOMATICAMENTE"
+        },
+        {
+          "fecha": "2026-07-12T20:40:20+00:00",
+          "evento": "APLICADO_AUTOMATICAMENTE"
+        },
+        {
+          "fecha": "2026-07-12T20:54:09+00:00",
+          "evento": "APLICADO_AUTOMATICAMENTE"
+        },
+        {
+          "fecha": "2026-07-12T23:26:16+00:00",
+          "evento": "APLICADO_AUTOMATICAMENTE"
+        },
+        {
+          "fecha": "2026-07-12T23:44:12+00:00",
+          "evento": "APLICADO_AUTOMATICAMENTE"
+        },
+        {
+          "fecha": "2026-07-12T23:46:03+00:00",
+          "evento": "APLICADO_AUTOMATICAMENTE"
+        },
+        {
+          "fecha": "2026-07-13T00:23:19+00:00",
+          "evento": "APLICADO_AUTOMATICAMENTE"
+        },
+        {
+          "fecha": "2026-07-13T00:37:52+00:00",
+          "evento": "APLICADO_AUTOMATICAMENTE"
+        },
+        {
+          "fecha": "2026-07-13T00:53:04+00:00",
+          "evento": "APLICADO_AUTOMATICAMENTE"
+        },
+        {
+          "fecha": "2026-07-13T01:16:07+00:00",
+          "evento": "APLICADO_AUTOMATICAMENTE"
+        }
+      ]
+    }
+  }
+}

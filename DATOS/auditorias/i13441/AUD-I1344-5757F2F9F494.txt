@@ -1,0 +1,8 @@
+I1.3.4.4 — AUDITORÍA E INTEGRIDAD POSTIMPORTACIÓN
+==============================================================================
+Estado: CERTIFICADA | Integridad: OK
+Menús: 1 | Secciones: 1 | Platos: 1 | Componentes: 1
+Artículos directos: 1 | Bebidas: 0 | Complementos: 0 | Servicios: 0
+Errores: 0 | Avisos: 0 | Informativos: 0
+------------------------------------------------------------------------------
+Auditoría de solo lectura: no se modificaron menús, recetas ni artículos.

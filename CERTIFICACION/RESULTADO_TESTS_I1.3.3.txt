@@ -1,0 +1,10 @@
+31 passed in 5.33s
+
+Suites ejecutadas:
+- I1.3.1 detector limpio
+- I1.3.2.1 reconocimiento
+- I1.3.2.2 árbol semántico
+- I1.3.2.3 resolución asistida
+- I1.3.2.4 aprendizaje culinario
+- I1.3.3 preimportación definitiva
+- I1.3 legacy

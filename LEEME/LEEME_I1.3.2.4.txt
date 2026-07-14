@@ -1,0 +1,17 @@
+HOST AI — I1.3.2.4 MOTOR DE APRENDIZAJE CULINARIO
+
+INSTALACIÓN
+1. Haz una copia de seguridad del proyecto.
+2. Copia el contenido del ZIP encima de Host AI 6.0.
+3. Abre Host AI > Excel / Importaciones.
+4. Selecciona la opción 15.
+5. Usa Escandallos Boronat.xlsx y la hoja MENU BODA 31-1.
+
+PRUEBA RECOMENDADA
+- Para `parmentier patata`, selecciona 2.
+- Nombre: Parmentier de patata.
+- Confirma que quieres guardar el aprendizaje.
+- Repite la opción 15 con la misma hoja.
+- Debe indicar: Pendientes 0, decisiones aplicadas 1 y usos 1.
+
+No se importan menús ni se crean recetas en este sprint.

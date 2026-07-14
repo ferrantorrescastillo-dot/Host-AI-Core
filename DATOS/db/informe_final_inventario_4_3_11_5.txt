@@ -1,0 +1,24 @@
+HOST AI 4.3.11.5 - INFORME FINAL INVENTARIO
+============================================================================
+Artículos contados: 0
+OK: 0
+Faltantes: 0
+Sobrantes: 0
+Revisar: 0
+
+AJUSTES
+----------------------------------------------------------------------------
+Ajustes aplicados: 0
+Ajustes omitidos: 0
+Errores ajuste: 0
+Movimientos inventario detectados: 0
+
+DIFERENCIA POR UNIDAD
+----------------------------------------------------------------------------
+Sin diferencias registradas.
+
+RECOMENDACIONES
+----------------------------------------------------------------------------
+- Importar y comparar inventario antes de cerrar.
+
+ESTADO FINAL: sin_datos

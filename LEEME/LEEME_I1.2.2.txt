@@ -1,0 +1,18 @@
+HOST AI 6.0.4 — I1.2.2
+
+INSTALACIÓN
+1. Haz una copia de tu carpeta actual.
+2. Copia el contenido de este ZIP encima de Host AI.
+3. Acepta reemplazar los archivos existentes.
+4. Ejecuta Host AI y entra en Excel / importaciones > I1.2.
+
+USO
+- Ejecuta la vista previa de MP boda 31-1.
+- Cuando pregunte si quieres revisar los vínculos dudosos, responde S.
+- Elige un candidato, busca otro artículo, crea uno nuevo o deja el vínculo pendiente.
+- Confirma si quieres recordar cada equivalencia.
+- Al final revisa la vista previa actualizada antes de importar.
+
+MEMORIA
+Las equivalencias se guardan en:
+DATOS/db/memoria_vinculaciones_i122.json

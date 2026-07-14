@@ -1,0 +1,11 @@
+HOST AI 4.3.11.4 - APLICADOR DE AJUSTES DE INVENTARIO
+==============================================================================
+Total líneas comparación: 0
+Ajustes aplicados: 0
+Ajustes omitidos: 0
+Errores: 0
+Estado: sin_datos
+
+DETALLE
+------------------------------------------------------------------------------
+No hay líneas para aplicar.

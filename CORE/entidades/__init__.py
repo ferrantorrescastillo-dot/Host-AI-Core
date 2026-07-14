@@ -1,0 +1,1 @@
+"""Entidades canónicas Host AI."""

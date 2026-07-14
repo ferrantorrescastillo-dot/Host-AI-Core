@@ -1,0 +1,15 @@
+HOST AI 6.0.4 — P4.2 OPTIMIZACIÓN DE RECURSOS
+
+INSTALACIÓN
+1. Haz una copia de tu carpeta actual de Host AI.
+2. Descomprime este ZIP.
+3. Copia las carpetas APP, MODELOS, MOTORES y TESTS encima de tu proyecto.
+4. Acepta sustituir los archivos existentes.
+5. Ejecuta: python main.py
+
+REQUISITO
+Tu versión debe contener previamente P4.1.
+
+PRUEBA RÁPIDA
+Host AI Base > Producción > seleccionar plan > 14. Optimización de recursos.
+Primero genera una planificación P2 con tareas que compartan recursos.

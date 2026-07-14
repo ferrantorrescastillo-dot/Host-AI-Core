@@ -1,0 +1,116 @@
+{
+  "archivo": "/mnt/data/Host_AI_3_0_2_7_Resolucion_Conflictos_Excel/DATOS/importaciones/excel_demo_conflictos.xlsx",
+  "nombre_archivo": "excel_demo_conflictos.xlsx",
+  "hojas": [
+    {
+      "nombre": "Listado Articulos",
+      "filas": 3,
+      "columnas": 6,
+      "celdas_utilizadas": 18,
+      "columnas_detectadas": [
+        {
+          "indice": 1,
+          "letra": "A",
+          "nombre_detectado": "Codigo",
+          "tipo_detectado": "texto",
+          "total_celdas": 2,
+          "celdas_con_dato": 2,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "ART-CARRILLERA",
+            "ART-CARRILLERA"
+          ]
+        },
+        {
+          "indice": 2,
+          "letra": "B",
+          "nombre_detectado": "Articulo",
+          "tipo_detectado": "texto",
+          "total_celdas": 2,
+          "celdas_con_dato": 2,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "Carrillera de ternera",
+            "Carrillera ternera"
+          ]
+        },
+        {
+          "indice": 3,
+          "letra": "C",
+          "nombre_detectado": "Unidad",
+          "tipo_detectado": "texto",
+          "total_celdas": 2,
+          "celdas_con_dato": 2,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "kg",
+            "kg"
+          ]
+        },
+        {
+          "indice": 4,
+          "letra": "D",
+          "nombre_detectado": "Familia",
+          "tipo_detectado": "texto",
+          "total_celdas": 2,
+          "celdas_con_dato": 2,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "carnes",
+            "carnes"
+          ]
+        },
+        {
+          "indice": 5,
+          "letra": "E",
+          "nombre_detectado": "Proveedor",
+          "tipo_detectado": "texto",
+          "total_celdas": 2,
+          "celdas_con_dato": 2,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "Proveedor Carnes",
+            "Proveedor Carnes"
+          ]
+        },
+        {
+          "indice": 6,
+          "letra": "F",
+          "nombre_detectado": "Precio",
+          "tipo_detectado": "numero",
+          "total_celdas": 2,
+          "celdas_con_dato": 2,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            12,
+            12
+          ]
+        }
+      ],
+      "vista_previa": [
+        {
+          "Codigo": "ART-CARRILLERA",
+          "Articulo": "Carrillera de ternera",
+          "Unidad": "kg",
+          "Familia": "carnes",
+          "Proveedor": "Proveedor Carnes",
+          "Precio": 12
+        },
+        {
+          "Codigo": "ART-CARRILLERA",
+          "Articulo": "Carrillera ternera",
+          "Unidad": "kg",
+          "Familia": "carnes",
+          "Proveedor": "Proveedor Carnes",
+          "Precio": 12
+        }
+      ]
+    }
+  ],
+  "total_hojas": 1,
+  "total_filas": 3,
+  "total_columnas": 6,
+  "total_celdas_utilizadas": 18,
+  "id": "ANEXCEL-92DD7C704C",
+  "creado_en": "2026-07-08T08:52:12"
+}

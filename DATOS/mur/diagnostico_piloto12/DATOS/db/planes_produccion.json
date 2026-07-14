@@ -1,0 +1,40 @@
+[
+  {
+    "id": "PLAN-DIAG",
+    "evento_id": "EVT-DIAG",
+    "evento": "Boda diagnóstico",
+    "tareas": [
+      {
+        "id": "TAREA-PROD-1",
+        "titulo": "Preparar demi-glace",
+        "estado_ejecucion": "pendiente",
+        "prioridad": 90,
+        "fases": [
+          {
+            "nombre": "Preparar base",
+            "duracion_min": 30,
+            "tipo": "preparacion"
+          },
+          {
+            "nombre": "Reducir",
+            "duracion_min": 120,
+            "tipo": "coccion"
+          }
+        ]
+      },
+      {
+        "id": "TAREA-PROD-2",
+        "titulo": "Preparar carrillera",
+        "estado_ejecucion": "pendiente",
+        "prioridad": 80,
+        "fases": [
+          {
+            "nombre": "Preparar",
+            "duracion_min": 45,
+            "tipo": "preparacion"
+          }
+        ]
+      }
+    ]
+  }
+]

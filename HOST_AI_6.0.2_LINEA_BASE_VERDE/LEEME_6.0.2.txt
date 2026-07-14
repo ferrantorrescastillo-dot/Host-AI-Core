@@ -1,0 +1,36 @@
+HOST AI 6.0.2 — LÍNEA BASE VERDE
+
+OBJETIVO
+Restaurar una base ejecutable y verificable antes de recuperar la operativa manual.
+
+ARCHIVOS MODIFICADOS
+1. SERVICIOS/orquestador_inteligente_52.py
+   - Reconecta GestorContextoPermanente5410 al orquestador actual.
+   - Mantiene compatibilidad con contexto_activo_549.
+   - Integra continuidad 5.4.10, selección 5.4.11, confirmaciones 5.4.12 y referencias naturales 5.4.13.
+   - Conserva el flujo activo después de una revisión segura.
+   - No modifica datos reales sin confirmación específica.
+
+2. SERVICIOS/motor_paralelizacion_produccion_556e4.py
+   - Corrige el origen de _hora y _minutos_hora.
+   - Los helpers se importan desde motor_planificacion_recetas_reales_556e31, donde realmente están definidos.
+
+VALIDACIÓN REALIZADA
+Comando: pytest -q
+Resultado: 34 passed, 0 failed, 0 collection errors.
+
+INSTALACIÓN
+1. Haz una copia de seguridad de tu proyecto actual.
+2. Copia la carpeta SERVICIOS de este parche sobre la carpeta SERVICIOS de Host AI.
+3. Acepta reemplazar únicamente los dos archivos indicados.
+4. Desde la raíz del proyecto ejecuta:
+   pytest -q
+
+RESULTADO ESPERADO
+34 passed
+
+SEGURIDAD
+- No contiene bases de datos.
+- No contiene archivos JSON de negocio.
+- No modifica artículos, stock, compras, escandallos ni producción real.
+- Es un parche de código limitado a contratos e imports.

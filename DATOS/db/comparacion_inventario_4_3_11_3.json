@@ -1,0 +1,12 @@
+{
+  "total_contados": 0,
+  "ok": 0,
+  "faltantes": 0,
+  "sobrantes": 0,
+  "revisar": 0,
+  "diferencia_por_unidad": {},
+  "estados": {},
+  "prioridades": {},
+  "lineas": [],
+  "estado_general": "sin_datos"
+}

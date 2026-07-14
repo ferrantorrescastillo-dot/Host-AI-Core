@@ -1,0 +1,23 @@
+HOST AI — I1.3.3.1 RESOLUCIÓN DE BLOQUEOS DE PREIMPORTACIÓN
+
+INSTALACIÓN
+1. Haz una copia de seguridad de Host AI.
+2. Descomprime este ZIP.
+3. Copia APP, SERVICIOS, TESTS y la documentación encima del proyecto.
+4. Abre Host AI > Excel / Importaciones > opción 17.
+
+PRUEBA RECOMENDADA
+- Excel: Escandallos Boronat.xlsx
+- Hoja: MENU BODA 31-1
+- Bloqueo: Parmentier de patata
+- Acción recomendada: Crear y completar receta.
+- Introduce un rendimiento real y al menos un ingrediente real del catálogo.
+- Confirma la creación.
+
+RESULTADO ESPERADO
+- Se crea la receta con copia de seguridad.
+- El aprendizaje pasa de PROPONER_NUEVA_RECETA a VINCULAR_RECETA.
+- Se recalcula la preimportación.
+- Bloqueos: 0
+- Estado: LISTA
+- El menú NO se importa todavía.

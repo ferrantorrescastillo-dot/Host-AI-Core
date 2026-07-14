@@ -1,0 +1,90 @@
+{
+  "version": "PILOTO-1.1",
+  "actualizado_en": "2026-07-13T15:21:26",
+  "tareas": [
+    {
+      "id": "TAREA-EB0B06FB58",
+      "titulo": "Finalizar recepción Makro",
+      "tipo": "RECEPCION",
+      "descripcion": "Stock pendiente",
+      "prioridad": 90,
+      "estado": "PENDIENTE",
+      "origen": "manual",
+      "referencia": "",
+      "metadatos": {
+        "clave_origen": "diag:recepcion"
+      },
+      "creado_en": "2026-07-13T15:21:26",
+      "actualizado_en": "2026-07-13T15:21:26",
+      "iniciado_en": "",
+      "completado_en": "",
+      "aplazado_hasta": "",
+      "notas": [],
+      "historial": [
+        {
+          "fecha": "2026-07-13T15:21:26",
+          "accion": "CREADA",
+          "detalle": "manual"
+        }
+      ]
+    },
+    {
+      "id": "TAREA-4EFE19606E",
+      "titulo": "Preparar demi-glace",
+      "tipo": "PRODUCCION",
+      "descripcion": "Boda diagnóstico",
+      "prioridad": 90,
+      "estado": "PENDIENTE",
+      "origen": "planes_produccion",
+      "referencia": "C:\\PROYECTO HOST IA\\Proyecto Host AI  6.0\\Host AI 6.0\\DATOS\\mur\\diagnostico_piloto12\\DATOS\\db\\planes_produccion.json",
+      "metadatos": {
+        "plan_id": "PLAN-DIAG",
+        "tarea_id": "TAREA-PROD-1",
+        "evento_id": "EVT-DIAG",
+        "clave_origen": "produccion:TAREA-PROD-1"
+      },
+      "creado_en": "2026-07-13T15:21:26",
+      "actualizado_en": "2026-07-13T15:21:26",
+      "iniciado_en": "",
+      "completado_en": "",
+      "aplazado_hasta": "",
+      "notas": [],
+      "historial": [
+        {
+          "fecha": "2026-07-13T15:21:26",
+          "accion": "CREADA",
+          "detalle": "planes_produccion"
+        }
+      ]
+    },
+    {
+      "id": "TAREA-40D1D3C408",
+      "titulo": "Preparar carrillera",
+      "tipo": "PRODUCCION",
+      "descripcion": "Boda diagnóstico",
+      "prioridad": 80,
+      "estado": "PENDIENTE",
+      "origen": "planes_produccion",
+      "referencia": "C:\\PROYECTO HOST IA\\Proyecto Host AI  6.0\\Host AI 6.0\\DATOS\\mur\\diagnostico_piloto12\\DATOS\\db\\planes_produccion.json",
+      "metadatos": {
+        "plan_id": "PLAN-DIAG",
+        "tarea_id": "TAREA-PROD-2",
+        "evento_id": "EVT-DIAG",
+        "clave_origen": "produccion:TAREA-PROD-2"
+      },
+      "creado_en": "2026-07-13T15:21:26",
+      "actualizado_en": "2026-07-13T15:21:26",
+      "iniciado_en": "",
+      "completado_en": "",
+      "aplazado_hasta": "",
+      "notas": [],
+      "historial": [
+        {
+          "fecha": "2026-07-13T15:21:26",
+          "accion": "CREADA",
+          "detalle": "planes_produccion"
+        }
+      ]
+    }
+  ]
+}

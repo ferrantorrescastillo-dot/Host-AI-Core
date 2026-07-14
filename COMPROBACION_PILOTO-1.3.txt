@@ -1,0 +1,43 @@
+COMPROBACIÓN DE PILOTO-1.3 — PRODUCCIÓN GUIADA
+
+1. Copia el contenido del ZIP encima de tu carpeta Host AI 6.0.
+2. Abre una terminal en la carpeta raíz del proyecto.
+3. Ejecuta:
+
+   python COMPROBAR_PILOTO_1.3.py
+
+RESULTADO ESPERADO:
+
+   PILOTO-1.3 — PRODUCCIÓN GUIADA
+   Diagnóstico: OK
+
+COMPROBACIÓN MANUAL:
+
+1. Ejecuta:
+
+   python main.py
+
+2. Entra en Modo Piloto.
+3. Elige "4. Producción".
+4. Debe abrirse "PRODUCCIÓN GUIADA".
+5. Selecciona un plan con tareas.
+6. Comprueba que aparece:
+   - Avance general.
+   - Qué hacer ahora.
+   - Motivo de la recomendación.
+   - Tareas con estados humanos.
+   - Responsable, recurso y tiempo restante.
+7. Prueba con una tarea de prueba:
+   - Iniciarla.
+   - Pausarla.
+   - Reanudarla.
+   - Actualizar el avance.
+   - Registrar una incidencia.
+8. No finalices una tarea real salvo que realmente esté terminada.
+9. Comprueba que la opción "A. Gestión avanzada" sigue abriendo el menú anterior.
+
+TESTS AUTOMÁTICOS OPCIONALES:
+
+   pytest -q TESTS/test_piloto_13_produccion_guiada.py TESTS/test_piloto_12_jornada.py TESTS/test_piloto_11_bandeja_trabajo.py TESTS/test_p31_ejecucion_basica.py TESTS/test_p33_panel_produccion.py
+
+RESULTADO CERTIFICADO: 16 passed.

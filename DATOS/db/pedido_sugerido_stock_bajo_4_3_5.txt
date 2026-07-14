@@ -1,0 +1,12 @@
+HOST AI 4.3.5 - PEDIDO SUGERIDO DESDE STOCK BAJO
+========================================================================
+Fecha: 2026-07-09T13:03:58
+Total líneas: 3
+Total proveedores: 1
+Estado: pedido_sugerido
+
+PROVEEDOR: Makro
+------------------------------------------------------------------------
+[ALTA] ART000355 | Arroz bomba | Pedir: 7.0 kg | Stock: 3.0 | Mín: 10.0 | Ubicación: Almacen seco
+[ALTA] ART000358 | Tomate triturado | Pedir: 8.0 kg | Stock: 2.0 | Mín: 10.0 | Ubicación: Almacen seco
+[MEDIA] ART000356 | Harina fuerza | Pedir: 4.0 kg | Stock: 6.0 | Mín: 10.0 | Ubicación: Almacen seco

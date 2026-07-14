@@ -1,0 +1,95 @@
+{
+  "version": "5.5.5B.7.4.1",
+  "fecha_utc": "2026-07-10T12:21:35.862697+00:00",
+  "base_dir": "C:\\Proyecto Host AI 4.0\\Host AI 4.0",
+  "estado": "CIERRE_APROBADO",
+  "resultado": {
+    "ok": 10,
+    "revisar": 0,
+    "error": 0,
+    "total": 10,
+    "porcentaje_ok": 100.0
+  },
+  "metricas": {
+    "escandallos": 23,
+    "ingredientes": 121,
+    "articulos": 358,
+    "precios_venta_definidos": 1
+  },
+  "comprobaciones": [
+    {
+      "clave": "base_canonica",
+      "estado": "OK",
+      "detalle": "Escandallos canónicos cargados: 23",
+      "valor": 23
+    },
+    {
+      "clave": "catalogo_articulos",
+      "estado": "OK",
+      "detalle": "Artículos disponibles: 358",
+      "valor": 358
+    },
+    {
+      "clave": "modulos_importables",
+      "estado": "OK",
+      "detalle": "Módulos requeridos importables: 4",
+      "valor": null
+    },
+    {
+      "clave": "integridad_recetas",
+      "estado": "OK",
+      "detalle": "Todas las recetas tienen nombre, código e ingredientes.",
+      "valor": null
+    },
+    {
+      "clave": "nombres_duplicados",
+      "estado": "OK",
+      "detalle": "Grupos con nombre repetido: 0",
+      "valor": []
+    },
+    {
+      "clave": "enlaces_articulos",
+      "estado": "OK",
+      "detalle": "Ingredientes enlazados por ID: 120/121 (99.17%). Sin enlace: 1 -> Leche entera [Crema catalana] ID=SIN_ID",
+      "valor": {
+        "cobertura_pct": 99.17,
+        "no_enlazados": [
+          {
+            "receta": "Crema catalana",
+            "ingrediente": "Leche entera",
+            "articulo_id": "SIN_ID"
+          }
+        ]
+      }
+    },
+    {
+      "clave": "precios_venta",
+      "estado": "OK",
+      "detalle": "Recetas con precio de venta definido: 1/23",
+      "valor": 1
+    },
+    {
+      "clave": "copias_seguridad",
+      "estado": "OK",
+      "detalle": "Copias de seguridad encontradas: 2",
+      "valor": 2
+    },
+    {
+      "clave": "modo_auditoria",
+      "estado": "OK",
+      "detalle": "Auditoría ejecutada en solo lectura. No escribe ni corrige datos.",
+      "valor": null
+    },
+    {
+      "clave": "trazabilidad_importacion",
+      "estado": "OK",
+      "detalle": "Informes disponibles: 3/3",
+      "valor": [
+        "preimportacion_555b.json",
+        "resolucion_variantes_555b.json",
+        "importacion_555b71.json"
+      ]
+    }
+  ],
+  "datos_reales_modificados": false
+}

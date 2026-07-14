@@ -1,0 +1,18 @@
+HOST AI — M1.3.3 VALIDACIÓN CULINARIA INTELIGENTE
+
+INSTALACIÓN
+1. Haz copia de seguridad del proyecto.
+2. Copia el contenido de este ZIP encima del proyecto certificado con M1.3.2.
+3. Abre Host AI.
+4. Entra en Excel / Importaciones.
+5. Ejecuta la opción 23.
+
+RESULTADO ESPERADO
+- Diagnóstico: OK.
+- Parmentier de patata: estado REVISAR, errores 0.
+- Aviso COSTE_INCOMPLETO por Nuez moscada sin precio.
+- Caso adverso: BLOQUEADA.
+- Error CANTIDAD_NO_POSITIVA.
+- Error AP_COMO_MATERIA_PRIMA.
+
+M1.3.3 NO CREA RECETAS NI MODIFICA DATOS REALES.

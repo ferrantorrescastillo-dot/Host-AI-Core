@@ -1,0 +1,17 @@
+HOST AI 6.0.4 — RR1.2 PULIDO DE EVENTOS
+
+INSTALACIÓN
+1. Cierra Host AI.
+2. Haz una copia de seguridad de la carpeta actual.
+3. Copia el contenido de este parche encima de la raíz de Host AI.
+4. Acepta reemplazar los archivos existentes.
+5. Ejecuta: python main.py
+
+REQUISITO
+Debe instalarse encima de una versión que ya contenga RR1.1 y los sprints anteriores.
+
+PRUEBA RECOMENDADA
+- Abre el evento RR1.
+- Añade o revisa un servicio y un pase.
+- Añade una receta buscando por nombre.
+- Abre la línea temporal y comprueba que el pase aparece dentro de su servicio y que la receta sale por nombre.

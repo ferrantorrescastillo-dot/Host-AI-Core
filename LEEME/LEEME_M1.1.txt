@@ -1,0 +1,19 @@
+HOST AI — M1.1 NÚCLEO DEL MOTOR UNIVERSAL DE RESOLUCIÓN
+
+INSTALACIÓN
+1. Haz una copia de seguridad del proyecto actual.
+2. Descomprime este ZIP.
+3. Copia su contenido encima de Host AI.
+4. Abre Host AI.
+5. Entra en Excel / Importaciones.
+6. Selecciona la opción 18: M1.1 Diagnóstico del núcleo MUR.
+
+RESULTADO ESPERADO
+- Diagnóstico: OK
+- Estado final: CERRADO
+- Resolutores registrados: 1
+- El ciclo DETECTAR → CLASIFICAR → RESOLVER → APLICAR → RECALCULAR → CERRAR funciona.
+- No se modifican datos de negocio.
+
+ALCANCE
+M1.1 construye únicamente la infraestructura del MUR. Los resolutores reales de artículos y recetas corresponden a M1.2 y M1.3.

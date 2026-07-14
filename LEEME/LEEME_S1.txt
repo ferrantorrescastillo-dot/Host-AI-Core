@@ -1,0 +1,30 @@
+HOST AI 6.0.4 — SPRINT S1 GESTIÓN DE STOCK
+
+INSTALACIÓN
+1. Asegúrate de tener instalados E1, E2 y E3.
+2. Cierra Host AI.
+3. Haz una copia de tu carpeta actual.
+4. Copia el contenido de este ZIP encima del proyecto.
+5. Acepta sustituir los archivos existentes.
+6. Ejecuta: python main.py
+
+ARCHIVOS MODIFICADOS
+- APP/consola.py
+- CORE/host_ai_core.py
+- MOTORES/motor_stock.py
+- TESTS/test_s1_gestion_stock.py
+
+FUNCIONES INCLUIDAS
+- Buscar artículos del catálogo por nombre, código o proveedor.
+- Seleccionar artículos existentes sin volver a pedir familia/proveedor.
+- Crear automáticamente el artículo si no existe.
+- Registrar una entrada individual.
+- Registrar varias entradas seguidas.
+- Ver stock actual ordenado y con número de lotes/ubicación.
+- Buscar dentro del stock actual.
+- Corregir la última entrada con confirmación.
+- Guardado automático tras cada entrada o corrección.
+- Recuperación automática de lotes y movimientos al reiniciar.
+
+VALIDACIÓN
+39 pruebas superadas.

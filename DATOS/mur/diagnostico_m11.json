@@ -1,0 +1,216 @@
+{
+  "version": "M1.1",
+  "esquema": 1,
+  "conflictos": {
+    "MUR-8946EA1C4AB1": {
+      "organizacion_id": "LOCAL",
+      "flujo_id": "DIAGNOSTICO-M11",
+      "origen_modulo": "DIAGNOSTICO_MUR",
+      "tipo_entidad": "GENERICA",
+      "tipo_conflicto": "GENERICO",
+      "severidad": "AVISO",
+      "dato_original": "conflicto de prueba",
+      "dato_normalizado": "Conflicto de prueba",
+      "rol_contextual": "",
+      "contexto": {},
+      "candidatos": [],
+      "acciones_permitidas": [
+        "SIMULAR"
+      ],
+      "checkpoint_id": "CHK-545EC6768D04",
+      "politica_aplicada": "",
+      "conflicto_id": "MUR-8946EA1C4AB1",
+      "estado": "CERRADO",
+      "version": 6,
+      "creado_en": "2026-07-12T21:44:20+00:00",
+      "actualizado_en": "2026-07-12T21:44:20+00:00",
+      "motivo_estado": "El recalculo confirma que el conflicto desapareció.",
+      "resolutor_id": "M11-RESOLUTOR-SIMULADO"
+    }
+  },
+  "checkpoints": {
+    "CHK-545EC6768D04": {
+      "flujo_id": "DIAGNOSTICO-M11",
+      "modulo": "DIAGNOSTICO_MUR",
+      "operacion": "CICLO_COMPLETO",
+      "paso": "ANTES_CONFLICTO",
+      "estado_parcial": {
+        "seguro": true
+      },
+      "huella_entrada": "M11-DEMO",
+      "version_flujo": 1,
+      "dependencias": [],
+      "checkpoint_id": "CHK-545EC6768D04",
+      "creado_en": "2026-07-12T21:44:20+00:00",
+      "actualizado_en": "2026-07-12T21:44:20+00:00",
+      "activo": true
+    }
+  },
+  "sesiones": {
+    "SES-45B3B6095DBE": {
+      "conflicto_id": "MUR-8946EA1C4AB1",
+      "usuario_id": "usuario-diagnostico",
+      "resolutor_id": "M11-RESOLUTOR-SIMULADO",
+      "acciones_disponibles": [
+        "SIMULAR"
+      ],
+      "sesion_id": "SES-45B3B6095DBE",
+      "estado": "RESUELTA",
+      "payload": {
+        "preparacion": {
+          "acciones": [
+            "SIMULAR"
+          ],
+          "mensaje": "Resolutor simulado listo."
+        },
+        "resultado": {
+          "ok": true,
+          "accion": "SIMULAR",
+          "mensaje": "Conflicto simulado resuelto.",
+          "datos": {
+            "eco": "MUR OPERATIVO"
+          },
+          "requiere_recalculo": true,
+          "aprendizaje_sugerido": null
+        }
+      },
+      "creada_en": "2026-07-12T21:44:20+00:00",
+      "actualizada_en": "2026-07-12T21:44:20+00:00"
+    }
+  },
+  "auditoria": [
+    {
+      "conflicto_id": "",
+      "evento": "CHECKPOINT_CREADO",
+      "actor": "sistema",
+      "detalle": {
+        "checkpoint_id": "CHK-545EC6768D04",
+        "flujo_id": "DIAGNOSTICO-M11"
+      },
+      "evento_id": "AUD-944F50D74923",
+      "creado_en": "2026-07-12T21:44:20+00:00"
+    },
+    {
+      "conflicto_id": "MUR-8946EA1C4AB1",
+      "evento": "CONFLICTO_DETECTADO",
+      "actor": "sistema",
+      "detalle": {
+        "organizacion_id": "LOCAL",
+        "flujo_id": "DIAGNOSTICO-M11",
+        "origen_modulo": "DIAGNOSTICO_MUR",
+        "tipo_entidad": "GENERICA",
+        "tipo_conflicto": "GENERICO",
+        "severidad": "AVISO",
+        "dato_original": "conflicto de prueba",
+        "dato_normalizado": "Conflicto de prueba",
+        "rol_contextual": "",
+        "contexto": {},
+        "candidatos": [],
+        "acciones_permitidas": [
+          "SIMULAR"
+        ],
+        "checkpoint_id": "CHK-545EC6768D04",
+        "politica_aplicada": "",
+        "conflicto_id": "MUR-8946EA1C4AB1",
+        "estado": "DETECTADO",
+        "version": 1,
+        "creado_en": "2026-07-12T21:44:20+00:00",
+        "actualizado_en": "2026-07-12T21:44:20+00:00",
+        "motivo_estado": "",
+        "resolutor_id": ""
+      },
+      "evento_id": "AUD-C2CA294E38D5",
+      "creado_en": "2026-07-12T21:44:20+00:00"
+    },
+    {
+      "conflicto_id": "MUR-8946EA1C4AB1",
+      "evento": "ESTADO_CAMBIADO",
+      "actor": "usuario-diagnostico",
+      "detalle": {
+        "anterior": "DETECTADO",
+        "nuevo": "CLASIFICADO",
+        "motivo": "Resolutor compatible asignado."
+      },
+      "evento_id": "AUD-0C250087BBAD",
+      "creado_en": "2026-07-12T21:44:20+00:00"
+    },
+    {
+      "conflicto_id": "MUR-8946EA1C4AB1",
+      "evento": "ESTADO_CAMBIADO",
+      "actor": "usuario-diagnostico",
+      "detalle": {
+        "anterior": "CLASIFICADO",
+        "nuevo": "EN_RESOLUCION",
+        "motivo": "Sesión de resolución abierta."
+      },
+      "evento_id": "AUD-FDBB22085419",
+      "creado_en": "2026-07-12T21:44:20+00:00"
+    },
+    {
+      "conflicto_id": "MUR-8946EA1C4AB1",
+      "evento": "RESOLUCION_INICIADA",
+      "actor": "usuario-diagnostico",
+      "detalle": {
+        "sesion_id": "SES-45B3B6095DBE",
+        "acciones": [
+          "SIMULAR"
+        ]
+      },
+      "evento_id": "AUD-716F4AFE6DAD",
+      "creado_en": "2026-07-12T21:44:20+00:00"
+    },
+    {
+      "conflicto_id": "MUR-8946EA1C4AB1",
+      "evento": "ESTADO_CAMBIADO",
+      "actor": "usuario-diagnostico",
+      "detalle": {
+        "anterior": "EN_RESOLUCION",
+        "nuevo": "RESUELTO",
+        "motivo": "Conflicto simulado resuelto."
+      },
+      "evento_id": "AUD-5E07814C530A",
+      "creado_en": "2026-07-12T21:44:20+00:00"
+    },
+    {
+      "conflicto_id": "MUR-8946EA1C4AB1",
+      "evento": "RESOLUCION_VALIDADA",
+      "actor": "usuario-diagnostico",
+      "detalle": {
+        "ok": true,
+        "accion": "SIMULAR",
+        "mensaje": "Conflicto simulado resuelto.",
+        "datos": {
+          "eco": "MUR OPERATIVO"
+        },
+        "requiere_recalculo": true,
+        "aprendizaje_sugerido": null
+      },
+      "evento_id": "AUD-7098D205C54F",
+      "creado_en": "2026-07-12T21:44:20+00:00"
+    },
+    {
+      "conflicto_id": "MUR-8946EA1C4AB1",
+      "evento": "ESTADO_CAMBIADO",
+      "actor": "diagnostico",
+      "detalle": {
+        "anterior": "RESUELTO",
+        "nuevo": "APLICADO",
+        "motivo": "Solución incorporada al flujo de origen."
+      },
+      "evento_id": "AUD-45FD4F940DB7",
+      "creado_en": "2026-07-12T21:44:20+00:00"
+    },
+    {
+      "conflicto_id": "MUR-8946EA1C4AB1",
+      "evento": "ESTADO_CAMBIADO",
+      "actor": "diagnostico",
+      "detalle": {
+        "anterior": "APLICADO",
+        "nuevo": "CERRADO",
+        "motivo": "El recalculo confirma que el conflicto desapareció."
+      },
+      "evento_id": "AUD-23788D70AC7E",
+      "creado_en": "2026-07-12T21:44:20+00:00"
+    }
+  ]
+}

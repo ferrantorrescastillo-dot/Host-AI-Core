@@ -1,0 +1,11 @@
+HOST AI 6.0.4 — UX1 MEJORAS DE USABILIDAD
+
+INSTALACIÓN
+1. Haz una copia de tu carpeta actual Host AI 6.0.
+2. Descomprime este ZIP.
+3. Copia las carpetas APP y TESTS encima de tu proyecto.
+4. Acepta sustituir APP/consola.py.
+5. Ejecuta: python main.py
+
+Este parche debe instalarse encima de la versión que ya contiene CO2.
+No modifica bases de datos ni datos reales.

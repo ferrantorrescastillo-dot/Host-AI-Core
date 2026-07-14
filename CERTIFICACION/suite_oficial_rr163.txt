@@ -1,0 +1,9 @@
+# Suite oficial de estabilización RR1.6.3
+# Una ruta por línea, relativa a la raíz del proyecto.
+TESTS/test_rr15_pulido_ia.py
+TESTS/test_rr161a_contexto_global_costes.py
+TESTS/test_rr161b_compras_recepcion.py
+TESTS/test_rr161c_stock_busqueda.py
+TESTS/test_rr161d_ia_contextual.py
+TESTS/test_rr162_recertificacion_final.py
+TESTS/test_rr163_ejecutor_certificacion.py

@@ -1,0 +1,48 @@
+[
+  {
+    "menu_id": "M1",
+    "nombre": "Menú diagnóstico",
+    "secciones": [
+      {
+        "seccion_id": "S1",
+        "nombre": "Principal"
+      }
+    ],
+    "platos": [
+      {
+        "plato_id": "P1",
+        "nombre": "Crema catalana",
+        "seccion": "Postre",
+        "componentes": []
+      },
+      {
+        "plato_id": "P2",
+        "nombre": "Plato ambiguo",
+        "seccion": "Principal",
+        "componentes": []
+      }
+    ],
+    "articulos_directos": [
+      {
+        "nombre": "Pan"
+      }
+    ],
+    "bebidas": [],
+    "complementos": [],
+    "servicios": [],
+    "economico": {
+      "precio_venta": 20,
+      "coste_total": 6,
+      "food_cost_pct": 90,
+      "beneficio": null
+    },
+    "resumen": {
+      "secciones": 1,
+      "platos": 2,
+      "componentes": 0,
+      "articulos_directos": 1,
+      "bebidas": 0,
+      "complementos": 0
+    }
+  }
+]

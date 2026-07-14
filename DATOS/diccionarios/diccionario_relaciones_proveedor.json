@@ -1,0 +1,16 @@
+{
+  "version": "3.0.3.4.4",
+  "aprendizajes": [
+    {
+      "proveedor_id": "PROV-MAKRO",
+      "texto_proveedor": "CARR TERN",
+      "articulo_id": "ART-CARRILLERA",
+      "nombre_articulo": "Carrillera de ternera",
+      "confianza": 100,
+      "usos": 1,
+      "id": "APRRELPROV-3EC44041E6",
+      "creado_en": "2026-07-08T10:41:17",
+      "actualizado_en": "2026-07-08T10:41:17"
+    }
+  ]
+}

@@ -1,0 +1,4766 @@
+{
+  "version": "I1.3.4.1.4",
+  "sesion_id": "REV-C0FFB927CA76",
+  "creada_en": "2026-07-13T00:37:53.326588+00:00",
+  "actualizada_en": "2026-07-13T00:37:53.326592+00:00",
+  "origen": {
+    "excel": "C:\\PROYECTO HOST IA\\Proyecto Host AI  6.0\\Host AI 6.0\\Documentos\\Escandallos Boronat.xlsx",
+    "hojas": [
+      "Menú bbq finde 45€",
+      "Menú paella finde 45€",
+      "Menú bbq 95€",
+      "MENU CALÇOTADA",
+      "MENU BODA 31-1",
+      "COMUNION  ALEJANDRO FERNANDEZ ",
+      "MENU FIN DE AÑO",
+      "MENU AGENCIA 25€ CALÇOTADA",
+      "Menú calçotada niños",
+      "Menú calçotada vegano",
+      "MENU BBQ"
+    ]
+  },
+  "plan_original_id": "PLAN-BEE14EDD9A43",
+  "plan": {
+    "version": "I1.3.4.1.4",
+    "estado_simulacion": "BLOQUEADA",
+    "acciones": [
+      {
+        "accion_id": "ACT-E989EA809275",
+        "tipo": "CREAR",
+        "entidad": "MENU",
+        "nombre": "Menú bbq finde 45€",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu_id": "MENU-6904594E7245",
+          "hoja": "Menú bbq finde 45€"
+        }
+      },
+      {
+        "accion_id": "ACT-BF0333F666A2",
+        "tipo": "CREAR_O_REUTILIZAR",
+        "entidad": "SECCION",
+        "nombre": "APERITIVO.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "Menú bbq finde 45€",
+          "menu_id": "MENU-6904594E7245"
+        }
+      },
+      {
+        "accion_id": "ACT-47B368EB6139",
+        "tipo": "CREAR_O_REUTILIZAR",
+        "entidad": "SECCION",
+        "nombre": "POSTRES",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "Menú bbq finde 45€",
+          "menu_id": "MENU-6904594E7245"
+        }
+      },
+      {
+        "accion_id": "ACT-CFB0BCF470C4",
+        "tipo": "CREAR_RELACION",
+        "entidad": "PLATO_MENU",
+        "nombre": "Ensaladilla de Gamba",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "Menú bbq finde 45€",
+          "menu_id": "MENU-6904594E7245",
+          "seccion": "Cóctel",
+          "coste_racion": 1.705375,
+          "fila": 7
+        }
+      },
+      {
+        "accion_id": "ACT-FB108AF653D7",
+        "tipo": "VINCULAR",
+        "entidad": "RECETA_PRINCIPAL",
+        "nombre": "Ensaladilla de gamba",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "Menú bbq finde 45€",
+          "menu_id": "MENU-6904594E7245",
+          "plato": "Ensaladilla de Gamba",
+          "rol": "RECETA_PRINCIPAL",
+          "catalogado": true,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-7BCC12DE91B9",
+        "tipo": "CREAR_RELACION",
+        "entidad": "PLATO_MENU",
+        "nombre": "Parrillada bbq fin de semana",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "Menú bbq finde 45€",
+          "menu_id": "MENU-6904594E7245",
+          "seccion": "Cóctel",
+          "coste_racion": 5.42026,
+          "fila": 13
+        }
+      },
+      {
+        "accion_id": "ACT-D647F33ADF76",
+        "tipo": "VINCULAR",
+        "entidad": "RECETA_PRINCIPAL",
+        "nombre": "Parrillada bbq fin de semana",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "Menú bbq finde 45€",
+          "menu_id": "MENU-6904594E7245",
+          "plato": "Parrillada bbq fin de semana",
+          "rol": "RECETA_PRINCIPAL",
+          "catalogado": true,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-65B70A967DAF",
+        "tipo": "CREAR_RELACION",
+        "entidad": "PLATO_MENU",
+        "nombre": "Crema Catalana.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "Menú bbq finde 45€",
+          "menu_id": "MENU-6904594E7245",
+          "seccion": "Postre",
+          "coste_racion": 0.5,
+          "fila": 16
+        }
+      },
+      {
+        "accion_id": "ACT-9CC7CCA860D2",
+        "tipo": "VINCULAR",
+        "entidad": "RECETA_PRINCIPAL",
+        "nombre": "Crema catalana",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "Menú bbq finde 45€",
+          "menu_id": "MENU-6904594E7245",
+          "plato": "Crema Catalana.",
+          "rol": "RECETA_PRINCIPAL",
+          "catalogado": true,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-5D3A267FD279",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "Agua Fon vella 1 LT Caja de 12 unid.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "Menú bbq finde 45€",
+          "menu_id": "MENU-6904594E7245",
+          "coste_racion": 0.4
+        }
+      },
+      {
+        "accion_id": "ACT-E69144AA9D04",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "Tartar de fuet",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "Menú bbq finde 45€",
+          "menu_id": "MENU-6904594E7245",
+          "coste_racion": 1.2956875
+        }
+      },
+      {
+        "accion_id": "ACT-E0CE353CE457",
+        "tipo": "CREAR_RELACION",
+        "entidad": "COMPLEMENTO",
+        "nombre": "Cafe Natural. 1 kg. 120 cafes. 24,48€  .kg. 0,22 unid",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "Menú bbq finde 45€",
+          "menu_id": "MENU-6904594E7245"
+        }
+      },
+      {
+        "accion_id": "ACT-609BB3B071A3",
+        "tipo": "CREAR_RELACION",
+        "entidad": "COMPLEMENTO",
+        "nombre": "Calçots en tempura!!!",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "Menú bbq finde 45€",
+          "menu_id": "MENU-6904594E7245"
+        }
+      },
+      {
+        "accion_id": "ACT-81F7E49200E2",
+        "tipo": "CREAR_RELACION",
+        "entidad": "COMPLEMENTO",
+        "nombre": "Ensalada para calçotada terminada lechuga de pages.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "Menú bbq finde 45€",
+          "menu_id": "MENU-6904594E7245"
+        }
+      },
+      {
+        "accion_id": "ACT-8BE282854B40",
+        "tipo": "CREAR_RELACION",
+        "entidad": "COMPLEMENTO",
+        "nombre": "MENU CALÇOTADA. CESTA DE PAN, TOMATE Y AJO.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "Menú bbq finde 45€",
+          "menu_id": "MENU-6904594E7245"
+        }
+      },
+      {
+        "accion_id": "ACT-A2357EF24A6A",
+        "tipo": "CREAR_RELACION",
+        "entidad": "COMPLEMENTO",
+        "nombre": "Salsa Allioli. natural. bote de 1 lt.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "Menú bbq finde 45€",
+          "menu_id": "MENU-6904594E7245"
+        }
+      },
+      {
+        "accion_id": "ACT-04DAE1C382C6",
+        "tipo": "REGISTRAR",
+        "entidad": "DATOS_ECONOMICOS",
+        "nombre": "Menú bbq finde 45€",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "Menú bbq finde 45€",
+          "menu_id": "MENU-6904594E7245",
+          "precio_venta": 46.0,
+          "venta_neta": 41.81818181818181,
+          "coste_total": 13.748522500000002,
+          "food_cost_pct": 32.87690163043479,
+          "beneficio": null
+        }
+      },
+      {
+        "accion_id": "ACT-E33656730143",
+        "tipo": "CREAR",
+        "entidad": "MENU",
+        "nombre": "Menú paella finde 45€",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu_id": "MENU-A635255585B3",
+          "hoja": "Menú paella finde 45€"
+        }
+      },
+      {
+        "accion_id": "ACT-E563A0EED598",
+        "tipo": "CREAR_O_REUTILIZAR",
+        "entidad": "SECCION",
+        "nombre": "APERITIVO.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "Menú paella finde 45€",
+          "menu_id": "MENU-A635255585B3"
+        }
+      },
+      {
+        "accion_id": "ACT-8702E1C7CEE1",
+        "tipo": "CREAR_O_REUTILIZAR",
+        "entidad": "SECCION",
+        "nombre": "POSTRES",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "Menú paella finde 45€",
+          "menu_id": "MENU-A635255585B3"
+        }
+      },
+      {
+        "accion_id": "ACT-21AFA9058B05",
+        "tipo": "CREAR_RELACION",
+        "entidad": "PLATO_MENU",
+        "nombre": "Ensaladilla de Gamba",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "Menú paella finde 45€",
+          "menu_id": "MENU-A635255585B3",
+          "seccion": "Cóctel",
+          "coste_racion": 1.705375,
+          "fila": 7
+        }
+      },
+      {
+        "accion_id": "ACT-1DD6D6B84D0F",
+        "tipo": "VINCULAR",
+        "entidad": "RECETA_PRINCIPAL",
+        "nombre": "Ensaladilla de gamba",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "Menú paella finde 45€",
+          "menu_id": "MENU-A635255585B3",
+          "plato": "Ensaladilla de Gamba",
+          "rol": "RECETA_PRINCIPAL",
+          "catalogado": true,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-32334D335753",
+        "tipo": "CREAR_RELACION",
+        "entidad": "PLATO_MENU",
+        "nombre": "Crema Catalana.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "Menú paella finde 45€",
+          "menu_id": "MENU-A635255585B3",
+          "seccion": "Postre",
+          "coste_racion": 0.5,
+          "fila": 16
+        }
+      },
+      {
+        "accion_id": "ACT-E85FB5F1830A",
+        "tipo": "VINCULAR",
+        "entidad": "RECETA_PRINCIPAL",
+        "nombre": "Crema catalana",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "Menú paella finde 45€",
+          "menu_id": "MENU-A635255585B3",
+          "plato": "Crema Catalana.",
+          "rol": "RECETA_PRINCIPAL",
+          "catalogado": true,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-66D23B00455C",
+        "tipo": "CREAR_RELACION",
+        "entidad": "PLATO_MENU",
+        "nombre": "MENU CALÇOTADA NARANJA CON MIEL. POR PAX.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "Menú paella finde 45€",
+          "menu_id": "MENU-A635255585B3",
+          "seccion": "Postre",
+          "coste_racion": 0.37,
+          "fila": 17
+        }
+      },
+      {
+        "accion_id": "ACT-81BF419199F5",
+        "tipo": "VINCULAR",
+        "entidad": "RECETA_PRINCIPAL",
+        "nombre": "Naranja con miel",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "Menú paella finde 45€",
+          "menu_id": "MENU-A635255585B3",
+          "plato": "MENU CALÇOTADA NARANJA CON MIEL. POR PAX.",
+          "rol": "RECETA_PRINCIPAL",
+          "catalogado": true,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-87B3A5ADADC9",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "Tartar de fuet",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "Menú paella finde 45€",
+          "menu_id": "MENU-A635255585B3",
+          "coste_racion": 1.2956875
+        }
+      },
+      {
+        "accion_id": "ACT-282AFEA122D0",
+        "tipo": "CREAR_RELACION",
+        "entidad": "COMPLEMENTO",
+        "nombre": "Cafe Natural. 1 kg. 120 cafes. 24,48€  .kg. 0,22 unid",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "Menú paella finde 45€",
+          "menu_id": "MENU-A635255585B3"
+        }
+      },
+      {
+        "accion_id": "ACT-5076EEDD489F",
+        "tipo": "CREAR_RELACION",
+        "entidad": "COMPLEMENTO",
+        "nombre": "Calçots en tempura!!!",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "Menú paella finde 45€",
+          "menu_id": "MENU-A635255585B3"
+        }
+      },
+      {
+        "accion_id": "ACT-9CF09B3DDCE1",
+        "tipo": "CREAR_RELACION",
+        "entidad": "COMPLEMENTO",
+        "nombre": "Ensalada para calçotada terminada lechuga de pages.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "Menú paella finde 45€",
+          "menu_id": "MENU-A635255585B3"
+        }
+      },
+      {
+        "accion_id": "ACT-C7037C115489",
+        "tipo": "CREAR_RELACION",
+        "entidad": "COMPLEMENTO",
+        "nombre": "MENU CALÇOTADA. CESTA DE PAN, TOMATE Y AJO.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "Menú paella finde 45€",
+          "menu_id": "MENU-A635255585B3"
+        }
+      },
+      {
+        "accion_id": "ACT-3AC5D43194AF",
+        "tipo": "CREAR_RELACION",
+        "entidad": "COMPLEMENTO",
+        "nombre": "Salsa Allioli. natural. bote de 1 lt.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "Menú paella finde 45€",
+          "menu_id": "MENU-A635255585B3"
+        }
+      },
+      {
+        "accion_id": "ACT-8FB04DCAD445",
+        "tipo": "REGISTRAR",
+        "entidad": "DATOS_ECONOMICOS",
+        "nombre": "Menú paella finde 45€",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "Menú paella finde 45€",
+          "menu_id": "MENU-A635255585B3",
+          "precio_venta": 46.0,
+          "venta_neta": 41.81818181818181,
+          "coste_total": 14.248262500000001,
+          "food_cost_pct": 34.071932065217396,
+          "beneficio": null
+        }
+      },
+      {
+        "accion_id": "ACT-2D6B631817AD",
+        "tipo": "CREAR",
+        "entidad": "MENU",
+        "nombre": "MENU BBQ 95€  13-03-26",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu_id": "MENU-539E473892CA",
+          "hoja": "Menú bbq 95€"
+        }
+      },
+      {
+        "accion_id": "ACT-9F10AF91C673",
+        "tipo": "CREAR_O_REUTILIZAR",
+        "entidad": "SECCION",
+        "nombre": "Entrantes",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BBQ 95€  13-03-26",
+          "menu_id": "MENU-539E473892CA"
+        }
+      },
+      {
+        "accion_id": "ACT-F18B93C2F67D",
+        "tipo": "CREAR_O_REUTILIZAR",
+        "entidad": "SECCION",
+        "nombre": "Plato principal",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BBQ 95€  13-03-26",
+          "menu_id": "MENU-539E473892CA"
+        }
+      },
+      {
+        "accion_id": "ACT-2DB0EDC48F54",
+        "tipo": "CREAR_RELACION",
+        "entidad": "PLATO_MENU",
+        "nombre": "Carpaccio de tomate con burrata y aceite albahaca",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BBQ 95€  13-03-26",
+          "menu_id": "MENU-539E473892CA",
+          "seccion": "Entrante",
+          "coste_racion": 0.10324166666666666,
+          "fila": 6
+        }
+      },
+      {
+        "accion_id": "ACT-EC94BAF00145",
+        "tipo": "VINCULAR",
+        "entidad": "RECETA_PRINCIPAL",
+        "nombre": "Carpaccio de tomate con burrata i aceite albahaca",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BBQ 95€  13-03-26",
+          "menu_id": "MENU-539E473892CA",
+          "plato": "Carpaccio de tomate con burrata y aceite albahaca",
+          "rol": "RECETA_PRINCIPAL",
+          "catalogado": true,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-7DE5FEAB4D90",
+        "tipo": "CREAR_RELACION",
+        "entidad": "PLATO_MENU",
+        "nombre": "Huevos rotos con jamón y foie",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BBQ 95€  13-03-26",
+          "menu_id": "MENU-539E473892CA",
+          "seccion": "Entrante",
+          "coste_racion": 2.0265,
+          "fila": 7
+        }
+      },
+      {
+        "accion_id": "ACT-789A595BE1CD",
+        "tipo": "VINCULAR",
+        "entidad": "RECETA_PRINCIPAL",
+        "nombre": "Huevos rotos con jamón i foie",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BBQ 95€  13-03-26",
+          "menu_id": "MENU-539E473892CA",
+          "plato": "Huevos rotos con jamón y foie",
+          "rol": "RECETA_PRINCIPAL",
+          "catalogado": true,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-418258774E04",
+        "tipo": "CREAR_RELACION",
+        "entidad": "PLATO_MENU",
+        "nombre": "Chuleta lomo bajo con pimiento del piquillo y alcachofa",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BBQ 95€  13-03-26",
+          "menu_id": "MENU-539E473892CA",
+          "seccion": "Principal",
+          "coste_racion": 15.269499999999999,
+          "fila": 10
+        }
+      },
+      {
+        "accion_id": "ACT-A0B00BA32E91",
+        "tipo": "VINCULAR",
+        "entidad": "RECETA_PRINCIPAL",
+        "nombre": "Chuleta lomo bajo con pimiento de piquillo y alcachofa",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BBQ 95€  13-03-26",
+          "menu_id": "MENU-539E473892CA",
+          "plato": "Chuleta lomo bajo con pimiento del piquillo y alcachofa",
+          "rol": "RECETA_PRINCIPAL",
+          "catalogado": true,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-921C81D1B616",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "Agua Fon vella 1 LT Caja de 12 unid.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BBQ 95€  13-03-26",
+          "menu_id": "MENU-539E473892CA",
+          "coste_racion": 0.24
+        }
+      },
+      {
+        "accion_id": "ACT-D3BB42A1F43C",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "Vaso Pulpo a la feira",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BBQ 95€  13-03-26",
+          "menu_id": "MENU-539E473892CA",
+          "coste_racion": 3.6789000000000005
+        }
+      },
+      {
+        "accion_id": "ACT-DFDCACDE97D0",
+        "tipo": "CREAR_RELACION",
+        "entidad": "COMPLEMENTO",
+        "nombre": "Cafe Natural. 1 kg. 120 cafes. 24,48€  .kg. 0,22 unid",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BBQ 95€  13-03-26",
+          "menu_id": "MENU-539E473892CA"
+        }
+      },
+      {
+        "accion_id": "ACT-4427AC87DD46",
+        "tipo": "REGISTRAR",
+        "entidad": "DATOS_ECONOMICOS",
+        "nombre": "MENU BBQ 95€  13-03-26",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BBQ 95€  13-03-26",
+          "menu_id": "MENU-539E473892CA",
+          "precio_venta": 95.0,
+          "venta_neta": 86.36363636363636,
+          "coste_total": 30.968141666666664,
+          "food_cost_pct": 35.857848245614036,
+          "beneficio": null
+        }
+      },
+      {
+        "accion_id": "ACT-5B3053BB9722",
+        "tipo": "CREAR",
+        "entidad": "MENU",
+        "nombre": "MENU CALÇOTADA CARTA. 15-12-25",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu_id": "MENU-978F849FCF9A",
+          "hoja": "MENU CALÇOTADA"
+        }
+      },
+      {
+        "accion_id": "ACT-49078FC86F0A",
+        "tipo": "CREAR_O_REUTILIZAR",
+        "entidad": "SECCION",
+        "nombre": "APERITIVO.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-978F849FCF9A"
+        }
+      },
+      {
+        "accion_id": "ACT-9ECC2B9534AC",
+        "tipo": "CREAR_O_REUTILIZAR",
+        "entidad": "SECCION",
+        "nombre": "PRINCIPAL",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-978F849FCF9A"
+        }
+      },
+      {
+        "accion_id": "ACT-37B6E0D60975",
+        "tipo": "CREAR_O_REUTILIZAR",
+        "entidad": "SECCION",
+        "nombre": "POSTRES",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-978F849FCF9A"
+        }
+      },
+      {
+        "accion_id": "ACT-6AC1D3A434B0",
+        "tipo": "CREAR_RELACION",
+        "entidad": "PLATO_MENU",
+        "nombre": "Aperitivo completo para calçotada.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-978F849FCF9A",
+          "seccion": "Cóctel",
+          "coste_racion": 0.44,
+          "fila": 6
+        }
+      },
+      {
+        "accion_id": "ACT-01EFED7BF50D",
+        "tipo": "VINCULAR",
+        "entidad": "RECETA_PRINCIPAL",
+        "nombre": "APERITIVO CALÇOTADA",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-978F849FCF9A",
+          "plato": "Aperitivo completo para calçotada.",
+          "rol": "RECETA_PRINCIPAL",
+          "catalogado": true,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-D768BA3DCC83",
+        "tipo": "CREAR_RELACION",
+        "entidad": "PLATO_MENU",
+        "nombre": "Crema Catalana.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-978F849FCF9A",
+          "seccion": "Postre",
+          "coste_racion": 0.5,
+          "fila": 22
+        }
+      },
+      {
+        "accion_id": "ACT-AC152C46618E",
+        "tipo": "VINCULAR",
+        "entidad": "RECETA_PRINCIPAL",
+        "nombre": "Crema catalana",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-978F849FCF9A",
+          "plato": "Crema Catalana.",
+          "rol": "RECETA_PRINCIPAL",
+          "catalogado": true,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-0E28C00F12A5",
+        "tipo": "CREAR_RELACION",
+        "entidad": "PLATO_MENU",
+        "nombre": "MENU CALÇOTADA NARANJA CON MIEL. POR PAX.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-978F849FCF9A",
+          "seccion": "Postre",
+          "coste_racion": 0.37,
+          "fila": 23
+        }
+      },
+      {
+        "accion_id": "ACT-3921A753E140",
+        "tipo": "VINCULAR",
+        "entidad": "RECETA_PRINCIPAL",
+        "nombre": "Naranja con miel",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-978F849FCF9A",
+          "plato": "MENU CALÇOTADA NARANJA CON MIEL. POR PAX.",
+          "rol": "RECETA_PRINCIPAL",
+          "catalogado": true,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-F0BEA7AD0E19",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "Agua Fon vella 1 LT Caja de 12 unid.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-978F849FCF9A",
+          "coste_racion": 0.2
+        }
+      },
+      {
+        "accion_id": "ACT-ED89AE991EDE",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "Vino negro Calçotada. BAG IN BOX. 20 LT. NEGRO. CELLER MAS ROIG. (35,57€).",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-978F849FCF9A",
+          "coste_racion": 0.833
+        }
+      },
+      {
+        "accion_id": "ACT-5C4886FCB6CE",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "Calçots Valls. Majols. crudos",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-978F849FCF9A",
+          "coste_racion": 2.4
+        }
+      },
+      {
+        "accion_id": "ACT-566E86C47D26",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "Salsa romesco.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-978F849FCF9A",
+          "coste_racion": 0.3675
+        }
+      },
+      {
+        "accion_id": "ACT-A98383448E08",
+        "tipo": "CREAR_RELACION",
+        "entidad": "COMPLEMENTO",
+        "nombre": "Cafe Natural. 1 kg. 120 cafes. 24,48€  .kg. 0,22 unid",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-978F849FCF9A"
+        }
+      },
+      {
+        "accion_id": "ACT-E261F9424E6F",
+        "tipo": "CREAR_RELACION",
+        "entidad": "COMPLEMENTO",
+        "nombre": "Ensalada para calçotada terminada lechuga de pages.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-978F849FCF9A"
+        }
+      },
+      {
+        "accion_id": "ACT-95AF0078AFD5",
+        "tipo": "CREAR_RELACION",
+        "entidad": "COMPLEMENTO",
+        "nombre": "MENU CALÇOTADA. CESTA DE PAN, TOMATE Y AJO.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-978F849FCF9A"
+        }
+      },
+      {
+        "accion_id": "ACT-A98BB540A4D7",
+        "tipo": "CREAR_RELACION",
+        "entidad": "COMPLEMENTO",
+        "nombre": "Salsa Allioli. natural. bote de 1 lt.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-978F849FCF9A"
+        }
+      },
+      {
+        "accion_id": "ACT-B02A3E9694B4",
+        "tipo": "REGISTRAR",
+        "entidad": "DATOS_ECONOMICOS",
+        "nombre": "MENU CALÇOTADA CARTA. 15-12-25",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-978F849FCF9A",
+          "precio_venta": 49.9,
+          "venta_neta": 45.36363636363636,
+          "coste_total": 12.4934,
+          "food_cost_pct": 27.54056112224449,
+          "beneficio": null
+        }
+      },
+      {
+        "accion_id": "ACT-AB33857311BE",
+        "tipo": "CREAR",
+        "entidad": "MENU",
+        "nombre": "MENU BODA",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu_id": "MENU-4014D262A786",
+          "hoja": "MENU BODA 31-1"
+        }
+      },
+      {
+        "accion_id": "ACT-A22301FDD6FF",
+        "tipo": "CREAR_O_REUTILIZAR",
+        "entidad": "SECCION",
+        "nombre": "APERITIVO.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BODA",
+          "menu_id": "MENU-4014D262A786"
+        }
+      },
+      {
+        "accion_id": "ACT-16CF1E25A5DC",
+        "tipo": "CREAR_O_REUTILIZAR",
+        "entidad": "SECCION",
+        "nombre": "COCTEL BIENVENIDA EN LA PLAZA 1 HORA",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BODA",
+          "menu_id": "MENU-4014D262A786"
+        }
+      },
+      {
+        "accion_id": "ACT-4FE01ED5387E",
+        "tipo": "CREAR_O_REUTILIZAR",
+        "entidad": "SECCION",
+        "nombre": "Entrante",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BODA",
+          "menu_id": "MENU-4014D262A786"
+        }
+      },
+      {
+        "accion_id": "ACT-B13D2062DC85",
+        "tipo": "CREAR_O_REUTILIZAR",
+        "entidad": "SECCION",
+        "nombre": "PRIMERO.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BODA",
+          "menu_id": "MENU-4014D262A786"
+        }
+      },
+      {
+        "accion_id": "ACT-712405339F95",
+        "tipo": "CREAR_O_REUTILIZAR",
+        "entidad": "SECCION",
+        "nombre": "SEGUNDO",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BODA",
+          "menu_id": "MENU-4014D262A786"
+        }
+      },
+      {
+        "accion_id": "ACT-F74AD723536C",
+        "tipo": "CREAR_O_REUTILIZAR",
+        "entidad": "SECCION",
+        "nombre": "POSTRE",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BODA",
+          "menu_id": "MENU-4014D262A786"
+        }
+      },
+      {
+        "accion_id": "ACT-196C2AF38884",
+        "tipo": "CREAR_RELACION",
+        "entidad": "PLATO_MENU",
+        "nombre": "Ceviche de corvina",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BODA",
+          "menu_id": "MENU-4014D262A786",
+          "seccion": "Cóctel",
+          "coste_racion": 0.5946172413793105,
+          "fila": 6
+        }
+      },
+      {
+        "accion_id": "ACT-28A949E89D56",
+        "tipo": "VINCULAR",
+        "entidad": "RECETA_PRINCIPAL",
+        "nombre": "Ceviche de corvina",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BODA",
+          "menu_id": "MENU-4014D262A786",
+          "plato": "Ceviche de corvina",
+          "rol": "RECETA_PRINCIPAL",
+          "catalogado": true,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-2E297F779D83",
+        "tipo": "CREAR_RELACION",
+        "entidad": "PLATO_MENU",
+        "nombre": "Taco de Carrillera porc",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BODA",
+          "menu_id": "MENU-4014D262A786",
+          "seccion": "Cóctel",
+          "coste_racion": 1.4557586206896551,
+          "fila": 7
+        }
+      },
+      {
+        "accion_id": "ACT-C8E7B3BC64D1",
+        "tipo": "VINCULAR",
+        "entidad": "RECETA_PRINCIPAL",
+        "nombre": "Taco de carrillera",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BODA",
+          "menu_id": "MENU-4014D262A786",
+          "plato": "Taco de Carrillera porc",
+          "rol": "RECETA_PRINCIPAL",
+          "catalogado": true,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-C08BEE852C78",
+        "tipo": "CREAR_RELACION",
+        "entidad": "PLATO_MENU",
+        "nombre": "Guacamole y totopos",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BODA",
+          "menu_id": "MENU-4014D262A786",
+          "seccion": "Cóctel",
+          "coste_racion": 0.8370689655172413,
+          "fila": 8
+        }
+      },
+      {
+        "accion_id": "ACT-7228C23D8452",
+        "tipo": "VINCULAR",
+        "entidad": "RECETA_PRINCIPAL",
+        "nombre": "Guacamole i totopos",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BODA",
+          "menu_id": "MENU-4014D262A786",
+          "plato": "Guacamole y totopos",
+          "rol": "RECETA_PRINCIPAL",
+          "catalogado": true,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-BAA3F889077F",
+        "tipo": "CREAR_RELACION",
+        "entidad": "PLATO_MENU",
+        "nombre": "Brocheta langostino",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BODA",
+          "menu_id": "MENU-4014D262A786",
+          "seccion": "Cóctel",
+          "coste_racion": 0.7561379310344828,
+          "fila": 9
+        }
+      },
+      {
+        "accion_id": "ACT-32A7147CD454",
+        "tipo": "VINCULAR",
+        "entidad": "RECETA_PRINCIPAL",
+        "nombre": "Brocheta langostino",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BODA",
+          "menu_id": "MENU-4014D262A786",
+          "plato": "Brocheta langostino",
+          "rol": "RECETA_PRINCIPAL",
+          "catalogado": true,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-690D2CF73B13",
+        "tipo": "CREAR_RELACION",
+        "entidad": "PLATO_MENU",
+        "nombre": "Pan de cristal con jamón",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BODA",
+          "menu_id": "MENU-4014D262A786",
+          "seccion": "Cóctel",
+          "coste_racion": 1.6584999999999999,
+          "fila": 10
+        }
+      },
+      {
+        "accion_id": "ACT-C5EC3E310DB2",
+        "tipo": "VINCULAR",
+        "entidad": "RECETA_PRINCIPAL",
+        "nombre": "Pan de cristal con jamón",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BODA",
+          "menu_id": "MENU-4014D262A786",
+          "plato": "Pan de cristal con jamón",
+          "rol": "RECETA_PRINCIPAL",
+          "catalogado": true,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-8FC5E9E981AE",
+        "tipo": "CREAR_RELACION",
+        "entidad": "PLATO_MENU",
+        "nombre": "Tabla de quesos",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BODA",
+          "menu_id": "MENU-4014D262A786",
+          "seccion": "Cóctel",
+          "coste_racion": 0.15748275862068967,
+          "fila": 11
+        }
+      },
+      {
+        "accion_id": "ACT-2CF68A61FFDB",
+        "tipo": "VINCULAR",
+        "entidad": "RECETA_PRINCIPAL",
+        "nombre": "Tabla de quesos",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BODA",
+          "menu_id": "MENU-4014D262A786",
+          "plato": "Tabla de quesos",
+          "rol": "RECETA_PRINCIPAL",
+          "catalogado": true,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-5B05D4BCFA06",
+        "tipo": "CREAR_RELACION",
+        "entidad": "PLATO_MENU",
+        "nombre": "Agua de jamaica",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BODA",
+          "menu_id": "MENU-4014D262A786",
+          "seccion": "Cóctel",
+          "coste_racion": 0.15172413793103445,
+          "fila": 12
+        }
+      },
+      {
+        "accion_id": "ACT-7EF8D0E2493C",
+        "tipo": "VINCULAR",
+        "entidad": "RECETA_PRINCIPAL",
+        "nombre": "Agua de jamaica",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BODA",
+          "menu_id": "MENU-4014D262A786",
+          "plato": "Agua de jamaica",
+          "rol": "RECETA_PRINCIPAL",
+          "catalogado": true,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-331C7FDC39BA",
+        "tipo": "CREAR_RELACION",
+        "entidad": "PLATO_MENU",
+        "nombre": "Agua de limón",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BODA",
+          "menu_id": "MENU-4014D262A786",
+          "seccion": "Cóctel",
+          "coste_racion": 0.10620689655172413,
+          "fila": 13
+        }
+      },
+      {
+        "accion_id": "ACT-9E232C879717",
+        "tipo": "VINCULAR",
+        "entidad": "RECETA_PRINCIPAL",
+        "nombre": "Agua de limón",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BODA",
+          "menu_id": "MENU-4014D262A786",
+          "plato": "Agua de limón",
+          "rol": "RECETA_PRINCIPAL",
+          "catalogado": true,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-88F76C4472B7",
+        "tipo": "CREAR_RELACION",
+        "entidad": "PLATO_MENU",
+        "nombre": "Crema calenta tomàquet",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BODA",
+          "menu_id": "MENU-4014D262A786",
+          "seccion": "Entrante",
+          "coste_racion": 0.8870258620689655,
+          "fila": 15
+        }
+      },
+      {
+        "accion_id": "ACT-6E9B252FF432",
+        "tipo": "VINCULAR",
+        "entidad": "RECETA_PRINCIPAL",
+        "nombre": "Crema calenta de tomàquet",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BODA",
+          "menu_id": "MENU-4014D262A786",
+          "plato": "Crema calenta tomàquet",
+          "rol": "RECETA_PRINCIPAL",
+          "catalogado": true,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-C99B036A99CF",
+        "tipo": "CREAR_RELACION",
+        "entidad": "PLATO_MENU",
+        "nombre": "Flor de alcachofa con jamón",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BODA",
+          "menu_id": "MENU-4014D262A786",
+          "seccion": "Primero",
+          "coste_racion": 0.3939655172413793,
+          "fila": 17
+        }
+      },
+      {
+        "accion_id": "ACT-845B735954A5",
+        "tipo": "VINCULAR",
+        "entidad": "RECETA_PRINCIPAL",
+        "nombre": "Flor de alcachofa con jamón",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BODA",
+          "menu_id": "MENU-4014D262A786",
+          "plato": "Flor de alcachofa con jamón",
+          "rol": "RECETA_PRINCIPAL",
+          "catalogado": true,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-5E2D37E3B049",
+        "tipo": "CREAR_RELACION",
+        "entidad": "PLATO_MENU",
+        "nombre": "Solomillo de cerdo con parmentier patata i salsa naranja",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BODA",
+          "menu_id": "MENU-4014D262A786",
+          "seccion": "Segundo",
+          "coste_racion": 1.4276724137931034,
+          "fila": 19
+        }
+      },
+      {
+        "accion_id": "ACT-8DFB96409C2F",
+        "tipo": "VINCULAR",
+        "entidad": "RECETA_PRINCIPAL",
+        "nombre": "Solomillo de cerdo",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BODA",
+          "menu_id": "MENU-4014D262A786",
+          "plato": "Solomillo de cerdo con parmentier patata i salsa naranja",
+          "rol": "RECETA_PRINCIPAL",
+          "catalogado": true,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-0FE1612047AD",
+        "tipo": "RESOLVER_ANTES_DE_IMPORTAR",
+        "entidad": "GUARNICION",
+        "nombre": "Parmentier de patata",
+        "estado": "BLOQUEADA",
+        "detalle": {
+          "menu": "MENU BODA",
+          "menu_id": "MENU-4014D262A786",
+          "plato": "Solomillo de cerdo con parmentier patata i salsa naranja",
+          "rol": "GUARNICION",
+          "catalogado": false,
+          "resolucion": "PROPONER_NUEVA_RECETA"
+        }
+      },
+      {
+        "accion_id": "ACT-28505B932277",
+        "tipo": "VINCULAR",
+        "entidad": "SALSA",
+        "nombre": "Salsa naranja",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BODA",
+          "menu_id": "MENU-4014D262A786",
+          "plato": "Solomillo de cerdo con parmentier patata i salsa naranja",
+          "rol": "SALSA",
+          "catalogado": true,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-DA020D70DEB2",
+        "tipo": "CREAR_RELACION",
+        "entidad": "PLATO_MENU",
+        "nombre": "Sorbete mandarina boda",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BODA",
+          "menu_id": "MENU-4014D262A786",
+          "seccion": "Postre",
+          "coste_racion": 0.2493103448275862,
+          "fila": 21
+        }
+      },
+      {
+        "accion_id": "ACT-AE7B140DE07E",
+        "tipo": "VINCULAR",
+        "entidad": "RECETA_PRINCIPAL",
+        "nombre": "Sorbete mandarina",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BODA",
+          "menu_id": "MENU-4014D262A786",
+          "plato": "Sorbete mandarina boda",
+          "rol": "RECETA_PRINCIPAL",
+          "catalogado": true,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-A2AFB008D111",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "Pan individual rombo makro",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BODA",
+          "menu_id": "MENU-4014D262A786",
+          "coste_racion": 0.1925
+        }
+      },
+      {
+        "accion_id": "ACT-788608A5DC2D",
+        "tipo": "CREAR_RELACION",
+        "entidad": "COMPLEMENTO",
+        "nombre": "BODEGA, PAN, VINO Y CAFES.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BODA",
+          "menu_id": "MENU-4014D262A786"
+        }
+      },
+      {
+        "accion_id": "ACT-34281657999C",
+        "tipo": "REGISTRAR",
+        "entidad": "DATOS_ECONOMICOS",
+        "nombre": "MENU BODA",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU BODA",
+          "menu_id": "MENU-4014D262A786",
+          "precio_venta": 75.0,
+          "venta_neta": 67.5,
+          "coste_total": 8.867970689655172,
+          "food_cost_pct": 11.823960919540228,
+          "beneficio": 66.13202931034483
+        }
+      },
+      {
+        "accion_id": "ACT-618358863C20",
+        "tipo": "CREAR",
+        "entidad": "MENU",
+        "nombre": "MENU COCTEL.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu_id": "MENU-8D27EB553275",
+          "hoja": "COMUNION  ALEJANDRO FERNANDEZ "
+        }
+      },
+      {
+        "accion_id": "ACT-456038DD300D",
+        "tipo": "CREAR_O_REUTILIZAR",
+        "entidad": "SECCION",
+        "nombre": "APERITIVO.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU COCTEL.",
+          "menu_id": "MENU-8D27EB553275"
+        }
+      },
+      {
+        "accion_id": "ACT-4251ECE5F6A3",
+        "tipo": "CREAR_O_REUTILIZAR",
+        "entidad": "SECCION",
+        "nombre": "POSTRES",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU COCTEL.",
+          "menu_id": "MENU-8D27EB553275"
+        }
+      },
+      {
+        "accion_id": "ACT-86FD6505BCCD",
+        "tipo": "CREAR_RELACION",
+        "entidad": "PLATO_MENU",
+        "nombre": "Tabla de embutidos y quesos variados.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU COCTEL.",
+          "menu_id": "MENU-8D27EB553275",
+          "seccion": "Cóctel",
+          "coste_racion": 1.1,
+          "fila": 6
+        }
+      },
+      {
+        "accion_id": "ACT-1F671379D733",
+        "tipo": "VINCULAR",
+        "entidad": "RECETA_PRINCIPAL",
+        "nombre": "TABLA DE QUESOS Y EMBUTIDOS",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU COCTEL.",
+          "menu_id": "MENU-8D27EB553275",
+          "plato": "Tabla de embutidos y quesos variados.",
+          "rol": "RECETA_PRINCIPAL",
+          "catalogado": true,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-2D79467FFBFF",
+        "tipo": "CREAR_RELACION",
+        "entidad": "PLATO_MENU",
+        "nombre": "CALÇOTADA EN MESA ENSALADA. LECHUGA UNID.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU COCTEL.",
+          "menu_id": "MENU-8D27EB553275",
+          "seccion": "Complementos",
+          "coste_racion": 0.0,
+          "fila": 42
+        }
+      },
+      {
+        "accion_id": "ACT-A940504982F6",
+        "tipo": "RESOLVER_ANTES_DE_IMPORTAR",
+        "entidad": "GUARNICION",
+        "nombre": "mesa ensalada lechuga unid",
+        "estado": "BLOQUEADA",
+        "detalle": {
+          "menu": "MENU COCTEL.",
+          "menu_id": "MENU-8D27EB553275",
+          "plato": "CALÇOTADA EN MESA ENSALADA. LECHUGA UNID.",
+          "rol": "GUARNICION",
+          "catalogado": false,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-21B73C0CC9C9",
+        "tipo": "RESOLVER_ANTES_DE_IMPORTAR",
+        "entidad": "COMPONENTE_PENDIENTE",
+        "nombre": "calcotada",
+        "estado": "BLOQUEADA",
+        "detalle": {
+          "menu": "MENU COCTEL.",
+          "menu_id": "MENU-8D27EB553275",
+          "plato": "CALÇOTADA EN MESA ENSALADA. LECHUGA UNID.",
+          "rol": "COMPONENTE_PENDIENTE",
+          "catalogado": false,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-CBC28FF8EFDE",
+        "tipo": "CREAR_RELACION",
+        "entidad": "PLATO_MENU",
+        "nombre": "Crema Catalana.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU COCTEL.",
+          "menu_id": "MENU-8D27EB553275",
+          "seccion": "Postre",
+          "coste_racion": 0.25,
+          "fila": 46
+        }
+      },
+      {
+        "accion_id": "ACT-B00AB3813C94",
+        "tipo": "VINCULAR",
+        "entidad": "RECETA_PRINCIPAL",
+        "nombre": "Crema catalana",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU COCTEL.",
+          "menu_id": "MENU-8D27EB553275",
+          "plato": "Crema Catalana.",
+          "rol": "RECETA_PRINCIPAL",
+          "catalogado": true,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-86344AA3B8DC",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "Agua Fon vella 1 LT Caja de 12 unid.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU COCTEL.",
+          "menu_id": "MENU-8D27EB553275",
+          "coste_racion": 0.4
+        }
+      },
+      {
+        "accion_id": "ACT-294B96E938D3",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "Pan de pages de Forn Virgili. Precio kg",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU COCTEL.",
+          "menu_id": "MENU-8D27EB553275",
+          "coste_racion": 0.14250000000000002
+        }
+      },
+      {
+        "accion_id": "ACT-005D57F46949",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "Agua Fon vella 1 LT Caja de 12 unid.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU COCTEL.",
+          "menu_id": "MENU-8D27EB553275",
+          "coste_racion": 0.24
+        }
+      },
+      {
+        "accion_id": "ACT-A7EB9D3C54EE",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "pan, agua mineral.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU COCTEL.",
+          "menu_id": "MENU-8D27EB553275",
+          "coste_racion": null
+        }
+      },
+      {
+        "accion_id": "ACT-6B71301CE9D2",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "Refresco, cerveza y vermouth.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU COCTEL.",
+          "menu_id": "MENU-8D27EB553275",
+          "coste_racion": null
+        }
+      },
+      {
+        "accion_id": "ACT-0E5060892C41",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "A.P JAMON AL CENTRO EVENTOS SOCIALES.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU COCTEL.",
+          "menu_id": "MENU-8D27EB553275",
+          "coste_racion": 1.44
+        }
+      },
+      {
+        "accion_id": "ACT-BDC482638640",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "Croqueta cocido . ( caja 4 kg).  30,49€",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU COCTEL.",
+          "menu_id": "MENU-8D27EB553275",
+          "coste_racion": 0.375
+        }
+      },
+      {
+        "accion_id": "ACT-6298791234C4",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "A.P GAZPACHO DE FRAMBUESA Y BITER KAS.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU COCTEL.",
+          "menu_id": "MENU-8D27EB553275",
+          "coste_racion": 0.18
+        }
+      },
+      {
+        "accion_id": "ACT-54349E53B9D1",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "A.P CREMA DE AJO BLANCO, SARDINA Y UVA.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU COCTEL.",
+          "menu_id": "MENU-8D27EB553275",
+          "coste_racion": 0.7
+        }
+      },
+      {
+        "accion_id": "ACT-7C792CAA3EDE",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "A.P SALMOREJO DE SANDIA.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU COCTEL.",
+          "menu_id": "MENU-8D27EB553275",
+          "coste_racion": 0.55
+        }
+      },
+      {
+        "accion_id": "ACT-95B30A29E563",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "A.P TARTAR DE SALMON MARINADO.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU COCTEL.",
+          "menu_id": "MENU-8D27EB553275",
+          "coste_racion": 0.75
+        }
+      },
+      {
+        "accion_id": "ACT-A2F9CA540F9A",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "A.P DEGUSTACION DE FIDEOS ROSSOS.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU COCTEL.",
+          "menu_id": "MENU-8D27EB553275",
+          "coste_racion": 0.65
+        }
+      },
+      {
+        "accion_id": "ACT-7753FFC06732",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "A.P DEGUSTACION DE ARROZ NEGRO.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU COCTEL.",
+          "menu_id": "MENU-8D27EB553275",
+          "coste_racion": 0.8
+        }
+      },
+      {
+        "accion_id": "ACT-CB0819ED1FCD",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "A.P MINI BURGUER DE PAN DE SESAMO.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU COCTEL.",
+          "menu_id": "MENU-8D27EB553275",
+          "coste_racion": 0.68
+        }
+      },
+      {
+        "accion_id": "ACT-E0F841B4EF0F",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "A.P BROCHETA DE POLLO CON SALSA KARE.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU COCTEL.",
+          "menu_id": "MENU-8D27EB553275",
+          "coste_racion": 0.6
+        }
+      },
+      {
+        "accion_id": "ACT-115D8A3805CA",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "A.P OSTRA DEL DELTA, EN ESCABECHE DE CITRICOS Y GEL DE FRUTA DE LA PASION.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU COCTEL.",
+          "menu_id": "MENU-8D27EB553275",
+          "coste_racion": 1.48
+        }
+      },
+      {
+        "accion_id": "ACT-553E7F3F45C7",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "Tarta de celebracion CAL JAN",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU COCTEL.",
+          "menu_id": "MENU-8D27EB553275",
+          "coste_racion": 3.0
+        }
+      },
+      {
+        "accion_id": "ACT-59B4553C02C0",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "Patatas Bravas. menu BBQ. Precio pax.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU COCTEL.",
+          "menu_id": "MENU-8D27EB553275",
+          "coste_racion": 5.27
+        }
+      },
+      {
+        "accion_id": "ACT-28ACFD8E371D",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "Pimiento del padron.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU COCTEL.",
+          "menu_id": "MENU-8D27EB553275",
+          "coste_racion": 0.5175
+        }
+      },
+      {
+        "accion_id": "ACT-18ED1B4B4DD8",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "Pollo muslo fresco.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU COCTEL.",
+          "menu_id": "MENU-8D27EB553275",
+          "coste_racion": 0.432
+        }
+      },
+      {
+        "accion_id": "ACT-33C77123FF1F",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "Butifarra  fresca corta 14.cm. calçots. 90 gr porcianda",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU COCTEL.",
+          "menu_id": "MENU-8D27EB553275",
+          "coste_racion": 0.5535
+        }
+      },
+      {
+        "accion_id": "ACT-81C7E0F1F99B",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "Parrillada de verduras. Precio Pax.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU COCTEL.",
+          "menu_id": "MENU-8D27EB553275",
+          "coste_racion": 2.33
+        }
+      },
+      {
+        "accion_id": "ACT-86CD11DCD0F3",
+        "tipo": "CREAR_RELACION",
+        "entidad": "COMPLEMENTO",
+        "nombre": "Cafe Natural. 1 kg. 120 cafes. 24,48€  .kg. 0,22 unid",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU COCTEL.",
+          "menu_id": "MENU-8D27EB553275"
+        }
+      },
+      {
+        "accion_id": "ACT-221FCE6D2006",
+        "tipo": "CREAR_RELACION",
+        "entidad": "COMPLEMENTO",
+        "nombre": "PAN, AGUA, SELECCION DE VINOS Y CAFES",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU COCTEL.",
+          "menu_id": "MENU-8D27EB553275"
+        }
+      },
+      {
+        "accion_id": "ACT-5B433CFAB22A",
+        "tipo": "CREAR_RELACION",
+        "entidad": "COMPLEMENTO",
+        "nombre": "Pan, agua mineral y cafes.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU COCTEL.",
+          "menu_id": "MENU-8D27EB553275"
+        }
+      },
+      {
+        "accion_id": "ACT-E454A01E5D18",
+        "tipo": "CREAR_RELACION",
+        "entidad": "COMPLEMENTO",
+        "nombre": "Salsa Allioli. natural. bote de 1 lt.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU COCTEL.",
+          "menu_id": "MENU-8D27EB553275"
+        }
+      },
+      {
+        "accion_id": "ACT-98BEE4CE80A7",
+        "tipo": "CREAR_RELACION",
+        "entidad": "COMPLEMENTO",
+        "nombre": "MENU CALÇOTADA. CESTA DE PAN, TOMATE Y AJO.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU COCTEL.",
+          "menu_id": "MENU-8D27EB553275"
+        }
+      },
+      {
+        "accion_id": "ACT-34A2418ACA09",
+        "tipo": "REGISTRAR",
+        "entidad": "DATOS_ECONOMICOS",
+        "nombre": "MENU COCTEL.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU COCTEL.",
+          "menu_id": "MENU-8D27EB553275",
+          "precio_venta": 20.0,
+          "venta_neta": 18.0,
+          "coste_total": 11.1235,
+          "food_cost_pct": 61.79722222222222,
+          "beneficio": null
+        }
+      },
+      {
+        "accion_id": "ACT-BCE5F6B94BA2",
+        "tipo": "CREAR",
+        "entidad": "MENU",
+        "nombre": "MENU FIN DE AÑO 2025",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu_id": "MENU-656A44021665",
+          "hoja": "MENU FIN DE AÑO"
+        }
+      },
+      {
+        "accion_id": "ACT-0AED37D83E15",
+        "tipo": "CREAR_O_REUTILIZAR",
+        "entidad": "SECCION",
+        "nombre": "APERITIVO.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU FIN DE AÑO 2025",
+          "menu_id": "MENU-656A44021665"
+        }
+      },
+      {
+        "accion_id": "ACT-AB1511425185",
+        "tipo": "CREAR_O_REUTILIZAR",
+        "entidad": "SECCION",
+        "nombre": "ENTRANTE.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU FIN DE AÑO 2025",
+          "menu_id": "MENU-656A44021665"
+        }
+      },
+      {
+        "accion_id": "ACT-30EC0FFE1378",
+        "tipo": "CREAR_O_REUTILIZAR",
+        "entidad": "SECCION",
+        "nombre": "PRINCIPAL",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU FIN DE AÑO 2025",
+          "menu_id": "MENU-656A44021665"
+        }
+      },
+      {
+        "accion_id": "ACT-D405AE57CF5D",
+        "tipo": "CREAR_O_REUTILIZAR",
+        "entidad": "SECCION",
+        "nombre": "POSTRES",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU FIN DE AÑO 2025",
+          "menu_id": "MENU-656A44021665"
+        }
+      },
+      {
+        "accion_id": "ACT-9E6C2AED1BF5",
+        "tipo": "CREAR_RELACION",
+        "entidad": "PLATO_MENU",
+        "nombre": "Crema de marisco, vieras con bombon de coco y curri.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU FIN DE AÑO 2025",
+          "menu_id": "MENU-656A44021665",
+          "seccion": "Entrante",
+          "coste_racion": 2.25,
+          "fila": 10
+        }
+      },
+      {
+        "accion_id": "ACT-4941DE7C07F5",
+        "tipo": "RESOLVER_ANTES_DE_IMPORTAR",
+        "entidad": "RECETA_PRINCIPAL",
+        "nombre": "Crema de marisco",
+        "estado": "BLOQUEADA",
+        "detalle": {
+          "menu": "MENU FIN DE AÑO 2025",
+          "menu_id": "MENU-656A44021665",
+          "plato": "Crema de marisco, vieras con bombon de coco y curri.",
+          "rol": "RECETA_PRINCIPAL",
+          "catalogado": false,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-AEBAC517579A",
+        "tipo": "RESOLVER_ANTES_DE_IMPORTAR",
+        "entidad": "GUARNICION",
+        "nombre": "vieras",
+        "estado": "BLOQUEADA",
+        "detalle": {
+          "menu": "MENU FIN DE AÑO 2025",
+          "menu_id": "MENU-656A44021665",
+          "plato": "Crema de marisco, vieras con bombon de coco y curri.",
+          "rol": "GUARNICION",
+          "catalogado": false,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-8937D3C683D4",
+        "tipo": "RESOLVER_ANTES_DE_IMPORTAR",
+        "entidad": "ELABORACION",
+        "nombre": "bombon de coco y curri",
+        "estado": "BLOQUEADA",
+        "detalle": {
+          "menu": "MENU FIN DE AÑO 2025",
+          "menu_id": "MENU-656A44021665",
+          "plato": "Crema de marisco, vieras con bombon de coco y curri.",
+          "rol": "ELABORACION",
+          "catalogado": false,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-804EFE6A247C",
+        "tipo": "CREAR_RELACION",
+        "entidad": "PLATO_MENU",
+        "nombre": "Lenguado a la menier de yondu con hinojo y avellanas",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU FIN DE AÑO 2025",
+          "menu_id": "MENU-656A44021665",
+          "seccion": "Entrante",
+          "coste_racion": 4.5,
+          "fila": 12
+        }
+      },
+      {
+        "accion_id": "ACT-BB082042FBD9",
+        "tipo": "RESOLVER_ANTES_DE_IMPORTAR",
+        "entidad": "RECETA_PRINCIPAL",
+        "nombre": "Lenguado a la menier",
+        "estado": "BLOQUEADA",
+        "detalle": {
+          "menu": "MENU FIN DE AÑO 2025",
+          "menu_id": "MENU-656A44021665",
+          "plato": "Lenguado a la menier de yondu con hinojo y avellanas",
+          "rol": "RECETA_PRINCIPAL",
+          "catalogado": false,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-010483CF70CD",
+        "tipo": "RESOLVER_ANTES_DE_IMPORTAR",
+        "entidad": "CONDIMENTO",
+        "nombre": "yondu",
+        "estado": "BLOQUEADA",
+        "detalle": {
+          "menu": "MENU FIN DE AÑO 2025",
+          "menu_id": "MENU-656A44021665",
+          "plato": "Lenguado a la menier de yondu con hinojo y avellanas",
+          "rol": "CONDIMENTO",
+          "catalogado": false,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-96C5FDB815BE",
+        "tipo": "RESOLVER_ANTES_DE_IMPORTAR",
+        "entidad": "GUARNICION",
+        "nombre": "hinojo",
+        "estado": "BLOQUEADA",
+        "detalle": {
+          "menu": "MENU FIN DE AÑO 2025",
+          "menu_id": "MENU-656A44021665",
+          "plato": "Lenguado a la menier de yondu con hinojo y avellanas",
+          "rol": "GUARNICION",
+          "catalogado": false,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-B12F81C5B84C",
+        "tipo": "RESOLVER_ANTES_DE_IMPORTAR",
+        "entidad": "ACABADO",
+        "nombre": "avellanas",
+        "estado": "BLOQUEADA",
+        "detalle": {
+          "menu": "MENU FIN DE AÑO 2025",
+          "menu_id": "MENU-656A44021665",
+          "plato": "Lenguado a la menier de yondu con hinojo y avellanas",
+          "rol": "ACABADO",
+          "catalogado": false,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-4DC0F85DF3CE",
+        "tipo": "CREAR_RELACION",
+        "entidad": "PLATO_MENU",
+        "nombre": "Tournedo de solomillo Rossini con chalotas glaseadas.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU FIN DE AÑO 2025",
+          "menu_id": "MENU-656A44021665",
+          "seccion": "Principal",
+          "coste_racion": 5.2,
+          "fila": 14
+        }
+      },
+      {
+        "accion_id": "ACT-BD116539BAA2",
+        "tipo": "RESOLVER_ANTES_DE_IMPORTAR",
+        "entidad": "RECETA_PRINCIPAL",
+        "nombre": "Tournedo de solomillo Rossini",
+        "estado": "BLOQUEADA",
+        "detalle": {
+          "menu": "MENU FIN DE AÑO 2025",
+          "menu_id": "MENU-656A44021665",
+          "plato": "Tournedo de solomillo Rossini con chalotas glaseadas.",
+          "rol": "RECETA_PRINCIPAL",
+          "catalogado": false,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-6AF76A2C6206",
+        "tipo": "RESOLVER_ANTES_DE_IMPORTAR",
+        "entidad": "GUARNICION",
+        "nombre": "chalotas glaseadas",
+        "estado": "BLOQUEADA",
+        "detalle": {
+          "menu": "MENU FIN DE AÑO 2025",
+          "menu_id": "MENU-656A44021665",
+          "plato": "Tournedo de solomillo Rossini con chalotas glaseadas.",
+          "rol": "GUARNICION",
+          "catalogado": false,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-60D77721E232",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "Agua Fon vella 1 LT Caja de 12 unid.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU FIN DE AÑO 2025",
+          "menu_id": "MENU-656A44021665",
+          "coste_racion": 0.24
+        }
+      },
+      {
+        "accion_id": "ACT-64B4FEDA6DB5",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "Jamon de bellota. corta a cuchillo. sobre de 80 gr. unid. 149.35 precio kg. ojo cambiar",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU FIN DE AÑO 2025",
+          "menu_id": "MENU-656A44021665",
+          "coste_racion": 0.6080000000000001
+        }
+      },
+      {
+        "accion_id": "ACT-45FE63158472",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "A.P TARTAR DE SALMON MARINADO.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU FIN DE AÑO 2025",
+          "menu_id": "MENU-656A44021665",
+          "coste_racion": 0.58
+        }
+      },
+      {
+        "accion_id": "ACT-CCD7AC51797F",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "A.P ESPUMA DE ALLIPEBRE CON PULPO.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU FIN DE AÑO 2025",
+          "menu_id": "MENU-656A44021665",
+          "coste_racion": 0.78
+        }
+      },
+      {
+        "accion_id": "ACT-405B9B689EBE",
+        "tipo": "CREAR_RELACION",
+        "entidad": "COMPLEMENTO",
+        "nombre": "BODEGA",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU FIN DE AÑO 2025",
+          "menu_id": "MENU-656A44021665"
+        }
+      },
+      {
+        "accion_id": "ACT-418EA79F5F57",
+        "tipo": "CREAR_RELACION",
+        "entidad": "COMPLEMENTO",
+        "nombre": "Cafe Natural. 1 kg. 120 cafes. 24,48€  .kg. 0,22 unid",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU FIN DE AÑO 2025",
+          "menu_id": "MENU-656A44021665"
+        }
+      },
+      {
+        "accion_id": "ACT-16EACFF39B37",
+        "tipo": "CREAR_RELACION",
+        "entidad": "COMPLEMENTO",
+        "nombre": "lingote de ferrero rocher, espuma de baeylis, y frambuesa liofilizada",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU FIN DE AÑO 2025",
+          "menu_id": "MENU-656A44021665"
+        }
+      },
+      {
+        "accion_id": "ACT-D389040DF055",
+        "tipo": "CREAR_RELACION",
+        "entidad": "COMPLEMENTO",
+        "nombre": "COTILLON",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU FIN DE AÑO 2025",
+          "menu_id": "MENU-656A44021665"
+        }
+      },
+      {
+        "accion_id": "ACT-F1803F252021",
+        "tipo": "CREAR_RELACION",
+        "entidad": "COMPLEMENTO",
+        "nombre": "TURRONES Y NEULAS.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU FIN DE AÑO 2025",
+          "menu_id": "MENU-656A44021665"
+        }
+      },
+      {
+        "accion_id": "ACT-60B6E4122593",
+        "tipo": "REGISTRAR",
+        "entidad": "DATOS_ECONOMICOS",
+        "nombre": "MENU FIN DE AÑO 2025",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU FIN DE AÑO 2025",
+          "menu_id": "MENU-656A44021665",
+          "precio_venta": 75.0,
+          "venta_neta": 67.5,
+          "coste_total": 22.113999999999997,
+          "food_cost_pct": 32.761481481481475,
+          "beneficio": null
+        }
+      },
+      {
+        "accion_id": "ACT-CD31D12AB8BB",
+        "tipo": "CREAR",
+        "entidad": "MENU",
+        "nombre": "MENU CALÇOTADA CARTA. 15-12-25",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu_id": "MENU-68DD7184877F",
+          "hoja": "MENU AGENCIA 25€ CALÇOTADA"
+        }
+      },
+      {
+        "accion_id": "ACT-1E8D21EC8252",
+        "tipo": "CREAR_O_REUTILIZAR",
+        "entidad": "SECCION",
+        "nombre": "APERITIVO.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-68DD7184877F"
+        }
+      },
+      {
+        "accion_id": "ACT-28BC17720CE5",
+        "tipo": "CREAR_O_REUTILIZAR",
+        "entidad": "SECCION",
+        "nombre": "POSTRES",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-68DD7184877F"
+        }
+      },
+      {
+        "accion_id": "ACT-637DCE0AACB8",
+        "tipo": "CREAR_RELACION",
+        "entidad": "PLATO_MENU",
+        "nombre": "Crema Catalana.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-68DD7184877F",
+          "seccion": "Postre",
+          "coste_racion": 0.5,
+          "fila": 19
+        }
+      },
+      {
+        "accion_id": "ACT-6D1724D4F953",
+        "tipo": "VINCULAR",
+        "entidad": "RECETA_PRINCIPAL",
+        "nombre": "Crema catalana",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-68DD7184877F",
+          "plato": "Crema Catalana.",
+          "rol": "RECETA_PRINCIPAL",
+          "catalogado": true,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-57A9146D3756",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "Vino negro Calçotada. BAG IN BOX. 20 LT. NEGRO. CELLER MAS ROIG. (35,57€).",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-68DD7184877F",
+          "coste_racion": 0.35400000000000004
+        }
+      },
+      {
+        "accion_id": "ACT-B15C775F810D",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "Agua Fon vella 1 LT Caja de 12 unid.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-68DD7184877F",
+          "coste_racion": 0.24
+        }
+      },
+      {
+        "accion_id": "ACT-88E07B7F009A",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "Fuet cortado bandeja de 1 kg* calçotada.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-68DD7184877F",
+          "coste_racion": 0.1587
+        }
+      },
+      {
+        "accion_id": "ACT-8D4A0608669F",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "AVELLANA APERITIVO TOSTADA REPELADA",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-68DD7184877F",
+          "coste_racion": 5.2204999999999995
+        }
+      },
+      {
+        "accion_id": "ACT-4ACE8DA857CE",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "Calçots Valls. Majols. crudos",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-68DD7184877F",
+          "coste_racion": 2.4
+        }
+      },
+      {
+        "accion_id": "ACT-8C0AD44AD351",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "Salsa romesco.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-68DD7184877F",
+          "coste_racion": 0.3675
+        }
+      },
+      {
+        "accion_id": "ACT-1D0013D0810D",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "Pollo muslo fresco.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-68DD7184877F",
+          "coste_racion": 0.288
+        }
+      },
+      {
+        "accion_id": "ACT-0811487CA8B4",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "Butifarra negra* calçotada racionada a 70 gr.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-68DD7184877F",
+          "coste_racion": 0.532
+        }
+      },
+      {
+        "accion_id": "ACT-4F267A1EBE33",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "Patata Monalisa.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-68DD7184877F",
+          "coste_racion": 0.3
+        }
+      },
+      {
+        "accion_id": "ACT-11EE365D2088",
+        "tipo": "CREAR_RELACION",
+        "entidad": "COMPLEMENTO",
+        "nombre": "Cafe Natural. 1 kg. 120 cafes. 24,48€  .kg. 0,22 unid",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-68DD7184877F"
+        }
+      },
+      {
+        "accion_id": "ACT-68F6704A3004",
+        "tipo": "CREAR_RELACION",
+        "entidad": "COMPLEMENTO",
+        "nombre": "OLIVAS ARBERQUINAS EXTRA. 10 KG. 24,90€ BOTE DE 10 KG",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-68DD7184877F"
+        }
+      },
+      {
+        "accion_id": "ACT-667730DC55C0",
+        "tipo": "CREAR_RELACION",
+        "entidad": "COMPLEMENTO",
+        "nombre": "MENU CALÇOTADA. CESTA DE PAN, TOMATE Y AJO.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-68DD7184877F"
+        }
+      },
+      {
+        "accion_id": "ACT-3600DFB898D5",
+        "tipo": "REGISTRAR",
+        "entidad": "DATOS_ECONOMICOS",
+        "nombre": "MENU CALÇOTADA CARTA. 15-12-25",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-68DD7184877F",
+          "precio_venta": 25.0,
+          "venta_neta": 22.727272727272727,
+          "coste_total": 12.232,
+          "food_cost_pct": 53.82079999999999,
+          "beneficio": null
+        }
+      },
+      {
+        "accion_id": "ACT-091023846133",
+        "tipo": "CREAR",
+        "entidad": "MENU",
+        "nombre": "MENU CALÇOTADA CARTA. 15-12-25",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu_id": "MENU-6DF4C933822E",
+          "hoja": "Menú calçotada niños"
+        }
+      },
+      {
+        "accion_id": "ACT-8B559253B801",
+        "tipo": "CREAR_O_REUTILIZAR",
+        "entidad": "SECCION",
+        "nombre": "APERITIVO.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-6DF4C933822E"
+        }
+      },
+      {
+        "accion_id": "ACT-A280164DCC8B",
+        "tipo": "CREAR_O_REUTILIZAR",
+        "entidad": "SECCION",
+        "nombre": "PRINCIPAL",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-6DF4C933822E"
+        }
+      },
+      {
+        "accion_id": "ACT-0BED42077DDC",
+        "tipo": "CREAR_O_REUTILIZAR",
+        "entidad": "SECCION",
+        "nombre": "POSTRES",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-6DF4C933822E"
+        }
+      },
+      {
+        "accion_id": "ACT-FF7BA5E1C233",
+        "tipo": "CREAR_RELACION",
+        "entidad": "PLATO_MENU",
+        "nombre": "Crema Catalana.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-6DF4C933822E",
+          "seccion": "Postre",
+          "coste_racion": 0.5,
+          "fila": 24
+        }
+      },
+      {
+        "accion_id": "ACT-A08F5BD5634D",
+        "tipo": "VINCULAR",
+        "entidad": "RECETA_PRINCIPAL",
+        "nombre": "Crema catalana",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-6DF4C933822E",
+          "plato": "Crema Catalana.",
+          "rol": "RECETA_PRINCIPAL",
+          "catalogado": true,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-DCD6139F58F3",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "Agua Fon vella 1 LT Caja de 12 unid.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-6DF4C933822E",
+          "coste_racion": 0.2
+        }
+      },
+      {
+        "accion_id": "ACT-4E9288A4ECE0",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "M.P menú infantil Pollo rebozado con patatas",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-6DF4C933822E",
+          "coste_racion": 1.5
+        }
+      },
+      {
+        "accion_id": "ACT-754CBE5B2C85",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "M.P Menú infantil Boloñesa",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-6DF4C933822E",
+          "coste_racion": 2.0
+        }
+      },
+      {
+        "accion_id": "ACT-8141C35B51BB",
+        "tipo": "CREAR_RELACION",
+        "entidad": "COMPLEMENTO",
+        "nombre": "Cafe Natural. 1 kg. 120 cafes. 24,48€  .kg. 0,22 unid",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-6DF4C933822E"
+        }
+      },
+      {
+        "accion_id": "ACT-9F771F895506",
+        "tipo": "CREAR_RELACION",
+        "entidad": "COMPLEMENTO",
+        "nombre": "MENU CALÇOTADA. CESTA DE PAN, TOMATE Y AJO.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-6DF4C933822E"
+        }
+      },
+      {
+        "accion_id": "ACT-A36F90EF397F",
+        "tipo": "CREAR_RELACION",
+        "entidad": "COMPLEMENTO",
+        "nombre": "Salsa Allioli. natural. bote de 1 lt.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-6DF4C933822E"
+        }
+      },
+      {
+        "accion_id": "ACT-D77306C3D10D",
+        "tipo": "REGISTRAR",
+        "entidad": "DATOS_ECONOMICOS",
+        "nombre": "MENU CALÇOTADA CARTA. 15-12-25",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-6DF4C933822E",
+          "precio_venta": 22.0,
+          "venta_neta": 19.8,
+          "coste_total": 27.6055,
+          "food_cost_pct": 1.3942171717171714,
+          "beneficio": null
+        }
+      },
+      {
+        "accion_id": "ACT-BC048E0007A5",
+        "tipo": "CREAR",
+        "entidad": "MENU",
+        "nombre": "MENU CALÇOTADA CARTA. 15-12-25",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu_id": "MENU-ADE549EEE568",
+          "hoja": "Menú calçotada vegano"
+        }
+      },
+      {
+        "accion_id": "ACT-04D905C5F02E",
+        "tipo": "CREAR_O_REUTILIZAR",
+        "entidad": "SECCION",
+        "nombre": "APERITIVO.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-ADE549EEE568"
+        }
+      },
+      {
+        "accion_id": "ACT-071C9B255464",
+        "tipo": "CREAR_O_REUTILIZAR",
+        "entidad": "SECCION",
+        "nombre": "PRINCIPAL",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-ADE549EEE568"
+        }
+      },
+      {
+        "accion_id": "ACT-AA86B4AFFB4B",
+        "tipo": "CREAR_O_REUTILIZAR",
+        "entidad": "SECCION",
+        "nombre": "POSTRES",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-ADE549EEE568"
+        }
+      },
+      {
+        "accion_id": "ACT-0FF1940BB3EA",
+        "tipo": "CREAR_RELACION",
+        "entidad": "PLATO_MENU",
+        "nombre": "Aperitivo completo para calçotada.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-ADE549EEE568",
+          "seccion": "Cóctel",
+          "coste_racion": 0.44,
+          "fila": 6
+        }
+      },
+      {
+        "accion_id": "ACT-D037C4421A92",
+        "tipo": "VINCULAR",
+        "entidad": "RECETA_PRINCIPAL",
+        "nombre": "APERITIVO CALÇOTADA",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-ADE549EEE568",
+          "plato": "Aperitivo completo para calçotada.",
+          "rol": "RECETA_PRINCIPAL",
+          "catalogado": true,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-F23265C6980A",
+        "tipo": "CREAR_RELACION",
+        "entidad": "PLATO_MENU",
+        "nombre": "Crema Catalana.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-ADE549EEE568",
+          "seccion": "Postre",
+          "coste_racion": 0.5,
+          "fila": 22
+        }
+      },
+      {
+        "accion_id": "ACT-AD6692DE5215",
+        "tipo": "VINCULAR",
+        "entidad": "RECETA_PRINCIPAL",
+        "nombre": "Crema catalana",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-ADE549EEE568",
+          "plato": "Crema Catalana.",
+          "rol": "RECETA_PRINCIPAL",
+          "catalogado": true,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-DEB0319C0CC1",
+        "tipo": "CREAR_RELACION",
+        "entidad": "PLATO_MENU",
+        "nombre": "MENU CALÇOTADA NARANJA CON MIEL. POR PAX.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-ADE549EEE568",
+          "seccion": "Postre",
+          "coste_racion": 0.37,
+          "fila": 23
+        }
+      },
+      {
+        "accion_id": "ACT-624003B743DE",
+        "tipo": "VINCULAR",
+        "entidad": "RECETA_PRINCIPAL",
+        "nombre": "Naranja con miel",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-ADE549EEE568",
+          "plato": "MENU CALÇOTADA NARANJA CON MIEL. POR PAX.",
+          "rol": "RECETA_PRINCIPAL",
+          "catalogado": true,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-A9F33FFA52B7",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "Agua Fon vella 1 LT Caja de 12 unid.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-ADE549EEE568",
+          "coste_racion": 0.2
+        }
+      },
+      {
+        "accion_id": "ACT-4B102DEF5A23",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "Agua Fon vella 1 LT Caja de 12 unid.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-ADE549EEE568",
+          "coste_racion": 0.24
+        }
+      },
+      {
+        "accion_id": "ACT-D51C3BC8AEAB",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "Calçots Valls. Majols. crudos",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-ADE549EEE568",
+          "coste_racion": 2.4
+        }
+      },
+      {
+        "accion_id": "ACT-F1AD49D84857",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "Salsa romesco.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-ADE549EEE568",
+          "coste_racion": 0.3675
+        }
+      },
+      {
+        "accion_id": "ACT-CA97B7351643",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "MONGETAS NATURALES. 3 KG( 2,89€ LATA DE 3 KG).",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-ADE549EEE568",
+          "coste_racion": 23.16
+        }
+      },
+      {
+        "accion_id": "ACT-DF26F7946957",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "Hamburguesa vegana",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-ADE549EEE568",
+          "coste_racion": 2.5
+        }
+      },
+      {
+        "accion_id": "ACT-C4CDF81BF137",
+        "tipo": "CREAR_RELACION",
+        "entidad": "COMPLEMENTO",
+        "nombre": "Cafe Natural. 1 kg. 120 cafes. 24,48€  .kg. 0,22 unid",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-ADE549EEE568"
+        }
+      },
+      {
+        "accion_id": "ACT-3A1C1B056B6B",
+        "tipo": "CREAR_RELACION",
+        "entidad": "COMPLEMENTO",
+        "nombre": "Ensalada para calçotada terminada lechuga de pages.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-ADE549EEE568"
+        }
+      },
+      {
+        "accion_id": "ACT-AD5CB1B101C8",
+        "tipo": "CREAR_RELACION",
+        "entidad": "COMPLEMENTO",
+        "nombre": "MENU CALÇOTADA. CESTA DE PAN, TOMATE Y AJO.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-ADE549EEE568"
+        }
+      },
+      {
+        "accion_id": "ACT-D457C39A1469",
+        "tipo": "CREAR_RELACION",
+        "entidad": "COMPLEMENTO",
+        "nombre": "Salsa Allioli. natural. bote de 1 lt.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-ADE549EEE568"
+        }
+      },
+      {
+        "accion_id": "ACT-0E67F64B7A80",
+        "tipo": "REGISTRAR",
+        "entidad": "DATOS_ECONOMICOS",
+        "nombre": "MENU CALÇOTADA CARTA. 15-12-25",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-ADE549EEE568",
+          "precio_venta": 45.0,
+          "venta_neta": 40.5,
+          "coste_total": 33.838,
+          "food_cost_pct": 83.55061728395061,
+          "beneficio": null
+        }
+      },
+      {
+        "accion_id": "ACT-70220C13DF98",
+        "tipo": "CREAR",
+        "entidad": "MENU",
+        "nombre": "MENU CALÇOTADA CARTA. 15-12-25",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu_id": "MENU-A21F9C4816F6",
+          "hoja": "MENU BBQ"
+        }
+      },
+      {
+        "accion_id": "ACT-89E8D94F4D45",
+        "tipo": "CREAR_O_REUTILIZAR",
+        "entidad": "SECCION",
+        "nombre": "POSTRES",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-A21F9C4816F6"
+        }
+      },
+      {
+        "accion_id": "ACT-BD817DC8067B",
+        "tipo": "CREAR_RELACION",
+        "entidad": "PLATO_MENU",
+        "nombre": "Tabla de embutidos y quesos variados.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-A21F9C4816F6",
+          "seccion": "Sin sección",
+          "coste_racion": 6.65,
+          "fila": 6
+        }
+      },
+      {
+        "accion_id": "ACT-D99AF65D0CD5",
+        "tipo": "VINCULAR",
+        "entidad": "RECETA_PRINCIPAL",
+        "nombre": "TABLA DE QUESOS Y EMBUTIDOS",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-A21F9C4816F6",
+          "plato": "Tabla de embutidos y quesos variados.",
+          "rol": "RECETA_PRINCIPAL",
+          "catalogado": true,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-3EF7DDD10492",
+        "tipo": "CREAR_RELACION",
+        "entidad": "PLATO_MENU",
+        "nombre": "Crema Catalana.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-A21F9C4816F6",
+          "seccion": "Postre",
+          "coste_racion": 0.25,
+          "fila": 18
+        }
+      },
+      {
+        "accion_id": "ACT-DBAC2EDEF0A7",
+        "tipo": "VINCULAR",
+        "entidad": "RECETA_PRINCIPAL",
+        "nombre": "Crema catalana",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-A21F9C4816F6",
+          "plato": "Crema Catalana.",
+          "rol": "RECETA_PRINCIPAL",
+          "catalogado": true,
+          "resolucion": null
+        }
+      },
+      {
+        "accion_id": "ACT-ACE75D42F9DC",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "Agua Fon vella 1 LT Caja de 12 unid.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-A21F9C4816F6",
+          "coste_racion": 0.24
+        }
+      },
+      {
+        "accion_id": "ACT-DD95AC7435F8",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "Patatas Bravas. menu BBQ. Precio pax.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-A21F9C4816F6",
+          "coste_racion": 5.27
+        }
+      },
+      {
+        "accion_id": "ACT-9B1EDE60815D",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "Pimiento del padron.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-A21F9C4816F6",
+          "coste_racion": 0.5175
+        }
+      },
+      {
+        "accion_id": "ACT-935D26B691F3",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "Pollo muslo fresco.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-A21F9C4816F6",
+          "coste_racion": 0.432
+        }
+      },
+      {
+        "accion_id": "ACT-DC03BB6C87E0",
+        "tipo": "VINCULAR",
+        "entidad": "ARTICULO_DIRECTO",
+        "nombre": "Butifarra negra* calçotada racionada a 70 gr.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-A21F9C4816F6",
+          "coste_racion": 0.532
+        }
+      },
+      {
+        "accion_id": "ACT-5048F3B3870E",
+        "tipo": "CREAR_RELACION",
+        "entidad": "COMPLEMENTO",
+        "nombre": "PAN, AGUA, SELECCION DE VINOS Y CAFES",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-A21F9C4816F6"
+        }
+      },
+      {
+        "accion_id": "ACT-7FAE86EF8BFB",
+        "tipo": "CREAR_RELACION",
+        "entidad": "COMPLEMENTO",
+        "nombre": "Cafe Natural. 1 kg. 120 cafes. 24,48€  .kg. 0,22 unid",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-A21F9C4816F6"
+        }
+      },
+      {
+        "accion_id": "ACT-BD85A8EA2792",
+        "tipo": "CREAR_RELACION",
+        "entidad": "COMPLEMENTO",
+        "nombre": "Ensalada para calçotada terminada lechuga de pages.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-A21F9C4816F6"
+        }
+      },
+      {
+        "accion_id": "ACT-B25D5D90B290",
+        "tipo": "CREAR_RELACION",
+        "entidad": "COMPLEMENTO",
+        "nombre": "Salsa Allioli. natural. bote de 1 lt.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-A21F9C4816F6"
+        }
+      },
+      {
+        "accion_id": "ACT-FA6B16540091",
+        "tipo": "CREAR_RELACION",
+        "entidad": "COMPLEMENTO",
+        "nombre": "MENU CALÇOTADA. CESTA DE PAN, TOMATE Y AJO.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-A21F9C4816F6"
+        }
+      },
+      {
+        "accion_id": "ACT-55C340417755",
+        "tipo": "CREAR_RELACION",
+        "entidad": "COMPLEMENTO",
+        "nombre": "Coulant de chocolate",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-A21F9C4816F6"
+        }
+      },
+      {
+        "accion_id": "ACT-7A5A3A4ED4A4",
+        "tipo": "REGISTRAR",
+        "entidad": "DATOS_ECONOMICOS",
+        "nombre": "MENU CALÇOTADA CARTA. 15-12-25",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-A21F9C4816F6",
+          "precio_venta": 35.0,
+          "venta_neta": 31.5,
+          "coste_total": 21.207,
+          "food_cost_pct": 67.32380952380953,
+          "beneficio": null
+        }
+      },
+      {
+        "accion_id": "ACT-C40FA2255CC2",
+        "tipo": "VINCULAR",
+        "entidad": "BEBIDA_MENU",
+        "nombre": "Vermuth rojo con Gilda MasBoronat",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "Menú bbq finde 45€",
+          "menu_id": "MENU-6904594E7245",
+          "subtipo": "BEBIDA",
+          "coste_racion": 1.64975
+        }
+      },
+      {
+        "accion_id": "ACT-2BA4F02801C1",
+        "tipo": "VINCULAR",
+        "entidad": "BEBIDA_MENU",
+        "nombre": "CLOS PINELL  TERRA TINTO ALTA",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "Menú bbq finde 45€",
+          "menu_id": "MENU-6904594E7245",
+          "subtipo": "VINO",
+          "coste_racion": 0.225
+        }
+      },
+      {
+        "accion_id": "ACT-EDF80CA6F3DB",
+        "tipo": "VINCULAR",
+        "entidad": "BEBIDA_MENU",
+        "nombre": "Vermuth rojo con Gilda MasBoronat",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "Menú paella finde 45€",
+          "menu_id": "MENU-A635255585B3",
+          "subtipo": "BEBIDA",
+          "coste_racion": 1.64975
+        }
+      },
+      {
+        "accion_id": "ACT-C60FBAD9FD63",
+        "tipo": "VINCULAR",
+        "entidad": "BEBIDA_MENU",
+        "nombre": "CLOS PINELL  TERRA TINTO ALTA",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "Menú paella finde 45€",
+          "menu_id": "MENU-A635255585B3",
+          "subtipo": "VINO",
+          "coste_racion": 0.225
+        }
+      },
+      {
+        "accion_id": "ACT-6A0E169CF7EB",
+        "tipo": "VINCULAR",
+        "entidad": "BEBIDA_MENU",
+        "nombre": "CLOS PINELL  TERRA TINTO ALTA",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-978F849FCF9A",
+          "subtipo": "VINO",
+          "coste_racion": 0.225
+        }
+      },
+      {
+        "accion_id": "ACT-492EF8BF555D",
+        "tipo": "VINCULAR",
+        "entidad": "BEBIDA_MENU",
+        "nombre": "CAVA ROGER DE FLOR",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-978F849FCF9A",
+          "subtipo": "CAVA",
+          "coste_racion": 0.0
+        }
+      },
+      {
+        "accion_id": "ACT-660218B52B8D",
+        "tipo": "VINCULAR",
+        "entidad": "BEBIDA_MENU",
+        "nombre": "CLOS PINELL  TERRA TINTO ALTA",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU COCTEL.",
+          "menu_id": "MENU-8D27EB553275",
+          "subtipo": "VINO",
+          "coste_racion": 0.225
+        }
+      },
+      {
+        "accion_id": "ACT-20BE67710546",
+        "tipo": "VINCULAR",
+        "entidad": "BEBIDA_MENU",
+        "nombre": "CAVA ROGER DE FLOR",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU COCTEL.",
+          "menu_id": "MENU-8D27EB553275",
+          "subtipo": "CAVA",
+          "coste_racion": 0.0
+        }
+      },
+      {
+        "accion_id": "ACT-89D4A70B5424",
+        "tipo": "VINCULAR",
+        "entidad": "BEBIDA_MENU",
+        "nombre": "Aquarius Limon lata 33cl*24",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU COCTEL.",
+          "menu_id": "MENU-8D27EB553275",
+          "subtipo": "BEBIDA",
+          "coste_racion": 7.95
+        }
+      },
+      {
+        "accion_id": "ACT-5678CEA1C283",
+        "tipo": "VINCULAR",
+        "entidad": "BEBIDA_MENU",
+        "nombre": "Caña de cerveza",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU COCTEL.",
+          "menu_id": "MENU-8D27EB553275",
+          "subtipo": "BEBIDA",
+          "coste_racion": 1.6
+        }
+      },
+      {
+        "accion_id": "ACT-6D1CAAC64139",
+        "tipo": "VINCULAR",
+        "entidad": "BEBIDA_MENU",
+        "nombre": "Cava Petit Instant. Botella",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU FIN DE AÑO 2025",
+          "menu_id": "MENU-656A44021665",
+          "subtipo": "CAVA",
+          "coste_racion": 1.076
+        }
+      },
+      {
+        "accion_id": "ACT-A8DFA763F3A9",
+        "tipo": "VINCULAR",
+        "entidad": "BEBIDA_MENU",
+        "nombre": "mas cabellut tinto.",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU FIN DE AÑO 2025",
+          "menu_id": "MENU-656A44021665",
+          "subtipo": "VINO",
+          "coste_racion": 1.3
+        }
+      },
+      {
+        "accion_id": "ACT-6F515F1CF4DC",
+        "tipo": "VINCULAR",
+        "entidad": "BEBIDA_MENU",
+        "nombre": "Coca-cola Lata 33cl*24. sin cargo 3 pqt",
+        "estado": "PLANIFICADA",
+        "detalle": {
+          "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+          "menu_id": "MENU-978F849FCF9A",
+          "subtipo": "BEBIDA",
+          "coste_racion": 22.75
+        }
+      }
+    ],
+    "bloqueos": [
+      {
+        "codigo": "RECETA_PROPUESTA_NO_CREADA",
+        "nivel": "BLOQUEO",
+        "menu": "MENU BODA",
+        "plato": "Solomillo de cerdo con parmentier patata i salsa naranja",
+        "componente": "Parmentier de patata",
+        "rol": "GUARNICION",
+        "mensaje": "Existe una propuesta de nueva receta que todavía no forma parte del catálogo.",
+        "acciones": [
+          "Crear y completar la receta",
+          "Vincularla con una receta existente",
+          "Mantenerla pendiente solo si una política futura lo permite"
+        ]
+      },
+      {
+        "codigo": "COMPONENTE_NO_RESUELTO",
+        "nivel": "BLOQUEO",
+        "menu": "MENU COCTEL.",
+        "plato": "CALÇOTADA EN MESA ENSALADA. LECHUGA UNID.",
+        "componente": "mesa ensalada lechuga unid",
+        "rol": "GUARNICION",
+        "mensaje": "Existe un componente sin vínculo definitivo.",
+        "acciones": [
+          "Vincular con receta",
+          "Vincular con artículo",
+          "Crear receta y completar ficha"
+        ]
+      },
+      {
+        "codigo": "COMPONENTE_NO_RESUELTO",
+        "nivel": "BLOQUEO",
+        "menu": "MENU COCTEL.",
+        "plato": "CALÇOTADA EN MESA ENSALADA. LECHUGA UNID.",
+        "componente": "calcotada",
+        "rol": "COMPONENTE_PENDIENTE",
+        "mensaje": "Existe un componente sin vínculo definitivo.",
+        "acciones": [
+          "Vincular con receta",
+          "Vincular con artículo",
+          "Crear receta y completar ficha"
+        ]
+      },
+      {
+        "codigo": "CONCEPTO_CULINARIO_NO_RESUELTO",
+        "nivel": "BLOQUEO",
+        "menu": "MENU FIN DE AÑO 2025",
+        "plato": "Crema de marisco, vieras con bombon de coco y curri.",
+        "componente": "Crema de marisco",
+        "rol": "RECETA_PRINCIPAL",
+        "mensaje": "Concepto culinario agrupado pendiente de vínculo definitivo.",
+        "acciones": [
+          "Vincular con receta",
+          "Vincular con artículo",
+          "Crear receta y completar ficha"
+        ]
+      },
+      {
+        "codigo": "CONCEPTO_CULINARIO_NO_RESUELTO",
+        "nivel": "BLOQUEO",
+        "menu": "MENU FIN DE AÑO 2025",
+        "plato": "Crema de marisco, vieras con bombon de coco y curri.",
+        "componente": "vieras",
+        "rol": "GUARNICION",
+        "mensaje": "Concepto culinario agrupado pendiente de vínculo definitivo.",
+        "acciones": [
+          "Vincular con receta",
+          "Vincular con artículo",
+          "Crear receta y completar ficha"
+        ]
+      },
+      {
+        "codigo": "CONCEPTO_CULINARIO_NO_RESUELTO",
+        "nivel": "BLOQUEO",
+        "menu": "MENU FIN DE AÑO 2025",
+        "plato": "Crema de marisco, vieras con bombon de coco y curri.",
+        "componente": "bombon de coco y curri",
+        "rol": "ELABORACION",
+        "mensaje": "Concepto culinario agrupado pendiente de vínculo definitivo.",
+        "acciones": [
+          "Vincular con receta",
+          "Vincular con artículo",
+          "Crear receta y completar ficha"
+        ]
+      },
+      {
+        "codigo": "CONCEPTO_CULINARIO_NO_RESUELTO",
+        "nivel": "BLOQUEO",
+        "menu": "MENU FIN DE AÑO 2025",
+        "plato": "Lenguado a la menier de yondu con hinojo y avellanas",
+        "componente": "Lenguado a la menier",
+        "rol": "RECETA_PRINCIPAL",
+        "mensaje": "Concepto culinario agrupado pendiente de vínculo definitivo.",
+        "acciones": [
+          "Vincular con receta",
+          "Vincular con artículo",
+          "Crear receta y completar ficha"
+        ]
+      },
+      {
+        "codigo": "CONCEPTO_CULINARIO_NO_RESUELTO",
+        "nivel": "BLOQUEO",
+        "menu": "MENU FIN DE AÑO 2025",
+        "plato": "Lenguado a la menier de yondu con hinojo y avellanas",
+        "componente": "yondu",
+        "rol": "CONDIMENTO",
+        "mensaje": "Concepto culinario agrupado pendiente de vínculo definitivo.",
+        "acciones": [
+          "Vincular con receta",
+          "Vincular con artículo",
+          "Crear receta y completar ficha"
+        ]
+      },
+      {
+        "codigo": "CONCEPTO_CULINARIO_NO_RESUELTO",
+        "nivel": "BLOQUEO",
+        "menu": "MENU FIN DE AÑO 2025",
+        "plato": "Lenguado a la menier de yondu con hinojo y avellanas",
+        "componente": "hinojo",
+        "rol": "GUARNICION",
+        "mensaje": "Concepto culinario agrupado pendiente de vínculo definitivo.",
+        "acciones": [
+          "Vincular con receta",
+          "Vincular con artículo",
+          "Crear receta y completar ficha"
+        ]
+      },
+      {
+        "codigo": "CONCEPTO_CULINARIO_NO_RESUELTO",
+        "nivel": "BLOQUEO",
+        "menu": "MENU FIN DE AÑO 2025",
+        "plato": "Lenguado a la menier de yondu con hinojo y avellanas",
+        "componente": "avellanas",
+        "rol": "ACABADO",
+        "mensaje": "Concepto culinario agrupado pendiente de vínculo definitivo.",
+        "acciones": [
+          "Vincular con receta",
+          "Vincular con artículo",
+          "Crear receta y completar ficha"
+        ]
+      },
+      {
+        "codigo": "CONCEPTO_CULINARIO_NO_RESUELTO",
+        "nivel": "BLOQUEO",
+        "menu": "MENU FIN DE AÑO 2025",
+        "plato": "Tournedo de solomillo Rossini con chalotas glaseadas.",
+        "componente": "Tournedo de solomillo Rossini",
+        "rol": "RECETA_PRINCIPAL",
+        "mensaje": "Concepto culinario agrupado pendiente de vínculo definitivo.",
+        "acciones": [
+          "Vincular con receta",
+          "Vincular con artículo",
+          "Crear receta y completar ficha"
+        ]
+      },
+      {
+        "codigo": "CONCEPTO_CULINARIO_NO_RESUELTO",
+        "nivel": "BLOQUEO",
+        "menu": "MENU FIN DE AÑO 2025",
+        "plato": "Tournedo de solomillo Rossini con chalotas glaseadas.",
+        "componente": "chalotas glaseadas",
+        "rol": "GUARNICION",
+        "mensaje": "Concepto culinario agrupado pendiente de vínculo definitivo.",
+        "acciones": [
+          "Vincular con receta",
+          "Vincular con artículo",
+          "Crear receta y completar ficha"
+        ]
+      }
+    ],
+    "avisos": [],
+    "resumen": {
+      "menus": 11,
+      "acciones": 249,
+      "ejecutables": 237,
+      "bloqueadas": 12,
+      "crear": 11,
+      "actualizar": 0,
+      "vincular": 106,
+      "relaciones": 109,
+      "registrar": 11,
+      "bloqueos": 12,
+      "bebidas": 13
+    },
+    "plan_id": "PLAN-5BA8E862CB01",
+    "escrituras_habilitadas": false,
+    "datos_modificados": false,
+    "clasificacion_gastronomica": {
+      "version": "I1.3.4.1.4",
+      "tipos": {
+        "BEBIDA": 6,
+        "PLATO_RECETA": 29,
+        "APERITIVO_PREPARADO": 23,
+        "CAFE_INFUSION": 37,
+        "VINO": 13,
+        "AGUA": 14,
+        "PLATO_COMPUESTO": 4,
+        "CAVA": 4,
+        "PAN": 2,
+        "ARTICULO_COMERCIAL": 17,
+        "PLATO_PENDIENTE": 4,
+        "SERVICIO": 1,
+        "COMPLEMENTO": 2,
+        "MATERIA_PRIMA": 2
+      },
+      "total": 158
+    },
+    "interpretacion_culinaria": {
+      "version": "I1.3.4.1.4",
+      "platos_interpretados": 4,
+      "fragmentos_pendientes_antes": 32,
+      "conceptos_pendientes_despues": 27,
+      "reduccion": 5,
+      "interpretaciones": [
+        {
+          "menu": "MENU FIN DE AÑO 2025",
+          "plato": "Crema de marisco, vieras con bombon de coco y curri.",
+          "version": "I1.3.4.1.4",
+          "aplicada": true,
+          "texto_original": "Crema de marisco, vieras con bombon de coco y curri",
+          "conceptos": [
+            {
+              "rol": "RECETA_PRINCIPAL",
+              "nombre": "Crema de marisco",
+              "confianza": 0.94,
+              "evidencia": "Núcleo culinario antes de la coma."
+            },
+            {
+              "rol": "GUARNICION",
+              "nombre": "vieras",
+              "confianza": 0.78,
+              "evidencia": "Elemento servido junto al núcleo."
+            },
+            {
+              "rol": "ELABORACION",
+              "nombre": "bombon de coco y curri",
+              "confianza": 0.84,
+              "evidencia": "Elaboración compuesta introducida por «con»."
+            }
+          ],
+          "fragmentos_anteriores": [
+            "crema",
+            "marisco vieras",
+            "bombon",
+            "coco",
+            "curri"
+          ],
+          "catalogados_conservados": 0,
+          "confianza_media": 0.853,
+          "solo_interpretacion": true
+        },
+        {
+          "menu": "MENU FIN DE AÑO 2025",
+          "plato": "Lenguado a la menier de yondu con hinojo y avellanas",
+          "version": "I1.3.4.1.4",
+          "aplicada": true,
+          "texto_original": "Lenguado a la menier de yondu con hinojo y avellanas",
+          "conceptos": [
+            {
+              "rol": "RECETA_PRINCIPAL",
+              "nombre": "Lenguado a la menier",
+              "confianza": 0.95,
+              "evidencia": "Técnica culinaria inseparable del producto principal."
+            },
+            {
+              "rol": "CONDIMENTO",
+              "nombre": "yondu",
+              "confianza": 0.8,
+              "evidencia": "Ingrediente introducido por «de» tras la técnica."
+            },
+            {
+              "rol": "GUARNICION",
+              "nombre": "hinojo",
+              "confianza": 0.78,
+              "evidencia": "Componente posterior a «con/y»."
+            },
+            {
+              "rol": "ACABADO",
+              "nombre": "avellanas",
+              "confianza": 0.78,
+              "evidencia": "Componente posterior a «con/y»."
+            }
+          ],
+          "fragmentos_anteriores": [
+            "lenguado",
+            "menier",
+            "yondu",
+            "hinojo",
+            "avellanas"
+          ],
+          "catalogados_conservados": 0,
+          "confianza_media": 0.828,
+          "solo_interpretacion": true
+        },
+        {
+          "menu": "MENU FIN DE AÑO 2025",
+          "plato": "Tournedo de solomillo Rossini con chalotas glaseadas.",
+          "version": "I1.3.4.1.4",
+          "aplicada": true,
+          "texto_original": "Tournedo de solomillo Rossini con chalotas glaseadas",
+          "conceptos": [
+            {
+              "rol": "RECETA_PRINCIPAL",
+              "nombre": "Tournedo de solomillo Rossini",
+              "confianza": 0.92,
+              "evidencia": "Preparación principal completa antes de «con»."
+            },
+            {
+              "rol": "GUARNICION",
+              "nombre": "chalotas glaseadas",
+              "confianza": 0.86,
+              "evidencia": "Acompañamiento introducido por «con»."
+            }
+          ],
+          "fragmentos_anteriores": [
+            "tournedo",
+            "solomillo rossini",
+            "chalotas glaseadas"
+          ],
+          "catalogados_conservados": 0,
+          "confianza_media": 0.89,
+          "solo_interpretacion": true
+        },
+        {
+          "menu": "MENU FIN DE AÑO 2025",
+          "plato": "lingote de ferrero rocher, espuma de baeylis, y frambuesa liofilizada",
+          "version": "I1.3.4.1.4",
+          "aplicada": true,
+          "texto_original": "lingote de ferrero rocher, espuma de baeylis, y frambuesa liofilizada",
+          "conceptos": [
+            {
+              "rol": "RECETA_PRINCIPAL",
+              "nombre": "lingote de ferrero rocher",
+              "confianza": 0.88,
+              "evidencia": "Primer concepto nominal del postre."
+            },
+            {
+              "rol": "ELABORACION",
+              "nombre": "espuma de baeylis",
+              "confianza": 0.8,
+              "evidencia": "Componente separado por coma o conjunción."
+            },
+            {
+              "rol": "ACABADO",
+              "nombre": "frambuesa liofilizada",
+              "confianza": 0.8,
+              "evidencia": "Componente separado por coma o conjunción."
+            }
+          ],
+          "fragmentos_anteriores": [
+            "ferrero rocher espuma",
+            "lingote",
+            "baeylis",
+            "frambuesa liofilizada"
+          ],
+          "catalogados_conservados": 0,
+          "confianza_media": 0.827,
+          "solo_interpretacion": true
+        }
+      ]
+    },
+    "deteccion_multihoja": {
+      "version": "I1.3.4.1.1",
+      "archivo": "C:\\PROYECTO HOST IA\\Proyecto Host AI  6.0\\Host AI 6.0\\Documentos\\Escandallos Boronat.xlsx",
+      "hojas_totales": 21,
+      "confirmadas": [
+        {
+          "hoja": "Menú bbq finde 45€",
+          "clasificacion": "MENU_CONFIRMADO",
+          "puntuacion": 17,
+          "razones": [
+            "El nombre de la hoja contiene MENU/MENÚ.",
+            "El nombre contiene una pista de evento o formato gastronómico.",
+            "El encabezado interno identifica un menú.",
+            "Contiene cabeceras económicas de menú (PVP/neto/coste/food cost).",
+            "Contiene secciones gastronómicas reconocibles.",
+            "Contiene varias líneas de platos con valores económicos."
+          ],
+          "exclusiones": [],
+          "secciones_detectadas": [
+            "aperitivo",
+            "postres"
+          ],
+          "cabeceras_economicas": [
+            "costo",
+            "euros racion",
+            "food cost",
+            "gr o kg",
+            "neto",
+            "p v p",
+            "precio kg"
+          ],
+          "filas_con_coste": 13
+        },
+        {
+          "hoja": "Menú paella finde 45€",
+          "clasificacion": "MENU_CONFIRMADO",
+          "puntuacion": 16,
+          "razones": [
+            "El nombre de la hoja contiene MENU/MENÚ.",
+            "El encabezado interno identifica un menú.",
+            "Contiene cabeceras económicas de menú (PVP/neto/coste/food cost).",
+            "Contiene secciones gastronómicas reconocibles.",
+            "Contiene varias líneas de platos con valores económicos."
+          ],
+          "exclusiones": [],
+          "secciones_detectadas": [
+            "aperitivo",
+            "postres"
+          ],
+          "cabeceras_economicas": [
+            "costo",
+            "euros racion",
+            "food cost",
+            "gr o kg",
+            "neto",
+            "p v p",
+            "precio kg"
+          ],
+          "filas_con_coste": 12
+        },
+        {
+          "hoja": "Menú bbq 95€",
+          "clasificacion": "MENU_CONFIRMADO",
+          "puntuacion": 17,
+          "razones": [
+            "El nombre de la hoja contiene MENU/MENÚ.",
+            "El nombre contiene una pista de evento o formato gastronómico.",
+            "El encabezado interno identifica un menú.",
+            "Contiene cabeceras económicas de menú (PVP/neto/coste/food cost).",
+            "Contiene secciones gastronómicas reconocibles.",
+            "Contiene varias líneas de platos con valores económicos."
+          ],
+          "exclusiones": [],
+          "secciones_detectadas": [
+            "entrantes"
+          ],
+          "cabeceras_economicas": [
+            "costo",
+            "escandallo",
+            "euros racion",
+            "food cost",
+            "gr o kg",
+            "neto",
+            "p v p",
+            "precio kg"
+          ],
+          "filas_con_coste": 7
+        },
+        {
+          "hoja": "MENU CALÇOTADA",
+          "clasificacion": "MENU_CONFIRMADO",
+          "puntuacion": 17,
+          "razones": [
+            "El nombre de la hoja contiene MENU/MENÚ.",
+            "El nombre contiene una pista de evento o formato gastronómico.",
+            "El encabezado interno identifica un menú.",
+            "Contiene cabeceras económicas de menú (PVP/neto/coste/food cost).",
+            "Contiene secciones gastronómicas reconocibles.",
+            "Contiene varias líneas de platos con valores económicos."
+          ],
+          "exclusiones": [],
+          "secciones_detectadas": [
+            "aperitivo",
+            "postres"
+          ],
+          "cabeceras_economicas": [
+            "costo",
+            "euros racion",
+            "food cost",
+            "gr o kg",
+            "neto",
+            "p v p",
+            "precio kg"
+          ],
+          "filas_con_coste": 18
+        },
+        {
+          "hoja": "MENU BODA 31-1",
+          "clasificacion": "MENU_CONFIRMADO",
+          "puntuacion": 17,
+          "razones": [
+            "El nombre de la hoja contiene MENU/MENÚ.",
+            "El nombre contiene una pista de evento o formato gastronómico.",
+            "El encabezado interno identifica un menú.",
+            "Contiene cabeceras económicas de menú (PVP/neto/coste/food cost).",
+            "Contiene secciones gastronómicas reconocibles.",
+            "Contiene varias líneas de platos con valores económicos."
+          ],
+          "exclusiones": [],
+          "secciones_detectadas": [
+            "aperitivo",
+            "entrante",
+            "postre",
+            "primero",
+            "segundo"
+          ],
+          "cabeceras_economicas": [
+            "costo",
+            "euros racion",
+            "food cost",
+            "gr o kg",
+            "neto",
+            "p v p",
+            "precio kg"
+          ],
+          "filas_con_coste": 14
+        },
+        {
+          "hoja": "COMUNION  ALEJANDRO FERNANDEZ ",
+          "clasificacion": "MENU_CONFIRMADO",
+          "puntuacion": 13,
+          "razones": [
+            "El nombre contiene una pista de evento o formato gastronómico.",
+            "El encabezado interno identifica un menú.",
+            "Contiene cabeceras económicas de menú (PVP/neto/coste/food cost).",
+            "Contiene secciones gastronómicas reconocibles.",
+            "Contiene varias líneas de platos con valores económicos."
+          ],
+          "exclusiones": [],
+          "secciones_detectadas": [
+            "aperitivo",
+            "caliente",
+            "frios",
+            "postres"
+          ],
+          "cabeceras_economicas": [
+            "costo",
+            "euros racion",
+            "food cost",
+            "gr o kg",
+            "neto",
+            "p v p",
+            "precio kg"
+          ],
+          "filas_con_coste": 35
+        },
+        {
+          "hoja": "MENU FIN DE AÑO",
+          "clasificacion": "MENU_CONFIRMADO",
+          "puntuacion": 17,
+          "razones": [
+            "El nombre de la hoja contiene MENU/MENÚ.",
+            "El nombre contiene una pista de evento o formato gastronómico.",
+            "El encabezado interno identifica un menú.",
+            "Contiene cabeceras económicas de menú (PVP/neto/coste/food cost).",
+            "Contiene secciones gastronómicas reconocibles.",
+            "Contiene varias líneas de platos con valores económicos."
+          ],
+          "exclusiones": [],
+          "secciones_detectadas": [
+            "aperitivo",
+            "bodega",
+            "entrante",
+            "postre",
+            "postres",
+            "primero"
+          ],
+          "cabeceras_economicas": [
+            "costo",
+            "euros racion",
+            "food cost",
+            "gr o kg",
+            "neto",
+            "p v p",
+            "precio kg"
+          ],
+          "filas_con_coste": 7
+        },
+        {
+          "hoja": "MENU AGENCIA 25€ CALÇOTADA",
+          "clasificacion": "MENU_CONFIRMADO",
+          "puntuacion": 17,
+          "razones": [
+            "El nombre de la hoja contiene MENU/MENÚ.",
+            "El nombre contiene una pista de evento o formato gastronómico.",
+            "El encabezado interno identifica un menú.",
+            "Contiene cabeceras económicas de menú (PVP/neto/coste/food cost).",
+            "Contiene secciones gastronómicas reconocibles.",
+            "Contiene varias líneas de platos con valores económicos."
+          ],
+          "exclusiones": [],
+          "secciones_detectadas": [
+            "aperitivo",
+            "postres"
+          ],
+          "cabeceras_economicas": [
+            "costo",
+            "euros racion",
+            "food cost",
+            "gr o kg",
+            "neto",
+            "p v p",
+            "precio kg"
+          ],
+          "filas_con_coste": 15
+        },
+        {
+          "hoja": "Menú calçotada niños",
+          "clasificacion": "MENU_CONFIRMADO",
+          "puntuacion": 17,
+          "razones": [
+            "El nombre de la hoja contiene MENU/MENÚ.",
+            "El nombre contiene una pista de evento o formato gastronómico.",
+            "El encabezado interno identifica un menú.",
+            "Contiene cabeceras económicas de menú (PVP/neto/coste/food cost).",
+            "Contiene secciones gastronómicas reconocibles.",
+            "Contiene varias líneas de platos con valores económicos."
+          ],
+          "exclusiones": [],
+          "secciones_detectadas": [
+            "aperitivo",
+            "postres"
+          ],
+          "cabeceras_economicas": [
+            "costo",
+            "euros racion",
+            "food cost",
+            "gr o kg",
+            "neto",
+            "p v p",
+            "precio kg"
+          ],
+          "filas_con_coste": 8
+        },
+        {
+          "hoja": "Menú calçotada vegano",
+          "clasificacion": "MENU_CONFIRMADO",
+          "puntuacion": 17,
+          "razones": [
+            "El nombre de la hoja contiene MENU/MENÚ.",
+            "El nombre contiene una pista de evento o formato gastronómico.",
+            "El encabezado interno identifica un menú.",
+            "Contiene cabeceras económicas de menú (PVP/neto/coste/food cost).",
+            "Contiene secciones gastronómicas reconocibles.",
+            "Contiene varias líneas de platos con valores económicos."
+          ],
+          "exclusiones": [],
+          "secciones_detectadas": [
+            "aperitivo",
+            "postres"
+          ],
+          "cabeceras_economicas": [
+            "costo",
+            "euros racion",
+            "food cost",
+            "gr o kg",
+            "neto",
+            "p v p",
+            "precio kg"
+          ],
+          "filas_con_coste": 18
+        },
+        {
+          "hoja": "MENU BBQ",
+          "clasificacion": "MENU_CONFIRMADO",
+          "puntuacion": 17,
+          "razones": [
+            "El nombre de la hoja contiene MENU/MENÚ.",
+            "El nombre contiene una pista de evento o formato gastronómico.",
+            "El encabezado interno identifica un menú.",
+            "Contiene cabeceras económicas de menú (PVP/neto/coste/food cost).",
+            "Contiene secciones gastronómicas reconocibles.",
+            "Contiene varias líneas de platos con valores económicos."
+          ],
+          "exclusiones": [],
+          "secciones_detectadas": [
+            "a compartir",
+            "en mesa o coctel",
+            "postres"
+          ],
+          "cabeceras_economicas": [
+            "costo",
+            "euros racion",
+            "food cost",
+            "gr o kg",
+            "neto",
+            "p v p",
+            "precio kg"
+          ],
+          "filas_con_coste": 16
+        }
+      ],
+      "probables": [],
+      "descartadas": [
+        {
+          "hoja": "Listado de Artículos",
+          "clasificacion": "NO_MENU",
+          "puntuacion": -10,
+          "razones": [
+            "Contiene secciones gastronómicas reconocibles."
+          ],
+          "exclusiones": [
+            "El nombre identifica una hoja técnica, plantilla o vacía."
+          ],
+          "secciones_detectadas": [
+            "coctel"
+          ],
+          "cabeceras_economicas": [],
+          "filas_con_coste": 0
+        },
+        {
+          "hoja": "M.P Menú finde 45€",
+          "clasificacion": "NO_MENU",
+          "puntuacion": -14,
+          "razones": [
+            "El nombre de la hoja contiene MENU/MENÚ.",
+            "Contiene alguna cabecera económica compatible."
+          ],
+          "exclusiones": [
+            "La hoja es M.P/MP (materias primas o fichas), no un menú final.",
+            "El contenido corresponde a una ficha técnica de plato."
+          ],
+          "secciones_detectadas": [],
+          "cabeceras_economicas": [
+            "neto"
+          ],
+          "filas_con_coste": 0
+        },
+        {
+          "hoja": "M.P menú bbq 95€",
+          "clasificacion": "NO_MENU",
+          "puntuacion": -13,
+          "razones": [
+            "El nombre de la hoja contiene MENU/MENÚ.",
+            "El nombre contiene una pista de evento o formato gastronómico.",
+            "Contiene alguna cabecera económica compatible."
+          ],
+          "exclusiones": [
+            "La hoja es M.P/MP (materias primas o fichas), no un menú final.",
+            "El contenido corresponde a una ficha técnica de plato."
+          ],
+          "secciones_detectadas": [],
+          "cabeceras_economicas": [
+            "neto"
+          ],
+          "filas_con_coste": 0
+        },
+        {
+          "hoja": "M.P CALÇOTADA",
+          "clasificacion": "NO_MENU",
+          "puntuacion": -17,
+          "razones": [
+            "El nombre contiene una pista de evento o formato gastronómico.",
+            "Contiene alguna cabecera económica compatible."
+          ],
+          "exclusiones": [
+            "La hoja es M.P/MP (materias primas o fichas), no un menú final.",
+            "El contenido corresponde a una ficha técnica de plato."
+          ],
+          "secciones_detectadas": [],
+          "cabeceras_economicas": [
+            "neto"
+          ],
+          "filas_con_coste": 0
+        },
+        {
+          "hoja": "Hoja 1",
+          "clasificacion": "NO_MENU",
+          "puntuacion": -12,
+          "razones": [],
+          "exclusiones": [
+            "El nombre identifica una hoja técnica, plantilla o vacía."
+          ],
+          "secciones_detectadas": [],
+          "cabeceras_economicas": [],
+          "filas_con_coste": 0
+        },
+        {
+          "hoja": "M.P Aperitivos",
+          "clasificacion": "NO_MENU",
+          "puntuacion": -16,
+          "razones": [
+            "Contiene alguna cabecera económica compatible.",
+            "Contiene varias líneas de platos con valores económicos."
+          ],
+          "exclusiones": [
+            "La hoja es M.P/MP (materias primas o fichas), no un menú final.",
+            "El contenido corresponde a una ficha técnica de plato."
+          ],
+          "secciones_detectadas": [],
+          "cabeceras_economicas": [
+            "neto"
+          ],
+          "filas_con_coste": 36
+        },
+        {
+          "hoja": "MP boda 31-1",
+          "clasificacion": "NO_MENU",
+          "puntuacion": -15,
+          "razones": [
+            "El nombre contiene una pista de evento o formato gastronómico.",
+            "Contiene alguna cabecera económica compatible.",
+            "Contiene varias líneas de platos con valores económicos."
+          ],
+          "exclusiones": [
+            "La hoja es M.P/MP (materias primas o fichas), no un menú final.",
+            "El contenido corresponde a una ficha técnica de plato."
+          ],
+          "secciones_detectadas": [],
+          "cabeceras_economicas": [
+            "neto"
+          ],
+          "filas_con_coste": 47
+        },
+        {
+          "hoja": "PLANTILLA COSTE MENU",
+          "clasificacion": "NO_MENU",
+          "puntuacion": 4,
+          "razones": [
+            "El nombre de la hoja contiene MENU/MENÚ.",
+            "El encabezado interno identifica un menú.",
+            "Contiene cabeceras económicas de menú (PVP/neto/coste/food cost).",
+            "Contiene secciones gastronómicas reconocibles.",
+            "Contiene varias líneas de platos con valores económicos."
+          ],
+          "exclusiones": [
+            "El nombre identifica una hoja técnica, plantilla o vacía."
+          ],
+          "secciones_detectadas": [
+            "aperitivo",
+            "postres"
+          ],
+          "cabeceras_economicas": [
+            "costo",
+            "euros racion",
+            "food cost",
+            "gr o kg",
+            "neto",
+            "p v p",
+            "precio kg"
+          ],
+          "filas_con_coste": 19
+        },
+        {
+          "hoja": "M.P COCTEL COMUNIONES.",
+          "clasificacion": "NO_MENU",
+          "puntuacion": -17,
+          "razones": [
+            "El nombre contiene una pista de evento o formato gastronómico.",
+            "Contiene alguna cabecera económica compatible."
+          ],
+          "exclusiones": [
+            "La hoja es M.P/MP (materias primas o fichas), no un menú final.",
+            "El contenido corresponde a una ficha técnica de plato."
+          ],
+          "secciones_detectadas": [],
+          "cabeceras_economicas": [
+            "neto"
+          ],
+          "filas_con_coste": 0
+        },
+        {
+          "hoja": "M.P MENU BBQ.",
+          "clasificacion": "NO_MENU",
+          "puntuacion": -9,
+          "razones": [
+            "El nombre de la hoja contiene MENU/MENÚ.",
+            "El nombre contiene una pista de evento o formato gastronómico.",
+            "El encabezado interno identifica un menú.",
+            "Contiene alguna cabecera económica compatible."
+          ],
+          "exclusiones": [
+            "La hoja es M.P/MP (materias primas o fichas), no un menú final.",
+            "El contenido corresponde a una ficha técnica de plato."
+          ],
+          "secciones_detectadas": [],
+          "cabeceras_economicas": [
+            "neto"
+          ],
+          "filas_con_coste": 0
+        }
+      ],
+      "hojas_confirmadas": [
+        "Menú bbq finde 45€",
+        "Menú paella finde 45€",
+        "Menú bbq 95€",
+        "MENU CALÇOTADA",
+        "MENU BODA 31-1",
+        "COMUNION  ALEJANDRO FERNANDEZ ",
+        "MENU FIN DE AÑO",
+        "MENU AGENCIA 25€ CALÇOTADA",
+        "Menú calçotada niños",
+        "Menú calçotada vegano",
+        "MENU BBQ"
+      ],
+      "hojas_probables": []
+    },
+    "seleccion": {
+      "hojas_seleccionadas": [
+        "Menú bbq finde 45€",
+        "Menú paella finde 45€",
+        "Menú bbq 95€",
+        "MENU CALÇOTADA",
+        "MENU BODA 31-1",
+        "COMUNION  ALEJANDRO FERNANDEZ ",
+        "MENU FIN DE AÑO",
+        "MENU AGENCIA 25€ CALÇOTADA",
+        "Menú calçotada niños",
+        "Menú calçotada vegano",
+        "MENU BBQ"
+      ],
+      "menus_detectados_en_archivo": 11,
+      "menus_seleccionados": 11,
+      "menus_existentes_en_host_ai": 0,
+      "menus_a_crear": 11,
+      "menus_a_actualizar": 0
+    },
+    "integridad": {
+      "huellas_antes": {
+        "DATOS/db/articulos.json": "f6c8183b1675f08f24a977617a45f690f850af808d8e1c4bdbe464ec68fe9bf2",
+        "DATOS/db/escandallos.json": "6cbeeae20304f5c1fcc5d9d0b6ee1fd6928d9b9667401e354aedfd284b74be66",
+        "DATOS/db/escandallos_canonicos.json": "91e48a1bd179037584530a5ec7d810a6d4b32030f7f63f0e4abcf9820d6793c5",
+        "DATOS/db/menus.json": null,
+        "DATOS/db/eventos.json": "e18af9757fce811c85b3b88b9878206491fdd490a099ffd414002971034f9f34",
+        "DATOS/db/precios.json": "f5267b703e8e4ba76d81ee8b52fd6c612dfe6ea3edcfbba0193a8eb8ea313acb",
+        "DATOS/db/stock_lotes.json": "308e367cb8a5189b6f44fed139e95925295286bf291dbe975a06db4264e9243a",
+        "DATOS/db/compras_pedidos.json": "8ede931e545e16c9c39bf6bd6609e97d354fd9577d116a66f0d78eb24b398869"
+      },
+      "huellas_despues": {
+        "DATOS/db/articulos.json": "f6c8183b1675f08f24a977617a45f690f850af808d8e1c4bdbe464ec68fe9bf2",
+        "DATOS/db/escandallos.json": "6cbeeae20304f5c1fcc5d9d0b6ee1fd6928d9b9667401e354aedfd284b74be66",
+        "DATOS/db/escandallos_canonicos.json": "91e48a1bd179037584530a5ec7d810a6d4b32030f7f63f0e4abcf9820d6793c5",
+        "DATOS/db/menus.json": null,
+        "DATOS/db/eventos.json": "e18af9757fce811c85b3b88b9878206491fdd490a099ffd414002971034f9f34",
+        "DATOS/db/precios.json": "f5267b703e8e4ba76d81ee8b52fd6c612dfe6ea3edcfbba0193a8eb8ea313acb",
+        "DATOS/db/stock_lotes.json": "308e367cb8a5189b6f44fed139e95925295286bf291dbe975a06db4264e9243a",
+        "DATOS/db/compras_pedidos.json": "8ede931e545e16c9c39bf6bd6609e97d354fd9577d116a66f0d78eb24b398869"
+      },
+      "archivos_modificados": [],
+      "sin_escrituras": true
+    }
+  },
+  "incidencias": [
+    {
+      "incidencia_id": "INC-F884E9C4D9F6",
+      "numero": 1,
+      "nivel": "AVISO",
+      "tipo": "CLASIFICACION_DUDOSA",
+      "nombre": "Tartar de fuet",
+      "menu": "Menú bbq finde 45€",
+      "plato": null,
+      "propuesta": "ARTICULO_DIRECTO",
+      "confianza": 65,
+      "motivo": "La clasificación automática es válida, pero el nombre parece una elaboración culinaria.",
+      "accion_ids": [
+        "ACT-E69144AA9D04"
+      ],
+      "estado": "PENDIENTE",
+      "decision": null
+    },
+    {
+      "incidencia_id": "INC-27C78EAC7370",
+      "numero": 2,
+      "nivel": "AVISO",
+      "tipo": "CLASIFICACION_DUDOSA",
+      "nombre": "Calçots en tempura!!!",
+      "menu": "Menú bbq finde 45€",
+      "plato": null,
+      "propuesta": "COMPLEMENTO",
+      "confianza": 55,
+      "motivo": "La clasificación automática es válida, pero el nombre parece una elaboración culinaria.",
+      "accion_ids": [
+        "ACT-609BB3B071A3"
+      ],
+      "estado": "PENDIENTE",
+      "decision": null
+    },
+    {
+      "incidencia_id": "INC-5D3770DE0144",
+      "numero": 3,
+      "nivel": "AVISO",
+      "tipo": "CLASIFICACION_DUDOSA",
+      "nombre": "Ensalada para calçotada terminada lechuga de pages.",
+      "menu": "Menú bbq finde 45€",
+      "plato": null,
+      "propuesta": "COMPLEMENTO",
+      "confianza": 55,
+      "motivo": "La clasificación automática es válida, pero el nombre parece una elaboración culinaria.",
+      "accion_ids": [
+        "ACT-81F7E49200E2"
+      ],
+      "estado": "PENDIENTE",
+      "decision": null
+    },
+    {
+      "incidencia_id": "INC-87A4FC35D21C",
+      "numero": 4,
+      "nivel": "AVISO",
+      "tipo": "CLASIFICACION_DUDOSA",
+      "nombre": "Salsa Allioli. natural. bote de 1 lt.",
+      "menu": "Menú bbq finde 45€",
+      "plato": null,
+      "propuesta": "COMPLEMENTO",
+      "confianza": 55,
+      "motivo": "La clasificación automática es válida, pero el nombre parece una elaboración culinaria.",
+      "accion_ids": [
+        "ACT-A2357EF24A6A"
+      ],
+      "estado": "PENDIENTE",
+      "decision": null
+    },
+    {
+      "incidencia_id": "INC-4EE0137D569E",
+      "numero": 5,
+      "nivel": "AVISO",
+      "tipo": "CLASIFICACION_DUDOSA",
+      "nombre": "Tartar de fuet",
+      "menu": "Menú paella finde 45€",
+      "plato": null,
+      "propuesta": "ARTICULO_DIRECTO",
+      "confianza": 65,
+      "motivo": "La clasificación automática es válida, pero el nombre parece una elaboración culinaria.",
+      "accion_ids": [
+        "ACT-87B3A5ADADC9"
+      ],
+      "estado": "PENDIENTE",
+      "decision": null
+    },
+    {
+      "incidencia_id": "INC-8AB3F460B7F5",
+      "numero": 6,
+      "nivel": "AVISO",
+      "tipo": "CLASIFICACION_DUDOSA",
+      "nombre": "Calçots en tempura!!!",
+      "menu": "Menú paella finde 45€",
+      "plato": null,
+      "propuesta": "COMPLEMENTO",
+      "confianza": 55,
+      "motivo": "La clasificación automática es válida, pero el nombre parece una elaboración culinaria.",
+      "accion_ids": [
+        "ACT-5076EEDD489F"
+      ],
+      "estado": "PENDIENTE",
+      "decision": null
+    },
+    {
+      "incidencia_id": "INC-89494F0463CB",
+      "numero": 7,
+      "nivel": "AVISO",
+      "tipo": "CLASIFICACION_DUDOSA",
+      "nombre": "Ensalada para calçotada terminada lechuga de pages.",
+      "menu": "Menú paella finde 45€",
+      "plato": null,
+      "propuesta": "COMPLEMENTO",
+      "confianza": 55,
+      "motivo": "La clasificación automática es válida, pero el nombre parece una elaboración culinaria.",
+      "accion_ids": [
+        "ACT-9CF09B3DDCE1"
+      ],
+      "estado": "PENDIENTE",
+      "decision": null
+    },
+    {
+      "incidencia_id": "INC-1AB2CD5B171B",
+      "numero": 8,
+      "nivel": "AVISO",
+      "tipo": "CLASIFICACION_DUDOSA",
+      "nombre": "Salsa Allioli. natural. bote de 1 lt.",
+      "menu": "Menú paella finde 45€",
+      "plato": null,
+      "propuesta": "COMPLEMENTO",
+      "confianza": 55,
+      "motivo": "La clasificación automática es válida, pero el nombre parece una elaboración culinaria.",
+      "accion_ids": [
+        "ACT-3AC5D43194AF"
+      ],
+      "estado": "PENDIENTE",
+      "decision": null
+    },
+    {
+      "incidencia_id": "INC-ADF298A81943",
+      "numero": 9,
+      "nivel": "AVISO",
+      "tipo": "CLASIFICACION_DUDOSA",
+      "nombre": "Salsa romesco.",
+      "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+      "plato": null,
+      "propuesta": "ARTICULO_DIRECTO",
+      "confianza": 65,
+      "motivo": "La clasificación automática es válida, pero el nombre parece una elaboración culinaria.",
+      "accion_ids": [
+        "ACT-566E86C47D26",
+        "ACT-8C0AD44AD351",
+        "ACT-F1AD49D84857"
+      ],
+      "estado": "PENDIENTE",
+      "decision": null
+    },
+    {
+      "incidencia_id": "INC-1EA9263B90A1",
+      "numero": 10,
+      "nivel": "AVISO",
+      "tipo": "CLASIFICACION_DUDOSA",
+      "nombre": "Ensalada para calçotada terminada lechuga de pages.",
+      "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+      "plato": null,
+      "propuesta": "COMPLEMENTO",
+      "confianza": 55,
+      "motivo": "La clasificación automática es válida, pero el nombre parece una elaboración culinaria.",
+      "accion_ids": [
+        "ACT-E261F9424E6F",
+        "ACT-3A1C1B056B6B",
+        "ACT-BD85A8EA2792"
+      ],
+      "estado": "PENDIENTE",
+      "decision": null
+    },
+    {
+      "incidencia_id": "INC-465CB80BE370",
+      "numero": 11,
+      "nivel": "AVISO",
+      "tipo": "CLASIFICACION_DUDOSA",
+      "nombre": "Salsa Allioli. natural. bote de 1 lt.",
+      "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+      "plato": null,
+      "propuesta": "COMPLEMENTO",
+      "confianza": 55,
+      "motivo": "La clasificación automática es válida, pero el nombre parece una elaboración culinaria.",
+      "accion_ids": [
+        "ACT-A98BB540A4D7",
+        "ACT-A36F90EF397F",
+        "ACT-D457C39A1469",
+        "ACT-B25D5D90B290"
+      ],
+      "estado": "PENDIENTE",
+      "decision": null
+    },
+    {
+      "incidencia_id": "INC-4BAD482B0083",
+      "numero": 12,
+      "nivel": "BLOQUEANTE",
+      "tipo": "BLOQUEO",
+      "nombre": "Parmentier de patata",
+      "menu": "MENU BODA",
+      "plato": "Solomillo de cerdo con parmentier patata i salsa naranja",
+      "propuesta": "GUARNICION",
+      "confianza": 0,
+      "motivo": "Elemento o componente no resuelto antes de importar.",
+      "accion_ids": [
+        "ACT-0FE1612047AD"
+      ],
+      "estado": "PENDIENTE",
+      "decision": null
+    },
+    {
+      "incidencia_id": "INC-5A178FF6E198",
+      "numero": 13,
+      "nivel": "BLOQUEANTE",
+      "tipo": "BLOQUEO",
+      "nombre": "mesa ensalada lechuga unid",
+      "menu": "MENU COCTEL.",
+      "plato": "CALÇOTADA EN MESA ENSALADA. LECHUGA UNID.",
+      "propuesta": "GUARNICION",
+      "confianza": 0,
+      "motivo": "Elemento o componente no resuelto antes de importar.",
+      "accion_ids": [
+        "ACT-A940504982F6"
+      ],
+      "estado": "PENDIENTE",
+      "decision": null
+    },
+    {
+      "incidencia_id": "INC-B818CB0F29D4",
+      "numero": 14,
+      "nivel": "BLOQUEANTE",
+      "tipo": "BLOQUEO",
+      "nombre": "calcotada",
+      "menu": "MENU COCTEL.",
+      "plato": "CALÇOTADA EN MESA ENSALADA. LECHUGA UNID.",
+      "propuesta": "COMPONENTE_PENDIENTE",
+      "confianza": 0,
+      "motivo": "Elemento o componente no resuelto antes de importar.",
+      "accion_ids": [
+        "ACT-21B73C0CC9C9"
+      ],
+      "estado": "PENDIENTE",
+      "decision": null
+    },
+    {
+      "incidencia_id": "INC-1D179C761146",
+      "numero": 15,
+      "nivel": "AVISO",
+      "tipo": "CLASIFICACION_DUDOSA",
+      "nombre": "Croqueta cocido . ( caja 4 kg).  30,49€",
+      "menu": "MENU COCTEL.",
+      "plato": null,
+      "propuesta": "ARTICULO_DIRECTO",
+      "confianza": 65,
+      "motivo": "La clasificación automática es válida, pero el nombre parece una elaboración culinaria.",
+      "accion_ids": [
+        "ACT-BDC482638640"
+      ],
+      "estado": "PENDIENTE",
+      "decision": null
+    },
+    {
+      "incidencia_id": "INC-2C62CD475336",
+      "numero": 16,
+      "nivel": "AVISO",
+      "tipo": "CLASIFICACION_DUDOSA",
+      "nombre": "A.P GAZPACHO DE FRAMBUESA Y BITER KAS.",
+      "menu": "MENU COCTEL.",
+      "plato": null,
+      "propuesta": "ARTICULO_DIRECTO",
+      "confianza": 65,
+      "motivo": "La clasificación automática es válida, pero el nombre parece una elaboración culinaria.",
+      "accion_ids": [
+        "ACT-6298791234C4"
+      ],
+      "estado": "PENDIENTE",
+      "decision": null
+    },
+    {
+      "incidencia_id": "INC-BBA9E28809C9",
+      "numero": 17,
+      "nivel": "AVISO",
+      "tipo": "CLASIFICACION_DUDOSA",
+      "nombre": "A.P CREMA DE AJO BLANCO, SARDINA Y UVA.",
+      "menu": "MENU COCTEL.",
+      "plato": null,
+      "propuesta": "ARTICULO_DIRECTO",
+      "confianza": 65,
+      "motivo": "La clasificación automática es válida, pero el nombre parece una elaboración culinaria.",
+      "accion_ids": [
+        "ACT-54349E53B9D1"
+      ],
+      "estado": "PENDIENTE",
+      "decision": null
+    },
+    {
+      "incidencia_id": "INC-A9E6A03B9132",
+      "numero": 18,
+      "nivel": "AVISO",
+      "tipo": "CLASIFICACION_DUDOSA",
+      "nombre": "A.P SALMOREJO DE SANDIA.",
+      "menu": "MENU COCTEL.",
+      "plato": null,
+      "propuesta": "ARTICULO_DIRECTO",
+      "confianza": 65,
+      "motivo": "La clasificación automática es válida, pero el nombre parece una elaboración culinaria.",
+      "accion_ids": [
+        "ACT-7C792CAA3EDE"
+      ],
+      "estado": "PENDIENTE",
+      "decision": null
+    },
+    {
+      "incidencia_id": "INC-64278A7CC0C5",
+      "numero": 19,
+      "nivel": "AVISO",
+      "tipo": "CLASIFICACION_DUDOSA",
+      "nombre": "A.P TARTAR DE SALMON MARINADO.",
+      "menu": "MENU COCTEL.",
+      "plato": null,
+      "propuesta": "ARTICULO_DIRECTO",
+      "confianza": 65,
+      "motivo": "La clasificación automática es válida, pero el nombre parece una elaboración culinaria.",
+      "accion_ids": [
+        "ACT-95B30A29E563"
+      ],
+      "estado": "PENDIENTE",
+      "decision": null
+    },
+    {
+      "incidencia_id": "INC-54D5966D02C0",
+      "numero": 20,
+      "nivel": "AVISO",
+      "tipo": "CLASIFICACION_DUDOSA",
+      "nombre": "A.P BROCHETA DE POLLO CON SALSA KARE.",
+      "menu": "MENU COCTEL.",
+      "plato": null,
+      "propuesta": "ARTICULO_DIRECTO",
+      "confianza": 65,
+      "motivo": "La clasificación automática es válida, pero el nombre parece una elaboración culinaria.",
+      "accion_ids": [
+        "ACT-E0F841B4EF0F"
+      ],
+      "estado": "PENDIENTE",
+      "decision": null
+    },
+    {
+      "incidencia_id": "INC-4E115CB64B7A",
+      "numero": 21,
+      "nivel": "AVISO",
+      "tipo": "CLASIFICACION_DUDOSA",
+      "nombre": "Tarta de celebracion CAL JAN",
+      "menu": "MENU COCTEL.",
+      "plato": null,
+      "propuesta": "ARTICULO_DIRECTO",
+      "confianza": 65,
+      "motivo": "La clasificación automática es válida, pero el nombre parece una elaboración culinaria.",
+      "accion_ids": [
+        "ACT-553E7F3F45C7"
+      ],
+      "estado": "PENDIENTE",
+      "decision": null
+    },
+    {
+      "incidencia_id": "INC-DF065CC0EB9C",
+      "numero": 22,
+      "nivel": "AVISO",
+      "tipo": "CLASIFICACION_DUDOSA",
+      "nombre": "Parrillada de verduras. Precio Pax.",
+      "menu": "MENU COCTEL.",
+      "plato": null,
+      "propuesta": "ARTICULO_DIRECTO",
+      "confianza": 65,
+      "motivo": "La clasificación automática es válida, pero el nombre parece una elaboración culinaria.",
+      "accion_ids": [
+        "ACT-81C7E0F1F99B"
+      ],
+      "estado": "PENDIENTE",
+      "decision": null
+    },
+    {
+      "incidencia_id": "INC-F2E35D094F70",
+      "numero": 23,
+      "nivel": "AVISO",
+      "tipo": "CLASIFICACION_DUDOSA",
+      "nombre": "Salsa Allioli. natural. bote de 1 lt.",
+      "menu": "MENU COCTEL.",
+      "plato": null,
+      "propuesta": "COMPLEMENTO",
+      "confianza": 55,
+      "motivo": "La clasificación automática es válida, pero el nombre parece una elaboración culinaria.",
+      "accion_ids": [
+        "ACT-E454A01E5D18"
+      ],
+      "estado": "PENDIENTE",
+      "decision": null
+    },
+    {
+      "incidencia_id": "INC-A7C99238DF4A",
+      "numero": 24,
+      "nivel": "BLOQUEANTE",
+      "tipo": "BLOQUEO",
+      "nombre": "Crema de marisco",
+      "menu": "MENU FIN DE AÑO 2025",
+      "plato": "Crema de marisco, vieras con bombon de coco y curri.",
+      "propuesta": "RECETA_PRINCIPAL",
+      "confianza": 0,
+      "motivo": "Elemento o componente no resuelto antes de importar.",
+      "accion_ids": [
+        "ACT-4941DE7C07F5"
+      ],
+      "estado": "PENDIENTE",
+      "decision": null
+    },
+    {
+      "incidencia_id": "INC-FD63461E9ADA",
+      "numero": 25,
+      "nivel": "BLOQUEANTE",
+      "tipo": "BLOQUEO",
+      "nombre": "vieras",
+      "menu": "MENU FIN DE AÑO 2025",
+      "plato": "Crema de marisco, vieras con bombon de coco y curri.",
+      "propuesta": "GUARNICION",
+      "confianza": 0,
+      "motivo": "Elemento o componente no resuelto antes de importar.",
+      "accion_ids": [
+        "ACT-AEBAC517579A"
+      ],
+      "estado": "PENDIENTE",
+      "decision": null
+    },
+    {
+      "incidencia_id": "INC-F9B5E8C53DE5",
+      "numero": 26,
+      "nivel": "BLOQUEANTE",
+      "tipo": "BLOQUEO",
+      "nombre": "bombon de coco y curri",
+      "menu": "MENU FIN DE AÑO 2025",
+      "plato": "Crema de marisco, vieras con bombon de coco y curri.",
+      "propuesta": "ELABORACION",
+      "confianza": 0,
+      "motivo": "Elemento o componente no resuelto antes de importar.",
+      "accion_ids": [
+        "ACT-8937D3C683D4"
+      ],
+      "estado": "PENDIENTE",
+      "decision": null
+    },
+    {
+      "incidencia_id": "INC-DFB8CC4956CA",
+      "numero": 27,
+      "nivel": "BLOQUEANTE",
+      "tipo": "BLOQUEO",
+      "nombre": "Lenguado a la menier",
+      "menu": "MENU FIN DE AÑO 2025",
+      "plato": "Lenguado a la menier de yondu con hinojo y avellanas",
+      "propuesta": "RECETA_PRINCIPAL",
+      "confianza": 0,
+      "motivo": "Elemento o componente no resuelto antes de importar.",
+      "accion_ids": [
+        "ACT-BB082042FBD9"
+      ],
+      "estado": "PENDIENTE",
+      "decision": null
+    },
+    {
+      "incidencia_id": "INC-7DAC633F177C",
+      "numero": 28,
+      "nivel": "BLOQUEANTE",
+      "tipo": "BLOQUEO",
+      "nombre": "yondu",
+      "menu": "MENU FIN DE AÑO 2025",
+      "plato": "Lenguado a la menier de yondu con hinojo y avellanas",
+      "propuesta": "CONDIMENTO",
+      "confianza": 0,
+      "motivo": "Elemento o componente no resuelto antes de importar.",
+      "accion_ids": [
+        "ACT-010483CF70CD"
+      ],
+      "estado": "PENDIENTE",
+      "decision": null
+    },
+    {
+      "incidencia_id": "INC-60E565A7F767",
+      "numero": 29,
+      "nivel": "BLOQUEANTE",
+      "tipo": "BLOQUEO",
+      "nombre": "hinojo",
+      "menu": "MENU FIN DE AÑO 2025",
+      "plato": "Lenguado a la menier de yondu con hinojo y avellanas",
+      "propuesta": "GUARNICION",
+      "confianza": 0,
+      "motivo": "Elemento o componente no resuelto antes de importar.",
+      "accion_ids": [
+        "ACT-96C5FDB815BE"
+      ],
+      "estado": "PENDIENTE",
+      "decision": null
+    },
+    {
+      "incidencia_id": "INC-074D37E8390B",
+      "numero": 30,
+      "nivel": "BLOQUEANTE",
+      "tipo": "BLOQUEO",
+      "nombre": "avellanas",
+      "menu": "MENU FIN DE AÑO 2025",
+      "plato": "Lenguado a la menier de yondu con hinojo y avellanas",
+      "propuesta": "ACABADO",
+      "confianza": 0,
+      "motivo": "Elemento o componente no resuelto antes de importar.",
+      "accion_ids": [
+        "ACT-B12F81C5B84C"
+      ],
+      "estado": "PENDIENTE",
+      "decision": null
+    },
+    {
+      "incidencia_id": "INC-CB9CBEDD2E33",
+      "numero": 31,
+      "nivel": "BLOQUEANTE",
+      "tipo": "BLOQUEO",
+      "nombre": "Tournedo de solomillo Rossini",
+      "menu": "MENU FIN DE AÑO 2025",
+      "plato": "Tournedo de solomillo Rossini con chalotas glaseadas.",
+      "propuesta": "RECETA_PRINCIPAL",
+      "confianza": 0,
+      "motivo": "Elemento o componente no resuelto antes de importar.",
+      "accion_ids": [
+        "ACT-BD116539BAA2"
+      ],
+      "estado": "PENDIENTE",
+      "decision": null
+    },
+    {
+      "incidencia_id": "INC-2D27D9E57F2C",
+      "numero": 32,
+      "nivel": "BLOQUEANTE",
+      "tipo": "BLOQUEO",
+      "nombre": "chalotas glaseadas",
+      "menu": "MENU FIN DE AÑO 2025",
+      "plato": "Tournedo de solomillo Rossini con chalotas glaseadas.",
+      "propuesta": "GUARNICION",
+      "confianza": 0,
+      "motivo": "Elemento o componente no resuelto antes de importar.",
+      "accion_ids": [
+        "ACT-6AF76A2C6206"
+      ],
+      "estado": "PENDIENTE",
+      "decision": null
+    },
+    {
+      "incidencia_id": "INC-7C57C1A8ED32",
+      "numero": 33,
+      "nivel": "AVISO",
+      "tipo": "CLASIFICACION_DUDOSA",
+      "nombre": "A.P TARTAR DE SALMON MARINADO.",
+      "menu": "MENU FIN DE AÑO 2025",
+      "plato": null,
+      "propuesta": "ARTICULO_DIRECTO",
+      "confianza": 65,
+      "motivo": "La clasificación automática es válida, pero el nombre parece una elaboración culinaria.",
+      "accion_ids": [
+        "ACT-45FE63158472"
+      ],
+      "estado": "PENDIENTE",
+      "decision": null
+    },
+    {
+      "incidencia_id": "INC-ECD68C03FDEC",
+      "numero": 34,
+      "nivel": "AVISO",
+      "tipo": "CLASIFICACION_DUDOSA",
+      "nombre": "lingote de ferrero rocher, espuma de baeylis, y frambuesa liofilizada",
+      "menu": "MENU FIN DE AÑO 2025",
+      "plato": null,
+      "propuesta": "COMPLEMENTO",
+      "confianza": 55,
+      "motivo": "La clasificación automática es válida, pero el nombre parece una elaboración culinaria.",
+      "accion_ids": [
+        "ACT-16EACFF39B37"
+      ],
+      "estado": "PENDIENTE",
+      "decision": null
+    },
+    {
+      "incidencia_id": "INC-104DC0444E3E",
+      "numero": 35,
+      "nivel": "AVISO",
+      "tipo": "CLASIFICACION_DUDOSA",
+      "nombre": "Hamburguesa vegana",
+      "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+      "plato": null,
+      "propuesta": "ARTICULO_DIRECTO",
+      "confianza": 65,
+      "motivo": "La clasificación automática es válida, pero el nombre parece una elaboración culinaria.",
+      "accion_ids": [
+        "ACT-DF26F7946957"
+      ],
+      "estado": "PENDIENTE",
+      "decision": null
+    },
+    {
+      "incidencia_id": "INC-84D5A4FDAB24",
+      "numero": 36,
+      "nivel": "AVISO",
+      "tipo": "CLASIFICACION_DUDOSA",
+      "nombre": "Coulant de chocolate",
+      "menu": "MENU CALÇOTADA CARTA. 15-12-25",
+      "plato": null,
+      "propuesta": "COMPLEMENTO",
+      "confianza": 55,
+      "motivo": "La clasificación automática es válida, pero el nombre parece una elaboración culinaria.",
+      "accion_ids": [
+        "ACT-55C340417755"
+      ],
+      "estado": "PENDIENTE",
+      "decision": null
+    }
+  ],
+  "historial": [],
+  "resumen_revision": {
+    "iniciales": 36,
+    "pendientes": 36,
+    "bloqueantes": 12,
+    "resueltas": 0,
+    "eliminadas": 0,
+    "estado_plan": "BLOQUEADA"
+  },
+  "escrituras_habilitadas": false
+}

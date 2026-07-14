@@ -1,0 +1,32 @@
+[
+  {
+    "nombre": "Tomate triturado",
+    "cantidad": 7.0,
+    "unidad": "kg",
+    "familia": "",
+    "proveedor_preferente": "sardà",
+    "motivo": "",
+    "prioridad": 95,
+    "articulo_id": "",
+    "fecha_necesaria": "2026-07-11",
+    "estado": "comprada",
+    "id": "NEC-8B60EFC4B2",
+    "creado_en": "2026-07-10T20:46:18",
+    "actualizado_en": "2026-07-11T10:18:20"
+  },
+  {
+    "nombre": "Arroz bomba",
+    "cantidad": 5.0,
+    "unidad": "kg",
+    "familia": "Arroces",
+    "proveedor_preferente": "makro",
+    "motivo": "",
+    "prioridad": 50,
+    "articulo_id": "ART000355",
+    "fecha_necesaria": "",
+    "estado": "comprada",
+    "id": "NEC-847E840E75",
+    "creado_en": "2026-07-11T16:29:02",
+    "actualizado_en": "2026-07-11T16:57:52"
+  }
+]

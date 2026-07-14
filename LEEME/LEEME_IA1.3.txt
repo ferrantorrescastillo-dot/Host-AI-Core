@@ -1,0 +1,20 @@
+HOST AI 6.0.4 — IA1.3 COMPRENSIÓN CONVERSACIONAL
+
+INSTALACIÓN
+1. Haz una copia de tu versión actual.
+2. Copia el contenido del ZIP encima del proyecto que ya contiene IA1.2.
+3. Acepta sustituir los archivos existentes.
+4. Ejecuta: python main.py
+5. Entra en Host AI Base y abre la opción 11.
+
+PRUEBA RÁPIDA
+Tú: Necesito comprar tomates
+Host AI pregunta cantidad y unidad.
+Tú: 5 kg
+Host AI conserva tomates y completa la orden sin ejecutarla.
+
+También puedes probar:
+- Tengo una boda
+- para 80 personas mañana a las 13:30
+- Crea una ficha de ensaladilla
+- cancelar

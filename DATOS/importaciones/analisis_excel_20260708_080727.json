@@ -1,0 +1,324 @@
+{
+  "archivo": "/mnt/data/Host_AI_3_0_2_2_Detector_Documentos_Excel/DATOS/importaciones/excel_demo_detector.xlsx",
+  "nombre_archivo": "excel_demo_detector.xlsx",
+  "hojas": [
+    {
+      "nombre": "Escandallos",
+      "filas": 3,
+      "columnas": 6,
+      "celdas_utilizadas": 18,
+      "columnas_detectadas": [
+        {
+          "indice": 1,
+          "letra": "A",
+          "nombre_detectado": "Receta",
+          "tipo_detectado": "texto",
+          "total_celdas": 2,
+          "celdas_con_dato": 2,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "Carrillera melosa",
+            "Carrillera melosa"
+          ]
+        },
+        {
+          "indice": 2,
+          "letra": "B",
+          "nombre_detectado": "Ingrediente",
+          "tipo_detectado": "texto",
+          "total_celdas": 2,
+          "celdas_con_dato": 2,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "Carrillera de ternera",
+            "Demi-glace"
+          ]
+        },
+        {
+          "indice": 3,
+          "letra": "C",
+          "nombre_detectado": "Cantidad",
+          "tipo_detectado": "numero",
+          "total_celdas": 2,
+          "celdas_con_dato": 2,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            1.8,
+            0.8
+          ]
+        },
+        {
+          "indice": 4,
+          "letra": "D",
+          "nombre_detectado": "Unidad",
+          "tipo_detectado": "texto",
+          "total_celdas": 2,
+          "celdas_con_dato": 2,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "kg",
+            "L"
+          ]
+        },
+        {
+          "indice": 5,
+          "letra": "E",
+          "nombre_detectado": "Merma",
+          "tipo_detectado": "numero",
+          "total_celdas": 2,
+          "celdas_con_dato": 2,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            10,
+            0
+          ]
+        },
+        {
+          "indice": 6,
+          "letra": "F",
+          "nombre_detectado": "Coste",
+          "tipo_detectado": "numero",
+          "total_celdas": 2,
+          "celdas_con_dato": 2,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            8.5,
+            3
+          ]
+        }
+      ],
+      "vista_previa": [
+        {
+          "Receta": "Carrillera melosa",
+          "Ingrediente": "Carrillera de ternera",
+          "Cantidad": 1.8,
+          "Unidad": "kg",
+          "Merma": 10,
+          "Coste": 8.5
+        },
+        {
+          "Receta": "Carrillera melosa",
+          "Ingrediente": "Demi-glace",
+          "Cantidad": 0.8,
+          "Unidad": "L",
+          "Merma": 0,
+          "Coste": 3
+        }
+      ]
+    },
+    {
+      "nombre": "Inventario",
+      "filas": 3,
+      "columnas": 6,
+      "celdas_utilizadas": 18,
+      "columnas_detectadas": [
+        {
+          "indice": 1,
+          "letra": "A",
+          "nombre_detectado": "Producto",
+          "tipo_detectado": "texto",
+          "total_celdas": 2,
+          "celdas_con_dato": 2,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "Carrillera de ternera",
+            "Cebolla"
+          ]
+        },
+        {
+          "indice": 2,
+          "letra": "B",
+          "nombre_detectado": "Stock",
+          "tipo_detectado": "numero",
+          "total_celdas": 2,
+          "celdas_con_dato": 2,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            10,
+            5
+          ]
+        },
+        {
+          "indice": 3,
+          "letra": "C",
+          "nombre_detectado": "Cantidad",
+          "tipo_detectado": "numero",
+          "total_celdas": 2,
+          "celdas_con_dato": 2,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            10,
+            5
+          ]
+        },
+        {
+          "indice": 4,
+          "letra": "D",
+          "nombre_detectado": "Unidad",
+          "tipo_detectado": "texto",
+          "total_celdas": 2,
+          "celdas_con_dato": 2,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "kg",
+            "kg"
+          ]
+        },
+        {
+          "indice": 5,
+          "letra": "E",
+          "nombre_detectado": "Ubicacion",
+          "tipo_detectado": "texto",
+          "total_celdas": 2,
+          "celdas_con_dato": 2,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "Camara 1",
+            "Almacen seco"
+          ]
+        },
+        {
+          "indice": 6,
+          "letra": "F",
+          "nombre_detectado": "Caducidad",
+          "tipo_detectado": "fecha",
+          "total_celdas": 2,
+          "celdas_con_dato": 2,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "2026-07-20T00:00:00",
+            "2026-07-25T00:00:00"
+          ]
+        }
+      ],
+      "vista_previa": [
+        {
+          "Producto": "Carrillera de ternera",
+          "Stock": 10,
+          "Cantidad": 10,
+          "Unidad": "kg",
+          "Ubicacion": "Camara 1",
+          "Caducidad": "2026-07-20T00:00:00"
+        },
+        {
+          "Producto": "Cebolla",
+          "Stock": 5,
+          "Cantidad": 5,
+          "Unidad": "kg",
+          "Ubicacion": "Almacen seco",
+          "Caducidad": "2026-07-25T00:00:00"
+        }
+      ]
+    },
+    {
+      "nombre": "Compras",
+      "filas": 3,
+      "columnas": 6,
+      "celdas_utilizadas": 18,
+      "columnas_detectadas": [
+        {
+          "indice": 1,
+          "letra": "A",
+          "nombre_detectado": "Proveedor",
+          "tipo_detectado": "texto",
+          "total_celdas": 2,
+          "celdas_con_dato": 2,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "Makro",
+            "Makro"
+          ]
+        },
+        {
+          "indice": 2,
+          "letra": "B",
+          "nombre_detectado": "Pedido",
+          "tipo_detectado": "texto",
+          "total_celdas": 2,
+          "celdas_con_dato": 2,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "PED001",
+            "PED001"
+          ]
+        },
+        {
+          "indice": 3,
+          "letra": "C",
+          "nombre_detectado": "Producto",
+          "tipo_detectado": "texto",
+          "total_celdas": 2,
+          "celdas_con_dato": 2,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "Carrillera",
+            "Cebolla"
+          ]
+        },
+        {
+          "indice": 4,
+          "letra": "D",
+          "nombre_detectado": "Cantidad",
+          "tipo_detectado": "numero",
+          "total_celdas": 2,
+          "celdas_con_dato": 2,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            10,
+            5
+          ]
+        },
+        {
+          "indice": 5,
+          "letra": "E",
+          "nombre_detectado": "Precio",
+          "tipo_detectado": "numero",
+          "total_celdas": 2,
+          "celdas_con_dato": 2,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            8.5,
+            1.2
+          ]
+        },
+        {
+          "indice": 6,
+          "letra": "F",
+          "nombre_detectado": "Fecha",
+          "tipo_detectado": "fecha",
+          "total_celdas": 2,
+          "celdas_con_dato": 2,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "2026-07-08T00:00:00",
+            "2026-07-08T00:00:00"
+          ]
+        }
+      ],
+      "vista_previa": [
+        {
+          "Proveedor": "Makro",
+          "Pedido": "PED001",
+          "Producto": "Carrillera",
+          "Cantidad": 10,
+          "Precio": 8.5,
+          "Fecha": "2026-07-08T00:00:00"
+        },
+        {
+          "Proveedor": "Makro",
+          "Pedido": "PED001",
+          "Producto": "Cebolla",
+          "Cantidad": 5,
+          "Precio": 1.2,
+          "Fecha": "2026-07-08T00:00:00"
+        }
+      ]
+    }
+  ],
+  "total_hojas": 3,
+  "total_filas": 9,
+  "total_columnas": 18,
+  "total_celdas_utilizadas": 54,
+  "id": "ANEXCEL-5B97570EA8",
+  "creado_en": "2026-07-08T08:07:27"
+}

@@ -1,0 +1,218 @@
+{
+  "version": "3.0.3.5.2",
+  "log": [
+    {
+      "aplicado": true,
+      "articulo_id": "ART-CARRILLERA",
+      "nombre_articulo": "Carrillera de ternera",
+      "precio_anterior": 8.0,
+      "precio_nuevo": 8.45,
+      "unidad": "kg",
+      "proveedor_id": "PROV-MAKRO",
+      "variacion_porcentaje": 5.62,
+      "forzado": false,
+      "fecha_aplicacion": "2026-07-08T10:57:30",
+      "errores": [],
+      "avisos": [],
+      "cambio": {
+        "articulo_id": "ART-CARRILLERA",
+        "nombre_articulo": "Carrillera de ternera",
+        "proveedor_id": "PROV-MAKRO",
+        "precio_anterior": 8.0,
+        "precio_nuevo": 8.45,
+        "unidad": "kg",
+        "variacion_porcentaje": 5.62,
+        "requiere_revision": false
+      },
+      "lectura_host_ai": "Precio actualizado: Carrillera de ternera 8.0 -> 8.45."
+    },
+    {
+      "aplicado": false,
+      "errores": [
+        "Variación fuerte (87.5%). Requiere revisión."
+      ],
+      "avisos": [],
+      "cambio": {
+        "articulo_id": "ART-CARRILLERA",
+        "nombre_articulo": "Carrillera de ternera",
+        "proveedor_id": "PROV-MAKRO",
+        "precio_anterior": 8.0,
+        "precio_nuevo": 15.0,
+        "unidad": "kg",
+        "variacion_porcentaje": 87.5,
+        "requiere_revision": false
+      },
+      "lectura_host_ai": "No se aplicó cambio de precio: Variación fuerte (87.5%). Requiere revisión."
+    },
+    {
+      "aplicado": true,
+      "articulo_id": "ART-CARRILLERA",
+      "nombre_articulo": "Carrillera de ternera",
+      "precio_anterior": 0.0,
+      "precio_nuevo": 8.45,
+      "unidad": "kg",
+      "proveedor_id": "PROV-MAKRO",
+      "variacion_porcentaje": 0.0,
+      "forzado": true,
+      "fecha_aplicacion": "2026-07-08T12:16:54",
+      "errores": [],
+      "avisos": [],
+      "cambio": {
+        "articulo_id": "ART-CARRILLERA",
+        "nombre_articulo": "Carrillera de ternera",
+        "proveedor_id": "PROV-MAKRO",
+        "proveedor_nombre": "",
+        "precio_anterior": 0.0,
+        "precio_nuevo": 8.45,
+        "unidad": "kg",
+        "diferencia": 8.45,
+        "variacion_porcentaje": 0.0,
+        "numero_factura": "",
+        "fecha_factura": "",
+        "origen_linea": {
+          "descripcion_factura": "Carrillera Ternera",
+          "cantidad": 8.0,
+          "unidad": "kg",
+          "precio_unitario": 8.45,
+          "importe": 67.6,
+          "proveedor_id": "PROV-MAKRO",
+          "articulo_id": "ART-CARRILLERA",
+          "nombre_articulo": "Carrillera de ternera",
+          "confianza": 94.23,
+          "metodo": "similitud_texto",
+          "requiere_revision": false,
+          "candidatos": [
+            {
+              "articulo_id": "ART-CARRILLERA",
+              "nombre_articulo": "Carrillera de ternera",
+              "confianza": 94.23,
+              "metodo": "similitud_texto",
+              "motivos": [
+                "Palabras coincidentes: carrillera, ternera"
+              ],
+              "proveedor_id": "PROV-MAKRO",
+              "unidad": "kg",
+              "familia": "carnes"
+            }
+          ],
+          "decision_usuario": "",
+          "avisos": [],
+          "origen_linea": {
+            "descripcion": "Carrillera Ternera",
+            "cantidad": 8.0,
+            "unidad": "kg",
+            "precio_unitario": 8.45,
+            "importe": 67.6,
+            "descuento": 0.0,
+            "iva_porcentaje": 0.0,
+            "codigo_proveedor": "",
+            "articulo_id_sugerido": "",
+            "proveedor_id": "PROV-MAKRO",
+            "numero_factura": "",
+            "fecha_factura": "",
+            "confianza": 100.0,
+            "origen_texto": "Carrillera Ternera 8 KG 8,45 67,60",
+            "avisos": [],
+            "id": "LINFAC-66C38A2C95",
+            "creado_en": "2026-07-08T12:16:54"
+          },
+          "id": "RELLINART-FC33A4752D",
+          "creado_en": "2026-07-08T12:16:54"
+        },
+        "accion_sugerida": "actualizar",
+        "requiere_revision": false,
+        "avisos": [
+          "No hay precio anterior."
+        ],
+        "id": "CAMBPREC-273ED34FF5",
+        "creado_en": "2026-07-08T12:16:54"
+      },
+      "lectura_host_ai": "Precio actualizado: Carrillera de ternera 0.0 -> 8.45."
+    },
+    {
+      "aplicado": true,
+      "articulo_id": "ART-CARRILLERA",
+      "nombre_articulo": "Carrillera de ternera",
+      "precio_anterior": 0.0,
+      "precio_nuevo": 8.45,
+      "unidad": "kg",
+      "proveedor_id": "PROV-MAKRO",
+      "variacion_porcentaje": 0.0,
+      "forzado": true,
+      "fecha_aplicacion": "2026-07-08T12:18:00",
+      "errores": [],
+      "avisos": [],
+      "cambio": {
+        "articulo_id": "ART-CARRILLERA",
+        "nombre_articulo": "Carrillera de ternera",
+        "proveedor_id": "PROV-MAKRO",
+        "proveedor_nombre": "",
+        "precio_anterior": 0.0,
+        "precio_nuevo": 8.45,
+        "unidad": "kg",
+        "diferencia": 8.45,
+        "variacion_porcentaje": 0.0,
+        "numero_factura": "",
+        "fecha_factura": "",
+        "origen_linea": {
+          "descripcion_factura": "Carrillera Ternera",
+          "cantidad": 8.0,
+          "unidad": "kg",
+          "precio_unitario": 8.45,
+          "importe": 67.6,
+          "proveedor_id": "PROV-MAKRO",
+          "articulo_id": "ART-CARRILLERA",
+          "nombre_articulo": "Carrillera de ternera",
+          "confianza": 94.23,
+          "metodo": "similitud_texto",
+          "requiere_revision": false,
+          "candidatos": [
+            {
+              "articulo_id": "ART-CARRILLERA",
+              "nombre_articulo": "Carrillera de ternera",
+              "confianza": 94.23,
+              "metodo": "similitud_texto",
+              "motivos": [
+                "Palabras coincidentes: carrillera, ternera"
+              ],
+              "proveedor_id": "PROV-MAKRO",
+              "unidad": "kg",
+              "familia": "carnes"
+            }
+          ],
+          "decision_usuario": "",
+          "avisos": [],
+          "origen_linea": {
+            "descripcion": "Carrillera Ternera",
+            "cantidad": 8.0,
+            "unidad": "kg",
+            "precio_unitario": 8.45,
+            "importe": 67.6,
+            "descuento": 0.0,
+            "iva_porcentaje": 0.0,
+            "codigo_proveedor": "",
+            "articulo_id_sugerido": "",
+            "proveedor_id": "PROV-MAKRO",
+            "numero_factura": "",
+            "fecha_factura": "",
+            "confianza": 100.0,
+            "origen_texto": "Carrillera Ternera 8 KG 8,45 67,60",
+            "avisos": [],
+            "id": "LINFAC-F00AC677C3",
+            "creado_en": "2026-07-08T12:18:00"
+          },
+          "id": "RELLINART-9E40495C55",
+          "creado_en": "2026-07-08T12:18:00"
+        },
+        "accion_sugerida": "actualizar",
+        "requiere_revision": false,
+        "avisos": [
+          "No hay precio anterior."
+        ],
+        "id": "CAMBPREC-AEBD62D94B",
+        "creado_en": "2026-07-08T12:18:00"
+      },
+      "lectura_host_ai": "Precio actualizado: Carrillera de ternera 0.0 -> 8.45."
+    }
+  ]
+}

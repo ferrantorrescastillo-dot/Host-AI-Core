@@ -1,0 +1,7 @@
+HOST AI — M1.3 RESOLUTOR DE RECETAS (NÚCLEO)
+
+1. Copiar el contenido encima del proyecto certificado M1.2.
+2. Abrir Host AI > Excel / Importaciones.
+3. Ejecutar opción 20.
+4. El diagnóstico usa copias aisladas en DATOS/mur.
+5. No modifica DATOS/db/escandallos.json.

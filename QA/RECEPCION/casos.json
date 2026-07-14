@@ -1,0 +1,262 @@
+[
+  {
+    "id": "QA-REC-001",
+    "categoria": "recepcion",
+    "usuario": "Han llegado 25 kg de arroz bomba de Makro a 2,15 €/kg.",
+    "intencion_esperada": "recepcion_mercancia",
+    "debe_pedir_confirmacion": true,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REC-002",
+    "categoria": "recepcion",
+    "usuario": "Ha llegado 10 kg de tomate pera de Frutas Plana.",
+    "intencion_esperada": "recepcion_mercancia",
+    "debe_pedir_confirmacion": true,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REC-003",
+    "categoria": "recepcion",
+    "usuario": "Me han traído 6 cajas de Coca-Cola.",
+    "intencion_esperada": "recepcion_mercancia",
+    "debe_pedir_confirmacion": true,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REC-004",
+    "categoria": "recepcion",
+    "usuario": "Acaba de venir Makro con 8 litros de aceite de oliva.",
+    "intencion_esperada": "recepcion_mercancia",
+    "debe_pedir_confirmacion": true,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REC-005",
+    "categoria": "recepcion",
+    "usuario": "Descarga de Disbesa: 12 paquetes de harina.",
+    "intencion_esperada": "recepcion_mercancia",
+    "debe_pedir_confirmacion": true,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REC-006",
+    "categoria": "recepcion",
+    "usuario": "Suma al stock 4 kg de gambón de Mercabarna.",
+    "intencion_esperada": "recepcion_mercancia",
+    "debe_pedir_confirmacion": true,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REC-007",
+    "categoria": "recepcion",
+    "usuario": "Entrada de mercancía: 15 kg de pollo.",
+    "intencion_esperada": "recepcion_mercancia",
+    "debe_pedir_confirmacion": true,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REC-008",
+    "categoria": "recepcion",
+    "usuario": "Han servido 3 bolsas de leche en polvo.",
+    "intencion_esperada": "recepcion_mercancia",
+    "debe_pedir_confirmacion": true,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REC-009",
+    "categoria": "recepcion",
+    "usuario": "Recibido albarán de Guzmán con 20 kg de cebolla.",
+    "intencion_esperada": "recepcion_mercancia",
+    "debe_pedir_confirmacion": true,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REC-010",
+    "categoria": "recepcion",
+    "usuario": "Sube al almacén 5 cajas de vino sin tocar todavía factura.",
+    "intencion_esperada": "recepcion_mercancia",
+    "debe_pedir_confirmacion": true,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REC-011",
+    "categoria": "recepcion",
+    "usuario": "Ha llegado el pedido recibido de Asia Food con 8 kg de salsa teriyaki.",
+    "intencion_esperada": "recepcion_mercancia",
+    "debe_pedir_confirmacion": true,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REC-012",
+    "categoria": "recepcion",
+    "usuario": "Me acaba de traer el proveedor 9 kg de carne.",
+    "intencion_esperada": "recepcion_mercancia",
+    "debe_pedir_confirmacion": true,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REC-013",
+    "categoria": "recepcion",
+    "usuario": "Entró mercancía: 7 unidades de nata.",
+    "intencion_esperada": "recepcion_mercancia",
+    "debe_pedir_confirmacion": true,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REC-014",
+    "categoria": "recepcion",
+    "usuario": "Han llegado 2 cajas de huevos.",
+    "intencion_esperada": "recepcion_mercancia",
+    "debe_pedir_confirmacion": true,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REC-015",
+    "categoria": "recepcion",
+    "usuario": "Recibir mercancía de Makro: 30 kg de patata.",
+    "intencion_esperada": "recepcion_mercancia",
+    "debe_pedir_confirmacion": true,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REC-016",
+    "categoria": "recepcion",
+    "usuario": "Acaban de descargar 11 kg de salmón.",
+    "intencion_esperada": "recepcion_mercancia",
+    "debe_pedir_confirmacion": true,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REC-017",
+    "categoria": "recepcion",
+    "usuario": "Albarán de La Sirena: 4 kg de calamar.",
+    "intencion_esperada": "recepcion_mercancia",
+    "debe_pedir_confirmacion": true,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REC-018",
+    "categoria": "recepcion",
+    "usuario": "Ha llegado 1 caja de bolsas al vacío.",
+    "intencion_esperada": "recepcion_mercancia",
+    "debe_pedir_confirmacion": true,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REC-019",
+    "categoria": "recepcion",
+    "usuario": "Me han dejado 14 kg de arroz redondo.",
+    "intencion_esperada": "recepcion_mercancia",
+    "debe_pedir_confirmacion": true,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REC-020",
+    "categoria": "recepcion",
+    "usuario": "Pedido recibido: 6 litros de vinagre.",
+    "intencion_esperada": "recepcion_mercancia",
+    "debe_pedir_confirmacion": true,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  }
+]

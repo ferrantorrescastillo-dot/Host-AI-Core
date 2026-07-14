@@ -1,0 +1,22 @@
+HOST AI — I1.3.3 PREIMPORTACIÓN DEFINITIVA DE MENÚS
+
+INSTALACIÓN
+1. Haz una copia de seguridad de Host AI.
+2. Descomprime este ZIP.
+3. Copia su contenido encima de la carpeta principal del proyecto.
+4. Acepta reemplazar APP/consola.py.
+
+PRUEBA
+1. Abre Host AI.
+2. Entra en Excel / Importaciones.
+3. Selecciona 16. I1.3.3 Preimportación definitiva de menús.
+4. Indica Escandallos Boronat.xlsx.
+5. Indica la hoja MENU BODA 31-1.
+
+RESULTADO ESPERADO
+- 1 menú, 12 platos, 1 artículo directo y 1 complemento.
+- Datos económicos correctos.
+- 1 aprendizaje aplicado.
+- Importación bloqueada por Parmentier de patata, ya que sigue siendo una propuesta y no una receta real.
+
+I1.3.3 NO IMPORTA NINGÚN MENÚ.

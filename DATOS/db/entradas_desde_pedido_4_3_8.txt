@@ -1,0 +1,13 @@
+HOST AI 4.3.8 - ENTRADAS DESDE PEDIDOS CONFIRMADOS
+========================================================================
+Pedidos procesados: 1
+Líneas procesadas: 3
+Entradas OK: 3
+Entradas error: 0
+Estado: ok
+
+DETALLE
+------------------------------------------------------------------------
+[OK] PED000001 | Makro | ART000355 | Arroz bomba | +7.0 kg | Movimiento registrado correctamente.
+[OK] PED000001 | Makro | ART000358 | Tomate triturado | +8.0 kg | Movimiento registrado correctamente.
+[OK] PED000001 | Makro | ART000356 | Harina fuerza | +4.0 kg | Movimiento registrado correctamente.

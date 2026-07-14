@@ -1,0 +1,45 @@
+HOST AI 6.0.3 — MODO MANUAL OPERATIVO
+======================================
+
+BASE NECESARIA
+- Debes aplicarlo sobre tu copia HOST AI 6.0.2.
+- No lo apliques sobre el original Host AI 4.0.
+
+ARCHIVOS INCLUIDOS
+- main.py
+- SERVICIOS/lanzador_host_ai_base_603.py
+- APP/consola.py
+- TESTS/test_603_lanzador_base_operativa.py
+
+INSTALACIÓN
+1. Cierra Host AI y VS Code si está ejecutando el programa.
+2. Descomprime este ZIP.
+3. Copia todo el contenido dentro de la carpeta raíz de HOST AI 6.0.2.
+4. Cuando Windows pregunte, acepta reemplazar los archivos existentes.
+5. Abre una terminal en la raíz del proyecto.
+6. Ejecuta:
+
+   python main.py
+
+NUEVO MENÚ PRINCIPAL
+1. Abrir Host AI Base (modo manual)
+2. Hablar con Host AI
+9. Herramientas técnicas y pruebas
+0. Salir
+
+QUÉ CAMBIA
+- main.py deja de abrir directamente el bootloader técnico.
+- Recupera la consola operativa manual que existía en Host AI 3.
+- Mantiene el chat actual como acceso independiente.
+- Mantiene auditorías y tests, pero separados del uso del restaurante.
+- No modifica bases de datos ni datos reales.
+
+PRUEBAS
+Para comprobar el sprint completo:
+
+   python -m pytest -q
+
+Resultado validado antes de entregar:
+36 passed
+0 failed
+0 collection errors

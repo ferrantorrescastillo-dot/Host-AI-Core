@@ -1,0 +1,20 @@
+HOST AI — I1.3.2.2 CONSTRUCTOR DEL ÁRBOL SEMÁNTICO
+
+INSTALACIÓN
+1. Haz una copia de seguridad de Host AI.
+2. Descomprime este ZIP.
+3. Copia sus carpetas encima de la raíz del proyecto Host AI.
+4. Conserva la estructura APP, SERVICIOS, TESTS y CERTIFICACION.
+
+PRUEBA
+1. Abre Host AI.
+2. Entra en Excel / Importaciones.
+3. Selecciona la opción 13.
+4. Introduce Escandallos Boronat.xlsx.
+5. Escribe la hoja MENU BODA 31-1.
+
+SEGURIDAD
+- Solo genera vista previa.
+- No importa menús.
+- No crea recetas o elaboraciones pendientes.
+- No modifica la base de datos.

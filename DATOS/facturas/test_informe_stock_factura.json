@@ -1,0 +1,99 @@
+{
+  "resultado_pipeline": {
+    "ok": true,
+    "pipeline": "base_actualizacion_stock_factura",
+    "accion": "preparar_informe",
+    "mensaje": "Informe stock: 1 entradas preparadas, 0 para revisar.",
+    "datos": {
+      "movimientos": [
+        {
+          "articulo_id": "ART-CARRILLERA",
+          "nombre_articulo": "Carrillera de ternera",
+          "cantidad": 8.0,
+          "unidad": "kg",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "",
+          "numero_factura": "F-1",
+          "fecha_factura": "",
+          "precio_unitario": 8.45,
+          "importe": 67.6,
+          "ubicacion": "",
+          "lote": "",
+          "caducidad": "",
+          "origen_linea": {
+            "articulo_id": "ART-CARRILLERA",
+            "nombre_articulo": "Carrillera de ternera",
+            "cantidad": 8,
+            "unidad": "kg",
+            "precio_unitario": 8.45,
+            "importe": 67.6,
+            "proveedor_id": "PROV-MAKRO",
+            "numero_factura": "F-1"
+          },
+          "accion_sugerida": "entrada_stock",
+          "requiere_revision": false,
+          "avisos": [],
+          "id": "MOVSTFAC-8157279D0F",
+          "creado_en": "2026-07-08T11:19:49"
+        }
+      ],
+      "total_movimientos": 1,
+      "entradas_preparadas": 1,
+      "requieren_revision": 0,
+      "sin_articulo": 0,
+      "cantidad_total_lineas": 8.0,
+      "avisos_generales": [],
+      "id": "INFSTFAC-8F701F9AA1",
+      "creado_en": "2026-07-08T11:19:49",
+      "lectura_host_ai": "Informe stock: 1 entradas preparadas, 0 para revisar."
+    },
+    "acciones_recomendadas": [
+      "Revisar movimientos marcados."
+    ],
+    "requiere_aprobacion": false,
+    "errores": [],
+    "id": "RES-417202F838",
+    "creado_en": "2026-07-08T11:19:49"
+  },
+  "movimientos": [
+    {
+      "articulo_id": "ART-CARRILLERA",
+      "nombre_articulo": "Carrillera de ternera",
+      "cantidad": 8.0,
+      "unidad": "kg",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "",
+      "numero_factura": "F-1",
+      "fecha_factura": "",
+      "precio_unitario": 8.45,
+      "importe": 67.6,
+      "ubicacion": "",
+      "lote": "",
+      "caducidad": "",
+      "origen_linea": {
+        "articulo_id": "ART-CARRILLERA",
+        "nombre_articulo": "Carrillera de ternera",
+        "cantidad": 8,
+        "unidad": "kg",
+        "precio_unitario": 8.45,
+        "importe": 67.6,
+        "proveedor_id": "PROV-MAKRO",
+        "numero_factura": "F-1"
+      },
+      "accion_sugerida": "entrada_stock",
+      "requiere_revision": false,
+      "avisos": [],
+      "id": "MOVSTFAC-8157279D0F",
+      "creado_en": "2026-07-08T11:19:49"
+    }
+  ],
+  "total_movimientos": 1,
+  "entradas_preparadas": 1,
+  "requieren_revision": 0,
+  "sin_articulo": 0,
+  "cantidad_total_lineas": 8.0,
+  "avisos_generales": [],
+  "id": "INFSTFAC-8F701F9AA1",
+  "creado_en": "2026-07-08T11:19:49",
+  "lectura_host_ai": "Informe stock: 1 entradas preparadas, 0 para revisar."
+}

@@ -1,0 +1,15 @@
+HOST AI 4.4.3 - RECEPCIÓN APLICADA A STOCK/PRECIOS
+==============================================================================
+Fecha: 2026-07-09T21:59:07
+Total líneas: 1
+Entradas stock OK: 1
+Precios actualizados: 0
+Pendientes artículo nuevo: 0
+Omitidas revisión: 0
+Errores: 0
+Estado: aplicado
+
+DETALLE
+------------------------------------------------------------------------------
+1. [OK] arroz bomba | 25.0 kg | Código: ART000355 | Stock: True | Precio actualizado: False | Movimiento: MOV00000006
+   - Movimiento registrado correctamente.

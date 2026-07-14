@@ -1,0 +1,10 @@
+I1.2.1 — INSTALACIÓN
+
+1. Haz una copia de Host AI.
+2. Copia las carpetas SERVICIOS y TESTS encima de tu proyecto.
+3. Acepta reemplazar importador_seguro_escandallos_i12.py.
+4. Vuelve a ejecutar I1.2 sobre la hoja MP boda 31-1.
+5. No confirmes la importación hasta revisar los vínculos probables y sin resolver.
+
+Prueba específica:
+python -m pytest -q TESTS/test_i121_motor_vinculacion_inteligente.py TESTS/test_i12_importador_seguro_escandallos.py

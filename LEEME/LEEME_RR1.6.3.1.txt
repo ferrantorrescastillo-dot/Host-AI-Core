@@ -1,0 +1,11 @@
+HOST AI 6.0.4 — RR1.6.3.1 Hotfix del ejecutor de certificación
+
+Instalación:
+1. Haz una copia de seguridad.
+2. Copia la carpeta TESTS encima de la carpeta TESTS de tu proyecto.
+3. Acepta reemplazar test_rr163_ejecutor_certificacion.py.
+4. Ejecuta:
+   python ejecutar_certificacion_rr163.py
+
+Corrección:
+- La prueba ya busca ejecutar_certificacion_rr163.py en la raíz del proyecto y no dentro de TESTS.

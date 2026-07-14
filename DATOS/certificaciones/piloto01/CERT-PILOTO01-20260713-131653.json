@@ -1,0 +1,159 @@
+{
+  "sprint": "PILOTO-0.1",
+  "estado": "CERTIFICADO",
+  "solo_lectura": true,
+  "auditoria": {
+    "ok": true,
+    "estado": "LISTO_PARA_PILOTO",
+    "base_dir": "C:\\PROYECTO HOST IA\\Proyecto Host AI  6.0\\Host AI 6.0",
+    "comprobaciones": [
+      {
+        "codigo": "PYTHON",
+        "ok": true,
+        "detalle": "3.13.14",
+        "severidad": "ERROR"
+      },
+      {
+        "codigo": "MAIN",
+        "ok": true,
+        "detalle": "C:\\PROYECTO HOST IA\\Proyecto Host AI  6.0\\Host AI 6.0\\main.py",
+        "severidad": "ERROR"
+      },
+      {
+        "codigo": "APP",
+        "ok": true,
+        "detalle": "C:\\PROYECTO HOST IA\\Proyecto Host AI  6.0\\Host AI 6.0\\APP",
+        "severidad": "ERROR"
+      },
+      {
+        "codigo": "CORE",
+        "ok": true,
+        "detalle": "C:\\PROYECTO HOST IA\\Proyecto Host AI  6.0\\Host AI 6.0\\CORE",
+        "severidad": "ERROR"
+      },
+      {
+        "codigo": "SERVICIOS",
+        "ok": true,
+        "detalle": "C:\\PROYECTO HOST IA\\Proyecto Host AI  6.0\\Host AI 6.0\\SERVICIOS",
+        "severidad": "ERROR"
+      },
+      {
+        "codigo": "DATOS",
+        "ok": true,
+        "detalle": "C:\\PROYECTO HOST IA\\Proyecto Host AI  6.0\\Host AI 6.0\\DATOS",
+        "severidad": "ERROR"
+      },
+      {
+        "codigo": "CONSOLA",
+        "ok": true,
+        "detalle": "C:\\PROYECTO HOST IA\\Proyecto Host AI  6.0\\Host AI 6.0\\APP\\consola.py",
+        "severidad": "ERROR"
+      },
+      {
+        "codigo": "CORE_PRINCIPAL",
+        "ok": true,
+        "detalle": "C:\\PROYECTO HOST IA\\Proyecto Host AI  6.0\\Host AI 6.0\\CORE\\host_ai_core.py",
+        "severidad": "ERROR"
+      },
+      {
+        "codigo": "CONFIGURACION",
+        "ok": true,
+        "detalle": "Configuración válida",
+        "severidad": "ERROR"
+      },
+      {
+        "codigo": "JSON:ARTICULOS",
+        "ok": true,
+        "detalle": "C:\\PROYECTO HOST IA\\Proyecto Host AI  6.0\\Host AI 6.0\\DATOS\\db\\articulos.json",
+        "severidad": "ERROR"
+      },
+      {
+        "codigo": "JSON:RECETAS",
+        "ok": true,
+        "detalle": "C:\\PROYECTO HOST IA\\Proyecto Host AI  6.0\\Host AI 6.0\\DATOS\\db\\escandallos.json",
+        "severidad": "ERROR"
+      },
+      {
+        "codigo": "JSON:MENUS",
+        "ok": true,
+        "detalle": "C:\\PROYECTO HOST IA\\Proyecto Host AI  6.0\\Host AI 6.0\\DATOS\\db\\menus.json",
+        "severidad": "ERROR"
+      },
+      {
+        "codigo": "IMPORT:CORE.host_ai_core",
+        "ok": true,
+        "detalle": "OK",
+        "severidad": "ERROR"
+      },
+      {
+        "codigo": "IMPORT:APP.consola",
+        "ok": true,
+        "detalle": "OK",
+        "severidad": "ERROR"
+      },
+      {
+        "codigo": "IMPORT:SERVICIOS.host_ai_launcher",
+        "ok": true,
+        "detalle": "OK",
+        "severidad": "ERROR"
+      },
+      {
+        "codigo": "IMPORT:SERVICIOS.configuracion_central_4414",
+        "ok": true,
+        "detalle": "OK",
+        "severidad": "ERROR"
+      },
+      {
+        "codigo": "IMPORT:SERVICIOS.auditor_integridad_postimportacion_i1344",
+        "ok": true,
+        "detalle": "OK",
+        "severidad": "ERROR"
+      },
+      {
+        "codigo": "IMPORT:SERVICIOS.motor_escritura_segura_i1342",
+        "ok": true,
+        "detalle": "OK",
+        "severidad": "ERROR"
+      }
+    ],
+    "errores": 0,
+    "avisos": 0,
+    "configuracion": {
+      "ok": true,
+      "errores": [],
+      "avisos": [],
+      "configuracion": {
+        "restaurante": "Mas Boronat",
+        "ruta_datos": "DATOS",
+        "ruta_documentos": "Documentos",
+        "ruta_logs": "LOGS",
+        "modo_entorno": "desarrollo",
+        "ia_activa": false,
+        "ocr_activo": false,
+        "iva_default": 10.0,
+        "moneda": "EUR",
+        "idioma": "es",
+        "proveedor_default": ""
+      },
+      "rutas": {
+        "base_dir": "C:\\PROYECTO HOST IA\\Proyecto Host AI  6.0\\Host AI 6.0",
+        "datos": "C:\\PROYECTO HOST IA\\Proyecto Host AI  6.0\\Host AI 6.0\\DATOS",
+        "documentos": "C:\\PROYECTO HOST IA\\Proyecto Host AI  6.0\\Host AI 6.0\\Documentos",
+        "logs": "C:\\PROYECTO HOST IA\\Proyecto Host AI  6.0\\Host AI 6.0\\LOGS",
+        "backups": "C:\\PROYECTO HOST IA\\Proyecto Host AI  6.0\\Host AI 6.0\\DATOS\\backups",
+        "certificaciones": "C:\\PROYECTO HOST IA\\Proyecto Host AI  6.0\\Host AI 6.0\\DATOS\\certificaciones\\piloto01",
+        "configuracion": "C:\\PROYECTO HOST IA\\Proyecto Host AI  6.0\\Host AI 6.0\\DATOS\\configuracion\\host_ai_config.json"
+      }
+    }
+  },
+  "inventario_resumen": {
+    "ACTIVO": 650,
+    "HISTORICO_O_RAIZ": 4,
+    "LEGACY": 10,
+    "PRUEBA": 346,
+    "SOPORTE": 1
+  },
+  "total_python": 1011,
+  "archivos_negocio_modificados": 0,
+  "fecha": "20260713-131653"
+}

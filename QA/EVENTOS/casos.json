@@ -1,0 +1,197 @@
+[
+  {
+    "id": "QA-EVE-001",
+    "categoria": "eventos",
+    "usuario": "Tengo una boda para 180 personas el sábado.",
+    "intencion_esperada": "evento",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-EVE-002",
+    "categoria": "eventos",
+    "usuario": "Crea un evento para 120 pax.",
+    "intencion_esperada": "evento",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-EVE-003",
+    "categoria": "eventos",
+    "usuario": "Tengo un catering de empresa para 80 personas.",
+    "intencion_esperada": "evento",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-EVE-004",
+    "categoria": "eventos",
+    "usuario": "Organiza un banquete para el domingo.",
+    "intencion_esperada": "evento",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-EVE-005",
+    "categoria": "eventos",
+    "usuario": "Añade menú vegetariano al evento.",
+    "intencion_esperada": "evento",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-EVE-006",
+    "categoria": "eventos",
+    "usuario": "Calcula la producción del evento.",
+    "intencion_esperada": "evento",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-EVE-007",
+    "categoria": "eventos",
+    "usuario": "Evento de comunión para 60 comensales.",
+    "intencion_esperada": "evento",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-EVE-008",
+    "categoria": "eventos",
+    "usuario": "Necesito material para una boda.",
+    "intencion_esperada": "evento",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-EVE-009",
+    "categoria": "eventos",
+    "usuario": "Haz el cronograma del catering.",
+    "intencion_esperada": "evento",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-EVE-010",
+    "categoria": "eventos",
+    "usuario": "Calcula personal para banquete de 200 personas.",
+    "intencion_esperada": "evento",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-EVE-011",
+    "categoria": "eventos",
+    "usuario": "Tengo evento mañana a las 13:30 para 90 pax.",
+    "intencion_esperada": "evento",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-EVE-012",
+    "categoria": "eventos",
+    "usuario": "Prepara compras para la boda.",
+    "intencion_esperada": "evento",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-EVE-013",
+    "categoria": "eventos",
+    "usuario": "Quiero informe final del evento.",
+    "intencion_esperada": "evento",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-EVE-014",
+    "categoria": "eventos",
+    "usuario": "Servicio de hotel para 150 personas.",
+    "intencion_esperada": "evento",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-EVE-015",
+    "categoria": "eventos",
+    "usuario": "Menú de empresa para 40 pax.",
+    "intencion_esperada": "evento",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  }
+]

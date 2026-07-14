@@ -1,0 +1,17 @@
+HOST AI 6.0.4 — RR1.6.1-A CONTEXTO GLOBAL Y COSTES
+
+INSTALACIÓN
+1. Haz una copia completa de tu proyecto actual.
+2. Descomprime este ZIP.
+3. Copia las carpetas APP, SERVICIOS y TESTS sobre tu proyecto.
+4. Acepta reemplazar APP/consola.py.
+5. Conserva la estructura de carpetas.
+
+PRUEBA RÁPIDA
+1. Abre Eventos y selecciona "Boda prueba RR1".
+2. Vuelve al menú principal.
+3. Entra en Costes.
+4. Ejecuta la opción 5 o 6.
+5. Cierra Host AI, vuelve a abrirlo y repite la prueba.
+
+El evento debe seguir activo y Costes no debe responder "No hay evento activo".

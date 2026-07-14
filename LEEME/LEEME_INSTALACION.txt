@@ -1,0 +1,24 @@
+HOST AI 6.0.4 — IA1.2 EXTRACCIÓN DE DATOS
+
+REQUISITO
+Tener instalada IA1.1 y todos los sprints anteriores.
+
+INSTALACIÓN
+1. Cierra Host AI.
+2. Haz una copia de tu carpeta actual.
+3. Descomprime este ZIP.
+4. Copia APP, CORE, SERVICIOS y TESTS encima de tu proyecto.
+5. Acepta sustituir los archivos existentes.
+6. Ejecuta: python main.py
+
+PRUEBA RÁPIDA
+Entra en Host AI Base y elige:
+11. Comprensión IA1.2 (intención + datos, solo interpretar)
+
+Prueba:
+- Tengo una boda para 120 personas el 22/10/2026 a las 13:30
+- Necesito comprar 5 kg de tomate triturado y se lo compro a Sarda
+- Calcula el coste de la receta carrillera a 20 euros por ración
+- Planifica la producción entre 3 cocineros
+
+IA1.2 SOLO INTERPRETA. NO MODIFICA DATOS.

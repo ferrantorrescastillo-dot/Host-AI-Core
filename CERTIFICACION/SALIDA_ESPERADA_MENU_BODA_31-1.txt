@@ -1,0 +1,44 @@
+I1.3.3 — PREIMPORTACIÓN DEFINITIVA DE MENÚS
+==============================================================================
+Menús: 1 | Platos: 12 | Componentes: 14 | Artículos directos: 1 | Complementos: 1
+Aprendizajes aplicados: 1 | Bloqueos: 1 | Estado: BLOQUEADA
+
+MENU BODA | Hoja: MENU BODA 31-1
+- [Cóctel] Ceviche de corvina | coste/ración 0.5946 €
+    ✔ RECETA_PRINCIPAL: Ceviche de corvina [catalogado]
+- [Cóctel] Taco de Carrillera porc | coste/ración 1.4558 €
+    ✔ RECETA_PRINCIPAL: Taco de carrillera [catalogado]
+- [Cóctel] Guacamole y totopos | coste/ración 0.8371 €
+    ✔ RECETA_PRINCIPAL: Guacamole i totopos [catalogado]
+- [Cóctel] Brocheta langostino | coste/ración 0.7561 €
+    ✔ RECETA_PRINCIPAL: Brocheta langostino [catalogado]
+- [Cóctel] Pan de cristal con jamón | coste/ración 1.6585 €
+    ✔ RECETA_PRINCIPAL: Pan de cristal con jamón [catalogado]
+- [Cóctel] Tabla de quesos | coste/ración 0.1575 €
+    ✔ RECETA_PRINCIPAL: Tabla de quesos [catalogado]
+- [Cóctel] Agua de jamaica | coste/ración 0.1517 €
+    ✔ RECETA_PRINCIPAL: Agua de jamaica [catalogado]
+- [Cóctel] Agua de limón | coste/ración 0.1062 €
+    ✔ RECETA_PRINCIPAL: Agua de limón [catalogado]
+- [Entrante] Crema calenta tomàquet | coste/ración 0.8870 €
+    ✔ RECETA_PRINCIPAL: Crema calenta de tomàquet [catalogado]
+- [Primero] Flor de alcachofa con jamón | coste/ración 0.3940 €
+    ✔ RECETA_PRINCIPAL: Flor de alcachofa con jamón [catalogado]
+- [Segundo] Solomillo de cerdo con parmentier patata i salsa naranja | coste/ración 1.4277 €
+    ✔ RECETA_PRINCIPAL: Solomillo de cerdo [catalogado]
+    ? GUARNICION: Parmentier de patata [PROPUESTA_NUEVA_RECETA]
+    ✔ SALSA: Salsa naranja [catalogado]
+- [Postre] Sorbete mandarina boda | coste/ración 0.2493 €
+    ✔ RECETA_PRINCIPAL: Sorbete mandarina [catalogado]
+  [COMPLEMENTO] BODEGA, PAN, VINO Y CAFES.
+  [ARTÍCULO DIRECTO] Pan individual rombo makro | coste/ración 0.1925 €
+  Económico: venta=75.00 € | neto=67.50 € | coste=8.8680 € | food cost=11.8240% | beneficio=66.1320 €
+==============================================================================
+IMPORTACIÓN BLOQUEADA
+1. Parmentier de patata | GUARNICION | Plato: Solomillo de cerdo con parmentier patata i salsa naranja
+   Motivo: Existe una propuesta de nueva receta que todavía no forma parte del catálogo.
+   1. Crear y completar la receta
+   2. Vincularla con una receta existente
+   3. Mantenerla pendiente solo si una política futura lo permite
+SOLO PREIMPORTACIÓN: I1.3.3 no escribe menús, recetas, artículos ni relaciones.
+La importación definitiva seguirá deshabilitada hasta un sprint posterior.

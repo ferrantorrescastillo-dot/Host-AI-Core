@@ -1,0 +1,11 @@
+{
+  "version": "I1.3.4.2",
+  "transaccion_id": "TX-1E27BF87C241",
+  "creado_en": "2026-07-13T01:01:54.958256+00:00",
+  "archivos": {
+    "DATOS/mur/diagnostico_i1342/menus.json": {
+      "existia": true,
+      "sha256": "b86bfcf5b8688ff68a8a683aa5064f96ce4ad511b8116b946a534727e715b710"
+    }
+  }
+}

@@ -1,0 +1,422 @@
+{
+  "modo": "IMPORTACION_CONFIRMADA",
+  "ruta_preimportacion": "DATOS\\informes\\preimportacion_555b.json",
+  "ruta_resolucion": "DATOS\\informes\\resolucion_variantes_555b.json",
+  "ruta_destino": "DATOS\\db\\escandallos_canonicos.json",
+  "fichas": [
+    {
+      "codigo": "REC-EXCEL-97AAB30358",
+      "nombre": "Vermouth rojo con Gilda MasBoronat",
+      "accion": "SIN_CAMBIOS",
+      "motivo": "Ya existe la misma versión en la base canónica.",
+      "origen": "M.P Menú finde 45€:4",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-7E82F179E3",
+      "nombre": "Ensaladilla de gamba",
+      "accion": "SIN_CAMBIOS",
+      "motivo": "Ya existe la misma versión en la base canónica.",
+      "origen": "M.P Menú finde 45€:18",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-CAF1B25D3D",
+      "nombre": "Tartar de fuet con encurtidos",
+      "accion": "SIN_CAMBIOS",
+      "motivo": "Ya existe la misma versión en la base canónica.",
+      "origen": "M.P Menú finde 45€:37",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-DE94BB6F0B",
+      "nombre": "Calçot en tempura y salsa romesco",
+      "accion": "SIN_CAMBIOS",
+      "motivo": "Ya existe la misma versión en la base canónica.",
+      "origen": "M.P Menú finde 45€:54",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-DEE9FC8603",
+      "nombre": "Parrillada bbq fin de semana",
+      "accion": "SIN_CAMBIOS",
+      "motivo": "Ya existe la misma versión en la base canónica.",
+      "origen": "M.P Menú finde 45€:70",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-92C8E95AD8",
+      "nombre": "GUARNICION DE CALÇOTADA",
+      "accion": "SIN_CAMBIOS",
+      "motivo": "Ya existe la misma versión en la base canónica.",
+      "origen": "M.P Menú finde 45€:86",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-20E3549F72",
+      "nombre": "CORDERO y butifarra N CALÇOTADA",
+      "accion": "SIN_CAMBIOS",
+      "motivo": "Ya existe la misma versión en la base canónica.",
+      "origen": "M.P Menú finde 45€:101",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-44289F21FE",
+      "nombre": "SALSA ROMESCO PARA CALÇOTS",
+      "accion": "OMITIR",
+      "motivo": "Ficha pendiente de revisión humana.",
+      "origen": "M.P Menú finde 45€:119",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-6B4B251F8E",
+      "nombre": "APERITIVO CALÇOTADA",
+      "accion": "SIN_CAMBIOS",
+      "motivo": "Ya existe la misma versión en la base canónica.",
+      "origen": "M.P Menú finde 45€:141",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-E11F0015E2",
+      "nombre": "CALÇOTADA EN MESA A COMPARTIR ENSALADA VERDE",
+      "accion": "SIN_CAMBIOS",
+      "motivo": "Ya existe la misma versión en la base canónica.",
+      "origen": "M.P Menú finde 45€:156",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-AD9995FDE1",
+      "nombre": "VINAGRETA CLASICA",
+      "accion": "SIN_CAMBIOS",
+      "motivo": "Ya existe la misma versión en la base canónica.",
+      "origen": "M.P Menú finde 45€:175",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-AF3A99FAD1",
+      "nombre": "CALÇOTADA EN MESA PAN PAGES, TOMACO Y AJO",
+      "accion": "SIN_CAMBIOS",
+      "motivo": "Ya existe la misma versión en la base canónica.",
+      "origen": "M.P Menú finde 45€:187",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-975B9E3767",
+      "nombre": "KG",
+      "accion": "OMITIR",
+      "motivo": "Ficha pendiente de revisión humana.",
+      "origen": "M.P Menú finde 45€:201",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-75D2AD5C38",
+      "nombre": "Carpaccio de tomate con burrata i aceite albahaca",
+      "accion": "SIN_CAMBIOS",
+      "motivo": "Ya existe la misma versión en la base canónica.",
+      "origen": "M.P menú bbq 95€:4",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-4D71B5DA51",
+      "nombre": "Huevos rotos con jamón i foie",
+      "accion": "SIN_CAMBIOS",
+      "motivo": "Ya existe la misma versión en la base canónica.",
+      "origen": "M.P menú bbq 95€:21",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-EADA8B8A27",
+      "nombre": "Pulpo a la feira a la brasa",
+      "accion": "SIN_CAMBIOS",
+      "motivo": "Ya existe la misma versión en la base canónica.",
+      "origen": "M.P menú bbq 95€:38",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-4804A1D7CA",
+      "nombre": "Chuleta lomo bajo con pimiento de piquillo y alcachofa",
+      "accion": "SIN_CAMBIOS",
+      "motivo": "Ya existe la misma versión en la base canónica.",
+      "origen": "M.P menú bbq 95€:56",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-9BE9787929",
+      "nombre": "Botifarra con mongetes del ganxet",
+      "accion": "OMITIR",
+      "motivo": "Ficha pendiente de revisión humana.",
+      "origen": "M.P menú bbq 95€:70",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-0BB800B0D4",
+      "nombre": "Botifarra con mongetes del ganxet",
+      "accion": "OMITIR",
+      "motivo": "Ficha pendiente de revisión humana.",
+      "origen": "M.P menú bbq 95€:86",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-7307E14D39",
+      "nombre": "GUARNICION DE CALÇOTADA",
+      "accion": "OMITIR",
+      "motivo": "Duplicado equivalente; se conserva la ficha recomendada.",
+      "origen": "M.P menú bbq 95€:102",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-084A8B9DC0",
+      "nombre": "CORDERO y butifarra N CALÇOTADA",
+      "accion": "OMITIR",
+      "motivo": "Duplicado equivalente; se conserva la ficha recomendada.",
+      "origen": "M.P menú bbq 95€:117",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-DA70E9A0E1",
+      "nombre": "SALSA ROMESCO PARA CALÇOTS",
+      "accion": "OMITIR",
+      "motivo": "Ficha pendiente de revisión humana.",
+      "origen": "M.P menú bbq 95€:135",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-C629C6E132",
+      "nombre": "APERITIVO CALÇOTADA",
+      "accion": "OMITIR",
+      "motivo": "Duplicado equivalente; se conserva la ficha recomendada.",
+      "origen": "M.P menú bbq 95€:157",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-F7D6091966",
+      "nombre": "CALÇOTADA EN MESA A COMPARTIR ENSALADA VERDE",
+      "accion": "OMITIR",
+      "motivo": "Duplicado equivalente; se conserva la ficha recomendada.",
+      "origen": "M.P menú bbq 95€:172",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-0E36F77CAA",
+      "nombre": "VINAGRETA CLASICA",
+      "accion": "OMITIR",
+      "motivo": "Duplicado equivalente; se conserva la ficha recomendada.",
+      "origen": "M.P menú bbq 95€:191",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-8633BD7D77",
+      "nombre": "CALÇOTADA EN MESA PAN PAGES, TOMACO Y AJO",
+      "accion": "OMITIR",
+      "motivo": "Duplicado equivalente; se conserva la ficha recomendada.",
+      "origen": "M.P menú bbq 95€:203",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-6986B4D5E9",
+      "nombre": "KG",
+      "accion": "OMITIR",
+      "motivo": "Ficha pendiente de revisión humana.",
+      "origen": "M.P menú bbq 95€:217",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-09CF4F6FBE",
+      "nombre": "Vermouth rojo",
+      "accion": "SIN_CAMBIOS",
+      "motivo": "Ya existe la misma versión en la base canónica.",
+      "origen": "M.P CALÇOTADA:4",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-130DFF7137",
+      "nombre": "Naranja con miel",
+      "accion": "SIN_CAMBIOS",
+      "motivo": "Ya existe la misma versión en la base canónica.",
+      "origen": "M.P CALÇOTADA:20",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-F851AC82AC",
+      "nombre": "Crema catalana",
+      "accion": "SIN_CAMBIOS",
+      "motivo": "Ya existe la misma versión en la base canónica.",
+      "origen": "M.P CALÇOTADA:33",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-BBE14A0601",
+      "nombre": "Crema Catalana quemada con carquiñoli",
+      "accion": "SIN_CAMBIOS",
+      "motivo": "Ya existe la misma versión en la base canónica.",
+      "origen": "M.P CALÇOTADA:51",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-DB745CC97D",
+      "nombre": "Botifarra con mongetes del ganxet",
+      "accion": "OMITIR",
+      "motivo": "Ficha pendiente de revisión humana.",
+      "origen": "M.P CALÇOTADA:65",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-0C045EFA5F",
+      "nombre": "Botifarra con mongetes del ganxet",
+      "accion": "OMITIR",
+      "motivo": "Ficha pendiente de revisión humana.",
+      "origen": "M.P CALÇOTADA:81",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-E8471C49A1",
+      "nombre": "GUARNICION DE CALÇOTADA",
+      "accion": "OMITIR",
+      "motivo": "Duplicado equivalente; se conserva la ficha recomendada.",
+      "origen": "M.P CALÇOTADA:97",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-7D2A506DF2",
+      "nombre": "CORDERO y butifarra N CALÇOTADA",
+      "accion": "OMITIR",
+      "motivo": "Duplicado equivalente; se conserva la ficha recomendada.",
+      "origen": "M.P CALÇOTADA:112",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-F0D43532CD",
+      "nombre": "SALSA ROMESCO PARA CALÇOTS",
+      "accion": "OMITIR",
+      "motivo": "Ficha pendiente de revisión humana.",
+      "origen": "M.P CALÇOTADA:130",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-1B7B46844B",
+      "nombre": "APERITIVO CALÇOTADA",
+      "accion": "OMITIR",
+      "motivo": "Duplicado equivalente; se conserva la ficha recomendada.",
+      "origen": "M.P CALÇOTADA:152",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-93C5B80349",
+      "nombre": "CALÇOTADA EN MESA A COMPARTIR ENSALADA VERDE",
+      "accion": "OMITIR",
+      "motivo": "Duplicado equivalente; se conserva la ficha recomendada.",
+      "origen": "M.P CALÇOTADA:167",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-8DD30046F7",
+      "nombre": "VINAGRETA CLASICA",
+      "accion": "OMITIR",
+      "motivo": "Duplicado equivalente; se conserva la ficha recomendada.",
+      "origen": "M.P CALÇOTADA:186",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-932037CEED",
+      "nombre": "CALÇOTADA EN MESA PAN PAGES, TOMACO Y AJO",
+      "accion": "OMITIR",
+      "motivo": "Duplicado equivalente; se conserva la ficha recomendada.",
+      "origen": "M.P CALÇOTADA:198",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-3D4815BAA6",
+      "nombre": "KG",
+      "accion": "OMITIR",
+      "motivo": "Ficha pendiente de revisión humana.",
+      "origen": "M.P CALÇOTADA:212",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-D2580D825E",
+      "nombre": "Patatas Bravas",
+      "accion": "OMITIR",
+      "motivo": "Ficha pendiente de revisión humana.",
+      "origen": "M.P Aperitivos:4",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-A763F10EE4",
+      "nombre": "Ceviche de corvina",
+      "accion": "SIN_CAMBIOS",
+      "motivo": "Ya existe la misma versión en la base canónica.",
+      "origen": "MP boda 31-1:4",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-E9F622452F",
+      "nombre": "SALSA ROMESCO PARA CALÇOTS",
+      "accion": "OMITIR",
+      "motivo": "Ficha pendiente de revisión humana.",
+      "origen": "M.P COCTEL COMUNIONES.:3",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-D46F53CF5C",
+      "nombre": "SALSA ROMESCO PARA CALÇOTS",
+      "accion": "OMITIR",
+      "motivo": "Ficha pendiente de revisión humana.",
+      "origen": "M.P COCTEL COMUNIONES.:29",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-E2BC710519",
+      "nombre": "TABLA DE QUESOS Y EMBUTIDOS",
+      "accion": "SIN_CAMBIOS",
+      "motivo": "Ya existe la misma versión en la base canónica.",
+      "origen": "M.P MENU BBQ.:4",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-061DB55AB1",
+      "nombre": "Patatas bravas",
+      "accion": "OMITIR",
+      "motivo": "Ficha pendiente de revisión humana.",
+      "origen": "M.P MENU BBQ.:25",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-BB4265CD66",
+      "nombre": "salsa brava",
+      "accion": "SIN_CAMBIOS",
+      "motivo": "Ya existe la misma versión en la base canónica.",
+      "origen": "M.P MENU BBQ.:38",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-24231328D0",
+      "nombre": "Crema Catalana quemada con carquiñoli",
+      "accion": "OMITIR",
+      "motivo": "Duplicado equivalente; se conserva la ficha recomendada.",
+      "origen": "M.P MENU BBQ.:56",
+      "escandallo": null
+    },
+    {
+      "codigo": "REC-EXCEL-DC06E37BF1",
+      "nombre": "Parrilada de verduras",
+      "accion": "SIN_CAMBIOS",
+      "motivo": "Ya existe la misma versión en la base canónica.",
+      "origen": "M.P MENU BBQ.:71",
+      "escandallo": null
+    }
+  ],
+  "resumen": {
+    "analizadas": 50,
+    "crear": 0,
+    "actualizar": 0,
+    "sin_cambios": 23,
+    "omitidas": 27,
+    "pendientes_confirmacion": 0,
+    "escritas": 0
+  },
+  "errores": [],
+  "copia_seguridad": "DATOS\\db\\backups\\escandallos_canonicos_20260710T103530Z.json.bak",
+  "diario_transaccion": null,
+  "datos_reales_modificados": false,
+  "fecha_utc": "2026-07-10T10:35:30.393071+00:00"
+}

@@ -1,0 +1,4765 @@
+{
+  "resultado_pipeline": {
+    "ok": true,
+    "pipeline": "detector_anomalias_compras",
+    "accion": "detectar",
+    "mensaje": "Anomalías compras: 124 detectadas (5 críticas, 119 avisos, 0 informativas).",
+    "datos": {
+      "total_anomalias": 124,
+      "criticas": 5,
+      "avisos": 119,
+      "informativas": 0,
+      "anomalias": [
+        {
+          "tipo": "subida_anormal_precio",
+          "gravedad": "critica",
+          "mensaje": "Subida anormal de precio en Carrillera test anomalías: 114.63% sobre la media.",
+          "origen": "historico_precios",
+          "articulo_id": "ART-ANOM-CARRILLERA",
+          "nombre_articulo": "Carrillera test anomalías",
+          "proveedor_id": "PROV-TEST",
+          "proveedor_nombre": "Proveedor Test",
+          "numero_factura": "F-ANOM-22.0",
+          "datos": {
+            "precio": 22.0,
+            "media_anterior": 10.25,
+            "variacion_porcentual": 114.63,
+            "desviacion": 0.0
+          },
+          "accion_recomendada": "Validar factura, unidad, proveedor y posible cambio de formato.",
+          "id": "ANOCOMP-EC4A22E4DF",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "bajada_sospechosa_precio",
+          "gravedad": "aviso",
+          "mensaje": "Bajada sospechosa de precio en Carrillera test anomalías: -50.59% bajo la media.",
+          "origen": "historico_precios",
+          "articulo_id": "ART-ANOM-CARRILLERA",
+          "nombre_articulo": "Carrillera test anomalías",
+          "proveedor_id": "PROV-TEST",
+          "proveedor_nombre": "Proveedor Test",
+          "numero_factura": "F-ANOM-7.0",
+          "datos": {
+            "precio": 7.0,
+            "media_anterior": 14.1667,
+            "variacion_porcentual": -50.59
+          },
+          "accion_recomendada": "Comprobar si la unidad, formato o cantidad coinciden con compras anteriores.",
+          "id": "ANOCOMP-B207E0D1C2",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "error_ocr_detectable",
+          "gravedad": "aviso",
+          "mensaje": "La importación contiene errores o avisos compatibles con OCR/revisión manual.",
+          "origen": "auditoria_importaciones",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "errores": [],
+            "avisos": [
+              "El documento necesita OCR."
+            ]
+          },
+          "accion_recomendada": "Revisar lectura OCR y líneas antes de confirmar importación.",
+          "id": "ANOCOMP-BC2EA83C7D",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "requiere_revision_manual",
+          "gravedad": "aviso",
+          "mensaje": "La auditoría marca esta importación como pendiente de revisión.",
+          "origen": "auditoria_importaciones",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "estado": "aplicado"
+          },
+          "accion_recomendada": "Validar proveedor, líneas, relaciones y totales.",
+          "id": "ANOCOMP-1ED55669C9",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-772EC43B14",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-D3B5E92DCD",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-3736AFCA37",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-B396A2FD25",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 95.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-ED49F25BD1",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-EBDFC245A8",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: Carrillera Ternera.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "Carrillera Ternera",
+            "confianza": 100.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-A234BD713B",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-0615BF0C44",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-473D03F207",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-744BA99852",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 90.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-D1F88412CF",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 90.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-0EE47C14A6",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-DFB3EB54F7",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 95.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-632949E651",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 85.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-8DE0A13154",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 95.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-EAE01594A4",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 100.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-E15D69967D",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-8EDF835E07",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: Carrillera Ternera.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "Carrillera Ternera",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-1E8C7446B1",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-DF834033A1",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: Carrillera Ternera.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "Carrillera Ternera",
+            "confianza": 100.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-4D515485CD",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-D9737E1D3A",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-75587B8637",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: Carrillera Ternera.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "Carrillera Ternera",
+            "confianza": 100.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-462D7D67A8",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-4C033616D9",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: Carrillera Ternera.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "Carrillera Ternera",
+            "confianza": 100.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-B6A8E7B544",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-CE3650859D",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: Carrillera Ternera.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "Carrillera Ternera",
+            "confianza": 100.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-11A6BA4E47",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-77831F8F3C",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-BB7F2D2A8A",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: Carrillera Ternera.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "Carrillera Ternera",
+            "confianza": 100.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-F04CD197DA",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-E654340AC5",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: Carrillera Ternera.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "Carrillera Ternera",
+            "confianza": 100.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-B2830DAE9F",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-9BD4026AE8",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: Carrillera Ternera.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "Carrillera Ternera",
+            "confianza": 100.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-80976AC896",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-4F8C1D8C92",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-10E3C4C9B5",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-1DA4ED8217",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-D011452030",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-BF13A10E56",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-BA0E63CC9F",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 95.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-D4C4383389",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-B673608F54",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: Carrillera Ternera.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "Carrillera Ternera",
+            "confianza": 100.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-51D6FEC289",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-13672CDF6E",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-F05C3F2F08",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-886504AB33",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 90.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-DA486557E8",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 90.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-0C379375F8",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-B0078358D7",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 95.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-FBD58951DF",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 85.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-56F7A71AB8",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 95.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-2E7BCFFF54",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 100.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-0EE2192E12",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-E39B12EB92",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: Carrillera Ternera.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "Carrillera Ternera",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-EB4FE7697B",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-7D4BCAC3E6",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: Carrillera Ternera.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "Carrillera Ternera",
+            "confianza": 100.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-EEA3E5940B",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-4B176CCF2B",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-ED15A407CD",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: Carrillera Ternera.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "Carrillera Ternera",
+            "confianza": 100.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-A4F7ADEC92",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-B4ADCBE678",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: Carrillera Ternera.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "Carrillera Ternera",
+            "confianza": 100.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-0AB547786E",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-ABD5F08F0E",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: Carrillera Ternera.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "Carrillera Ternera",
+            "confianza": 100.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-11519D97DD",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-99BF9AC30A",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-FA2DDE8852",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: Carrillera Ternera.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "Carrillera Ternera",
+            "confianza": 100.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-14800931EE",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-B200A2D664",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: Carrillera Ternera.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "Carrillera Ternera",
+            "confianza": 100.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-13767D43AB",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-15B1035998",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: Carrillera Ternera.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "Carrillera Ternera",
+            "confianza": 100.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-63F7EAB01C",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-1FF6727284",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-E920937057",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-2BA50A5E40",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-5E088FFFFF",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-3E173AA164",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-3F7BAD1389",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "factura_duplicada",
+          "gravedad": "critica",
+          "mensaje": "Posible factura duplicada detectada: demo.pdf.",
+          "origen": "auditoria_importaciones",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "archivo": "demo.pdf",
+            "proveedor": "PROV-MAKRO",
+            "total_lineas": 2
+          },
+          "accion_recomendada": "Bloquear doble importación y revisar auditoría antes de aplicar stock/precios.",
+          "id": "ANOCOMP-8924DC515F",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-6B8E35394D",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-FCFF9AE149",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-8C85103294",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-CE15DFBD93",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-8C7CC2B7A1",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-170A9897B5",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "factura_duplicada",
+          "gravedad": "critica",
+          "mensaje": "Posible factura duplicada detectada: demo.pdf.",
+          "origen": "auditoria_importaciones",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "archivo": "demo.pdf",
+            "proveedor": "PROV-MAKRO",
+            "total_lineas": 2
+          },
+          "accion_recomendada": "Bloquear doble importación y revisar auditoría antes de aplicar stock/precios.",
+          "id": "ANOCOMP-F930B4A352",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-7EEEDC1BA9",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-81AEF7F9B6",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-3A89FFAD86",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-4FF7BAF994",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-CB88048F8A",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-6E52CFB260",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "factura_duplicada",
+          "gravedad": "critica",
+          "mensaje": "Posible factura duplicada detectada: demo.pdf.",
+          "origen": "auditoria_importaciones",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "archivo": "demo.pdf",
+            "proveedor": "PROV-MAKRO",
+            "total_lineas": 2
+          },
+          "accion_recomendada": "Bloquear doble importación y revisar auditoría antes de aplicar stock/precios.",
+          "id": "ANOCOMP-E0AA16E7B8",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-9D8C333659",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-3B1E18FD67",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-0C78F48D5A",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-C21A3C4906",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-08DD699D91",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-MAKRO",
+          "proveedor_nombre": "Makro",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-6D27104726",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "error_ocr_detectable",
+          "gravedad": "aviso",
+          "mensaje": "La importación contiene errores o avisos compatibles con OCR/revisión manual.",
+          "origen": "auditoria_importaciones",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-TEST",
+          "proveedor_nombre": "Proveedor Test",
+          "numero_factura": "",
+          "datos": {
+            "errores": [],
+            "avisos": [
+              "OCR dudoso en una línea"
+            ]
+          },
+          "accion_recomendada": "Revisar lectura OCR y líneas antes de confirmar importación.",
+          "id": "ANOCOMP-F70A99F9A7",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "requiere_revision_manual",
+          "gravedad": "aviso",
+          "mensaje": "La auditoría marca esta importación como pendiente de revisión.",
+          "origen": "auditoria_importaciones",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-TEST",
+          "proveedor_nombre": "Proveedor Test",
+          "numero_factura": "",
+          "datos": {
+            "estado": "aplicado"
+          },
+          "accion_recomendada": "Validar proveedor, líneas, relaciones y totales.",
+          "id": "ANOCOMP-B78B0F6975",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-TEST",
+          "proveedor_nombre": "Proveedor Test",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-D29EB81893",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-TEST",
+          "proveedor_nombre": "Proveedor Test",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-6641E28278",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-TEST",
+          "proveedor_nombre": "Proveedor Test",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-05D671436C",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-TEST",
+          "proveedor_nombre": "Proveedor Test",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-7AB52CBA29",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: Producto OCR dudoso.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-TEST",
+          "proveedor_nombre": "Proveedor Test",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "DESCONOCIDO",
+            "nombre": "Producto OCR dudoso",
+            "confianza": 0.2
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-9A88CA0251",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-TEST",
+          "proveedor_nombre": "Proveedor Test",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-9DE70A30DB",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-TEST",
+          "proveedor_nombre": "Proveedor Test",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-1D2B742288",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "factura_duplicada",
+          "gravedad": "critica",
+          "mensaje": "Posible factura duplicada detectada: factura_anomalia_demo.pdf.",
+          "origen": "auditoria_importaciones",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-TEST",
+          "proveedor_nombre": "Proveedor Test",
+          "numero_factura": "",
+          "datos": {
+            "archivo": "factura_anomalia_demo.pdf",
+            "proveedor": "PROV-TEST",
+            "total_lineas": 2
+          },
+          "accion_recomendada": "Bloquear doble importación y revisar auditoría antes de aplicar stock/precios.",
+          "id": "ANOCOMP-2B426602A0",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "error_ocr_detectable",
+          "gravedad": "aviso",
+          "mensaje": "La importación contiene errores o avisos compatibles con OCR/revisión manual.",
+          "origen": "auditoria_importaciones",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-TEST",
+          "proveedor_nombre": "Proveedor Test",
+          "numero_factura": "",
+          "datos": {
+            "errores": [],
+            "avisos": [
+              "OCR dudoso en una línea"
+            ]
+          },
+          "accion_recomendada": "Revisar lectura OCR y líneas antes de confirmar importación.",
+          "id": "ANOCOMP-4EA6DC24FB",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "requiere_revision_manual",
+          "gravedad": "aviso",
+          "mensaje": "La auditoría marca esta importación como pendiente de revisión.",
+          "origen": "auditoria_importaciones",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-TEST",
+          "proveedor_nombre": "Proveedor Test",
+          "numero_factura": "",
+          "datos": {
+            "estado": "aplicado"
+          },
+          "accion_recomendada": "Validar proveedor, líneas, relaciones y totales.",
+          "id": "ANOCOMP-0952B1B02C",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-TEST",
+          "proveedor_nombre": "Proveedor Test",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-3C10321D88",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-TEST",
+          "proveedor_nombre": "Proveedor Test",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-613C996D32",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-TEST",
+          "proveedor_nombre": "Proveedor Test",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-0CFC35603D",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-TEST",
+          "proveedor_nombre": "Proveedor Test",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-2A23CE0C22",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: Producto OCR dudoso.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-TEST",
+          "proveedor_nombre": "Proveedor Test",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "DESCONOCIDO",
+            "nombre": "Producto OCR dudoso",
+            "confianza": 0.2
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-68672A9B36",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-TEST",
+          "proveedor_nombre": "Proveedor Test",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-088AEED108",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "articulo_desconocido",
+          "gravedad": "aviso",
+          "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+          "origen": "relacion_articulos",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-TEST",
+          "proveedor_nombre": "Proveedor Test",
+          "numero_factura": "",
+          "datos": {
+            "articulo_id": "",
+            "nombre": "",
+            "confianza": 1.0
+          },
+          "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+          "id": "ANOCOMP-DC3F5333B6",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "cantidad_fuera_de_rango",
+          "gravedad": "aviso",
+          "mensaje": "Cantidad fuera de rango para Carrillera test anomalías.",
+          "origen": "historico_stock",
+          "articulo_id": "ART-ANOM-CARRILLERA",
+          "nombre_articulo": "Carrillera test anomalías",
+          "proveedor_id": "PROV-TEST",
+          "proveedor_nombre": "",
+          "numero_factura": "",
+          "datos": {
+            "cantidad": 80.0,
+            "media_anterior": 5.5
+          },
+          "accion_recomendada": "Comprobar si se leyó una caja, kg, unidad o decimal incorrectamente.",
+          "id": "ANOCOMP-5DD1A59E5E",
+          "creado_en": "2026-07-08T13:51:29"
+        },
+        {
+          "tipo": "proveedor_comportamiento_extrano",
+          "gravedad": "aviso",
+          "mensaje": "Proveedor con alta proporción de incidencias: PROV-TEST.",
+          "origen": "auditoria_importaciones",
+          "articulo_id": "",
+          "nombre_articulo": "",
+          "proveedor_id": "PROV-TEST",
+          "proveedor_nombre": "Proveedor Test",
+          "numero_factura": "",
+          "datos": {
+            "proveedor": "PROV-TEST",
+            "total_importaciones": 2,
+            "incidencias": 2
+          },
+          "accion_recomendada": "Revisar plantillas, OCR, relaciones aprendidas y formato de factura de este proveedor.",
+          "id": "ANOCOMP-A78AA3BD0C",
+          "creado_en": "2026-07-08T13:51:29"
+        }
+      ],
+      "resumen_por_tipo": {
+        "subida_anormal_precio": 1,
+        "bajada_sospechosa_precio": 1,
+        "error_ocr_detectable": 3,
+        "requiere_revision_manual": 3,
+        "articulo_desconocido": 110,
+        "factura_duplicada": 4,
+        "cantidad_fuera_de_rango": 1,
+        "proveedor_comportamiento_extrano": 1
+      },
+      "resumen_por_proveedor": {
+        "Proveedor Test": 22,
+        "Makro": 101,
+        "PROV-TEST": 1
+      },
+      "lectura_host_ai": "Anomalías compras: 124 detectadas (5 críticas, 119 avisos, 0 informativas)."
+    },
+    "acciones_recomendadas": [],
+    "requiere_aprobacion": true,
+    "errores": [],
+    "id": "RES-044B3B6E6C",
+    "creado_en": "2026-07-08T13:51:29"
+  },
+  "total_anomalias": 124,
+  "criticas": 5,
+  "avisos": 119,
+  "informativas": 0,
+  "anomalias": [
+    {
+      "tipo": "subida_anormal_precio",
+      "gravedad": "critica",
+      "mensaje": "Subida anormal de precio en Carrillera test anomalías: 114.63% sobre la media.",
+      "origen": "historico_precios",
+      "articulo_id": "ART-ANOM-CARRILLERA",
+      "nombre_articulo": "Carrillera test anomalías",
+      "proveedor_id": "PROV-TEST",
+      "proveedor_nombre": "Proveedor Test",
+      "numero_factura": "F-ANOM-22.0",
+      "datos": {
+        "precio": 22.0,
+        "media_anterior": 10.25,
+        "variacion_porcentual": 114.63,
+        "desviacion": 0.0
+      },
+      "accion_recomendada": "Validar factura, unidad, proveedor y posible cambio de formato.",
+      "id": "ANOCOMP-EC4A22E4DF",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "bajada_sospechosa_precio",
+      "gravedad": "aviso",
+      "mensaje": "Bajada sospechosa de precio en Carrillera test anomalías: -50.59% bajo la media.",
+      "origen": "historico_precios",
+      "articulo_id": "ART-ANOM-CARRILLERA",
+      "nombre_articulo": "Carrillera test anomalías",
+      "proveedor_id": "PROV-TEST",
+      "proveedor_nombre": "Proveedor Test",
+      "numero_factura": "F-ANOM-7.0",
+      "datos": {
+        "precio": 7.0,
+        "media_anterior": 14.1667,
+        "variacion_porcentual": -50.59
+      },
+      "accion_recomendada": "Comprobar si la unidad, formato o cantidad coinciden con compras anteriores.",
+      "id": "ANOCOMP-B207E0D1C2",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "error_ocr_detectable",
+      "gravedad": "aviso",
+      "mensaje": "La importación contiene errores o avisos compatibles con OCR/revisión manual.",
+      "origen": "auditoria_importaciones",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "errores": [],
+        "avisos": [
+          "El documento necesita OCR."
+        ]
+      },
+      "accion_recomendada": "Revisar lectura OCR y líneas antes de confirmar importación.",
+      "id": "ANOCOMP-BC2EA83C7D",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "requiere_revision_manual",
+      "gravedad": "aviso",
+      "mensaje": "La auditoría marca esta importación como pendiente de revisión.",
+      "origen": "auditoria_importaciones",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "estado": "aplicado"
+      },
+      "accion_recomendada": "Validar proveedor, líneas, relaciones y totales.",
+      "id": "ANOCOMP-1ED55669C9",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-772EC43B14",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-D3B5E92DCD",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-3736AFCA37",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-B396A2FD25",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 95.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-ED49F25BD1",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-EBDFC245A8",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: Carrillera Ternera.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "Carrillera Ternera",
+        "confianza": 100.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-A234BD713B",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-0615BF0C44",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-473D03F207",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-744BA99852",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 90.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-D1F88412CF",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 90.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-0EE47C14A6",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-DFB3EB54F7",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 95.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-632949E651",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 85.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-8DE0A13154",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 95.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-EAE01594A4",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 100.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-E15D69967D",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-8EDF835E07",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: Carrillera Ternera.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "Carrillera Ternera",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-1E8C7446B1",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-DF834033A1",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: Carrillera Ternera.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "Carrillera Ternera",
+        "confianza": 100.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-4D515485CD",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-D9737E1D3A",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-75587B8637",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: Carrillera Ternera.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "Carrillera Ternera",
+        "confianza": 100.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-462D7D67A8",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-4C033616D9",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: Carrillera Ternera.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "Carrillera Ternera",
+        "confianza": 100.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-B6A8E7B544",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-CE3650859D",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: Carrillera Ternera.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "Carrillera Ternera",
+        "confianza": 100.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-11A6BA4E47",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-77831F8F3C",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-BB7F2D2A8A",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: Carrillera Ternera.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "Carrillera Ternera",
+        "confianza": 100.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-F04CD197DA",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-E654340AC5",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: Carrillera Ternera.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "Carrillera Ternera",
+        "confianza": 100.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-B2830DAE9F",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-9BD4026AE8",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: Carrillera Ternera.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "Carrillera Ternera",
+        "confianza": 100.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-80976AC896",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-4F8C1D8C92",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-10E3C4C9B5",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-1DA4ED8217",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-D011452030",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-BF13A10E56",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-BA0E63CC9F",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 95.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-D4C4383389",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-B673608F54",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: Carrillera Ternera.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "Carrillera Ternera",
+        "confianza": 100.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-51D6FEC289",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-13672CDF6E",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-F05C3F2F08",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-886504AB33",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 90.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-DA486557E8",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 90.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-0C379375F8",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-B0078358D7",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 95.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-FBD58951DF",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 85.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-56F7A71AB8",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 95.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-2E7BCFFF54",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 100.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-0EE2192E12",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-E39B12EB92",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: Carrillera Ternera.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "Carrillera Ternera",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-EB4FE7697B",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-7D4BCAC3E6",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: Carrillera Ternera.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "Carrillera Ternera",
+        "confianza": 100.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-EEA3E5940B",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-4B176CCF2B",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-ED15A407CD",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: Carrillera Ternera.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "Carrillera Ternera",
+        "confianza": 100.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-A4F7ADEC92",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-B4ADCBE678",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: Carrillera Ternera.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "Carrillera Ternera",
+        "confianza": 100.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-0AB547786E",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-ABD5F08F0E",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: Carrillera Ternera.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "Carrillera Ternera",
+        "confianza": 100.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-11519D97DD",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-99BF9AC30A",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-FA2DDE8852",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: Carrillera Ternera.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "Carrillera Ternera",
+        "confianza": 100.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-14800931EE",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-B200A2D664",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: Carrillera Ternera.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "Carrillera Ternera",
+        "confianza": 100.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-13767D43AB",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-15B1035998",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: Carrillera Ternera.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "Carrillera Ternera",
+        "confianza": 100.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-63F7EAB01C",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-1FF6727284",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-E920937057",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-2BA50A5E40",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-5E088FFFFF",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-3E173AA164",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-3F7BAD1389",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "factura_duplicada",
+      "gravedad": "critica",
+      "mensaje": "Posible factura duplicada detectada: demo.pdf.",
+      "origen": "auditoria_importaciones",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "archivo": "demo.pdf",
+        "proveedor": "PROV-MAKRO",
+        "total_lineas": 2
+      },
+      "accion_recomendada": "Bloquear doble importación y revisar auditoría antes de aplicar stock/precios.",
+      "id": "ANOCOMP-8924DC515F",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-6B8E35394D",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-FCFF9AE149",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-8C85103294",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-CE15DFBD93",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-8C7CC2B7A1",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-170A9897B5",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "factura_duplicada",
+      "gravedad": "critica",
+      "mensaje": "Posible factura duplicada detectada: demo.pdf.",
+      "origen": "auditoria_importaciones",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "archivo": "demo.pdf",
+        "proveedor": "PROV-MAKRO",
+        "total_lineas": 2
+      },
+      "accion_recomendada": "Bloquear doble importación y revisar auditoría antes de aplicar stock/precios.",
+      "id": "ANOCOMP-F930B4A352",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-7EEEDC1BA9",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-81AEF7F9B6",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-3A89FFAD86",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-4FF7BAF994",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-CB88048F8A",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-6E52CFB260",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "factura_duplicada",
+      "gravedad": "critica",
+      "mensaje": "Posible factura duplicada detectada: demo.pdf.",
+      "origen": "auditoria_importaciones",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "archivo": "demo.pdf",
+        "proveedor": "PROV-MAKRO",
+        "total_lineas": 2
+      },
+      "accion_recomendada": "Bloquear doble importación y revisar auditoría antes de aplicar stock/precios.",
+      "id": "ANOCOMP-E0AA16E7B8",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-9D8C333659",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-3B1E18FD67",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-0C78F48D5A",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-C21A3C4906",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-08DD699D91",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-6D27104726",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "error_ocr_detectable",
+      "gravedad": "aviso",
+      "mensaje": "La importación contiene errores o avisos compatibles con OCR/revisión manual.",
+      "origen": "auditoria_importaciones",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-TEST",
+      "proveedor_nombre": "Proveedor Test",
+      "numero_factura": "",
+      "datos": {
+        "errores": [],
+        "avisos": [
+          "OCR dudoso en una línea"
+        ]
+      },
+      "accion_recomendada": "Revisar lectura OCR y líneas antes de confirmar importación.",
+      "id": "ANOCOMP-F70A99F9A7",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "requiere_revision_manual",
+      "gravedad": "aviso",
+      "mensaje": "La auditoría marca esta importación como pendiente de revisión.",
+      "origen": "auditoria_importaciones",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-TEST",
+      "proveedor_nombre": "Proveedor Test",
+      "numero_factura": "",
+      "datos": {
+        "estado": "aplicado"
+      },
+      "accion_recomendada": "Validar proveedor, líneas, relaciones y totales.",
+      "id": "ANOCOMP-B78B0F6975",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-TEST",
+      "proveedor_nombre": "Proveedor Test",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-D29EB81893",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-TEST",
+      "proveedor_nombre": "Proveedor Test",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-6641E28278",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-TEST",
+      "proveedor_nombre": "Proveedor Test",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-05D671436C",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-TEST",
+      "proveedor_nombre": "Proveedor Test",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-7AB52CBA29",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: Producto OCR dudoso.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-TEST",
+      "proveedor_nombre": "Proveedor Test",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "DESCONOCIDO",
+        "nombre": "Producto OCR dudoso",
+        "confianza": 0.2
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-9A88CA0251",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-TEST",
+      "proveedor_nombre": "Proveedor Test",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-9DE70A30DB",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-TEST",
+      "proveedor_nombre": "Proveedor Test",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-1D2B742288",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "factura_duplicada",
+      "gravedad": "critica",
+      "mensaje": "Posible factura duplicada detectada: factura_anomalia_demo.pdf.",
+      "origen": "auditoria_importaciones",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-TEST",
+      "proveedor_nombre": "Proveedor Test",
+      "numero_factura": "",
+      "datos": {
+        "archivo": "factura_anomalia_demo.pdf",
+        "proveedor": "PROV-TEST",
+        "total_lineas": 2
+      },
+      "accion_recomendada": "Bloquear doble importación y revisar auditoría antes de aplicar stock/precios.",
+      "id": "ANOCOMP-2B426602A0",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "error_ocr_detectable",
+      "gravedad": "aviso",
+      "mensaje": "La importación contiene errores o avisos compatibles con OCR/revisión manual.",
+      "origen": "auditoria_importaciones",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-TEST",
+      "proveedor_nombre": "Proveedor Test",
+      "numero_factura": "",
+      "datos": {
+        "errores": [],
+        "avisos": [
+          "OCR dudoso en una línea"
+        ]
+      },
+      "accion_recomendada": "Revisar lectura OCR y líneas antes de confirmar importación.",
+      "id": "ANOCOMP-4EA6DC24FB",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "requiere_revision_manual",
+      "gravedad": "aviso",
+      "mensaje": "La auditoría marca esta importación como pendiente de revisión.",
+      "origen": "auditoria_importaciones",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-TEST",
+      "proveedor_nombre": "Proveedor Test",
+      "numero_factura": "",
+      "datos": {
+        "estado": "aplicado"
+      },
+      "accion_recomendada": "Validar proveedor, líneas, relaciones y totales.",
+      "id": "ANOCOMP-0952B1B02C",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-TEST",
+      "proveedor_nombre": "Proveedor Test",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-3C10321D88",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-TEST",
+      "proveedor_nombre": "Proveedor Test",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-613C996D32",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-TEST",
+      "proveedor_nombre": "Proveedor Test",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-0CFC35603D",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-TEST",
+      "proveedor_nombre": "Proveedor Test",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-2A23CE0C22",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: Producto OCR dudoso.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-TEST",
+      "proveedor_nombre": "Proveedor Test",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "DESCONOCIDO",
+        "nombre": "Producto OCR dudoso",
+        "confianza": 0.2
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-68672A9B36",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-TEST",
+      "proveedor_nombre": "Proveedor Test",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-088AEED108",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "articulo_desconocido",
+      "gravedad": "aviso",
+      "mensaje": "Artículo no relacionado o con baja confianza: sin nombre.",
+      "origen": "relacion_articulos",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-TEST",
+      "proveedor_nombre": "Proveedor Test",
+      "numero_factura": "",
+      "datos": {
+        "articulo_id": "",
+        "nombre": "",
+        "confianza": 1.0
+      },
+      "accion_recomendada": "Relacionar manualmente el artículo o aprender relación proveedor-artículo.",
+      "id": "ANOCOMP-DC3F5333B6",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "cantidad_fuera_de_rango",
+      "gravedad": "aviso",
+      "mensaje": "Cantidad fuera de rango para Carrillera test anomalías.",
+      "origen": "historico_stock",
+      "articulo_id": "ART-ANOM-CARRILLERA",
+      "nombre_articulo": "Carrillera test anomalías",
+      "proveedor_id": "PROV-TEST",
+      "proveedor_nombre": "",
+      "numero_factura": "",
+      "datos": {
+        "cantidad": 80.0,
+        "media_anterior": 5.5
+      },
+      "accion_recomendada": "Comprobar si se leyó una caja, kg, unidad o decimal incorrectamente.",
+      "id": "ANOCOMP-5DD1A59E5E",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "tipo": "proveedor_comportamiento_extrano",
+      "gravedad": "aviso",
+      "mensaje": "Proveedor con alta proporción de incidencias: PROV-TEST.",
+      "origen": "auditoria_importaciones",
+      "articulo_id": "",
+      "nombre_articulo": "",
+      "proveedor_id": "PROV-TEST",
+      "proveedor_nombre": "Proveedor Test",
+      "numero_factura": "",
+      "datos": {
+        "proveedor": "PROV-TEST",
+        "total_importaciones": 2,
+        "incidencias": 2
+      },
+      "accion_recomendada": "Revisar plantillas, OCR, relaciones aprendidas y formato de factura de este proveedor.",
+      "id": "ANOCOMP-A78AA3BD0C",
+      "creado_en": "2026-07-08T13:51:29"
+    }
+  ],
+  "resumen_por_tipo": {
+    "subida_anormal_precio": 1,
+    "bajada_sospechosa_precio": 1,
+    "error_ocr_detectable": 3,
+    "requiere_revision_manual": 3,
+    "articulo_desconocido": 110,
+    "factura_duplicada": 4,
+    "cantidad_fuera_de_rango": 1,
+    "proveedor_comportamiento_extrano": 1
+  },
+  "resumen_por_proveedor": {
+    "Proveedor Test": 22,
+    "Makro": 101,
+    "PROV-TEST": 1
+  },
+  "lectura_host_ai": "Anomalías compras: 124 detectadas (5 críticas, 119 avisos, 0 informativas)."
+}

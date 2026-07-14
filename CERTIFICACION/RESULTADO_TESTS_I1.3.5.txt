@@ -1,0 +1,14 @@
+I1.3.5 — RESULTADO DE PRUEBAS
+
+Regresión de cierre:
+40 passed in 0.77s
+
+Suite ampliada I1.3 + M1:
+136 passed
+15 failed exclusivamente por FileNotFoundError de Excel externos históricos ausentes.
+No se observaron fallos funcionales en el código refactorizado.
+
+Certificador aislado:
+Estado CERTIFICADO
+Módulos críticos 9/9 OK
+Archivos de negocio modificados 0

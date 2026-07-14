@@ -1,0 +1,37 @@
+[
+  {
+    "id_pedido": "PED000001",
+    "fecha_confirmacion": "2026-07-09T13:07:05",
+    "proveedor": "Makro",
+    "lineas": [
+      {
+        "codigo": "ART000355",
+        "articulo": "Arroz bomba",
+        "proveedor": "Makro",
+        "unidad": "kg",
+        "cantidad": 7.0,
+        "prioridad": "alta",
+        "estado": "pendiente"
+      },
+      {
+        "codigo": "ART000358",
+        "articulo": "Tomate triturado",
+        "proveedor": "Makro",
+        "unidad": "kg",
+        "cantidad": 8.0,
+        "prioridad": "alta",
+        "estado": "pendiente"
+      },
+      {
+        "codigo": "ART000356",
+        "articulo": "Harina fuerza",
+        "proveedor": "Makro",
+        "unidad": "kg",
+        "cantidad": 4.0,
+        "prioridad": "media",
+        "estado": "pendiente"
+      }
+    ],
+    "estado": "recibido_stock"
+  }
+]

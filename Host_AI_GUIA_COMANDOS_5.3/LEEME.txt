@@ -1,0 +1,9 @@
+HOST AI 5.3 - GUIA DE COMANDOS
+
+Este ZIP contiene una chuleta práctica para saber qué frases usar con Host AI al probar eventos, producción, stock, compras, incidencias, personal, rentabilidad y replanificación.
+
+Archivo principal:
+GUIA_COMANDOS_HOST_AI_5.3.md
+
+Recomendación:
+Abre el archivo con VS Code, Bloc de notas o cualquier editor de texto.

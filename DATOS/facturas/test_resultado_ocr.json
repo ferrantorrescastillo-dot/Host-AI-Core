@@ -1,0 +1,69 @@
+{
+  "resultado_pipeline": {
+    "ok": true,
+    "pipeline": "motor_ocr_simulado",
+    "accion": "extraer_texto",
+    "mensaje": "OCR simulado extraído: 94 caracteres.",
+    "datos": {
+      "archivo": "/mnt/data/Host_AI_3_0_3_7_2_Motor_OCR_Simulado/DATOS/facturas/factura_escaneada_demo.png",
+      "nombre_archivo": "factura_escaneada_demo.png",
+      "texto_extraido": "MAKRO ESPAÑA S.A.\\nFactura Nº F-OCR-1\\nCarrillera Ternera 8 KG 8,45 67,60\\nTotal factura 67,60",
+      "metodo": "manual_cache",
+      "confianza": 85.0,
+      "paginas": 1,
+      "requiere_revision": false,
+      "avisos": [],
+      "diagnostico": {
+        "archivo": "/mnt/data/Host_AI_3_0_3_7_2_Motor_OCR_Simulado/DATOS/facturas/factura_escaneada_demo.png",
+        "nombre_archivo": "factura_escaneada_demo.png",
+        "necesita_ocr": true,
+        "motivo": "Es una imagen; necesita OCR para extraer texto.",
+        "texto_actual": "",
+        "caracteres_detectados": 0,
+        "paginas": 1,
+        "confianza": 95,
+        "recomendaciones": [
+          "Enviar a motor OCR en 3.0.3.7.2."
+        ],
+        "id": "DIAGOCR-F09668998D",
+        "creado_en": "2026-07-08T11:56:19",
+        "lectura_host_ai": "Imagen detectada: necesita OCR."
+      },
+      "id": "RESOCR-24BC7AD960",
+      "creado_en": "2026-07-08T11:56:19",
+      "lectura_host_ai": "OCR simulado extraído: 94 caracteres."
+    },
+    "acciones_recomendadas": [],
+    "requiere_aprobacion": false,
+    "errores": [],
+    "id": "RES-4F5F359571",
+    "creado_en": "2026-07-08T11:56:19"
+  },
+  "archivo": "/mnt/data/Host_AI_3_0_3_7_2_Motor_OCR_Simulado/DATOS/facturas/factura_escaneada_demo.png",
+  "nombre_archivo": "factura_escaneada_demo.png",
+  "texto_extraido": "MAKRO ESPAÑA S.A.\\nFactura Nº F-OCR-1\\nCarrillera Ternera 8 KG 8,45 67,60\\nTotal factura 67,60",
+  "metodo": "manual_cache",
+  "confianza": 85.0,
+  "paginas": 1,
+  "requiere_revision": false,
+  "avisos": [],
+  "diagnostico": {
+    "archivo": "/mnt/data/Host_AI_3_0_3_7_2_Motor_OCR_Simulado/DATOS/facturas/factura_escaneada_demo.png",
+    "nombre_archivo": "factura_escaneada_demo.png",
+    "necesita_ocr": true,
+    "motivo": "Es una imagen; necesita OCR para extraer texto.",
+    "texto_actual": "",
+    "caracteres_detectados": 0,
+    "paginas": 1,
+    "confianza": 95,
+    "recomendaciones": [
+      "Enviar a motor OCR en 3.0.3.7.2."
+    ],
+    "id": "DIAGOCR-F09668998D",
+    "creado_en": "2026-07-08T11:56:19",
+    "lectura_host_ai": "Imagen detectada: necesita OCR."
+  },
+  "id": "RESOCR-24BC7AD960",
+  "creado_en": "2026-07-08T11:56:19",
+  "lectura_host_ai": "OCR simulado extraído: 94 caracteres."
+}

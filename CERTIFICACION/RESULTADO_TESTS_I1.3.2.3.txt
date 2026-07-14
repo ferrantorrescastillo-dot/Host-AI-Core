@@ -1,0 +1,6 @@
+.......................                                                  [100%]
+23 passed in 1.93s
+
+Archivos compilados correctamente:
+- APP/consola.py
+- SERVICIOS/vista_previa_resolucion_asistida_menus_i1323.py

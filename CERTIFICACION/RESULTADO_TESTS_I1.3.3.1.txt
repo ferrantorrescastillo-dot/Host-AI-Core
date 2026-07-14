@@ -1,0 +1,13 @@
+I1.3.3.1 — RESULTADO DE TESTS
+
+35 tests superados, 0 fallos.
+
+Incluye:
+- Detector limpio
+- Reconocimiento
+- Árbol semántico
+- Resolución asistida
+- Aprendizaje culinario
+- Preimportación definitiva
+- Resolución de bloqueos
+- Regresión legacy I1.3

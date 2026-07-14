@@ -1,0 +1,1 @@
+Instalar encima de P1. Ejecutar python main.py y entrar en Producción real. Opciones nuevas 8, 9 y 10.

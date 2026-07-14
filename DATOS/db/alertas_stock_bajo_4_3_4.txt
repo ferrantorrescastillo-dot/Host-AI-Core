@@ -1,0 +1,14 @@
+HOST AI 4.3.4 - ALERTAS DE STOCK BAJO
+================================================================
+Registros stock: 4
+Total alertas: 3
+Críticas: 0
+Altas: 2
+Medias: 1
+Estado: revisar
+
+ALERTAS
+----------------------------------------------------------------
+[ALTA] ART000355 | Arroz bomba | Stock: 3.0 kg | Mínimo: 10.0 kg | Faltan: 7.0 kg | Ubicación: Almacen seco | Proveedor: Makro
+[ALTA] ART000358 | Tomate triturado | Stock: 2.0 kg | Mínimo: 10.0 kg | Faltan: 8.0 kg | Ubicación: Almacen seco | Proveedor: Makro
+[MEDIA] ART000356 | Harina fuerza | Stock: 6.0 kg | Mínimo: 10.0 kg | Faltan: 4.0 kg | Ubicación: Almacen seco | Proveedor: Makro

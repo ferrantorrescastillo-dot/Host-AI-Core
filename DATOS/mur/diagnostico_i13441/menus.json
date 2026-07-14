@@ -1,0 +1,52 @@
+[
+  {
+    "menu_id": "M1",
+    "nombre": "Menu demo",
+    "secciones": [
+      {
+        "seccion_id": "S1",
+        "nombre": "Principal"
+      }
+    ],
+    "platos": [
+      {
+        "plato_id": "P1",
+        "nombre": "Plato demo",
+        "seccion": "Principal",
+        "componentes": [
+          {
+            "componente_id": "COMP-4533EF889D4E",
+            "rol": "RECETA_PRINCIPAL",
+            "nombre": "Receta demo",
+            "receta_id": "R1",
+            "plato_id": "P1"
+          }
+        ]
+      }
+    ],
+    "articulos_directos": [
+      {
+        "nombre": "Pan",
+        "articulo_id": "A1"
+      }
+    ],
+    "bebidas": [],
+    "complementos": [],
+    "servicios": [],
+    "economico": {
+      "precio_venta": 10,
+      "coste_total": 3,
+      "food_cost_pct": 30.0,
+      "beneficio": 7.0
+    },
+    "resumen": {
+      "secciones": 1,
+      "platos": 1,
+      "componentes": 1,
+      "articulos_directos": 1,
+      "bebidas": 0,
+      "complementos": 0
+    },
+    "actualizado_en": "2026-07-13T09:35:10.177847+00:00"
+  }
+]

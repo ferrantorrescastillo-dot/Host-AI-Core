@@ -1,0 +1,16 @@
+RR1.6.1-D — IA CONTEXTUAL
+
+1. Haz una copia de seguridad de tu proyecto actual.
+2. Copia las carpetas APP, SERVICIOS y TESTS encima de tu Host AI actual.
+3. Acepta reemplazar los archivos existentes.
+4. Debe instalarse después de RR1.6.1-A, RR1.6.1-B y RR1.6.1-C.
+5. Ejecuta: python main.py
+6. Entra en la opción 11: RR1.6.1-D IA contextual.
+
+Pruebas recomendadas:
+- ¿Qué tengo que preparar para la boda?
+- ¿Cómo va la boda?
+- ¿Cuánto voy a ganar con esta boda?
+- ¿Qué tengo que comprar?
+
+La IA sigue en modo seguro y no modifica datos.

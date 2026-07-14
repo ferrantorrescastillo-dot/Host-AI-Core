@@ -1,0 +1,85 @@
+{
+  "resultado_pipeline": {
+    "ok": true,
+    "pipeline": "comparador_proveedores_precios",
+    "accion": "comparar_articulo",
+    "mensaje": "Mejor proveedor para Carrillera de ternera: PROV-BIDFOOD.",
+    "datos": {
+      "encontrado": true,
+      "articulo_id": "ART-CARRILLERA",
+      "nombre_articulo": "Carrillera de ternera",
+      "ranking": [
+        {
+          "proveedor_id": "PROV-BIDFOOD",
+          "precio_minimo": 8.1,
+          "precio_maximo": 8.1,
+          "precio_medio": 8.1,
+          "total_registros": 1
+        },
+        {
+          "proveedor_id": "PROV-MAKRO",
+          "precio_minimo": 8.0,
+          "precio_maximo": 8.45,
+          "precio_medio": 8.29,
+          "total_registros": 5
+        }
+      ],
+      "mejor_proveedor": {
+        "proveedor_id": "PROV-BIDFOOD",
+        "precio_minimo": 8.1,
+        "precio_maximo": 8.1,
+        "precio_medio": 8.1,
+        "total_registros": 1
+      },
+      "peor_proveedor": {
+        "proveedor_id": "PROV-MAKRO",
+        "precio_minimo": 8.0,
+        "precio_maximo": 8.45,
+        "precio_medio": 8.29,
+        "total_registros": 5
+      },
+      "ahorro_potencial_unitario": 0.19,
+      "lectura_host_ai": "Mejor proveedor para Carrillera de ternera: PROV-BIDFOOD."
+    },
+    "acciones_recomendadas": [],
+    "requiere_aprobacion": false,
+    "errores": [],
+    "id": "RES-C2EE94FF48",
+    "creado_en": "2026-07-08T11:07:14"
+  },
+  "encontrado": true,
+  "articulo_id": "ART-CARRILLERA",
+  "nombre_articulo": "Carrillera de ternera",
+  "ranking": [
+    {
+      "proveedor_id": "PROV-BIDFOOD",
+      "precio_minimo": 8.1,
+      "precio_maximo": 8.1,
+      "precio_medio": 8.1,
+      "total_registros": 1
+    },
+    {
+      "proveedor_id": "PROV-MAKRO",
+      "precio_minimo": 8.0,
+      "precio_maximo": 8.45,
+      "precio_medio": 8.29,
+      "total_registros": 5
+    }
+  ],
+  "mejor_proveedor": {
+    "proveedor_id": "PROV-BIDFOOD",
+    "precio_minimo": 8.1,
+    "precio_maximo": 8.1,
+    "precio_medio": 8.1,
+    "total_registros": 1
+  },
+  "peor_proveedor": {
+    "proveedor_id": "PROV-MAKRO",
+    "precio_minimo": 8.0,
+    "precio_maximo": 8.45,
+    "precio_medio": 8.29,
+    "total_registros": 5
+  },
+  "ahorro_potencial_unitario": 0.19,
+  "lectura_host_ai": "Mejor proveedor para Carrillera de ternera: PROV-BIDFOOD."
+}

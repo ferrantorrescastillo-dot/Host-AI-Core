@@ -1,0 +1,207 @@
+{
+  "archivo": "/mnt/data/Host_AI_3_0_2_3_Mapeador_Columnas_Excel/DATOS/importaciones/excel_demo_mapeador.xlsx",
+  "nombre_archivo": "excel_demo_mapeador.xlsx",
+  "hojas": [
+    {
+      "nombre": "Escandallos",
+      "filas": 3,
+      "columnas": 7,
+      "celdas_utilizadas": 20,
+      "columnas_detectadas": [
+        {
+          "indice": 1,
+          "letra": "A",
+          "nombre_detectado": "Plato",
+          "tipo_detectado": "texto",
+          "total_celdas": 2,
+          "celdas_con_dato": 2,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "Carrillera melosa",
+            "Carrillera melosa"
+          ]
+        },
+        {
+          "indice": 2,
+          "letra": "B",
+          "nombre_detectado": "Materia Prima",
+          "tipo_detectado": "texto",
+          "total_celdas": 2,
+          "celdas_con_dato": 2,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "Carrillera de ternera",
+            "Demi-glace"
+          ]
+        },
+        {
+          "indice": 3,
+          "letra": "C",
+          "nombre_detectado": "Cant",
+          "tipo_detectado": "numero",
+          "total_celdas": 2,
+          "celdas_con_dato": 2,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            1.8,
+            0.8
+          ]
+        },
+        {
+          "indice": 4,
+          "letra": "D",
+          "nombre_detectado": "Uds",
+          "tipo_detectado": "texto",
+          "total_celdas": 2,
+          "celdas_con_dato": 2,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "kg",
+            "L"
+          ]
+        },
+        {
+          "indice": 5,
+          "letra": "E",
+          "nombre_detectado": "P.Unit",
+          "tipo_detectado": "numero",
+          "total_celdas": 2,
+          "celdas_con_dato": 2,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            8.5,
+            3
+          ]
+        },
+        {
+          "indice": 6,
+          "letra": "F",
+          "nombre_detectado": "% Merma",
+          "tipo_detectado": "numero",
+          "total_celdas": 2,
+          "celdas_con_dato": 2,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            10,
+            0
+          ]
+        },
+        {
+          "indice": 7,
+          "letra": "G",
+          "nombre_detectado": "Obs Internas",
+          "tipo_detectado": "texto",
+          "total_celdas": 2,
+          "celdas_con_dato": 1,
+          "porcentaje_vacio": 50.0,
+          "ejemplos": [
+            "limpiar bien"
+          ]
+        }
+      ],
+      "vista_previa": [
+        {
+          "Plato": "Carrillera melosa",
+          "Materia Prima": "Carrillera de ternera",
+          "Cant": 1.8,
+          "Uds": "kg",
+          "P.Unit": 8.5,
+          "% Merma": 10,
+          "Obs Internas": "limpiar bien"
+        },
+        {
+          "Plato": "Carrillera melosa",
+          "Materia Prima": "Demi-glace",
+          "Cant": 0.8,
+          "Uds": "L",
+          "P.Unit": 3,
+          "% Merma": 0,
+          "Obs Internas": null
+        }
+      ]
+    },
+    {
+      "nombre": "Inventario",
+      "filas": 2,
+      "columnas": 5,
+      "celdas_utilizadas": 10,
+      "columnas_detectadas": [
+        {
+          "indice": 1,
+          "letra": "A",
+          "nombre_detectado": "Producto",
+          "tipo_detectado": "texto",
+          "total_celdas": 1,
+          "celdas_con_dato": 1,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "Carrillera"
+          ]
+        },
+        {
+          "indice": 2,
+          "letra": "B",
+          "nombre_detectado": "Existencias",
+          "tipo_detectado": "numero",
+          "total_celdas": 1,
+          "celdas_con_dato": 1,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            10
+          ]
+        },
+        {
+          "indice": 3,
+          "letra": "C",
+          "nombre_detectado": "Ud",
+          "tipo_detectado": "texto",
+          "total_celdas": 1,
+          "celdas_con_dato": 1,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "kg"
+          ]
+        },
+        {
+          "indice": 4,
+          "letra": "D",
+          "nombre_detectado": "Cámara",
+          "tipo_detectado": "texto",
+          "total_celdas": 1,
+          "celdas_con_dato": 1,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "Cámara 1"
+          ]
+        },
+        {
+          "indice": 5,
+          "letra": "E",
+          "nombre_detectado": "Fecha Caducidad",
+          "tipo_detectado": "fecha",
+          "total_celdas": 1,
+          "celdas_con_dato": 1,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "2026-07-20T00:00:00"
+          ]
+        }
+      ],
+      "vista_previa": [
+        {
+          "Producto": "Carrillera",
+          "Existencias": 10,
+          "Ud": "kg",
+          "Cámara": "Cámara 1",
+          "Fecha Caducidad": "2026-07-20T00:00:00"
+        }
+      ]
+    }
+  ],
+  "total_hojas": 2,
+  "total_filas": 5,
+  "total_columnas": 12,
+  "total_celdas_utilizadas": 30,
+  "id": "ANEXCEL-839945DA4B",
+  "creado_en": "2026-07-08T08:16:04"
+}

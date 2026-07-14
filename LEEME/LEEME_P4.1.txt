@@ -1,0 +1,14 @@
+HOST AI 6.0.4 — P4.1 OPTIMIZACIÓN AUTOMÁTICA BÁSICA
+
+INSTALACIÓN
+1. Haz una copia de tu carpeta actual de Host AI.
+2. Descomprime este ZIP.
+3. Copia APP, MODELOS, MOTORES y TESTS encima de tu proyecto.
+4. Acepta sustituir los archivos.
+5. Ejecuta: python main.py
+
+USO
+Host AI Base > Producción > 13. Optimización automática básica
+
+REQUISITO
+El plan debe tener una planificación inteligente generada previamente con la opción 9 de Producción.

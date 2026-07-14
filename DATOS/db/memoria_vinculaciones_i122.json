@@ -1,0 +1,50 @@
+{
+  "carrillera cerdo": {
+    "nombre_excel": "Galtes porc",
+    "articulo_id": "ART000321",
+    "articulo_nombre": "Galtes porc",
+    "proveedor": "BUNDO.",
+    "familia": "Panadería",
+    "origen": "revision_manual"
+  },
+  "pan cristal": {
+    "nombre_excel": "Pan cristal precortado. (3,200 gr). 64 *50. 26,78€ Caja. 0,20€ medio trozo.",
+    "articulo_id": "ART000230",
+    "articulo_nombre": "Pan cristal precortado. (3,200 gr). 64 *50. 26,78€ Caja. 0,20€ medio trozo.",
+    "proveedor": "ALVILARDAN",
+    "familia": "Panadería",
+    "origen": "revision_manual"
+  },
+  "albahaca": {
+    "nombre_excel": "Albahaca",
+    "articulo_id": "ART000051",
+    "articulo_nombre": "Albahaca",
+    "proveedor": "PAU GAVALDA",
+    "familia": "Verduras",
+    "origen": "revision_manual"
+  },
+  "menta": {
+    "nombre_excel": "menta manojo de 100 gr. 1,20€ manojo.",
+    "articulo_id": "ART000203",
+    "articulo_nombre": "menta manojo de 100 gr. 1,20€ manojo.",
+    "proveedor": "PAU GAVALDA",
+    "familia": "Verduras",
+    "origen": "revision_manual"
+  },
+  "sorbete mandarina": {
+    "nombre_excel": "Sorbete mandarina 5kg",
+    "articulo_id": "ART000338",
+    "articulo_nombre": "Sorbete mandarina 5kg",
+    "proveedor": "MAKRO",
+    "familia": "Postres",
+    "origen": "revision_manual"
+  },
+  "zumo naranja": {
+    "nombre_excel": "Zumo naranja 1,5 Lt. pack de 6 unid. 29,45€. 4,90€ botella. (litro 3,26€ Lt).",
+    "articulo_id": "ART000320",
+    "articulo_nombre": "Zumo naranja 1,5 Lt. pack de 6 unid. 29,45€. 4,90€ botella. (litro 3,26€ Lt).",
+    "proveedor": "Disbesa.",
+    "familia": "Frutas",
+    "origen": "revision_manual"
+  }
+}

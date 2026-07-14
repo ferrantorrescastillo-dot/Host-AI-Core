@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "host-ai://schemas/escandallo-canonico-555a",
+  "title": "Host AI - Escandallo canónico 5.5.5A",
+  "type": "object",
+  "required": ["schema_version", "escandallos"],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "escandallos": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["receta", "coste_total"],
+        "properties": {
+          "coste_total": {"type": "number", "minimum": 0},
+          "receta": {
+            "type": "object",
+            "required": ["codigo", "nombre", "rendimiento", "unidad_rendimiento", "ingredientes"],
+            "properties": {
+              "codigo": {"type": "string", "minLength": 1},
+              "nombre": {"type": "string", "minLength": 1},
+              "rendimiento": {"type": "number", "exclusiveMinimum": 0},
+              "unidad_rendimiento": {"type": "string", "minLength": 1},
+              "ingredientes": {"type": "array"}
+            }
+          }
+        }
+      }
+    }
+  }
+}

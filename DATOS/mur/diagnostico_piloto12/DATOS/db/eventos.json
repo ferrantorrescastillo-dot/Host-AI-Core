@@ -1,0 +1,9 @@
+[
+  {
+    "id": "EVT-DIAG",
+    "nombre": "Boda diagnóstico",
+    "fecha": "14/07/2026",
+    "pax": 100,
+    "estado": "pendiente"
+  }
+]

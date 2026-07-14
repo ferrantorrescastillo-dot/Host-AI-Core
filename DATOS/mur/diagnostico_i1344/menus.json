@@ -1,0 +1,53 @@
+[
+  {
+    "menu_id": "MENU-DIAG-1344",
+    "nombre": "MENÚ DIAGNÓSTICO",
+    "estado": "ACTIVO",
+    "secciones": [
+      {
+        "seccion_id": "SEC-1",
+        "nombre": "PRINCIPAL"
+      }
+    ],
+    "platos": [
+      {
+        "plato_id": "PLATO-1",
+        "nombre": "Solomillo diagnóstico",
+        "seccion": "PRINCIPAL",
+        "componentes": [
+          {
+            "componente_id": "COMP-1",
+            "rol": "RECETA_PRINCIPAL",
+            "nombre": "Solomillo de cerdo",
+            "plato_id": "PLATO-1",
+            "catalogado": true
+          }
+        ]
+      }
+    ],
+    "articulos_directos": [
+      {
+        "nombre": "Pan individual",
+        "tipo": "ARTICULO_DIRECTO",
+        "coste_racion": 0.2
+      }
+    ],
+    "bebidas": [],
+    "complementos": [],
+    "servicios": [],
+    "economico": {
+      "precio_venta": 50,
+      "coste_total": 12,
+      "food_cost_pct": 24,
+      "beneficio": 38
+    },
+    "resumen": {
+      "secciones": 1,
+      "platos": 1,
+      "componentes": 1,
+      "articulos_directos": 1,
+      "bebidas": 0,
+      "complementos": 0
+    }
+  }
+]

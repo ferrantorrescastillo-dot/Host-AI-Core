@@ -1,0 +1,14 @@
+{
+  "recursos": {
+    "mesa_trabajo": 2,
+    "bascula": 1,
+    "fogones": 4,
+    "horno": 1,
+    "freidora": 1,
+    "abatidor": 1,
+    "camara_fria": 1,
+    "envasadora": 1,
+    "impresora_etiquetas": 1
+  },
+  "nota": "Configuración inicial editable. Las cantidades representan capacidad simultánea disponible."
+}

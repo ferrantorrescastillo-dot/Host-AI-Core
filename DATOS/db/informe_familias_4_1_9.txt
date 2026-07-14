@@ -1,0 +1,10 @@
+HOST AI 4.1.9.1 - CLASIFICADOR DE FAMILIAS
+==========================================================
+Artículos: 358
+Sin familia antes: 90
+Familias aplicadas: 0
+Sin familia después: 90
+Estado: apto_con_observaciones
+
+CAMBIOS APLICADOS
+----------------------------------------------------------

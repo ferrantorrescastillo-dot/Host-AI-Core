@@ -1,0 +1,8 @@
+HOST AI — M1.3.2
+
+1. Haz una copia de seguridad del proyecto.
+2. Copia el contenido del ZIP encima de la línea certificada M1.3.1.
+3. Abre Host AI > Excel / Importaciones.
+4. Ejecuta la opción 22: M1.3.2 Diagnóstico de resolución automática de ingredientes.
+5. El diagnóstico usa un catálogo aislado en DATOS/mur/diagnostico_m132.
+6. No modifica recetas ni artículos reales.

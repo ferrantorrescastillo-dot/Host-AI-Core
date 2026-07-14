@@ -1,0 +1,7 @@
+31 passed in 0.62s
+
+Incluye:
+- test_i13441_bandeja_correccion_postimportacion.py
+- test_i1344_auditoria_integridad_postimportacion.py
+- test_i1342_motor_escritura_segura.py
+- test_i1343_importacion_definitiva_menus.py

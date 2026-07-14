@@ -1,0 +1,8 @@
+HOST AI 6.0.3
+
+Suite completa ejecutada sobre Host AI 4.0 + parche 6.0.2 + parche 6.0.3.
+
+Resultado:
+36 passed in 2.49s
+0 failed
+0 collection errors

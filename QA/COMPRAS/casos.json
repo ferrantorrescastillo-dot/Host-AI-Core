@@ -1,0 +1,197 @@
+[
+  {
+    "id": "QA-COM-001",
+    "categoria": "compras",
+    "usuario": "¿Qué tengo que comprar para mañana?",
+    "intencion_esperada": "compras",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-COM-002",
+    "categoria": "compras",
+    "usuario": "Hazme el pedido de Makro.",
+    "intencion_esperada": "compras",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-COM-003",
+    "categoria": "compras",
+    "usuario": "Me falta aceite para el servicio.",
+    "intencion_esperada": "compras",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-COM-004",
+    "categoria": "compras",
+    "usuario": "¿Qué proveedor me recomiendas para el arroz?",
+    "intencion_esperada": "compras",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-COM-005",
+    "categoria": "compras",
+    "usuario": "Prepara la compra de hoy.",
+    "intencion_esperada": "compras",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-COM-006",
+    "categoria": "compras",
+    "usuario": "¿Qué falta comprar para el evento?",
+    "intencion_esperada": "compras",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-COM-007",
+    "categoria": "compras",
+    "usuario": "Genera pedido para stock bajo.",
+    "intencion_esperada": "compras",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-COM-008",
+    "categoria": "compras",
+    "usuario": "Tengo que pedir tomate.",
+    "intencion_esperada": "compras",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-COM-009",
+    "categoria": "compras",
+    "usuario": "Revisa si hay que comprar pescado.",
+    "intencion_esperada": "compras",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-COM-010",
+    "categoria": "compras",
+    "usuario": "Pedido urgente para mañana.",
+    "intencion_esperada": "compras",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-COM-011",
+    "categoria": "compras",
+    "usuario": "¿Qué artículos están por debajo del mínimo?",
+    "intencion_esperada": "compras",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-COM-012",
+    "categoria": "compras",
+    "usuario": "Haz la lista de la compra semanal.",
+    "intencion_esperada": "compras",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-COM-013",
+    "categoria": "compras",
+    "usuario": "¿A quién compro el gambón?",
+    "intencion_esperada": "compras",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-COM-014",
+    "categoria": "compras",
+    "usuario": "Compara proveedores antes de pedir aceite.",
+    "intencion_esperada": "compras",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-COM-015",
+    "categoria": "compras",
+    "usuario": "¿Cuánto tengo que pedir de arroz?",
+    "intencion_esperada": "compras",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  }
+]

@@ -1,0 +1,41 @@
+[
+  {
+    "fecha": "2026-07-11T10:24:52",
+    "tipo": "calculo",
+    "receta_id": "REC-CARRILLERA",
+    "receta": "Carrillera melosa",
+    "raciones": 10,
+    "coste_total": 19.23,
+    "coste_por_racion": 1.923,
+    "precio_venta_por_racion": 20.0,
+    "margen_bruto": 180.77,
+    "food_cost_porcentaje": 9.62,
+    "avisos": []
+  },
+  {
+    "fecha": "2026-07-11T10:25:20",
+    "tipo": "calculo",
+    "receta_id": "ENSALADILLA",
+    "receta": "ensaladilla",
+    "raciones": 12,
+    "coste_total": 0,
+    "coste_por_racion": 0.0,
+    "precio_venta_por_racion": 8.0,
+    "margen_bruto": 96.0,
+    "food_cost_porcentaje": 0.0,
+    "avisos": []
+  },
+  {
+    "fecha": "2026-07-11T17:19:29",
+    "tipo": "calculo",
+    "receta_id": "REC-CARRILLERA",
+    "receta": "Carrillera melosa",
+    "raciones": 10,
+    "coste_total": 19.23,
+    "coste_por_racion": 1.923,
+    "precio_venta_por_racion": 18.0,
+    "margen_bruto": 160.77,
+    "food_cost_porcentaje": 10.68,
+    "avisos": []
+  }
+]

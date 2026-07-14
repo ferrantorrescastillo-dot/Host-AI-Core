@@ -1,0 +1,8 @@
+INSTALACIÓN
+1. Haz una copia completa de tu proyecto actual.
+2. Confirma que ya tienes instalados RR1.6.1-A y RR1.6.1-B.
+3. Copia las carpetas APP, MOTORES y TESTS de este parche sobre tu proyecto.
+4. Acepta reemplazar los archivos existentes.
+5. Ejecuta: python main.py
+
+Este ZIP es un parche incremental y no contiene el proyecto completo.

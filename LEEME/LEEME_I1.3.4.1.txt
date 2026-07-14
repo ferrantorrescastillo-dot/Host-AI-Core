@@ -1,0 +1,7 @@
+I1.3.4.1 — SIMULACIÓN DE IMPORTACIÓN
+
+1. Copia el contenido encima del proyecto certificado con M1.3.3.
+2. Abre Excel / Importaciones.
+3. Selecciona la opción 24.
+4. Indica Escandallos Boronat.xlsx y la hoja MENU BODA 31-1.
+5. La salida muestra el plan; no existe opción de importación.

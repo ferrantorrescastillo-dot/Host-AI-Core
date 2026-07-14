@@ -1,0 +1,72 @@
+[
+  {
+    "nombre": "Arroz bomba",
+    "cantidad": 1.75,
+    "unidad": "kg",
+    "familia": "Arroces",
+    "ubicacion": "seco",
+    "proveedor": "Makro",
+    "articulo_id": "ART000355",
+    "fecha_entrada": "2026-07-11",
+    "caducidad": "",
+    "coste_unitario": 1.25,
+    "id": "LOTE-C8C9671090",
+    "creado_en": "2026-07-11T10:07:32"
+  },
+  {
+    "nombre": "Arroz bomba",
+    "cantidad": 28.25,
+    "unidad": "kg",
+    "familia": "Arroces",
+    "ubicacion": "seco",
+    "proveedor": "",
+    "articulo_id": "ART000355",
+    "fecha_entrada": "2026-07-11",
+    "caducidad": "",
+    "coste_unitario": 0.0,
+    "id": "LOTE-94373919AE",
+    "creado_en": "2026-07-11T10:10:01"
+  },
+  {
+    "nombre": "Tomate triturado",
+    "cantidad": 5.0,
+    "unidad": "kg",
+    "familia": "",
+    "ubicacion": "seco",
+    "proveedor": "Sardà",
+    "articulo_id": "",
+    "fecha_entrada": "2026-07-11",
+    "caducidad": "",
+    "coste_unitario": 0.5,
+    "id": "LOTE-3BB680870E",
+    "creado_en": "2026-07-11T10:18:20"
+  },
+  {
+    "nombre": "Arroz bomba",
+    "cantidad": 5.0,
+    "unidad": "kg",
+    "familia": "Arroces",
+    "ubicacion": "seco",
+    "proveedor": "Makro",
+    "articulo_id": "ART000355",
+    "fecha_entrada": "2026-07-11",
+    "caducidad": "2026-09-25",
+    "coste_unitario": 1.65,
+    "id": "LOTE-5B3077AEEA",
+    "creado_en": "2026-07-11T16:15:15"
+  },
+  {
+    "nombre": "Arroz bomba",
+    "cantidad": 5.0,
+    "unidad": "kg",
+    "familia": "Arroces",
+    "ubicacion": "seco",
+    "proveedor": "makro",
+    "articulo_id": "ART000355",
+    "fecha_entrada": "2026-07-11",
+    "caducidad": "",
+    "coste_unitario": 1.65,
+    "id": "LOTE-7F274635C6",
+    "creado_en": "2026-07-11T16:57:52"
+  }
+]

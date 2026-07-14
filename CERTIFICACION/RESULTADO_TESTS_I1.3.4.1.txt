@@ -1,0 +1,7 @@
+I1.3.4.1 — RESULTADO DE TESTS
+
+Tests específicos y regresión I1.3 + M1: 86 superados, 0 fallos.
+Prueba real: Escandallos Boronat.xlsx / MENU BODA 31-1.
+Resultado real: 1 menú, 36 acciones, 35 ejecutables, 1 bloqueada.
+Integridad: 0 archivos de negocio modificados.
+Estado real de la simulación base: BLOQUEADA por Parmentier de patata no catalogada.

@@ -1,0 +1,67 @@
+[
+  {
+    "id": "QA-GEN-001",
+    "categoria": "general",
+    "usuario": "Hola Host AI.",
+    "intencion_esperada": "conversacion_general",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-GEN-002",
+    "categoria": "general",
+    "usuario": "Buenas, ¿qué puedes hacer?",
+    "intencion_esperada": "conversacion_general",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-GEN-003",
+    "categoria": "general",
+    "usuario": "Gracias.",
+    "intencion_esperada": "conversacion_general",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-GEN-004",
+    "categoria": "general",
+    "usuario": "No entiendo el programa.",
+    "intencion_esperada": "conversacion_general",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-GEN-005",
+    "categoria": "general",
+    "usuario": "Ayúdame a organizar el día.",
+    "intencion_esperada": "produccion",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  }
+]

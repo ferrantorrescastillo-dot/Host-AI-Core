@@ -1,0 +1,197 @@
+[
+  {
+    "id": "QA-REN-001",
+    "categoria": "rentabilidad",
+    "usuario": "¿Qué plato deja menos margen?",
+    "intencion_esperada": "rentabilidad",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REN-002",
+    "categoria": "rentabilidad",
+    "usuario": "Cuál es el plato menos rentable.",
+    "intencion_esperada": "rentabilidad",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REN-003",
+    "categoria": "rentabilidad",
+    "usuario": "Calcula el food cost del menú.",
+    "intencion_esperada": "rentabilidad",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REN-004",
+    "categoria": "rentabilidad",
+    "usuario": "Qué receta me hace perder dinero.",
+    "intencion_esperada": "rentabilidad",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REN-005",
+    "categoria": "rentabilidad",
+    "usuario": "Beneficio del evento.",
+    "intencion_esperada": "rentabilidad",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REN-006",
+    "categoria": "rentabilidad",
+    "usuario": "Rentabilidad de carta.",
+    "intencion_esperada": "rentabilidad",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REN-007",
+    "categoria": "rentabilidad",
+    "usuario": "Simula subir la paella a 48 euros.",
+    "intencion_esperada": "rentabilidad",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REN-008",
+    "categoria": "rentabilidad",
+    "usuario": "Controla mermas de producción.",
+    "intencion_esperada": "rentabilidad",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REN-009",
+    "categoria": "rentabilidad",
+    "usuario": "Comparar coste entre proveedores.",
+    "intencion_esperada": "rentabilidad",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REN-010",
+    "categoria": "rentabilidad",
+    "usuario": "Alertas de rentabilidad bajas.",
+    "intencion_esperada": "rentabilidad",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REN-011",
+    "categoria": "rentabilidad",
+    "usuario": "Qué menú deja más beneficio.",
+    "intencion_esperada": "rentabilidad",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REN-012",
+    "categoria": "rentabilidad",
+    "usuario": "Calcula margen del plato de arroz.",
+    "intencion_esperada": "rentabilidad",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REN-013",
+    "categoria": "rentabilidad",
+    "usuario": "Informe financiero inteligente.",
+    "intencion_esperada": "rentabilidad",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REN-014",
+    "categoria": "rentabilidad",
+    "usuario": "Coste real por receta.",
+    "intencion_esperada": "rentabilidad",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REN-015",
+    "categoria": "rentabilidad",
+    "usuario": "¿Dónde pierdo dinero?",
+    "intencion_esperada": "rentabilidad",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  }
+]

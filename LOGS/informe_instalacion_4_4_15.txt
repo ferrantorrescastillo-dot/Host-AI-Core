@@ -1,0 +1,6 @@
+HOST AI 4.4.15 - INFORME DE INSTALACIÓN
+==================================================
+Base: C:\Proyecto Host IA 3.0
+Estado: OK
+Configuración existe: True
+Carpetas faltantes: Ninguna

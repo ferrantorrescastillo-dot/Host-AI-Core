@@ -1,0 +1,130 @@
+[
+  {
+    "nombre": "BoronatX",
+    "fecha": "22/10/2026",
+    "pax": 80,
+    "tipo": "evento",
+    "cliente": "",
+    "telefono": "",
+    "email": "",
+    "ubicacion": "",
+    "hora_inicio": "",
+    "observaciones": "",
+    "estado": "pendiente",
+    "servicios": [
+      {
+        "nombre": "Coctel bienvenida",
+        "tipo": "coctel bienvenida",
+        "hora_inicio": "13:00",
+        "duracion_min": 180,
+        "pases": [
+          {
+            "nombre": "Entrante",
+            "hora_inicio": "13:30",
+            "duracion_min": 35,
+            "recetas": [
+              "REC-CARRILLERA"
+            ],
+            "notas": "",
+            "id": "PASE-0D493AF1"
+          }
+        ],
+        "id": "SERV-BBC42E5E"
+      }
+    ],
+    "id": "EVT-4E1F5FA5"
+  },
+  {
+    "nombre": "Boda 50 pax",
+    "fecha": "pendiente",
+    "pax": 50,
+    "tipo": "boda",
+    "cliente": "",
+    "telefono": "",
+    "email": "",
+    "ubicacion": "",
+    "hora_inicio": "",
+    "observaciones": "",
+    "estado": "pendiente",
+    "servicios": [],
+    "id": "EVT-4BC533F7"
+  },
+  {
+    "nombre": "boronat",
+    "fecha": "2026-07-11",
+    "pax": 80,
+    "tipo": "evento",
+    "cliente": "",
+    "telefono": "",
+    "email": "",
+    "ubicacion": "",
+    "hora_inicio": "",
+    "observaciones": "",
+    "estado": "pendiente",
+    "servicios": [
+      {
+        "nombre": "Coctel bienvenida",
+        "tipo": "coctel bienvenida",
+        "hora_inicio": "13:00",
+        "duracion_min": 180,
+        "pases": [
+          {
+            "nombre": "Entrante",
+            "hora_inicio": "13:30",
+            "duracion_min": 35,
+            "recetas": [
+              "REC-CARRILLERA"
+            ],
+            "notas": "",
+            "id": "PASE-61BB53E5"
+          }
+        ],
+        "id": "SERV-2DCA1EAA"
+      }
+    ],
+    "id": "EVT-3F9A13E5"
+  },
+  {
+    "nombre": "Boda prueba RR1",
+    "fecha": "2026-09-20",
+    "pax": 120,
+    "tipo": "boda",
+    "cliente": "Juan Pérez",
+    "telefono": "600123123",
+    "email": "juan@email.com",
+    "ubicacion": "Masía Boronat",
+    "hora_inicio": "13:30",
+    "observaciones": "Preguntar Alergenos",
+    "estado": "confirmado",
+    "servicios": [
+      {
+        "nombre": "Cocotel",
+        "tipo": "13:30",
+        "hora_inicio": "13:30",
+        "duracion_min": 180,
+        "pases": [],
+        "id": "SERV-4BE75274"
+      },
+      {
+        "nombre": "Banqueteç",
+        "tipo": "Bank",
+        "hora_inicio": "15:00",
+        "duracion_min": 150,
+        "pases": [
+          {
+            "nombre": "entrante",
+            "hora_inicio": "13:30",
+            "duracion_min": 40,
+            "recetas": [
+              "REC-CARRILLERA"
+            ],
+            "notas": "",
+            "id": "PASE-285DBB4B"
+          }
+        ],
+        "id": "SERV-96739BC6"
+      }
+    ],
+    "id": "EVT-278D20DD"
+  }
+]

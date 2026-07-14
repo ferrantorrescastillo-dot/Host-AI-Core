@@ -1,0 +1,13 @@
+I1.1.1 — DETECTOR MULTI-ESCANDALLOS
+
+INSTALACIÓN
+1. Haz una copia de tu proyecto actual.
+2. Copia las carpetas SERVICIOS y TESTS encima de Host AI 6.0.
+3. Acepta reemplazar el archivo existente.
+
+PRUEBA
+- Entra en Excel / importaciones.
+- Ejecuta I1.1 sobre la hoja: MP boda 31-1
+- El resultado debe detectar varios escandallos, no solo Ceviche de corvina.
+
+Este parche no importa ni modifica datos de Host AI.

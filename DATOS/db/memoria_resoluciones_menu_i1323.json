@@ -1,0 +1,11 @@
+{
+  "parmentier patata": {
+    "texto_origen": "parmentier patata",
+    "rol": "GUARNICION",
+    "accion": "PROPONER_NUEVA_RECETA",
+    "nombre_destino": "Parmentier de patata",
+    "tipo_destino": "PROPUESTA_RECETA",
+    "entidad_id": "",
+    "confianza": 1.0
+  }
+}

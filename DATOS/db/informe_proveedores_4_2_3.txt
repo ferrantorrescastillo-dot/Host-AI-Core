@@ -1,0 +1,27 @@
+HOST AI 4.2.3 - INFORME PROVEEDORES
+======================================================
+Total proveedores: 24
+Proveedores activos: 24
+Proveedores inactivos: 0
+Proveedores con variantes: 5
+Artículos sin proveedor: 27
+
+TOP PROVEEDORES POR ARTÍCULOS
+------------------------------------------------------
+PAU GAVALDA: 82
+SARDA: 48
+M.P APERITIVOS.: 44
+M.P: 33
+DISBESA: 26
+BUNDO.: 20
+MAKRO: 16
+AVICSA: 15
+ASSOLIN: 11
+PESCADO JOSEP: 6
+
+RECOMENDACIONES
+------------------------------------------------------
+- Revisar proveedores con variantes para dejar un nombre oficial.
+- Completar proveedor en artículos sin proveedor.
+
+ESTADO FINAL: apto_con_observaciones

@@ -1,0 +1,701 @@
+F.........FFFFF................FFF...................................... [ 23%]
+........................FFFF.FFFF.FFFFFFF............................... [ 47%]
+........................................................................ [ 70%]
+........................................................................ [ 94%]
+..................                                                       [100%]
+=================================== FAILURES ===================================
+___________________ test_603_estructura_operativa_disponible ___________________
+
+    def test_603_estructura_operativa_disponible():
+        estado = LanzadorHostAIBase603(BASE_DIR).validar_estructura()
+>       assert estado.ok is True
+E       AssertionError: assert False is True
+E        +  where False = EstadoArranque603(ok=False, base_dir='/mnt/data/host_ai_audit14/project/Host AI 6.0/HOST_AI_6.0.3_MODO_MANUAL_OPERATIV...se, 'APP': True, 'SERVICIOS': True, 'main.py': True, 'consola_base': True, 'core': False, 'bootloader_tecnico': False}).ok
+
+HOST_AI_6.0.3_MODO_MANUAL_OPERATIVO/TESTS/test_603_lanzador_base_operativa.py:11: AssertionError
+__________________ test_humaniza_duracion_prioridad_y_saludo ___________________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2/test_humaniza_duracion_priorid0')
+
+    def test_humaniza_duracion_prioridad_y_saludo(tmp_path):
+        j=JornadaPiloto12(tmp_path, preparar(tmp_path)).construir(datetime(2026,7,13,8,0))
+        prod=next(x for x in j["tareas"] if x["tipo"]=="PRODUCCION")
+>       assert prod["duracion_humana"] == "4 h 25 min"
+               ^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'duracion_humana'
+
+PILOTO-1.2.1_Humanizacion_Mi_Jornada/TESTS/test_piloto_121_humanizacion_jornada.py:21: KeyError
+______________ test_evento_pasado_se_exprime_en_lenguaje_natural _______________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2/test_evento_pasado_se_exprime_0')
+
+    def test_evento_pasado_se_exprime_en_lenguaje_natural(tmp_path):
+        j=JornadaPiloto12(tmp_path, preparar(tmp_path,"10/07/2026")).construir(datetime(2026,7,13,8,0))
+        prod=next(x for x in j["tareas"] if x["tipo"]=="PRODUCCION")
+>       assert "ya ha pasado" in prod["evento_mensaje"]
+                                 ^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'evento_mensaje'
+
+PILOTO-1.2.1_Humanizacion_Mi_Jornada/TESTS/test_piloto_121_humanizacion_jornada.py:30: KeyError
+__________________________ test_resumen_jornada_vacia __________________________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2/test_resumen_jornada_vacia0')
+
+    def test_resumen_jornada_vacia(tmp_path):
+        (tmp_path/"DATOS/db").mkdir(parents=True)
+        for n in ("planes_produccion.json","eventos.json","compras_pedidos.json"):
+            (tmp_path/"DATOS/db"/n).write_text("[]",encoding="utf-8")
+        j=JornadaPiloto12(tmp_path).construir(datetime(2026,7,13,21,0))
+        assert j["resumen"]["abiertas"] == 0
+>       assert "jornada está limpia" in j["resumen_humano"]
+                                        ^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'resumen_humano'
+
+PILOTO-1.2.1_Humanizacion_Mi_Jornada/TESTS/test_piloto_121_humanizacion_jornada.py:40: KeyError
+_______________ test_cronograma_es_legible_y_no_modifica_fuentes _______________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2/test_cronograma_es_legible_y_n0')
+
+    def test_cronograma_es_legible_y_no_modifica_fuentes(tmp_path):
+        b=preparar(tmp_path)
+        paths=[tmp_path/"DATOS/db/planes_produccion.json",tmp_path/"DATOS/db/eventos.json"]
+        before=[p.read_bytes() for p in paths]
+        j=JornadaPiloto12(tmp_path,b).construir(datetime(2026,7,13,8,0))
+>       assert j["cronograma"][0]["franja"] == "08:00–08:25"
+               ^^^^^^^^^^^^^^^
+E       KeyError: 'cronograma'
+
+PILOTO-1.2.1_Humanizacion_Mi_Jornada/TESTS/test_piloto_121_humanizacion_jornada.py:49: KeyError
+__________ test_no_muestra_minutos_tecnicos_en_recomendacion_paralela __________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2/test_no_muestra_minutos_tecnic0')
+
+    def test_no_muestra_minutos_tecnicos_en_recomendacion_paralela(tmp_path):
+        b=preparar(tmp_path); b.crear_tarea("Recepción Makro","RECEPCION",80)
+        j=JornadaPiloto12(tmp_path,b).construir(datetime(2026,7,13,8,0))
+        paralela=next(x for x in j["recomendaciones"] if x.get("paralela_con"))
+>       assert "4 h" in paralela["motivo_humano"]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'motivo_humano'
+
+PILOTO-1.2.1_Humanizacion_Mi_Jornada/TESTS/test_piloto_121_humanizacion_jornada.py:57: KeyError
+______________________ test_contexto_no_se_pierde_tras_si ______________________
+
+    def test_contexto_no_se_pierde_tras_si():
+        o = OrquestadorInteligente52(BASE_DIR)
+        # Inyectamos un flujo válido para aislar la prueba de continuidad.
+        flujo = {"ok": True, "datos": {"tipo":"boda","personas":150,"fecha":"sabado","hora_servicio":"15:00","menu":"paella","lugar":"restaurante","restricciones":"sin restricciones","objetivo":"flujo completo"}, "pasos": []}
+>       o.gestor_contexto_5410.activar_flujo({"flujo_pendiente_confirmacion": True, "datos_flujo": flujo["datos"], "flujo": flujo, "confirmaciones": {"acciones_con_confirmacion": []}})
+        ^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'OrquestadorInteligente52' object has no attribute 'gestor_contexto_5410'
+
+TESTS/test_5410_gestor_contexto_permanente.py:24: AttributeError
+__________________________ test_seleccionar_y_numero ___________________________
+
+    def test_seleccionar_y_numero():
+>       o=crear_orquestador_con_flujo()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+TESTS/test_5411_continuador_flujo.py:24: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def crear_orquestador_con_flujo():
+        o = OrquestadorInteligente52(BASE_DIR)
+        acciones = [
+            {"codigo":"EVENTO_CREAR","nombre":"Crear o localizar evento","modifica_datos":True,"requiere_confirmacion":True},
+            {"codigo":"MENU_ASOCIAR","nombre":"Asociar menú del evento","modifica_datos":True,"requiere_confirmacion":True},
+            {"codigo":"COMPRAS_PREPARAR","nombre":"Preparar compras necesarias","modifica_datos":False,"requiere_confirmacion":True},
+        ]
+        flujo={"ok":True,"datos":{"tipo":"boda","personas":150,"fecha":"sabado","hora_servicio":"15:00","menu":"paella","lugar":"restaurante","restricciones":"sin restricciones","objetivo":"flujo completo"},"pasos":acciones}
+>       o.gestor_contexto_5410.activar_flujo({"flujo_pendiente_confirmacion":True,"datos_flujo":flujo["datos"],"flujo":flujo,"confirmaciones":{"acciones_con_confirmacion":acciones},"estado_conversacion":"pendiente_confirmacion"})
+        ^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'OrquestadorInteligente52' object has no attribute 'gestor_contexto_5410'
+
+TESTS/test_5411_continuador_flujo.py:18: AttributeError
+__________________________ test_seleccion_por_nombre ___________________________
+
+    def test_seleccion_por_nombre():
+>       o=crear_orquestador_con_flujo()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+TESTS/test_5411_continuador_flujo.py:36: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def crear_orquestador_con_flujo():
+        o = OrquestadorInteligente52(BASE_DIR)
+        acciones = [
+            {"codigo":"EVENTO_CREAR","nombre":"Crear o localizar evento","modifica_datos":True,"requiere_confirmacion":True},
+            {"codigo":"MENU_ASOCIAR","nombre":"Asociar menú del evento","modifica_datos":True,"requiere_confirmacion":True},
+            {"codigo":"COMPRAS_PREPARAR","nombre":"Preparar compras necesarias","modifica_datos":False,"requiere_confirmacion":True},
+        ]
+        flujo={"ok":True,"datos":{"tipo":"boda","personas":150,"fecha":"sabado","hora_servicio":"15:00","menu":"paella","lugar":"restaurante","restricciones":"sin restricciones","objetivo":"flujo completo"},"pasos":acciones}
+>       o.gestor_contexto_5410.activar_flujo({"flujo_pendiente_confirmacion":True,"datos_flujo":flujo["datos"],"flujo":flujo,"confirmaciones":{"acciones_con_confirmacion":acciones},"estado_conversacion":"pendiente_confirmacion"})
+        ^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'OrquestadorInteligente52' object has no attribute 'gestor_contexto_5410'
+
+TESTS/test_5411_continuador_flujo.py:18: AttributeError
+______________ test_previa_real_detecta_un_pendiente_y_no_importa ______________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2/test_previa_real_detecta_un_pe0')
+
+    def test_previa_real_detecta_un_pendiente_y_no_importa(tmp_path):
+        asistente = VistaPreviaResolucionAsistidaMenusI1323(BASE)
+        asistente.ruta_memoria = tmp_path / 'memoria.json'
+        asistente.memoria = {}
+>       r = asistente.preparar_desde_excel(EXCEL, hojas=['MENU BODA 31-1'])
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+TESTS/test_i1323_vista_previa_resolucion_asistida.py:14: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+SERVICIOS/vista_previa_resolucion_asistida_menus_i1323.py:109: in preparar_desde_excel
+    base = self.constructor.preparar_desde_excel(ruta_excel, hojas=hojas)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/constructor_arbol_semantico_menus_i1322.py:247: in preparar_desde_excel
+    reconocimiento = self.motor.preparar_desde_excel(ruta_excel, hojas=hojas)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/motor_reconocimiento_menus_i1321.py:397: in preparar_desde_excel
+    previa = DetectorLimpioMenusI131().preparar(ruta_excel, hojas=hojas)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <SERVICIOS.detector_limpio_menus_i131.DetectorLimpioMenusI131 object at 0x7ef25f9a1810>
+ruta_excel = PosixPath('/mnt/data/esc_test/Escandallos Boronat.xlsx')
+hojas = ['MENU BODA 31-1']
+
+    def preparar(self, ruta_excel: str | Path, hojas=None) -> dict[str, Any]:
+        ruta = Path(ruta_excel)
+        if not ruta.exists():
+>           raise FileNotFoundError(f"No existe el archivo Excel: {ruta}")
+E           FileNotFoundError: No existe el archivo Excel: /mnt/data/esc_test/Escandallos Boronat.xlsx
+
+SERVICIOS/detector_limpio_menus_i131.py:324: FileNotFoundError
+__________________ test_vincular_receta_solo_modifica_previa ___________________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2/test_vincular_receta_solo_modi0')
+
+    def test_vincular_receta_solo_modifica_previa(tmp_path):
+        asistente = VistaPreviaResolucionAsistidaMenusI1323(BASE)
+        asistente.ruta_memoria = tmp_path / 'memoria.json'; asistente.memoria = {}
+>       r = asistente.preparar_desde_excel(EXCEL, hojas=['MENU BODA 31-1'])
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+TESTS/test_i1323_vista_previa_resolucion_asistida.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+SERVICIOS/vista_previa_resolucion_asistida_menus_i1323.py:109: in preparar_desde_excel
+    base = self.constructor.preparar_desde_excel(ruta_excel, hojas=hojas)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/constructor_arbol_semantico_menus_i1322.py:247: in preparar_desde_excel
+    reconocimiento = self.motor.preparar_desde_excel(ruta_excel, hojas=hojas)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/motor_reconocimiento_menus_i1321.py:397: in preparar_desde_excel
+    previa = DetectorLimpioMenusI131().preparar(ruta_excel, hojas=hojas)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <SERVICIOS.detector_limpio_menus_i131.DetectorLimpioMenusI131 object at 0x7ef25f74a7b0>
+ruta_excel = PosixPath('/mnt/data/esc_test/Escandallos Boronat.xlsx')
+hojas = ['MENU BODA 31-1']
+
+    def preparar(self, ruta_excel: str | Path, hojas=None) -> dict[str, Any]:
+        ruta = Path(ruta_excel)
+        if not ruta.exists():
+>           raise FileNotFoundError(f"No existe el archivo Excel: {ruta}")
+E           FileNotFoundError: No existe el archivo Excel: /mnt/data/esc_test/Escandallos Boronat.xlsx
+
+SERVICIOS/detector_limpio_menus_i131.py:324: FileNotFoundError
+_________________ test_propuesta_nueva_receta_no_crea_catalogo _________________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2/test_propuesta_nueva_receta_no0')
+
+    def test_propuesta_nueva_receta_no_crea_catalogo(tmp_path):
+        asistente = VistaPreviaResolucionAsistidaMenusI1323(BASE)
+        asistente.ruta_memoria = tmp_path / 'memoria.json'; asistente.memoria = {}
+>       r = asistente.preparar_desde_excel(EXCEL, hojas=['MENU BODA 31-1'])
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+TESTS/test_i1323_vista_previa_resolucion_asistida.py:43: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+SERVICIOS/vista_previa_resolucion_asistida_menus_i1323.py:109: in preparar_desde_excel
+    base = self.constructor.preparar_desde_excel(ruta_excel, hojas=hojas)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/constructor_arbol_semantico_menus_i1322.py:247: in preparar_desde_excel
+    reconocimiento = self.motor.preparar_desde_excel(ruta_excel, hojas=hojas)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/motor_reconocimiento_menus_i1321.py:397: in preparar_desde_excel
+    previa = DetectorLimpioMenusI131().preparar(ruta_excel, hojas=hojas)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <SERVICIOS.detector_limpio_menus_i131.DetectorLimpioMenusI131 object at 0x7ef25f84f790>
+ruta_excel = PosixPath('/mnt/data/esc_test/Escandallos Boronat.xlsx')
+hojas = ['MENU BODA 31-1']
+
+    def preparar(self, ruta_excel: str | Path, hojas=None) -> dict[str, Any]:
+        ruta = Path(ruta_excel)
+        if not ruta.exists():
+>           raise FileNotFoundError(f"No existe el archivo Excel: {ruta}")
+E           FileNotFoundError: No existe el archivo Excel: /mnt/data/esc_test/Escandallos Boronat.xlsx
+
+SERVICIOS/detector_limpio_menus_i131.py:324: FileNotFoundError
+_______ test_recordar_decision_requiere_llamada_explicita_y_se_reutiliza _______
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2/test_recordar_decision_requier0')
+
+    def test_recordar_decision_requiere_llamada_explicita_y_se_reutiliza(tmp_path):
+        asistente = VistaPreviaResolucionAsistidaMenusI1323(BASE)
+        asistente.ruta_memoria = tmp_path / 'memoria.json'; asistente.memoria = {}
+>       r = asistente.preparar_desde_excel(EXCEL, hojas=['MENU BODA 31-1'])
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+TESTS/test_i1323_vista_previa_resolucion_asistida.py:55: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+SERVICIOS/vista_previa_resolucion_asistida_menus_i1323.py:109: in preparar_desde_excel
+    base = self.constructor.preparar_desde_excel(ruta_excel, hojas=hojas)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/constructor_arbol_semantico_menus_i1322.py:247: in preparar_desde_excel
+    reconocimiento = self.motor.preparar_desde_excel(ruta_excel, hojas=hojas)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/motor_reconocimiento_menus_i1321.py:397: in preparar_desde_excel
+    previa = DetectorLimpioMenusI131().preparar(ruta_excel, hojas=hojas)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <SERVICIOS.detector_limpio_menus_i131.DetectorLimpioMenusI131 object at 0x7ef25f84f680>
+ruta_excel = PosixPath('/mnt/data/esc_test/Escandallos Boronat.xlsx')
+hojas = ['MENU BODA 31-1']
+
+    def preparar(self, ruta_excel: str | Path, hojas=None) -> dict[str, Any]:
+        ruta = Path(ruta_excel)
+        if not ruta.exists():
+>           raise FileNotFoundError(f"No existe el archivo Excel: {ruta}")
+E           FileNotFoundError: No existe el archivo Excel: /mnt/data/esc_test/Escandallos Boronat.xlsx
+
+SERVICIOS/detector_limpio_menus_i131.py:324: FileNotFoundError
+_________________ test_solo_guarda_con_confirmacion_explicita __________________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2/test_solo_guarda_con_confirmac0')
+
+    def test_solo_guarda_con_confirmacion_explicita(tmp_path):
+        motor = nuevo_motor(tmp_path)
+>       r = motor.preparar_desde_excel(EXCEL, hojas=['MENU BODA 31-1'])
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+TESTS/test_i1324_motor_aprendizaje_culinario.py:21: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+SERVICIOS/motor_aprendizaje_culinario_i1324.py:138: in preparar_desde_excel
+    base_sin_memoria = self.constructor.preparar_desde_excel(ruta_excel, hojas=hojas)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/constructor_arbol_semantico_menus_i1322.py:247: in preparar_desde_excel
+    reconocimiento = self.motor.preparar_desde_excel(ruta_excel, hojas=hojas)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/motor_reconocimiento_menus_i1321.py:397: in preparar_desde_excel
+    previa = DetectorLimpioMenusI131().preparar(ruta_excel, hojas=hojas)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <SERVICIOS.detector_limpio_menus_i131.DetectorLimpioMenusI131 object at 0x7ef25facb950>
+ruta_excel = PosixPath('/mnt/data/esc_test/Escandallos Boronat.xlsx')
+hojas = ['MENU BODA 31-1']
+
+    def preparar(self, ruta_excel: str | Path, hojas=None) -> dict[str, Any]:
+        ruta = Path(ruta_excel)
+        if not ruta.exists():
+>           raise FileNotFoundError(f"No existe el archivo Excel: {ruta}")
+E           FileNotFoundError: No existe el archivo Excel: /mnt/data/esc_test/Escandallos Boronat.xlsx
+
+SERVICIOS/detector_limpio_menus_i131.py:324: FileNotFoundError
+_______________ test_guarda_metadatos_historial_y_no_crea_receta _______________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2/test_guarda_metadatos_historia0')
+
+    def test_guarda_metadatos_historial_y_no_crea_receta(tmp_path):
+        motor = nuevo_motor(tmp_path)
+        antes = len(motor.motor.recetas)
+>       r = motor.preparar_desde_excel(EXCEL, hojas=['MENU BODA 31-1'])
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+TESTS/test_i1324_motor_aprendizaje_culinario.py:31: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+SERVICIOS/motor_aprendizaje_culinario_i1324.py:138: in preparar_desde_excel
+    base_sin_memoria = self.constructor.preparar_desde_excel(ruta_excel, hojas=hojas)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/constructor_arbol_semantico_menus_i1322.py:247: in preparar_desde_excel
+    reconocimiento = self.motor.preparar_desde_excel(ruta_excel, hojas=hojas)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/motor_reconocimiento_menus_i1321.py:397: in preparar_desde_excel
+    previa = DetectorLimpioMenusI131().preparar(ruta_excel, hojas=hojas)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <SERVICIOS.detector_limpio_menus_i131.DetectorLimpioMenusI131 object at 0x7ef25fac8c50>
+ruta_excel = PosixPath('/mnt/data/esc_test/Escandallos Boronat.xlsx')
+hojas = ['MENU BODA 31-1']
+
+    def preparar(self, ruta_excel: str | Path, hojas=None) -> dict[str, Any]:
+        ruta = Path(ruta_excel)
+        if not ruta.exists():
+>           raise FileNotFoundError(f"No existe el archivo Excel: {ruta}")
+E           FileNotFoundError: No existe el archivo Excel: /mnt/data/esc_test/Escandallos Boronat.xlsx
+
+SERVICIOS/detector_limpio_menus_i131.py:324: FileNotFoundError
+__________ test_aplica_aprendizaje_incrementa_usos_y_elimina_pregunta __________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2/test_aplica_aprendizaje_increm0')
+
+    def test_aplica_aprendizaje_incrementa_usos_y_elimina_pregunta(tmp_path):
+        motor = nuevo_motor(tmp_path)
+>       r = motor.preparar_desde_excel(EXCEL, hojas=['MENU BODA 31-1'])
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+TESTS/test_i1324_motor_aprendizaje_culinario.py:47: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+SERVICIOS/motor_aprendizaje_culinario_i1324.py:138: in preparar_desde_excel
+    base_sin_memoria = self.constructor.preparar_desde_excel(ruta_excel, hojas=hojas)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/constructor_arbol_semantico_menus_i1322.py:247: in preparar_desde_excel
+    reconocimiento = self.motor.preparar_desde_excel(ruta_excel, hojas=hojas)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/motor_reconocimiento_menus_i1321.py:397: in preparar_desde_excel
+    previa = DetectorLimpioMenusI131().preparar(ruta_excel, hojas=hojas)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <SERVICIOS.detector_limpio_menus_i131.DetectorLimpioMenusI131 object at 0x7ef25f87f980>
+ruta_excel = PosixPath('/mnt/data/esc_test/Escandallos Boronat.xlsx')
+hojas = ['MENU BODA 31-1']
+
+    def preparar(self, ruta_excel: str | Path, hojas=None) -> dict[str, Any]:
+        ruta = Path(ruta_excel)
+        if not ruta.exists():
+>           raise FileNotFoundError(f"No existe el archivo Excel: {ruta}")
+E           FileNotFoundError: No existe el archivo Excel: /mnt/data/esc_test/Escandallos Boronat.xlsx
+
+SERVICIOS/detector_limpio_menus_i131.py:324: FileNotFoundError
+_________________ test_editar_y_desactivar_conserva_historial __________________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2/test_editar_y_desactivar_conse0')
+
+    def test_editar_y_desactivar_conserva_historial(tmp_path):
+        motor = nuevo_motor(tmp_path)
+>       r = motor.preparar_desde_excel(EXCEL, hojas=['MENU BODA 31-1'])
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+TESTS/test_i1324_motor_aprendizaje_culinario.py:65: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+SERVICIOS/motor_aprendizaje_culinario_i1324.py:138: in preparar_desde_excel
+    base_sin_memoria = self.constructor.preparar_desde_excel(ruta_excel, hojas=hojas)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/constructor_arbol_semantico_menus_i1322.py:247: in preparar_desde_excel
+    reconocimiento = self.motor.preparar_desde_excel(ruta_excel, hojas=hojas)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/motor_reconocimiento_menus_i1321.py:397: in preparar_desde_excel
+    previa = DetectorLimpioMenusI131().preparar(ruta_excel, hojas=hojas)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <SERVICIOS.detector_limpio_menus_i131.DetectorLimpioMenusI131 object at 0x7ef25f87d9a0>
+ruta_excel = PosixPath('/mnt/data/esc_test/Escandallos Boronat.xlsx')
+hojas = ['MENU BODA 31-1']
+
+    def preparar(self, ruta_excel: str | Path, hojas=None) -> dict[str, Any]:
+        ruta = Path(ruta_excel)
+        if not ruta.exists():
+>           raise FileNotFoundError(f"No existe el archivo Excel: {ruta}")
+E           FileNotFoundError: No existe el archivo Excel: /mnt/data/esc_test/Escandallos Boronat.xlsx
+
+SERVICIOS/detector_limpio_menus_i131.py:324: FileNotFoundError
+__________________ test_vincular_receta_existente_deja_lista ___________________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2/test_vincular_receta_existente0')
+
+    def test_vincular_receta_existente_deja_lista(tmp_path):
+        motor=ResolutorBloqueosPreimportacionI1331(_base(tmp_path))
+>       b=_bloqueo(motor)
+          ^^^^^^^^^^^^^^^
+
+TESTS/test_i1331_resolucion_bloqueos.py:31: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+TESTS/test_i1331_resolucion_bloqueos.py:24: in _bloqueo
+    r=motor.recalcular(EXCEL, hojas=['MENU BODA 31-1'])
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/resolutor_bloqueos_preimportacion_i1331.py:212: in recalcular
+    resultado = self.preimportador.preparar(ruta_excel, hojas=hojas)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/preimportador_definitivo_menus_i133.py:69: in preparar
+    sem = self.aprendizaje.preparar_desde_excel(ruta_excel, hojas=hojas)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/motor_aprendizaje_culinario_i1324.py:138: in preparar_desde_excel
+    base_sin_memoria = self.constructor.preparar_desde_excel(ruta_excel, hojas=hojas)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/constructor_arbol_semantico_menus_i1322.py:247: in preparar_desde_excel
+    reconocimiento = self.motor.preparar_desde_excel(ruta_excel, hojas=hojas)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/motor_reconocimiento_menus_i1321.py:397: in preparar_desde_excel
+    previa = DetectorLimpioMenusI131().preparar(ruta_excel, hojas=hojas)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <SERVICIOS.detector_limpio_menus_i131.DetectorLimpioMenusI131 object at 0x7ef26c437d90>
+ruta_excel = PosixPath('/mnt/data/esc_i133/Escandallos Boronat.xlsx')
+hojas = ['MENU BODA 31-1']
+
+    def preparar(self, ruta_excel: str | Path, hojas=None) -> dict[str, Any]:
+        ruta = Path(ruta_excel)
+        if not ruta.exists():
+>           raise FileNotFoundError(f"No existe el archivo Excel: {ruta}")
+E           FileNotFoundError: No existe el archivo Excel: /mnt/data/esc_i133/Escandallos Boronat.xlsx
+
+SERVICIOS/detector_limpio_menus_i131.py:324: FileNotFoundError
+_______________ test_crear_receta_real_deja_lista_y_hace_backup ________________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2/test_crear_receta_real_deja_li0')
+
+    def test_crear_receta_real_deja_lista_y_hace_backup(tmp_path):
+>       base=_base(tmp_path); motor=ResolutorBloqueosPreimportacionI1331(base); b=_bloqueo(motor)
+                                                                                  ^^^^^^^^^^^^^^^
+
+TESTS/test_i1331_resolucion_bloqueos.py:41: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+TESTS/test_i1331_resolucion_bloqueos.py:24: in _bloqueo
+    r=motor.recalcular(EXCEL, hojas=['MENU BODA 31-1'])
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/resolutor_bloqueos_preimportacion_i1331.py:212: in recalcular
+    resultado = self.preimportador.preparar(ruta_excel, hojas=hojas)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/preimportador_definitivo_menus_i133.py:69: in preparar
+    sem = self.aprendizaje.preparar_desde_excel(ruta_excel, hojas=hojas)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/motor_aprendizaje_culinario_i1324.py:138: in preparar_desde_excel
+    base_sin_memoria = self.constructor.preparar_desde_excel(ruta_excel, hojas=hojas)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/constructor_arbol_semantico_menus_i1322.py:247: in preparar_desde_excel
+    reconocimiento = self.motor.preparar_desde_excel(ruta_excel, hojas=hojas)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/motor_reconocimiento_menus_i1321.py:397: in preparar_desde_excel
+    previa = DetectorLimpioMenusI131().preparar(ruta_excel, hojas=hojas)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <SERVICIOS.detector_limpio_menus_i131.DetectorLimpioMenusI131 object at 0x7ef26c45edd0>
+ruta_excel = PosixPath('/mnt/data/esc_i133/Escandallos Boronat.xlsx')
+hojas = ['MENU BODA 31-1']
+
+    def preparar(self, ruta_excel: str | Path, hojas=None) -> dict[str, Any]:
+        ruta = Path(ruta_excel)
+        if not ruta.exists():
+>           raise FileNotFoundError(f"No existe el archivo Excel: {ruta}")
+E           FileNotFoundError: No existe el archivo Excel: /mnt/data/esc_i133/Escandallos Boronat.xlsx
+
+SERVICIOS/detector_limpio_menus_i131.py:324: FileNotFoundError
+___________________ test_no_permite_receta_sin_ingredientes ____________________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2/test_no_permite_receta_sin_ing0')
+
+    def test_no_permite_receta_sin_ingredientes(tmp_path):
+>       motor=ResolutorBloqueosPreimportacionI1331(_base(tmp_path)); b=_bloqueo(motor)
+                                                                       ^^^^^^^^^^^^^^^
+
+TESTS/test_i1331_resolucion_bloqueos.py:54: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+TESTS/test_i1331_resolucion_bloqueos.py:24: in _bloqueo
+    r=motor.recalcular(EXCEL, hojas=['MENU BODA 31-1'])
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/resolutor_bloqueos_preimportacion_i1331.py:212: in recalcular
+    resultado = self.preimportador.preparar(ruta_excel, hojas=hojas)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/preimportador_definitivo_menus_i133.py:69: in preparar
+    sem = self.aprendizaje.preparar_desde_excel(ruta_excel, hojas=hojas)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/motor_aprendizaje_culinario_i1324.py:138: in preparar_desde_excel
+    base_sin_memoria = self.constructor.preparar_desde_excel(ruta_excel, hojas=hojas)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/constructor_arbol_semantico_menus_i1322.py:247: in preparar_desde_excel
+    reconocimiento = self.motor.preparar_desde_excel(ruta_excel, hojas=hojas)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/motor_reconocimiento_menus_i1321.py:397: in preparar_desde_excel
+    previa = DetectorLimpioMenusI131().preparar(ruta_excel, hojas=hojas)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <SERVICIOS.detector_limpio_menus_i131.DetectorLimpioMenusI131 object at 0x7ef25f3a1b20>
+ruta_excel = PosixPath('/mnt/data/esc_i133/Escandallos Boronat.xlsx')
+hojas = ['MENU BODA 31-1']
+
+    def preparar(self, ruta_excel: str | Path, hojas=None) -> dict[str, Any]:
+        ruta = Path(ruta_excel)
+        if not ruta.exists():
+>           raise FileNotFoundError(f"No existe el archivo Excel: {ruta}")
+E           FileNotFoundError: No existe el archivo Excel: /mnt/data/esc_i133/Escandallos Boronat.xlsx
+
+SERVICIOS/detector_limpio_menus_i131.py:324: FileNotFoundError
+________________ test_formato_indica_importacion_deshabilitada _________________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2/test_formato_indica_importacio0')
+
+    def test_formato_indica_importacion_deshabilitada(tmp_path):
+        motor=ResolutorBloqueosPreimportacionI1331(_base(tmp_path))
+>       texto=formatear_resolucion_i1331(motor.recalcular(EXCEL, hojas=['MENU BODA 31-1']))
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+TESTS/test_i1331_resolucion_bloqueos.py:65: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+SERVICIOS/resolutor_bloqueos_preimportacion_i1331.py:212: in recalcular
+    resultado = self.preimportador.preparar(ruta_excel, hojas=hojas)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/preimportador_definitivo_menus_i133.py:69: in preparar
+    sem = self.aprendizaje.preparar_desde_excel(ruta_excel, hojas=hojas)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/motor_aprendizaje_culinario_i1324.py:138: in preparar_desde_excel
+    base_sin_memoria = self.constructor.preparar_desde_excel(ruta_excel, hojas=hojas)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/constructor_arbol_semantico_menus_i1322.py:247: in preparar_desde_excel
+    reconocimiento = self.motor.preparar_desde_excel(ruta_excel, hojas=hojas)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/motor_reconocimiento_menus_i1321.py:397: in preparar_desde_excel
+    previa = DetectorLimpioMenusI131().preparar(ruta_excel, hojas=hojas)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <SERVICIOS.detector_limpio_menus_i131.DetectorLimpioMenusI131 object at 0x7ef25f9e0ad0>
+ruta_excel = PosixPath('/mnt/data/esc_i133/Escandallos Boronat.xlsx')
+hojas = ['MENU BODA 31-1']
+
+    def preparar(self, ruta_excel: str | Path, hojas=None) -> dict[str, Any]:
+        ruta = Path(ruta_excel)
+        if not ruta.exists():
+>           raise FileNotFoundError(f"No existe el archivo Excel: {ruta}")
+E           FileNotFoundError: No existe el archivo Excel: /mnt/data/esc_i133/Escandallos Boronat.xlsx
+
+SERVICIOS/detector_limpio_menus_i131.py:324: FileNotFoundError
+______________ test_preimportacion_bloqueada_por_receta_propuesta ______________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2/test_preimportacion_bloqueada_0')
+
+    def test_preimportacion_bloqueada_por_receta_propuesta(tmp_path):
+>       r = _motor_con_memoria(tmp_path).preparar(EXCEL, hojas=['MENU BODA 31-1'])
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+TESTS/test_i133_preimportacion_definitiva_menus.py:32: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+SERVICIOS/preimportador_definitivo_menus_i133.py:69: in preparar
+    sem = self.aprendizaje.preparar_desde_excel(ruta_excel, hojas=hojas)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/motor_aprendizaje_culinario_i1324.py:138: in preparar_desde_excel
+    base_sin_memoria = self.constructor.preparar_desde_excel(ruta_excel, hojas=hojas)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/constructor_arbol_semantico_menus_i1322.py:247: in preparar_desde_excel
+    reconocimiento = self.motor.preparar_desde_excel(ruta_excel, hojas=hojas)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/motor_reconocimiento_menus_i1321.py:397: in preparar_desde_excel
+    previa = DetectorLimpioMenusI131().preparar(ruta_excel, hojas=hojas)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <SERVICIOS.detector_limpio_menus_i131.DetectorLimpioMenusI131 object at 0x7ef25f25c7d0>
+ruta_excel = PosixPath('/mnt/data/esc_i133/Escandallos Boronat.xlsx')
+hojas = ['MENU BODA 31-1']
+
+    def preparar(self, ruta_excel: str | Path, hojas=None) -> dict[str, Any]:
+        ruta = Path(ruta_excel)
+        if not ruta.exists():
+>           raise FileNotFoundError(f"No existe el archivo Excel: {ruta}")
+E           FileNotFoundError: No existe el archivo Excel: /mnt/data/esc_i133/Escandallos Boronat.xlsx
+
+SERVICIOS/detector_limpio_menus_i131.py:324: FileNotFoundError
+______________ test_contrato_contiene_menu_economia_y_componentes ______________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2/test_contrato_contiene_menu_ec0')
+
+    def test_contrato_contiene_menu_economia_y_componentes(tmp_path):
+>       r = _motor_con_memoria(tmp_path).preparar(EXCEL, hojas=['MENU BODA 31-1'])
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+TESTS/test_i133_preimportacion_definitiva_menus.py:42: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+SERVICIOS/preimportador_definitivo_menus_i133.py:69: in preparar
+    sem = self.aprendizaje.preparar_desde_excel(ruta_excel, hojas=hojas)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/motor_aprendizaje_culinario_i1324.py:138: in preparar_desde_excel
+    base_sin_memoria = self.constructor.preparar_desde_excel(ruta_excel, hojas=hojas)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/constructor_arbol_semantico_menus_i1322.py:247: in preparar_desde_excel
+    reconocimiento = self.motor.preparar_desde_excel(ruta_excel, hojas=hojas)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/motor_reconocimiento_menus_i1321.py:397: in preparar_desde_excel
+    previa = DetectorLimpioMenusI131().preparar(ruta_excel, hojas=hojas)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <SERVICIOS.detector_limpio_menus_i131.DetectorLimpioMenusI131 object at 0x7ef25f2a4940>
+ruta_excel = PosixPath('/mnt/data/esc_i133/Escandallos Boronat.xlsx')
+hojas = ['MENU BODA 31-1']
+
+    def preparar(self, ruta_excel: str | Path, hojas=None) -> dict[str, Any]:
+        ruta = Path(ruta_excel)
+        if not ruta.exists():
+>           raise FileNotFoundError(f"No existe el archivo Excel: {ruta}")
+E           FileNotFoundError: No existe el archivo Excel: /mnt/data/esc_i133/Escandallos Boronat.xlsx
+
+SERVICIOS/detector_limpio_menus_i131.py:324: FileNotFoundError
+_________________________ test_formato_explica_bloqueo _________________________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2/test_formato_explica_bloqueo0')
+
+    def test_formato_explica_bloqueo(tmp_path):
+>       r = _motor_con_memoria(tmp_path).preparar(EXCEL, hojas=['MENU BODA 31-1'])
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+TESTS/test_i133_preimportacion_definitiva_menus.py:57: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+SERVICIOS/preimportador_definitivo_menus_i133.py:69: in preparar
+    sem = self.aprendizaje.preparar_desde_excel(ruta_excel, hojas=hojas)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/motor_aprendizaje_culinario_i1324.py:138: in preparar_desde_excel
+    base_sin_memoria = self.constructor.preparar_desde_excel(ruta_excel, hojas=hojas)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/constructor_arbol_semantico_menus_i1322.py:247: in preparar_desde_excel
+    reconocimiento = self.motor.preparar_desde_excel(ruta_excel, hojas=hojas)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SERVICIOS/motor_reconocimiento_menus_i1321.py:397: in preparar_desde_excel
+    previa = DetectorLimpioMenusI131().preparar(ruta_excel, hojas=hojas)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <SERVICIOS.detector_limpio_menus_i131.DetectorLimpioMenusI131 object at 0x7ef25f2a59c0>
+ruta_excel = PosixPath('/mnt/data/esc_i133/Escandallos Boronat.xlsx')
+hojas = ['MENU BODA 31-1']
+
+    def preparar(self, ruta_excel: str | Path, hojas=None) -> dict[str, Any]:
+        ruta = Path(ruta_excel)
+        if not ruta.exists():
+>           raise FileNotFoundError(f"No existe el archivo Excel: {ruta}")
+E           FileNotFoundError: No existe el archivo Excel: /mnt/data/esc_i133/Escandallos Boronat.xlsx
+
+SERVICIOS/detector_limpio_menus_i131.py:324: FileNotFoundError
+=========================== short test summary info ============================
+FAILED HOST_AI_6.0.3_MODO_MANUAL_OPERATIVO/TESTS/test_603_lanzador_base_operativa.py::test_603_estructura_operativa_disponible - AssertionError: assert False is True
+ +  where False = EstadoArranque603(ok=False, base_dir='/mnt/data/host_ai_audit14/project/Host AI 6.0/HOST_AI_6.0.3_MODO_MANUAL_OPERATIV...se, 'APP': True, 'SERVICIOS': True, 'main.py': True, 'consola_base': True, 'core': False, 'bootloader_tecnico': False}).ok
+FAILED PILOTO-1.2.1_Humanizacion_Mi_Jornada/TESTS/test_piloto_121_humanizacion_jornada.py::test_humaniza_duracion_prioridad_y_saludo - KeyError: 'duracion_humana'
+FAILED PILOTO-1.2.1_Humanizacion_Mi_Jornada/TESTS/test_piloto_121_humanizacion_jornada.py::test_evento_pasado_se_exprime_en_lenguaje_natural - KeyError: 'evento_mensaje'
+FAILED PILOTO-1.2.1_Humanizacion_Mi_Jornada/TESTS/test_piloto_121_humanizacion_jornada.py::test_resumen_jornada_vacia - KeyError: 'resumen_humano'
+FAILED PILOTO-1.2.1_Humanizacion_Mi_Jornada/TESTS/test_piloto_121_humanizacion_jornada.py::test_cronograma_es_legible_y_no_modifica_fuentes - KeyError: 'cronograma'
+FAILED PILOTO-1.2.1_Humanizacion_Mi_Jornada/TESTS/test_piloto_121_humanizacion_jornada.py::test_no_muestra_minutos_tecnicos_en_recomendacion_paralela - KeyError: 'motivo_humano'
+FAILED TESTS/test_5410_gestor_contexto_permanente.py::test_contexto_no_se_pierde_tras_si - AttributeError: 'OrquestadorInteligente52' object has no attribute 'gestor_contexto_5410'
+FAILED TESTS/test_5411_continuador_flujo.py::test_seleccionar_y_numero - AttributeError: 'OrquestadorInteligente52' object has no attribute 'gestor_contexto_5410'
+FAILED TESTS/test_5411_continuador_flujo.py::test_seleccion_por_nombre - AttributeError: 'OrquestadorInteligente52' object has no attribute 'gestor_contexto_5410'
+FAILED TESTS/test_i1323_vista_previa_resolucion_asistida.py::test_previa_real_detecta_un_pendiente_y_no_importa - FileNotFoundError: No existe el archivo Excel: /mnt/data/esc_test/Escandallos Boronat.xlsx
+FAILED TESTS/test_i1323_vista_previa_resolucion_asistida.py::test_vincular_receta_solo_modifica_previa - FileNotFoundError: No existe el archivo Excel: /mnt/data/esc_test/Escandallos Boronat.xlsx
+FAILED TESTS/test_i1323_vista_previa_resolucion_asistida.py::test_propuesta_nueva_receta_no_crea_catalogo - FileNotFoundError: No existe el archivo Excel: /mnt/data/esc_test/Escandallos Boronat.xlsx
+FAILED TESTS/test_i1323_vista_previa_resolucion_asistida.py::test_recordar_decision_requiere_llamada_explicita_y_se_reutiliza - FileNotFoundError: No existe el archivo Excel: /mnt/data/esc_test/Escandallos Boronat.xlsx
+FAILED TESTS/test_i1324_motor_aprendizaje_culinario.py::test_solo_guarda_con_confirmacion_explicita - FileNotFoundError: No existe el archivo Excel: /mnt/data/esc_test/Escandallos Boronat.xlsx
+FAILED TESTS/test_i1324_motor_aprendizaje_culinario.py::test_guarda_metadatos_historial_y_no_crea_receta - FileNotFoundError: No existe el archivo Excel: /mnt/data/esc_test/Escandallos Boronat.xlsx
+FAILED TESTS/test_i1324_motor_aprendizaje_culinario.py::test_aplica_aprendizaje_incrementa_usos_y_elimina_pregunta - FileNotFoundError: No existe el archivo Excel: /mnt/data/esc_test/Escandallos Boronat.xlsx
+FAILED TESTS/test_i1324_motor_aprendizaje_culinario.py::test_editar_y_desactivar_conserva_historial - FileNotFoundError: No existe el archivo Excel: /mnt/data/esc_test/Escandallos Boronat.xlsx
+FAILED TESTS/test_i1331_resolucion_bloqueos.py::test_vincular_receta_existente_deja_lista - FileNotFoundError: No existe el archivo Excel: /mnt/data/esc_i133/Escandallos Boronat.xlsx
+FAILED TESTS/test_i1331_resolucion_bloqueos.py::test_crear_receta_real_deja_lista_y_hace_backup - FileNotFoundError: No existe el archivo Excel: /mnt/data/esc_i133/Escandallos Boronat.xlsx
+FAILED TESTS/test_i1331_resolucion_bloqueos.py::test_no_permite_receta_sin_ingredientes - FileNotFoundError: No existe el archivo Excel: /mnt/data/esc_i133/Escandallos Boronat.xlsx
+FAILED TESTS/test_i1331_resolucion_bloqueos.py::test_formato_indica_importacion_deshabilitada - FileNotFoundError: No existe el archivo Excel: /mnt/data/esc_i133/Escandallos Boronat.xlsx
+FAILED TESTS/test_i133_preimportacion_definitiva_menus.py::test_preimportacion_bloqueada_por_receta_propuesta - FileNotFoundError: No existe el archivo Excel: /mnt/data/esc_i133/Escandallos Boronat.xlsx
+FAILED TESTS/test_i133_preimportacion_definitiva_menus.py::test_contrato_contiene_menu_economia_y_componentes - FileNotFoundError: No existe el archivo Excel: /mnt/data/esc_i133/Escandallos Boronat.xlsx
+FAILED TESTS/test_i133_preimportacion_definitiva_menus.py::test_formato_explica_bloqueo - FileNotFoundError: No existe el archivo Excel: /mnt/data/esc_i133/Escandallos Boronat.xlsx
+24 failed, 282 passed in 8.40s

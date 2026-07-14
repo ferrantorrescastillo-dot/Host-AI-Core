@@ -1,0 +1,6 @@
+I1.3.2.2
+18 passed in 1.41s
+py_compile: OK
+Prueba Excel real: OK
+Huellas recetas/artículos antes/después: idénticas
+Escrituras: 0

@@ -1,0 +1,68 @@
+[
+  {
+    "tipo": "entrada",
+    "nombre": "Arroz bomba",
+    "cantidad": 2.0,
+    "unidad": "kg",
+    "motivo": "entrada mercancía",
+    "lote_id": "LOTE-C8C9671090",
+    "articulo_id": "ART000355",
+    "id": "MOV-73740AA17B",
+    "creado_en": "2026-07-11T10:07:32"
+  },
+  {
+    "tipo": "merma",
+    "nombre": "Arroz bomba",
+    "cantidad": 0.25,
+    "unidad": "kg",
+    "motivo": "Paella fallida",
+    "lote_id": "",
+    "articulo_id": "ART000355",
+    "id": "MOV-FDA15AD835",
+    "creado_en": "2026-07-11T10:09:15"
+  },
+  {
+    "tipo": "ajuste_positivo",
+    "nombre": "Arroz bomba",
+    "cantidad": 28.25,
+    "unidad": "kg",
+    "motivo": "inventario físico",
+    "lote_id": "LOTE-94373919AE",
+    "articulo_id": "ART000355",
+    "id": "MOV-E44F3CE31C",
+    "creado_en": "2026-07-11T10:10:01"
+  },
+  {
+    "tipo": "entrada",
+    "nombre": "Tomate triturado",
+    "cantidad": 5.0,
+    "unidad": "kg",
+    "motivo": "recepción pedido PED-5BA723A547",
+    "lote_id": "LOTE-3BB680870E",
+    "articulo_id": "",
+    "id": "MOV-2BA6A849B3",
+    "creado_en": "2026-07-11T10:18:20"
+  },
+  {
+    "tipo": "entrada",
+    "nombre": "Arroz bomba",
+    "cantidad": 5.0,
+    "unidad": "kg",
+    "motivo": "entrada mercancía",
+    "lote_id": "LOTE-5B3077AEEA",
+    "articulo_id": "ART000355",
+    "id": "MOV-3CA37F7EC9",
+    "creado_en": "2026-07-11T16:15:15"
+  },
+  {
+    "tipo": "entrada",
+    "nombre": "Arroz bomba",
+    "cantidad": 5.0,
+    "unidad": "kg",
+    "motivo": "recepción pedido PED-AE8D703DEA",
+    "lote_id": "LOTE-7F274635C6",
+    "articulo_id": "ART000355",
+    "id": "MOV-EEDA067259",
+    "creado_en": "2026-07-11T16:57:52"
+  }
+]

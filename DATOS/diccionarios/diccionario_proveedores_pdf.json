@@ -1,0 +1,122 @@
+{
+  "version": "3.0.3.2",
+  "proveedores": [
+    {
+      "proveedor_id": "PROV-MAKRO",
+      "nombre_normalizado": "Makro",
+      "nombres": [
+        "makro",
+        "makro españa",
+        "makro españa s.a.",
+        "makro autoservicio mayorista"
+      ],
+      "cifs": [
+        "A28647451",
+        "A12345678"
+      ],
+      "dominios": [
+        "makro.es"
+      ],
+      "palabras_clave": [
+        "makro",
+        "mayorista",
+        "cash carry"
+      ],
+      "categoria": "mayorista",
+      "origen": "diccionario"
+    },
+    {
+      "proveedor_id": "PROV-BIDFOOD",
+      "nombre_normalizado": "Bidfood",
+      "nombres": [
+        "bidfood",
+        "bidfood iberia",
+        "guzman gastronomia",
+        "guzman gastronomía"
+      ],
+      "cifs": [],
+      "dominios": [
+        "bidfoodiberia.com"
+      ],
+      "palabras_clave": [
+        "bidfood",
+        "guzman gastronomia"
+      ],
+      "categoria": "distribuidor",
+      "origen": "diccionario"
+    },
+    {
+      "proveedor_id": "PROV-TRANSGOURMET",
+      "nombre_normalizado": "Transgourmet",
+      "nombres": [
+        "transgourmet",
+        "transgourmet iberica",
+        "transgourmet ibérica"
+      ],
+      "cifs": [],
+      "dominios": [
+        "transgourmet.es"
+      ],
+      "palabras_clave": [
+        "transgourmet",
+        "gm food"
+      ],
+      "categoria": "distribuidor",
+      "origen": "diccionario"
+    },
+    {
+      "proveedor_id": "PROV-BONAREA",
+      "nombre_normalizado": "BonÀrea",
+      "nombres": [
+        "bonarea",
+        "bon àrea",
+        "bonarea agrupa"
+      ],
+      "cifs": [],
+      "dominios": [
+        "bonarea.com"
+      ],
+      "palabras_clave": [
+        "bonarea",
+        "bon àrea",
+        "guissona"
+      ],
+      "categoria": "alimentacion",
+      "origen": "diccionario"
+    },
+    {
+      "proveedor_id": "PROV-FRIMAN",
+      "nombre_normalizado": "Friman",
+      "nombres": [
+        "friman",
+        "frimancha",
+        "frigorificos manchegos"
+      ],
+      "cifs": [],
+      "dominios": [],
+      "palabras_clave": [
+        "friman",
+        "frigorificos"
+      ],
+      "categoria": "carnes",
+      "origen": "diccionario"
+    },
+    {
+      "proveedor_id": "PROV-CARNES-PEPITO",
+      "nombre_normalizado": "Carnes Pepito",
+      "nombres": [
+        "Carnes Pepito"
+      ],
+      "cifs": [
+        "B99887766"
+      ],
+      "dominios": [],
+      "palabras_clave": [
+        "carnes pepito",
+        "pepito"
+      ],
+      "categoria": "carnes",
+      "origen": "aprendido"
+    }
+  ]
+}

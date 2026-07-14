@@ -1,0 +1,50 @@
+{
+  "fecha_generacion": "2026-07-09T13:03:58",
+  "total_lineas": 3,
+  "total_proveedores": 1,
+  "pedidos_por_proveedor": [
+    {
+      "proveedor": "Makro",
+      "lineas": [
+        {
+          "codigo": "ART000355",
+          "articulo": "Arroz bomba",
+          "proveedor": "Makro",
+          "familia": "Arroces",
+          "unidad": "kg",
+          "stock_actual": 3.0,
+          "stock_minimo": 10.0,
+          "cantidad_sugerida": 7.0,
+          "ubicacion": "Almacen seco",
+          "prioridad": "alta"
+        },
+        {
+          "codigo": "ART000358",
+          "articulo": "Tomate triturado",
+          "proveedor": "Makro",
+          "familia": "Conservas",
+          "unidad": "kg",
+          "stock_actual": 2.0,
+          "stock_minimo": 10.0,
+          "cantidad_sugerida": 8.0,
+          "ubicacion": "Almacen seco",
+          "prioridad": "alta"
+        },
+        {
+          "codigo": "ART000356",
+          "articulo": "Harina fuerza",
+          "proveedor": "Makro",
+          "familia": "Harinas",
+          "unidad": "kg",
+          "stock_actual": 6.0,
+          "stock_minimo": 10.0,
+          "cantidad_sugerida": 4.0,
+          "ubicacion": "Almacen seco",
+          "prioridad": "media"
+        }
+      ]
+    }
+  ],
+  "ruta_json": "C:\\Proyecto Host IA 3.0\\DATOS\\db\\pedido_sugerido_stock_bajo_4_3_5.json",
+  "estado": "pedido_sugerido"
+}

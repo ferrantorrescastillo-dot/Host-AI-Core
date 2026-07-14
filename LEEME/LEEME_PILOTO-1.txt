@@ -1,0 +1,32 @@
+PILOTO-1 — RECEPCIÓN INTELIGENTE DE MERCANCÍA
+
+INSTALACIÓN
+1. Haz una copia de seguridad del proyecto.
+2. Copia el contenido de este ZIP encima de Host AI 6.0 con PILOTO-0.1 instalado.
+3. Ejecuta: python main.py
+4. Entra en: 1 Modo Piloto privado -> 2 Recepción inteligente de mercancía.
+5. Ejecuta primero la opción 9 Diagnóstico aislado.
+
+FORMATOS
+- PDF con texto extraíble.
+- Excel XLSX/XLSM.
+- CSV, TXT y JSON.
+- PNG/JPG mediante texto OCR/manual en esta primera versión piloto.
+
+SEGURIDAD
+- Vista previa obligatoria.
+- Las líneas probables o desconocidas deben vincularse, crearse u omitirse.
+- Es necesario escribir RECEPCIONAR para modificar datos reales.
+- Se crea backup y se aplica escritura atómica con rollback.
+- El mismo documento no puede recepcionarse dos veces (SHA-256).
+
+DATOS ACTUALIZADOS EN COMMIT
+- DATOS/db/articulos.json
+- DATOS/db/proveedores.json
+- DATOS/db/precios.json
+- DATOS/db/stock_lotes.json
+- DATOS/db/stock_movimientos.json
+- DATOS/db/facturas_piloto.json
+
+LIMITACIÓN DEL SPRINT
+Todavía no recalcula automáticamente todos los escandallos afectados por una subida de precio. La variación queda registrada y se conectará en el siguiente bloque del piloto.

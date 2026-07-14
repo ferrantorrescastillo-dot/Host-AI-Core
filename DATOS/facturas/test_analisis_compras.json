@@ -1,0 +1,83 @@
+{
+  "resultado_pipeline": {
+    "ok": true,
+    "pipeline": "analizador_inteligente_compras",
+    "accion": "analizar",
+    "mensaje": "Análisis compras: 5 importaciones, 1 artículos.",
+    "datos": {
+      "total_importaciones": 5,
+      "total_lineas": 9,
+      "total_stock_aplicado": 9,
+      "total_precios_aplicados": 9,
+      "proveedores": {
+        "Makro": 5
+      },
+      "articulos": {
+        "ART-CARRILLERA": {
+          "articulo_id": "ART-CARRILLERA",
+          "nombre_articulo": "Carrillera de ternera",
+          "cantidad_total": 86.0,
+          "unidad": "kg",
+          "movimientos": 12
+        }
+      },
+      "gasto_estimado_total": 108.25,
+      "compras_por_proveedor": {
+        "PROV-MAKRO": 92.25,
+        "PROV-BIDFOOD": 16.0
+      },
+      "articulos_mas_comprados": [
+        {
+          "articulo_id": "ART-CARRILLERA",
+          "nombre_articulo": "Carrillera de ternera",
+          "cantidad_total": 86.0,
+          "unidad": "kg",
+          "movimientos": 12
+        }
+      ],
+      "avisos": [],
+      "id": "ANCOMPRAS-057EA3BAB6",
+      "creado_en": "2026-07-08T13:51:26",
+      "lectura_host_ai": "Análisis compras: 5 importaciones, 1 artículos."
+    },
+    "acciones_recomendadas": [],
+    "requiere_aprobacion": false,
+    "errores": [],
+    "id": "RES-ECF277A2C0",
+    "creado_en": "2026-07-08T13:51:26"
+  },
+  "total_importaciones": 5,
+  "total_lineas": 9,
+  "total_stock_aplicado": 9,
+  "total_precios_aplicados": 9,
+  "proveedores": {
+    "Makro": 5
+  },
+  "articulos": {
+    "ART-CARRILLERA": {
+      "articulo_id": "ART-CARRILLERA",
+      "nombre_articulo": "Carrillera de ternera",
+      "cantidad_total": 86.0,
+      "unidad": "kg",
+      "movimientos": 12
+    }
+  },
+  "gasto_estimado_total": 108.25,
+  "compras_por_proveedor": {
+    "PROV-MAKRO": 92.25,
+    "PROV-BIDFOOD": 16.0
+  },
+  "articulos_mas_comprados": [
+    {
+      "articulo_id": "ART-CARRILLERA",
+      "nombre_articulo": "Carrillera de ternera",
+      "cantidad_total": 86.0,
+      "unidad": "kg",
+      "movimientos": 12
+    }
+  ],
+  "avisos": [],
+  "id": "ANCOMPRAS-057EA3BAB6",
+  "creado_en": "2026-07-08T13:51:26",
+  "lectura_host_ai": "Análisis compras: 5 importaciones, 1 artículos."
+}

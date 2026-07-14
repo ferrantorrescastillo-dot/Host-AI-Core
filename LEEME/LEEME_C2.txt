@@ -1,0 +1,39 @@
+HOST AI 6.0.4 — SPRINT C2 PEDIDO OPERATIVO
+
+INSTALACIÓN
+1. Cierra Host AI.
+2. Haz una copia de tu carpeta actual.
+3. Descomprime este ZIP.
+4. Copia las carpetas APP, CORE, MODELOS, MOTORES, PIPELINES y TESTS encima de tu proyecto.
+5. Acepta sustituir los archivos existentes.
+6. Ejecuta: python main.py
+
+REQUISITOS
+- Debe instalarse encima de la versión que ya contiene E1, E2, E3, S1, S2 y C1.
+
+FUNCIONES NUEVAS
+- Generar pedidos reales en borrador agrupados por proveedor.
+- Evitar duplicar necesidades que ya están en pedidos abiertos.
+- Listar, buscar y ver detalle de pedidos.
+- Editar proveedor y observaciones.
+- Añadir, editar y eliminar líneas.
+- Precios unitarios e importe estimado.
+- Estados: borrador, preparado, enviado, recibido y cancelado.
+- Historial completo del pedido.
+- Recepción del pedido con actualización automática de Stock.
+- Marcar como compradas las necesidades vinculadas.
+- Bloquear recepciones duplicadas.
+- Persistencia automática y recuperación tras reiniciar.
+
+PRUEBAS
+43 passed
+0 failed
+0 collection errors
+
+PRUEBA MANUAL RECOMENDADA
+1. Compras > registrar una necesidad.
+2. Generar pedidos desde necesidades pendientes.
+3. Gestionar pedidos > ver detalle.
+4. Editar una línea y marcar el pedido como preparado/enviado.
+5. Recibir el pedido.
+6. Entrar en Stock y comprobar la entrada.

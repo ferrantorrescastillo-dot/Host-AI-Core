@@ -1,0 +1,23 @@
+I1.3.1 — DETECTOR LIMPIO DE MENÚS
+
+INSTALACIÓN
+1. Haz una copia de tu carpeta Host AI.
+2. Copia el contenido de este ZIP encima de tu instalación actual.
+3. Abre Host AI.
+4. Entra en Excel / importaciones.
+5. Selecciona: 11. I1.3.1 Detector limpio de menús.
+6. Indica el Excel y la hoja MENU BODA 31-1.
+
+IMPORTANTE
+- Este sprint NO importa menús.
+- Este sprint NO vincula recetas.
+- Este sprint NO escribe en la base de datos.
+- Solo clasifica filas y muestra una vista previa limpia.
+
+RESULTADO OFICIAL ESPERADO
+- 12 platos.
+- 1 artículo directo: Pan individual rombo makro.
+- 1 complemento: BODEGA, PAN, VINO Y CAFES.
+- Coste total: 8.867970689655172 €.
+- Food cost: 11.823960919540229 %.
+- Beneficio: 66.13202931034483 €.

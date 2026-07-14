@@ -1,0 +1,26 @@
+RR1.6.3 — LIMPIEZA Y ESTABILIZACIÓN
+
+1. Haz una copia de tu proyecto.
+2. Copia el contenido del ZIP encima de la versión que ya contiene RR1.6.2.
+3. Abre PowerShell en la carpeta raíz de Host AI.
+4. Ejecuta:
+
+   python ejecutar_certificacion_rr163.py
+
+5. Revisa:
+
+   INFORME_RR1.6.3_ESTABILIZACION.md
+
+La certificación RR1.6.3 solo ejecuta las pruebas incluidas en:
+
+   CERTIFICACION/suite_oficial_rr163.txt
+
+Los tests antiguos no se borran ni se mueven automáticamente.
+
+Para ver qué tests legacy conocidos podrían archivarse, ejecuta:
+
+   python HERRAMIENTAS\clasificar_tests_legacy.py
+
+Ese comando solo muestra una simulación. Para moverlos de forma expresa:
+
+   python HERRAMIENTAS\clasificar_tests_legacy.py --aplicar

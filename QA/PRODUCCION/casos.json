@@ -1,0 +1,197 @@
+[
+  {
+    "id": "QA-PRO-001",
+    "categoria": "produccion",
+    "usuario": "Organízame la producción de mañana.",
+    "intencion_esperada": "produccion",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-PRO-002",
+    "categoria": "produccion",
+    "usuario": "Planifica producción para el viernes.",
+    "intencion_esperada": "produccion",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-PRO-003",
+    "categoria": "produccion",
+    "usuario": "¿Qué elaboraciones puedo adelantar hoy?",
+    "intencion_esperada": "produccion",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-PRO-004",
+    "categoria": "produccion",
+    "usuario": "Tengo que preparar 40 raciones de canelón.",
+    "intencion_esperada": "produccion",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-PRO-005",
+    "categoria": "produccion",
+    "usuario": "Hazme el cronograma de cocina.",
+    "intencion_esperada": "produccion",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-PRO-006",
+    "categoria": "produccion",
+    "usuario": "Organiza a tres cocineros para mañana.",
+    "intencion_esperada": "produccion",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-PRO-007",
+    "categoria": "produccion",
+    "usuario": "¿Qué producción es prioritaria?",
+    "intencion_esperada": "produccion",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-PRO-008",
+    "categoria": "produccion",
+    "usuario": "Replanifica la producción porque falta un cocinero.",
+    "intencion_esperada": "produccion",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-PRO-009",
+    "categoria": "produccion",
+    "usuario": "Prepara fondos y salsas para el sábado.",
+    "intencion_esperada": "produccion",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-PRO-010",
+    "categoria": "produccion",
+    "usuario": "Quiero saber qué tareas hacen hoy los cocineros.",
+    "intencion_esperada": "produccion",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-PRO-011",
+    "categoria": "produccion",
+    "usuario": "Planifica las elaboraciones con horno y abatidor.",
+    "intencion_esperada": "produccion",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-PRO-012",
+    "categoria": "produccion",
+    "usuario": "¿Qué puedo dejar hecho hoy para mañana?",
+    "intencion_esperada": "produccion",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-PRO-013",
+    "categoria": "produccion",
+    "usuario": "Ordena la producción por prioridad.",
+    "intencion_esperada": "produccion",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-PRO-014",
+    "categoria": "produccion",
+    "usuario": "Necesito un plan de trabajo de cocina.",
+    "intencion_esperada": "produccion",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-PRO-015",
+    "categoria": "produccion",
+    "usuario": "Controla tiempos activos y pasivos.",
+    "intencion_esperada": "produccion",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  }
+]

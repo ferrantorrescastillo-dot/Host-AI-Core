@@ -1,0 +1,32 @@
+{
+  "version": "PILOTO-1.1",
+  "actualizado_en": "2026-07-13T15:21:26",
+  "tareas": [
+    {
+      "id": "TAREA-EB0B06FB58",
+      "titulo": "Finalizar recepción Makro",
+      "tipo": "RECEPCION",
+      "descripcion": "Stock pendiente",
+      "prioridad": 90,
+      "estado": "PENDIENTE",
+      "origen": "manual",
+      "referencia": "",
+      "metadatos": {
+        "clave_origen": "diag:recepcion"
+      },
+      "creado_en": "2026-07-13T15:21:26",
+      "actualizado_en": "2026-07-13T15:21:26",
+      "iniciado_en": "",
+      "completado_en": "",
+      "aplazado_hasta": "",
+      "notas": [],
+      "historial": [
+        {
+          "fecha": "2026-07-13T15:21:26",
+          "accion": "CREADA",
+          "detalle": "manual"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,275 @@
+{
+  "version": "M1.1",
+  "esquema": 1,
+  "conflictos": {
+    "MUR-F81347E15BCA": {
+      "organizacion_id": "DIAG",
+      "flujo_id": "DIAG-M12",
+      "origen_modulo": "DIAGNOSTICO",
+      "tipo_entidad": "ARTICULO",
+      "tipo_conflicto": "ENTIDAD_NO_EXISTE",
+      "severidad": "BLOQUEANTE",
+      "dato_original": "Nuez moscada M12",
+      "dato_normalizado": "Nuez moscada M12",
+      "rol_contextual": "",
+      "contexto": {},
+      "candidatos": [],
+      "acciones_permitidas": [
+        "CREAR",
+        "VINCULAR",
+        "MANTENER_PENDIENTE"
+      ],
+      "checkpoint_id": "CHK-A7A7CABE9B8C",
+      "politica_aplicada": "",
+      "conflicto_id": "MUR-F81347E15BCA",
+      "estado": "CERRADO",
+      "version": 6,
+      "creado_en": "2026-07-12T21:53:53+00:00",
+      "actualizado_en": "2026-07-12T21:53:53+00:00",
+      "motivo_estado": "El artículo existe y el flujo puede continuar.",
+      "resolutor_id": "M1.2-RESOLUTOR-ARTICULOS"
+    }
+  },
+  "checkpoints": {
+    "CHK-A7A7CABE9B8C": {
+      "flujo_id": "DIAG-M12",
+      "modulo": "DIAGNOSTICO",
+      "operacion": "resolver_articulo",
+      "paso": "ingrediente",
+      "estado_parcial": {
+        "ingrediente": "Nuez moscada M12"
+      },
+      "huella_entrada": "",
+      "version_flujo": 1,
+      "dependencias": [],
+      "checkpoint_id": "CHK-A7A7CABE9B8C",
+      "creado_en": "2026-07-12T21:53:53+00:00",
+      "actualizado_en": "2026-07-12T21:53:53+00:00",
+      "activo": true
+    }
+  },
+  "sesiones": {
+    "SES-F79EE76BF6C4": {
+      "conflicto_id": "MUR-F81347E15BCA",
+      "usuario_id": "diagnostico",
+      "resolutor_id": "M1.2-RESOLUTOR-ARTICULOS",
+      "acciones_disponibles": [
+        "CREAR",
+        "MANTENER_PENDIENTE",
+        "CANCELAR"
+      ],
+      "sesion_id": "SES-F79EE76BF6C4",
+      "estado": "RESUELTA",
+      "payload": {
+        "preparacion": {
+          "consulta": "Nuez moscada M12",
+          "proveedor_filtro": null,
+          "candidatos": [],
+          "acciones": [
+            "CREAR",
+            "MANTENER_PENDIENTE",
+            "CANCELAR"
+          ],
+          "politica_sin_precio": "PERMITIDO_PENDIENTE"
+        },
+        "resultado": {
+          "ok": true,
+          "accion": "CREAR",
+          "mensaje": "Artículo creado desde el módulo oficial y vinculado al conflicto.",
+          "datos": {
+            "articulo": {
+              "codigo": "ART000360",
+              "nombre": "Nuez moscada M12",
+              "observaciones": "Unidad: kg. Alta controlada por M1.2.",
+              "proveedor": null,
+              "familia": "Especias",
+              "precio": null,
+              "activo": true,
+              "origen": "MUR_M1.2",
+              "fecha_importacion": "2026-07-12T23:53:53",
+              "unidad": "kg",
+              "estado_calidad": "PENDIENTE",
+              "fecha_actualizacion": "2026-07-12T23:53:53"
+            },
+            "backup": "C:\\PROYECTO HOST IA\\Proyecto Host AI  6.0\\Host AI 6.0\\DATOS\\mur\\backups_m12\\articulos_20260712_235353_640876.json",
+            "estado_calidad": "PENDIENTE",
+            "bloqueo_resuelto": true
+          },
+          "requiere_recalculo": true,
+          "aprendizaje_sugerido": {
+            "clave_original": "Nuez moscada M12",
+            "valor_resuelto": "Nuez moscada M12",
+            "tipo_entidad": "ARTICULO",
+            "accion": "VINCULAR",
+            "entidad_id": "ART000360",
+            "confianza": 1.0
+          }
+        }
+      },
+      "creada_en": "2026-07-12T21:53:53+00:00",
+      "actualizada_en": "2026-07-12T21:53:53+00:00"
+    }
+  },
+  "auditoria": [
+    {
+      "conflicto_id": "",
+      "evento": "CHECKPOINT_CREADO",
+      "actor": "sistema",
+      "detalle": {
+        "checkpoint_id": "CHK-A7A7CABE9B8C",
+        "flujo_id": "DIAG-M12"
+      },
+      "evento_id": "AUD-2354CCBE604E",
+      "creado_en": "2026-07-12T21:53:53+00:00"
+    },
+    {
+      "conflicto_id": "MUR-F81347E15BCA",
+      "evento": "CONFLICTO_DETECTADO",
+      "actor": "sistema",
+      "detalle": {
+        "organizacion_id": "DIAG",
+        "flujo_id": "DIAG-M12",
+        "origen_modulo": "DIAGNOSTICO",
+        "tipo_entidad": "ARTICULO",
+        "tipo_conflicto": "ENTIDAD_NO_EXISTE",
+        "severidad": "BLOQUEANTE",
+        "dato_original": "Nuez moscada M12",
+        "dato_normalizado": "Nuez moscada M12",
+        "rol_contextual": "",
+        "contexto": {},
+        "candidatos": [],
+        "acciones_permitidas": [
+          "CREAR",
+          "VINCULAR",
+          "MANTENER_PENDIENTE"
+        ],
+        "checkpoint_id": "CHK-A7A7CABE9B8C",
+        "politica_aplicada": "",
+        "conflicto_id": "MUR-F81347E15BCA",
+        "estado": "DETECTADO",
+        "version": 1,
+        "creado_en": "2026-07-12T21:53:53+00:00",
+        "actualizado_en": "2026-07-12T21:53:53+00:00",
+        "motivo_estado": "",
+        "resolutor_id": ""
+      },
+      "evento_id": "AUD-D86E8765AF4F",
+      "creado_en": "2026-07-12T21:53:53+00:00"
+    },
+    {
+      "conflicto_id": "MUR-F81347E15BCA",
+      "evento": "ESTADO_CAMBIADO",
+      "actor": "diagnostico",
+      "detalle": {
+        "anterior": "DETECTADO",
+        "nuevo": "CLASIFICADO",
+        "motivo": "Resolutor compatible asignado."
+      },
+      "evento_id": "AUD-EE1F8A682E00",
+      "creado_en": "2026-07-12T21:53:53+00:00"
+    },
+    {
+      "conflicto_id": "MUR-F81347E15BCA",
+      "evento": "ESTADO_CAMBIADO",
+      "actor": "diagnostico",
+      "detalle": {
+        "anterior": "CLASIFICADO",
+        "nuevo": "EN_RESOLUCION",
+        "motivo": "Sesión de resolución abierta."
+      },
+      "evento_id": "AUD-022EA5789F85",
+      "creado_en": "2026-07-12T21:53:53+00:00"
+    },
+    {
+      "conflicto_id": "MUR-F81347E15BCA",
+      "evento": "RESOLUCION_INICIADA",
+      "actor": "diagnostico",
+      "detalle": {
+        "sesion_id": "SES-F79EE76BF6C4",
+        "acciones": [
+          "CREAR",
+          "MANTENER_PENDIENTE",
+          "CANCELAR"
+        ]
+      },
+      "evento_id": "AUD-2C6C6A422B7D",
+      "creado_en": "2026-07-12T21:53:53+00:00"
+    },
+    {
+      "conflicto_id": "MUR-F81347E15BCA",
+      "evento": "ESTADO_CAMBIADO",
+      "actor": "diagnostico",
+      "detalle": {
+        "anterior": "EN_RESOLUCION",
+        "nuevo": "RESUELTO",
+        "motivo": "Artículo creado desde el módulo oficial y vinculado al conflicto."
+      },
+      "evento_id": "AUD-A2EF5BA924E1",
+      "creado_en": "2026-07-12T21:53:53+00:00"
+    },
+    {
+      "conflicto_id": "MUR-F81347E15BCA",
+      "evento": "RESOLUCION_VALIDADA",
+      "actor": "diagnostico",
+      "detalle": {
+        "ok": true,
+        "accion": "CREAR",
+        "mensaje": "Artículo creado desde el módulo oficial y vinculado al conflicto.",
+        "datos": {
+          "articulo": {
+            "codigo": "ART000360",
+            "nombre": "Nuez moscada M12",
+            "observaciones": "Unidad: kg. Alta controlada por M1.2.",
+            "proveedor": null,
+            "familia": "Especias",
+            "precio": null,
+            "activo": true,
+            "origen": "MUR_M1.2",
+            "fecha_importacion": "2026-07-12T23:53:53",
+            "unidad": "kg",
+            "estado_calidad": "PENDIENTE",
+            "fecha_actualizacion": "2026-07-12T23:53:53"
+          },
+          "backup": "C:\\PROYECTO HOST IA\\Proyecto Host AI  6.0\\Host AI 6.0\\DATOS\\mur\\backups_m12\\articulos_20260712_235353_640876.json",
+          "estado_calidad": "PENDIENTE",
+          "bloqueo_resuelto": true
+        },
+        "requiere_recalculo": true,
+        "aprendizaje_sugerido": {
+          "clave_original": "Nuez moscada M12",
+          "valor_resuelto": "Nuez moscada M12",
+          "tipo_entidad": "ARTICULO",
+          "accion": "VINCULAR",
+          "entidad_id": "ART000360",
+          "confianza": 1.0
+        }
+      },
+      "evento_id": "AUD-4C33255B26E7",
+      "creado_en": "2026-07-12T21:53:53+00:00"
+    },
+    {
+      "conflicto_id": "MUR-F81347E15BCA",
+      "evento": "ESTADO_CAMBIADO",
+      "actor": "diagnostico",
+      "detalle": {
+        "anterior": "RESUELTO",
+        "nuevo": "APLICADO",
+        "motivo": "Solución incorporada al flujo de origen."
+      },
+      "evento_id": "AUD-2020EECDD5A1",
+      "creado_en": "2026-07-12T21:53:53+00:00"
+    },
+    {
+      "conflicto_id": "MUR-F81347E15BCA",
+      "evento": "ESTADO_CAMBIADO",
+      "actor": "diagnostico",
+      "detalle": {
+        "anterior": "APLICADO",
+        "nuevo": "CERRADO",
+        "motivo": "El artículo existe y el flujo puede continuar."
+      },
+      "evento_id": "AUD-37106FA3FCFD",
+      "creado_en": "2026-07-12T21:53:53+00:00"
+    }
+  ]
+}

@@ -1,0 +1,311 @@
+{
+  "resultado_pipeline": {
+    "ok": true,
+    "pipeline": "lector_completo_lineas_factura",
+    "accion": "leer_texto_completo",
+    "mensaje": "Texto factura leído: 3 líneas, proveedor Makro.",
+    "datos": {
+      "archivo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "F-2026-001",
+      "fecha_factura": "08/07/2026",
+      "lineas": [
+        {
+          "descripcion": "Carrillera Ternera",
+          "cantidad": 8.0,
+          "unidad": "kg",
+          "precio_unitario": 8.45,
+          "importe": 67.6,
+          "descuento": 0.0,
+          "iva_porcentaje": 0.0,
+          "codigo_proveedor": "",
+          "articulo_id_sugerido": "",
+          "proveedor_id": "PROV-MAKRO",
+          "numero_factura": "F-2026-001",
+          "fecha_factura": "08/07/2026",
+          "confianza": 100.0,
+          "origen_texto": "Carrillera Ternera 8 KG 8,45 67,60",
+          "avisos": [],
+          "id": "LINFAC-9CBC3CC564",
+          "creado_en": "2026-07-08T10:17:51"
+        },
+        {
+          "descripcion": "Cebolla",
+          "cantidad": 15.0,
+          "unidad": "kg",
+          "precio_unitario": 1.12,
+          "importe": 16.8,
+          "descuento": 0.0,
+          "iva_porcentaje": 0.0,
+          "codigo_proveedor": "",
+          "articulo_id_sugerido": "",
+          "proveedor_id": "PROV-MAKRO",
+          "numero_factura": "F-2026-001",
+          "fecha_factura": "08/07/2026",
+          "confianza": 100.0,
+          "origen_texto": "Cebolla 15 KG 1,12 16,80",
+          "avisos": [],
+          "id": "LINFAC-2C694F77BC",
+          "creado_en": "2026-07-08T10:17:51"
+        },
+        {
+          "descripcion": "Aceite Oliva 5L",
+          "cantidad": 2.0,
+          "unidad": "ud",
+          "precio_unitario": 39.9,
+          "importe": 79.8,
+          "descuento": 0.0,
+          "iva_porcentaje": 0.0,
+          "codigo_proveedor": "",
+          "articulo_id_sugerido": "",
+          "proveedor_id": "PROV-MAKRO",
+          "numero_factura": "F-2026-001",
+          "fecha_factura": "08/07/2026",
+          "confianza": 100.0,
+          "origen_texto": "Aceite Oliva 5L 2 UD 39,90 79,80",
+          "avisos": [],
+          "id": "LINFAC-9F8B39520C",
+          "creado_en": "2026-07-08T10:17:51"
+        }
+      ],
+      "lineas_descartadas": [
+        {
+          "numero": 2,
+          "texto": "MAKRO ESPAÑA S.A.",
+          "motivo": "no_parseable"
+        },
+        {
+          "numero": 3,
+          "texto": "CIF A12345678",
+          "motivo": "cabecera_pie"
+        },
+        {
+          "numero": 4,
+          "texto": "Factura Nº F-2026-001",
+          "motivo": "cabecera_pie"
+        },
+        {
+          "numero": 5,
+          "texto": "Fecha 08/07/2026",
+          "motivo": "cabecera_pie"
+        },
+        {
+          "numero": 9,
+          "texto": "Base imponible 164,20",
+          "motivo": "cabecera_pie"
+        },
+        {
+          "numero": 10,
+          "texto": "IVA 16,42",
+          "motivo": "cabecera_pie"
+        },
+        {
+          "numero": 11,
+          "texto": "Total factura 180,62",
+          "motivo": "cabecera_pie"
+        }
+      ],
+      "total_lineas": 3,
+      "total_importe_lineas": 164.2,
+      "total_factura_detectado": 180.62,
+      "diferencia_total": 16.42,
+      "confianza_media": 100.0,
+      "avisos": [],
+      "id": "BLOQLINFAC-87B886C7D9",
+      "creado_en": "2026-07-08T10:17:51",
+      "lectura_host_ai": "Texto factura leído: 3 líneas, proveedor Makro.",
+      "deteccion_proveedor": {
+        "proveedor_id": "PROV-MAKRO",
+        "nombre": "Makro",
+        "confianza": 100.0,
+        "metodo": "nombre_sugerido",
+        "coincidencias": [
+          "CIF A12345678",
+          "Dominio makro.es",
+          "Nombre makro",
+          "Nombre makro españa",
+          "Nombre makro españa s.a.",
+          "Clave makro"
+        ],
+        "candidatos": [
+          {
+            "proveedor_id": "PROV-MAKRO",
+            "nombre": "Makro",
+            "confianza": 100.0,
+            "metodo": "nombre_sugerido",
+            "coincidencias": [
+              "CIF A12345678",
+              "Dominio makro.es",
+              "Nombre makro",
+              "Nombre makro españa",
+              "Nombre makro españa s.a.",
+              "Clave makro"
+            ],
+            "categoria": "mayorista"
+          }
+        ],
+        "requiere_aprendizaje": false,
+        "avisos": [],
+        "id": "DETPROV-DC291CD729",
+        "creado_en": "2026-07-08T10:17:51",
+        "contexto": {},
+        "lectura_host_ai": "Proveedor detectado: Makro (100.0%)."
+      }
+    },
+    "acciones_recomendadas": [
+      "Revisar líneas antes de relacionarlas con artículos."
+    ],
+    "requiere_aprobacion": false,
+    "errores": [],
+    "id": "RES-6040ECF272",
+    "creado_en": "2026-07-08T10:17:51"
+  },
+  "archivo": "",
+  "proveedor_id": "PROV-MAKRO",
+  "proveedor_nombre": "Makro",
+  "numero_factura": "F-2026-001",
+  "fecha_factura": "08/07/2026",
+  "lineas": [
+    {
+      "descripcion": "Carrillera Ternera",
+      "cantidad": 8.0,
+      "unidad": "kg",
+      "precio_unitario": 8.45,
+      "importe": 67.6,
+      "descuento": 0.0,
+      "iva_porcentaje": 0.0,
+      "codigo_proveedor": "",
+      "articulo_id_sugerido": "",
+      "proveedor_id": "PROV-MAKRO",
+      "numero_factura": "F-2026-001",
+      "fecha_factura": "08/07/2026",
+      "confianza": 100.0,
+      "origen_texto": "Carrillera Ternera 8 KG 8,45 67,60",
+      "avisos": [],
+      "id": "LINFAC-9CBC3CC564",
+      "creado_en": "2026-07-08T10:17:51"
+    },
+    {
+      "descripcion": "Cebolla",
+      "cantidad": 15.0,
+      "unidad": "kg",
+      "precio_unitario": 1.12,
+      "importe": 16.8,
+      "descuento": 0.0,
+      "iva_porcentaje": 0.0,
+      "codigo_proveedor": "",
+      "articulo_id_sugerido": "",
+      "proveedor_id": "PROV-MAKRO",
+      "numero_factura": "F-2026-001",
+      "fecha_factura": "08/07/2026",
+      "confianza": 100.0,
+      "origen_texto": "Cebolla 15 KG 1,12 16,80",
+      "avisos": [],
+      "id": "LINFAC-2C694F77BC",
+      "creado_en": "2026-07-08T10:17:51"
+    },
+    {
+      "descripcion": "Aceite Oliva 5L",
+      "cantidad": 2.0,
+      "unidad": "ud",
+      "precio_unitario": 39.9,
+      "importe": 79.8,
+      "descuento": 0.0,
+      "iva_porcentaje": 0.0,
+      "codigo_proveedor": "",
+      "articulo_id_sugerido": "",
+      "proveedor_id": "PROV-MAKRO",
+      "numero_factura": "F-2026-001",
+      "fecha_factura": "08/07/2026",
+      "confianza": 100.0,
+      "origen_texto": "Aceite Oliva 5L 2 UD 39,90 79,80",
+      "avisos": [],
+      "id": "LINFAC-9F8B39520C",
+      "creado_en": "2026-07-08T10:17:51"
+    }
+  ],
+  "lineas_descartadas": [
+    {
+      "numero": 2,
+      "texto": "MAKRO ESPAÑA S.A.",
+      "motivo": "no_parseable"
+    },
+    {
+      "numero": 3,
+      "texto": "CIF A12345678",
+      "motivo": "cabecera_pie"
+    },
+    {
+      "numero": 4,
+      "texto": "Factura Nº F-2026-001",
+      "motivo": "cabecera_pie"
+    },
+    {
+      "numero": 5,
+      "texto": "Fecha 08/07/2026",
+      "motivo": "cabecera_pie"
+    },
+    {
+      "numero": 9,
+      "texto": "Base imponible 164,20",
+      "motivo": "cabecera_pie"
+    },
+    {
+      "numero": 10,
+      "texto": "IVA 16,42",
+      "motivo": "cabecera_pie"
+    },
+    {
+      "numero": 11,
+      "texto": "Total factura 180,62",
+      "motivo": "cabecera_pie"
+    }
+  ],
+  "total_lineas": 3,
+  "total_importe_lineas": 164.2,
+  "total_factura_detectado": 180.62,
+  "diferencia_total": 16.42,
+  "confianza_media": 100.0,
+  "avisos": [],
+  "id": "BLOQLINFAC-87B886C7D9",
+  "creado_en": "2026-07-08T10:17:51",
+  "lectura_host_ai": "Texto factura leído: 3 líneas, proveedor Makro.",
+  "deteccion_proveedor": {
+    "proveedor_id": "PROV-MAKRO",
+    "nombre": "Makro",
+    "confianza": 100.0,
+    "metodo": "nombre_sugerido",
+    "coincidencias": [
+      "CIF A12345678",
+      "Dominio makro.es",
+      "Nombre makro",
+      "Nombre makro españa",
+      "Nombre makro españa s.a.",
+      "Clave makro"
+    ],
+    "candidatos": [
+      {
+        "proveedor_id": "PROV-MAKRO",
+        "nombre": "Makro",
+        "confianza": 100.0,
+        "metodo": "nombre_sugerido",
+        "coincidencias": [
+          "CIF A12345678",
+          "Dominio makro.es",
+          "Nombre makro",
+          "Nombre makro españa",
+          "Nombre makro españa s.a.",
+          "Clave makro"
+        ],
+        "categoria": "mayorista"
+      }
+    ],
+    "requiere_aprendizaje": false,
+    "avisos": [],
+    "id": "DETPROV-DC291CD729",
+    "creado_en": "2026-07-08T10:17:51",
+    "contexto": {},
+    "lectura_host_ai": "Proveedor detectado: Makro (100.0%)."
+  }
+}

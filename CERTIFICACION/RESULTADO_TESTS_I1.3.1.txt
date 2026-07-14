@@ -1,0 +1,12 @@
+I1.3.1 — RESULTADO DE TESTS
+
+Comando:
+pytest -q TESTS/test_i11_detector_escandallos_antiguos.py TESTS/test_i12_importador_seguro_escandallos.py TESTS/test_i13_importador_menus_legacy.py TESTS/test_i131_detector_limpio_menus.py
+
+Resultado:
+11 passed in 2.21s
+
+Prueba real:
+Escandallos Boronat.xlsx / MENU BODA 31-1
+PRUEBA REAL I1.3.1: OK
+Platos=12 | Artículos directos=1 | Complementos=1 | Ruido=0

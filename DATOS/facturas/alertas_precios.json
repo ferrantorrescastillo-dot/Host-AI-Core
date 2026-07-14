@@ -1,0 +1,56 @@
+{
+  "version": "3.0.3.5.5",
+  "alertas": [
+    {
+      "articulo_id": "ART-CARRILLERA",
+      "nombre_articulo": "Carrillera de ternera",
+      "tipo": "oportunidad_ahorro",
+      "nivel": "info",
+      "mensaje": "Hay ahorro potencial de 0.35 por unidad cambiando de proveedor.",
+      "precio_referencia": 8.35,
+      "precio_actual": 8.0,
+      "variacion_porcentaje": 0.0,
+      "proveedor_id": "PROV-BIDFOOD",
+      "accion_sugerida": "Comparar con PROV-BIDFOOD.",
+      "datos": {
+        "encontrado": true,
+        "articulo_id": "ART-CARRILLERA",
+        "nombre_articulo": "Carrillera de ternera",
+        "ranking": [
+          {
+            "proveedor_id": "PROV-BIDFOOD",
+            "precio_minimo": 7.9,
+            "precio_maximo": 8.1,
+            "precio_medio": 8.0,
+            "total_registros": 2
+          },
+          {
+            "proveedor_id": "PROV-MAKRO",
+            "precio_minimo": 8.0,
+            "precio_maximo": 9.0,
+            "precio_medio": 8.35,
+            "total_registros": 7
+          }
+        ],
+        "mejor_proveedor": {
+          "proveedor_id": "PROV-BIDFOOD",
+          "precio_minimo": 7.9,
+          "precio_maximo": 8.1,
+          "precio_medio": 8.0,
+          "total_registros": 2
+        },
+        "peor_proveedor": {
+          "proveedor_id": "PROV-MAKRO",
+          "precio_minimo": 8.0,
+          "precio_maximo": 9.0,
+          "precio_medio": 8.35,
+          "total_registros": 7
+        },
+        "ahorro_potencial_unitario": 0.35,
+        "lectura_host_ai": "Mejor proveedor para Carrillera de ternera: PROV-BIDFOOD."
+      },
+      "id": "ALPREC-91BE718BFD",
+      "creado_en": "2026-07-08T11:08:33"
+    }
+  ]
+}

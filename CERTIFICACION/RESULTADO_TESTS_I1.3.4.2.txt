@@ -1,0 +1,12 @@
+115 passed
+
+I1.3.4.2 — MOTOR DE ESCRITURA SEGURA
+==============================================================================
+Diagnóstico: OK
+COMMIT: COMMIT | Backup: creado | Escritos: 1 | Integridad: OK
+ROLLBACK: ROLLBACK | Restaurados: 1 | Integridad: OK
+Eventos de auditoría: 11
+Archivo aislado: /mnt/data/full_i1342/DATOS/mur/diagnostico_i1342/menus.json
+------------------------------------------------------------------------------
+Se validó backup, escritura atómica, commit, fallo controlado, rollback y restauración.
+No se modificaron menús, recetas, artículos, compras, stock ni otros datos reales.

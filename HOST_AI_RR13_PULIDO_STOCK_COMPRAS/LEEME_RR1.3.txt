@@ -1,0 +1,18 @@
+HOST AI 6.0.4 — RR1.3 PULIDO DE STOCK Y COMPRAS
+
+INSTALACIÓN
+1. Cierra Host AI.
+2. Haz una copia completa de tu carpeta actual.
+3. Copia el contenido de esta carpeta encima de la raíz de Host AI.
+4. Acepta reemplazar los archivos.
+5. Ejecuta: python main.py
+
+REQUISITO
+La versión debe contener RR1.1 y RR1.2, además de los sprints anteriores.
+
+PRUEBA RECOMENDADA
+1. Registra una necesidad de 5 kg.
+2. Genera un pedido.
+3. Edita la necesidad a 7 kg.
+4. Abre el pedido y verifica que muestra 7 kg.
+5. Cancela la necesidad y comprueba que su línea se retira del pedido abierto.

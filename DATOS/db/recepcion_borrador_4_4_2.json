@@ -1,0 +1,25 @@
+{
+  "fecha_borrador": "2026-07-09T21:59:07",
+  "texto_original": "Han llegado 25 kg de arroz bomba de Makro a 2,15 €/kg.",
+  "proveedor_general": "Makro",
+  "total_lineas": 1,
+  "lineas_validadas": [
+    {
+      "producto_texto": "arroz bomba",
+      "cantidad": 25.0,
+      "unidad": "kg",
+      "proveedor_texto": "Makro",
+      "precio_unitario": 2.15,
+      "codigo_articulo": "ART000355",
+      "articulo_encontrado": "Arroz bomba",
+      "proveedor_articulo": "Makro",
+      "familia_articulo": "Arroces",
+      "precio_actual_articulo": 2.15,
+      "confianza": 1.0,
+      "accion_sugerida": "entrada_stock",
+      "mensajes": []
+    }
+  ],
+  "estado": "listo_para_aplicar",
+  "mensajes_generales": []
+}

@@ -1,0 +1,285 @@
+{
+  "resultado_pipeline": {
+    "ok": true,
+    "pipeline": "lector_facturas_con_ocr",
+    "accion": "leer_archivo",
+    "mensaje": "Factura leída mediante OCR: 1 líneas.",
+    "datos": {
+      "archivo": "/mnt/data/Host_AI_3_0_3_7_3_Integracion_OCR_Facturas/DATOS/facturas/factura_ocr_integrada.png",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "",
+      "fecha_factura": "",
+      "lineas": [
+        {
+          "descripcion": "Carrillera Ternera",
+          "cantidad": 8.0,
+          "unidad": "kg",
+          "precio_unitario": 8.45,
+          "importe": 67.6,
+          "descuento": 0.0,
+          "iva_porcentaje": 0.0,
+          "codigo_proveedor": "",
+          "articulo_id_sugerido": "",
+          "proveedor_id": "PROV-MAKRO",
+          "numero_factura": "",
+          "fecha_factura": "",
+          "confianza": 100.0,
+          "origen_texto": "Carrillera Ternera 8 KG 8,45 67,60",
+          "avisos": [],
+          "id": "LINFAC-9CA21C25D4",
+          "creado_en": "2026-07-08T11:57:18"
+        }
+      ],
+      "lineas_descartadas": [
+        {
+          "numero": 1,
+          "texto": "MAKRO ESPAÑA S.A.",
+          "motivo": "no_parseable"
+        },
+        {
+          "numero": 2,
+          "texto": "Factura Nº F-OCR-2",
+          "motivo": "cabecera_pie"
+        },
+        {
+          "numero": 4,
+          "texto": "Total factura 67,60",
+          "motivo": "cabecera_pie"
+        }
+      ],
+      "total_lineas": 1,
+      "total_importe_lineas": 67.6,
+      "total_factura_detectado": 0.0,
+      "diferencia_total": 0.0,
+      "confianza_media": 100.0,
+      "avisos": [],
+      "id": "BLOQLINFAC-27765F1296",
+      "creado_en": "2026-07-08T11:57:18",
+      "lectura_host_ai": "Factura leída mediante OCR: 1 líneas.",
+      "deteccion_proveedor": {
+        "proveedor_id": "PROV-MAKRO",
+        "nombre": "Makro",
+        "confianza": 90,
+        "metodo": "nombre_en_texto",
+        "coincidencias": [
+          "Dominio makro.es",
+          "Texto makro",
+          "Texto makro españa",
+          "Texto makro españa s.a.",
+          "Clave makro"
+        ],
+        "candidatos": [
+          {
+            "proveedor_id": "PROV-MAKRO",
+            "nombre": "Makro",
+            "confianza": 90,
+            "metodo": "nombre_en_texto",
+            "coincidencias": [
+              "Dominio makro.es",
+              "Texto makro",
+              "Texto makro españa",
+              "Texto makro españa s.a.",
+              "Clave makro"
+            ],
+            "categoria": "mayorista"
+          }
+        ],
+        "requiere_aprendizaje": false,
+        "avisos": [],
+        "id": "DETPROV-25EC87F8E0",
+        "creado_en": "2026-07-08T11:57:18",
+        "contexto": {},
+        "lectura_host_ai": "Proveedor detectado: Makro (90%)."
+      },
+      "ok": true,
+      "diagnostico_ocr": {
+        "archivo": "/mnt/data/Host_AI_3_0_3_7_3_Integracion_OCR_Facturas/DATOS/facturas/factura_ocr_integrada.png",
+        "nombre_archivo": "factura_ocr_integrada.png",
+        "necesita_ocr": true,
+        "motivo": "Es una imagen; necesita OCR para extraer texto.",
+        "texto_actual": "",
+        "caracteres_detectados": 0,
+        "paginas": 1,
+        "confianza": 95,
+        "recomendaciones": [
+          "Enviar a motor OCR en 3.0.3.7.2."
+        ],
+        "id": "DIAGOCR-585E723274",
+        "creado_en": "2026-07-08T11:57:18",
+        "lectura_host_ai": "Imagen detectada: necesita OCR."
+      },
+      "resultado_ocr": {
+        "archivo": "/mnt/data/Host_AI_3_0_3_7_3_Integracion_OCR_Facturas/DATOS/facturas/factura_ocr_integrada.png",
+        "nombre_archivo": "factura_ocr_integrada.png",
+        "texto_extraido": "MAKRO ESPAÑA S.A.\nFactura Nº F-OCR-2\nCarrillera Ternera 8 KG 8,45 67,60\nTotal factura 67,60",
+        "metodo": "manual_parametro",
+        "confianza": 85.0,
+        "paginas": 1,
+        "requiere_revision": false,
+        "avisos": [],
+        "diagnostico": {
+          "archivo": "/mnt/data/Host_AI_3_0_3_7_3_Integracion_OCR_Facturas/DATOS/facturas/factura_ocr_integrada.png",
+          "nombre_archivo": "factura_ocr_integrada.png",
+          "necesita_ocr": true,
+          "motivo": "Es una imagen; necesita OCR para extraer texto.",
+          "texto_actual": "",
+          "caracteres_detectados": 0,
+          "paginas": 1,
+          "confianza": 95,
+          "recomendaciones": [
+            "Enviar a motor OCR en 3.0.3.7.2."
+          ],
+          "id": "DIAGOCR-C5F0DD056D",
+          "creado_en": "2026-07-08T11:57:18",
+          "lectura_host_ai": "Imagen detectada: necesita OCR."
+        },
+        "id": "RESOCR-1756BE9805",
+        "creado_en": "2026-07-08T11:57:18",
+        "lectura_host_ai": "OCR simulado extraído: 91 caracteres."
+      },
+      "origen": "ocr",
+      "json_exportado_ocr": "/mnt/data/Host_AI_3_0_3_7_3_Integracion_OCR_Facturas/DATOS/facturas/lectura_factura_con_ocr.json"
+    },
+    "acciones_recomendadas": [],
+    "requiere_aprobacion": false,
+    "errores": [],
+    "id": "RES-F18430C786",
+    "creado_en": "2026-07-08T11:57:18"
+  },
+  "archivo": "/mnt/data/Host_AI_3_0_3_7_3_Integracion_OCR_Facturas/DATOS/facturas/factura_ocr_integrada.png",
+  "proveedor_id": "PROV-MAKRO",
+  "proveedor_nombre": "Makro",
+  "numero_factura": "",
+  "fecha_factura": "",
+  "lineas": [
+    {
+      "descripcion": "Carrillera Ternera",
+      "cantidad": 8.0,
+      "unidad": "kg",
+      "precio_unitario": 8.45,
+      "importe": 67.6,
+      "descuento": 0.0,
+      "iva_porcentaje": 0.0,
+      "codigo_proveedor": "",
+      "articulo_id_sugerido": "",
+      "proveedor_id": "PROV-MAKRO",
+      "numero_factura": "",
+      "fecha_factura": "",
+      "confianza": 100.0,
+      "origen_texto": "Carrillera Ternera 8 KG 8,45 67,60",
+      "avisos": [],
+      "id": "LINFAC-9CA21C25D4",
+      "creado_en": "2026-07-08T11:57:18"
+    }
+  ],
+  "lineas_descartadas": [
+    {
+      "numero": 1,
+      "texto": "MAKRO ESPAÑA S.A.",
+      "motivo": "no_parseable"
+    },
+    {
+      "numero": 2,
+      "texto": "Factura Nº F-OCR-2",
+      "motivo": "cabecera_pie"
+    },
+    {
+      "numero": 4,
+      "texto": "Total factura 67,60",
+      "motivo": "cabecera_pie"
+    }
+  ],
+  "total_lineas": 1,
+  "total_importe_lineas": 67.6,
+  "total_factura_detectado": 0.0,
+  "diferencia_total": 0.0,
+  "confianza_media": 100.0,
+  "avisos": [],
+  "id": "BLOQLINFAC-27765F1296",
+  "creado_en": "2026-07-08T11:57:18",
+  "lectura_host_ai": "Factura leída mediante OCR: 1 líneas.",
+  "deteccion_proveedor": {
+    "proveedor_id": "PROV-MAKRO",
+    "nombre": "Makro",
+    "confianza": 90,
+    "metodo": "nombre_en_texto",
+    "coincidencias": [
+      "Dominio makro.es",
+      "Texto makro",
+      "Texto makro españa",
+      "Texto makro españa s.a.",
+      "Clave makro"
+    ],
+    "candidatos": [
+      {
+        "proveedor_id": "PROV-MAKRO",
+        "nombre": "Makro",
+        "confianza": 90,
+        "metodo": "nombre_en_texto",
+        "coincidencias": [
+          "Dominio makro.es",
+          "Texto makro",
+          "Texto makro españa",
+          "Texto makro españa s.a.",
+          "Clave makro"
+        ],
+        "categoria": "mayorista"
+      }
+    ],
+    "requiere_aprendizaje": false,
+    "avisos": [],
+    "id": "DETPROV-25EC87F8E0",
+    "creado_en": "2026-07-08T11:57:18",
+    "contexto": {},
+    "lectura_host_ai": "Proveedor detectado: Makro (90%)."
+  },
+  "ok": true,
+  "diagnostico_ocr": {
+    "archivo": "/mnt/data/Host_AI_3_0_3_7_3_Integracion_OCR_Facturas/DATOS/facturas/factura_ocr_integrada.png",
+    "nombre_archivo": "factura_ocr_integrada.png",
+    "necesita_ocr": true,
+    "motivo": "Es una imagen; necesita OCR para extraer texto.",
+    "texto_actual": "",
+    "caracteres_detectados": 0,
+    "paginas": 1,
+    "confianza": 95,
+    "recomendaciones": [
+      "Enviar a motor OCR en 3.0.3.7.2."
+    ],
+    "id": "DIAGOCR-585E723274",
+    "creado_en": "2026-07-08T11:57:18",
+    "lectura_host_ai": "Imagen detectada: necesita OCR."
+  },
+  "resultado_ocr": {
+    "archivo": "/mnt/data/Host_AI_3_0_3_7_3_Integracion_OCR_Facturas/DATOS/facturas/factura_ocr_integrada.png",
+    "nombre_archivo": "factura_ocr_integrada.png",
+    "texto_extraido": "MAKRO ESPAÑA S.A.\nFactura Nº F-OCR-2\nCarrillera Ternera 8 KG 8,45 67,60\nTotal factura 67,60",
+    "metodo": "manual_parametro",
+    "confianza": 85.0,
+    "paginas": 1,
+    "requiere_revision": false,
+    "avisos": [],
+    "diagnostico": {
+      "archivo": "/mnt/data/Host_AI_3_0_3_7_3_Integracion_OCR_Facturas/DATOS/facturas/factura_ocr_integrada.png",
+      "nombre_archivo": "factura_ocr_integrada.png",
+      "necesita_ocr": true,
+      "motivo": "Es una imagen; necesita OCR para extraer texto.",
+      "texto_actual": "",
+      "caracteres_detectados": 0,
+      "paginas": 1,
+      "confianza": 95,
+      "recomendaciones": [
+        "Enviar a motor OCR en 3.0.3.7.2."
+      ],
+      "id": "DIAGOCR-C5F0DD056D",
+      "creado_en": "2026-07-08T11:57:18",
+      "lectura_host_ai": "Imagen detectada: necesita OCR."
+    },
+    "id": "RESOCR-1756BE9805",
+    "creado_en": "2026-07-08T11:57:18",
+    "lectura_host_ai": "OCR simulado extraído: 91 caracteres."
+  },
+  "origen": "ocr",
+  "json_exportado_ocr": "/mnt/data/Host_AI_3_0_3_7_3_Integracion_OCR_Facturas/DATOS/facturas/lectura_factura_con_ocr.json"
+}

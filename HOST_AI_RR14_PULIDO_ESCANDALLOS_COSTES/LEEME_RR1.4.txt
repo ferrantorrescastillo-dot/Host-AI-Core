@@ -1,0 +1,18 @@
+HOST AI 6.0.4 — RR1.4 PULIDO DE ESCANDALLOS Y COSTES
+
+INSTALACIÓN
+1. Cierra Host AI.
+2. Haz una copia completa de tu carpeta actual.
+3. Descomprime este ZIP.
+4. Copia las carpetas APP y TESTS encima de tu proyecto actual.
+5. Acepta reemplazar APP/consola.py.
+6. Ejecuta: python main.py
+
+REQUISITO
+La versión actual debe contener RR1.1, RR1.2 y RR1.3.
+
+PRUEBA RÁPIDA
+- En Escandallos, abre una receta vacía e intenta calcular rentabilidad: debe bloquearla y pedir ingredientes.
+- Selecciona una receta y vuelve a otra operación: Enter debe reutilizar la receta activa.
+- En Costes, registra un precio buscando un artículo real.
+- Calcula el coste de una receta por nombre, sin escribir obligatoriamente su ID.

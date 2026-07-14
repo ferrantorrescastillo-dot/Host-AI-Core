@@ -1,0 +1,6 @@
+M1.3.3 — RESULTADO DE TESTS
+
+Tests específicos: 8 passed
+Regresión I1.3 + M1.1–M1.3.3: 82 passed
+Fallos: 0
+Datos reales modificados: 0

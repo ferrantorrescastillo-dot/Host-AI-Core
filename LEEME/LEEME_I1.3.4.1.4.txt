@@ -1,0 +1,10 @@
+I1.3.4.1.4 — MOTOR DE INTERPRETACIÓN CULINARIA
+
+1. Copia el contenido del ZIP encima del proyecto con I1.3.4.1.3.
+2. Abre Host AI.
+3. Entra en Excel / Importaciones.
+4. Selecciona la opción 27.
+5. Elige el Excel y A para analizar todos los menús confirmados.
+6. Revisa la nueva bandeja y el resumen de reducción de fragmentos.
+
+Este sprint no importa ni modifica datos de negocio.

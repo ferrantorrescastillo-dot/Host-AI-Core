@@ -1,0 +1,64 @@
+HOST AI 6.0.4 — SPRINT E2: FICHA DEL EVENTO
+
+BASE NECESARIA
+- Instalar encima de Host AI con Sprint E1 ya aplicado.
+- No instalar directamente sobre Host AI 4.0 original.
+
+ARCHIVOS INCLUIDOS
+- APP/consola.py
+- MOTORES/motor_eventos.py
+- PIPELINES/pipeline_evento.py
+- TESTS/test_604_e2_ficha_evento.py
+
+NOVEDADES
+1. Ficha completa del evento:
+   - Estado
+   - Cliente
+   - Teléfono
+   - Email
+   - Ubicación
+   - Hora principal
+   - Observaciones
+2. Estados disponibles:
+   - presupuesto
+   - pendiente
+   - confirmado
+   - produccion
+   - finalizado
+   - facturado
+   - cancelado
+3. Fechas flexibles:
+   - 2026-10-22
+   - 22/10/2026
+   - 22-10-26
+   - 22 de octubre de 2026
+   - hoy
+   - mañana
+   - lunes, martes, miércoles, etc.
+4. Nueva opción 10 en Eventos: Ver ficha completa.
+5. Edición de todos los datos de la ficha.
+6. Escribir '-' permite borrar un dato opcional al editar.
+7. Guardado automático y compatibilidad con eventos antiguos de E1.
+8. Búsqueda ampliada por teléfono, email, observaciones y estado.
+
+INSTALACIÓN
+1. Cierra Host AI.
+2. Haz una copia de tu carpeta actual.
+3. Descomprime el ZIP.
+4. Copia APP, MOTORES, PIPELINES y TESTS encima de tu proyecto.
+5. Acepta sustituir los archivos existentes.
+6. Ejecuta: python main.py
+
+PRUEBA RÁPIDA
+1. Host AI Base.
+2. Eventos.
+3. Crea un evento usando fecha 22/10/2026 o mañana.
+4. Introduce cliente, teléfono, email, ubicación, hora y observaciones.
+5. Elige la opción 10 para ver la ficha completa.
+6. Edita el evento y cambia el estado a confirmado.
+7. Sal y vuelve a abrir Host AI para comprobar la persistencia.
+
+VALIDACIÓN TÉCNICA
+37 passed
+0 failed
+0 collection errors

@@ -1,0 +1,11 @@
+{
+  "por_unidad": {
+    "kg": 2.0,
+    "l": 2.0,
+    "u": 10.0,
+    "g": 500.0,
+    "ml": 500.0
+  },
+  "por_familia": {},
+  "nota": "Estos valores son mínimos recomendados, nunca existencias actuales. Se pueden adaptar por restaurante y por familia."
+}

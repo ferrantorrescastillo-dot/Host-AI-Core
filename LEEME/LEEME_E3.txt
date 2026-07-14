@@ -1,0 +1,29 @@
+HOST AI 6.0.4 — SPRINT E3: FLUJO OPERATIVO DE EVENTOS
+
+INSTALACIÓN
+1. Este parche se instala ENCIMA de la versión que ya contiene E1 y E2.
+2. Haz una copia de la carpeta actual antes de sustituir archivos.
+3. Copia las carpetas APP, MOTORES y TESTS sobre la raíz del proyecto.
+4. Acepta sustituir APP/consola.py y MOTORES/motor_eventos.py.
+5. Ejecuta: python main.py
+
+INCLUYE
+- Gestión completa de servicios: añadir, listar, editar, eliminar y duplicar.
+- Gestión completa de pases: añadir, listar, editar, eliminar y duplicar.
+- Selección del servicio correcto; ya no añade siempre al último servicio.
+- Buscador de recetas por nombre o ID usando los escandallos existentes.
+- Varias recetas por pase sin escribir códigos de memoria.
+- Línea temporal real, ordenada por hora y mostrada en formato operativo.
+- Resumen ejecutivo del evento sin JSON técnico.
+- Navegación de continuación tras añadir servicios y pases.
+- Persistencia automática de todos los cambios.
+
+NO INCLUYE
+- Generar producción, compras, stock o costes automáticamente. Eso se hará al certificar esos módulos para no repetir la sobreintegración de Host AI 4.0.
+
+PRUEBA RÁPIDA
+1. Abre Eventos y selecciona un evento.
+2. Entra en Gestionar servicios y crea uno.
+3. Entra en Gestionar pases y recetas, selecciona el servicio y busca una receta por nombre.
+4. Abre Línea temporal.
+5. Abre Resumen ejecutivo.

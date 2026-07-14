@@ -1,0 +1,18 @@
+HOST AI 6.0.4 — I1.1 DETECTOR DE ESCANDALLOS ANTIGUOS
+
+1. Haz una copia de tu proyecto.
+2. Copia el contenido de este ZIP encima de la carpeta raíz de Host AI.
+3. Acepta reemplazar APP/consola.py.
+4. Arranca Host AI y entra en:
+   10. Excel / importaciones
+   9. I1.1 Detectar escandallos antiguos (solo análisis)
+5. Pega o arrastra la ruta del Excel.
+6. Escribe una hoja como `MP boda 31-1` o deja vacío para analizar todo el libro.
+
+El detector crea junto al Excel un archivo:
+<NOMBRE>_I1.1_DETECCION.json
+
+No importa ni modifica datos.
+
+Prueba específica:
+python -m pytest -q TESTS/test_i11_detector_escandallos_antiguos.py

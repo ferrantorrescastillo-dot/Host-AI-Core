@@ -1,0 +1,17 @@
+HOST AI 6.0.4 — P4.3 RECOMENDACIONES INTELIGENTES
+
+INSTALACIÓN
+1. Haz una copia de tu carpeta actual.
+2. Este parche debe instalarse encima de una versión que ya contenga P4.2.
+3. Copia las carpetas APP, MODELOS, MOTORES y TESTS encima del proyecto.
+4. Acepta sustituir los archivos existentes.
+5. Ejecuta: python main.py
+
+NUEVA OPCIÓN
+Producción > 15. Recomendaciones inteligentes
+
+SEGURIDAD
+- El análisis no modifica el plan.
+- Solo las recomendaciones marcadas como aplicables pueden cambiar datos.
+- Siempre se solicita confirmación desde la consola.
+- Los cambios pueden deshacerse.

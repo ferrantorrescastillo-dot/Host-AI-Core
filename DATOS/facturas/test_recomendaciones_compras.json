@@ -1,0 +1,181 @@
+{
+  "resultado_pipeline": {
+    "ok": true,
+    "pipeline": "motor_recomendaciones_compras",
+    "accion": "generar",
+    "mensaje": "Recomendaciones generadas: 3.",
+    "datos": {
+      "recomendaciones": [
+        {
+          "tipo": "articulo_relevante",
+          "nivel": "info",
+          "mensaje": "Carrillera de ternera es un artículo con compras registradas.",
+          "accion_sugerida": "Revisar precio y proveedor",
+          "articulo_id": "ART-CARRILLERA",
+          "proveedor_id": "",
+          "datos": {
+            "articulo_id": "ART-CARRILLERA",
+            "nombre_articulo": "Carrillera de ternera",
+            "cantidad_total": 94.0,
+            "unidad": "kg",
+            "movimientos": 13
+          },
+          "id": "RECCOMP-421F89C182",
+          "creado_en": "2026-07-08T13:51:27"
+        },
+        {
+          "tipo": "proveedor_con_gasto",
+          "nivel": "info",
+          "mensaje": "Hay gasto registrado con PROV-MAKRO: 92.25.",
+          "accion_sugerida": "Comparar con otros proveedores",
+          "articulo_id": "",
+          "proveedor_id": "PROV-MAKRO",
+          "datos": {
+            "gasto": 92.25
+          },
+          "id": "RECCOMP-994844B6FD",
+          "creado_en": "2026-07-08T13:51:27"
+        },
+        {
+          "tipo": "proveedor_con_gasto",
+          "nivel": "info",
+          "mensaje": "Hay gasto registrado con PROV-BIDFOOD: 16.0.",
+          "accion_sugerida": "Comparar con otros proveedores",
+          "articulo_id": "",
+          "proveedor_id": "PROV-BIDFOOD",
+          "datos": {
+            "gasto": 16.0
+          },
+          "id": "RECCOMP-AD0B028035",
+          "creado_en": "2026-07-08T13:51:27"
+        }
+      ],
+      "total": 3,
+      "analisis": {
+        "total_importaciones": 5,
+        "total_lineas": 9,
+        "total_stock_aplicado": 9,
+        "total_precios_aplicados": 9,
+        "proveedores": {
+          "Makro": 5
+        },
+        "articulos": {
+          "ART-CARRILLERA": {
+            "articulo_id": "ART-CARRILLERA",
+            "nombre_articulo": "Carrillera de ternera",
+            "cantidad_total": 94.0,
+            "unidad": "kg",
+            "movimientos": 13
+          }
+        },
+        "gasto_estimado_total": 108.25,
+        "compras_por_proveedor": {
+          "PROV-MAKRO": 92.25,
+          "PROV-BIDFOOD": 16.0
+        },
+        "articulos_mas_comprados": [
+          {
+            "articulo_id": "ART-CARRILLERA",
+            "nombre_articulo": "Carrillera de ternera",
+            "cantidad_total": 94.0,
+            "unidad": "kg",
+            "movimientos": 13
+          }
+        ],
+        "avisos": [],
+        "id": "ANCOMPRAS-EDAFE4D10D",
+        "creado_en": "2026-07-08T13:51:27",
+        "lectura_host_ai": "Análisis compras: 5 importaciones, 1 artículos."
+      },
+      "lectura_host_ai": "Recomendaciones generadas: 3."
+    },
+    "acciones_recomendadas": [],
+    "requiere_aprobacion": false,
+    "errores": [],
+    "id": "RES-0328A66193",
+    "creado_en": "2026-07-08T13:51:27"
+  },
+  "recomendaciones": [
+    {
+      "tipo": "articulo_relevante",
+      "nivel": "info",
+      "mensaje": "Carrillera de ternera es un artículo con compras registradas.",
+      "accion_sugerida": "Revisar precio y proveedor",
+      "articulo_id": "ART-CARRILLERA",
+      "proveedor_id": "",
+      "datos": {
+        "articulo_id": "ART-CARRILLERA",
+        "nombre_articulo": "Carrillera de ternera",
+        "cantidad_total": 94.0,
+        "unidad": "kg",
+        "movimientos": 13
+      },
+      "id": "RECCOMP-421F89C182",
+      "creado_en": "2026-07-08T13:51:27"
+    },
+    {
+      "tipo": "proveedor_con_gasto",
+      "nivel": "info",
+      "mensaje": "Hay gasto registrado con PROV-MAKRO: 92.25.",
+      "accion_sugerida": "Comparar con otros proveedores",
+      "articulo_id": "",
+      "proveedor_id": "PROV-MAKRO",
+      "datos": {
+        "gasto": 92.25
+      },
+      "id": "RECCOMP-994844B6FD",
+      "creado_en": "2026-07-08T13:51:27"
+    },
+    {
+      "tipo": "proveedor_con_gasto",
+      "nivel": "info",
+      "mensaje": "Hay gasto registrado con PROV-BIDFOOD: 16.0.",
+      "accion_sugerida": "Comparar con otros proveedores",
+      "articulo_id": "",
+      "proveedor_id": "PROV-BIDFOOD",
+      "datos": {
+        "gasto": 16.0
+      },
+      "id": "RECCOMP-AD0B028035",
+      "creado_en": "2026-07-08T13:51:27"
+    }
+  ],
+  "total": 3,
+  "analisis": {
+    "total_importaciones": 5,
+    "total_lineas": 9,
+    "total_stock_aplicado": 9,
+    "total_precios_aplicados": 9,
+    "proveedores": {
+      "Makro": 5
+    },
+    "articulos": {
+      "ART-CARRILLERA": {
+        "articulo_id": "ART-CARRILLERA",
+        "nombre_articulo": "Carrillera de ternera",
+        "cantidad_total": 94.0,
+        "unidad": "kg",
+        "movimientos": 13
+      }
+    },
+    "gasto_estimado_total": 108.25,
+    "compras_por_proveedor": {
+      "PROV-MAKRO": 92.25,
+      "PROV-BIDFOOD": 16.0
+    },
+    "articulos_mas_comprados": [
+      {
+        "articulo_id": "ART-CARRILLERA",
+        "nombre_articulo": "Carrillera de ternera",
+        "cantidad_total": 94.0,
+        "unidad": "kg",
+        "movimientos": 13
+      }
+    ],
+    "avisos": [],
+    "id": "ANCOMPRAS-EDAFE4D10D",
+    "creado_en": "2026-07-08T13:51:27",
+    "lectura_host_ai": "Análisis compras: 5 importaciones, 1 artículos."
+  },
+  "lectura_host_ai": "Recomendaciones generadas: 3."
+}

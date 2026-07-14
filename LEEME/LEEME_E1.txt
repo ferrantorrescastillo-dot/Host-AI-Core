@@ -1,0 +1,57 @@
+HOST AI 6.0.4 — SPRINT E1: GESTIÓN DEL EVENTO
+
+OBJETIVO
+Añadir gestión manual completa de eventos sin crear lógica paralela:
+- Listar eventos.
+- Buscar eventos por nombre, fecha, cliente, tipo, ubicación o ID.
+- Seleccionar un evento como activo.
+- Editar el evento activo.
+- Eliminarlo con confirmación escrita.
+- Duplicarlo conservando servicios, pases y recetas, pero creando IDs nuevos.
+- Guardar automáticamente todos los cambios.
+- Recuperar los eventos automáticamente al reiniciar Host AI.
+
+ANTES DE INSTALAR
+Si tienes Host AI abierto y quieres conservar los eventos creados en esta sesión:
+1. En Host AI Base entra en 9. Base de datos local.
+2. Pulsa 1. Guardar todo.
+3. Sal completamente del programa.
+
+INSTALACIÓN
+1. Haz una copia de tu carpeta actual.
+2. Descomprime este ZIP.
+3. Copia las carpetas APP, CORE, MOTORES, PIPELINES y TESTS encima de tu proyecto.
+4. Acepta sustituir los archivos existentes.
+5. Ejecuta: python main.py
+
+MENÚ EVENTOS ESPERADO
+1. Crear evento rápido
+2. Listar y seleccionar eventos
+3. Buscar evento
+4. Editar evento activo
+5. Eliminar evento activo
+6. Duplicar evento activo
+7. Añadir servicio al evento activo
+8. Añadir pase al evento activo
+9. Ver línea temporal del evento activo
+0. Volver
+
+PRUEBAS REALIZADAS
+- Crear evento.
+- Listar y buscar.
+- Editar.
+- Añadir servicio y pase.
+- Duplicar con IDs independientes.
+- Eliminar con persistencia.
+- Reiniciar el núcleo y recuperar los eventos de la base local.
+- Suite completa: 35 passed, 0 failed, 0 collection errors.
+
+ARCHIVOS MODIFICADOS
+- APP/consola.py
+- CORE/host_ai_core.py
+- CORE/orquestador.py
+- MOTORES/motor_eventos.py
+- PIPELINES/pipeline_evento.py
+
+ARCHIVO DE PRUEBA NUEVO
+- TESTS/test_604_e1_gestion_eventos.py

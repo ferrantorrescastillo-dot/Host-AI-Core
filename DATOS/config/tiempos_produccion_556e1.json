@@ -1,0 +1,5 @@
+{
+  "redondeo_min": 5,
+  "perfiles": {},
+  "nota": "Los perfiles específicos se añadirán con tiempos reales del restaurante. Si no existe perfil, Host AI usa estimación segura basada en 5.5.6D."
+}

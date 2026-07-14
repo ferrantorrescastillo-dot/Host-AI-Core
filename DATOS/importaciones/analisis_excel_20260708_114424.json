@@ -1,0 +1,161 @@
+{
+  "archivo": "C:\\Proyecto Host IA 3.0\\DATOS\\importaciones\\excel_demo_asistente_inventario.xlsx",
+  "nombre_archivo": "excel_demo_asistente_inventario.xlsx",
+  "hojas": [
+    {
+      "nombre": "Inventario",
+      "filas": 3,
+      "columnas": 9,
+      "celdas_utilizadas": 27,
+      "columnas_detectadas": [
+        {
+          "indice": 1,
+          "letra": "A",
+          "nombre_detectado": "Codigo",
+          "tipo_detectado": "texto",
+          "total_celdas": 2,
+          "celdas_con_dato": 2,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "ART-CARRILLERA",
+            "ART-CEBOLLA"
+          ]
+        },
+        {
+          "indice": 2,
+          "letra": "B",
+          "nombre_detectado": "Producto",
+          "tipo_detectado": "texto",
+          "total_celdas": 2,
+          "celdas_con_dato": 2,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "Carrillera de ternera",
+            "Cebolla"
+          ]
+        },
+        {
+          "indice": 3,
+          "letra": "C",
+          "nombre_detectado": "Cantidad",
+          "tipo_detectado": "numero",
+          "total_celdas": 2,
+          "celdas_con_dato": 2,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            10,
+            5
+          ]
+        },
+        {
+          "indice": 4,
+          "letra": "D",
+          "nombre_detectado": "Unidad",
+          "tipo_detectado": "texto",
+          "total_celdas": 2,
+          "celdas_con_dato": 2,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "kg",
+            "kg"
+          ]
+        },
+        {
+          "indice": 5,
+          "letra": "E",
+          "nombre_detectado": "Ubicacion",
+          "tipo_detectado": "texto",
+          "total_celdas": 2,
+          "celdas_con_dato": 2,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "Camara 1",
+            "Almacen seco"
+          ]
+        },
+        {
+          "indice": 6,
+          "letra": "F",
+          "nombre_detectado": "Caducidad",
+          "tipo_detectado": "fecha",
+          "total_celdas": 2,
+          "celdas_con_dato": 2,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "2026-07-20T00:00:00",
+            "2026-07-25T00:00:00"
+          ]
+        },
+        {
+          "indice": 7,
+          "letra": "G",
+          "nombre_detectado": "Proveedor",
+          "tipo_detectado": "texto",
+          "total_celdas": 2,
+          "celdas_con_dato": 2,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "Proveedor Carnes",
+            "Proveedor Verduras"
+          ]
+        },
+        {
+          "indice": 8,
+          "letra": "H",
+          "nombre_detectado": "Precio",
+          "tipo_detectado": "numero",
+          "total_celdas": 2,
+          "celdas_con_dato": 2,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            8.5,
+            1.2
+          ]
+        },
+        {
+          "indice": 9,
+          "letra": "I",
+          "nombre_detectado": "Familia",
+          "tipo_detectado": "texto",
+          "total_celdas": 2,
+          "celdas_con_dato": 2,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "carnes",
+            "verduras"
+          ]
+        }
+      ],
+      "vista_previa": [
+        {
+          "Codigo": "ART-CARRILLERA",
+          "Producto": "Carrillera de ternera",
+          "Cantidad": 10,
+          "Unidad": "kg",
+          "Ubicacion": "Camara 1",
+          "Caducidad": "2026-07-20T00:00:00",
+          "Proveedor": "Proveedor Carnes",
+          "Precio": 8.5,
+          "Familia": "carnes"
+        },
+        {
+          "Codigo": "ART-CEBOLLA",
+          "Producto": "Cebolla",
+          "Cantidad": 5,
+          "Unidad": "kg",
+          "Ubicacion": "Almacen seco",
+          "Caducidad": "2026-07-25T00:00:00",
+          "Proveedor": "Proveedor Verduras",
+          "Precio": 1.2,
+          "Familia": "verduras"
+        }
+      ]
+    }
+  ],
+  "total_hojas": 1,
+  "total_filas": 3,
+  "total_columnas": 9,
+  "total_celdas_utilizadas": 27,
+  "id": "ANEXCEL-484B299D7E",
+  "creado_en": "2026-07-08T11:44:24"
+}

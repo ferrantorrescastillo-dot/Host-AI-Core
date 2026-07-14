@@ -1,0 +1,2439 @@
+{
+  "schema_version": "1.0",
+  "escandallos": [
+    {
+      "receta": {
+        "codigo": "REC-EXCEL-97AAB30358",
+        "nombre": "Vermouth rojo con Gilda MasBoronat",
+        "rendimiento": 1.0,
+        "unidad_rendimiento": "u",
+        "ingredientes": [
+          {
+            "codigo": "ART000211",
+            "nombre": "Mirrah. rojo 15% 5 l. 15,01€ precio backin box",
+            "cantidad": 0.1,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000211",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 12,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000217",
+            "nombre": "Naranja extra de mesa",
+            "cantidad": 0.005,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000217",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 13,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000348",
+            "nombre": "Gilda MasBoronat",
+            "cantidad": 1.0,
+            "unidad": "u",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000348",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 14,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          }
+        ]
+      },
+      "coste_total": 0.0
+    },
+    {
+      "receta": {
+        "codigo": "REC-EXCEL-7E82F179E3",
+        "nombre": "Ensaladilla de gamba",
+        "rendimiento": 4.0,
+        "unidad_rendimiento": "u",
+        "ingredientes": [
+          {
+            "codigo": "ART000238",
+            "nombre": "Patata Monalisa",
+            "cantidad": 0.3,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000238",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 26,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000200",
+            "nombre": "Mayonesa 2,2kg",
+            "cantidad": 0.05,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000200",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 27,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000323",
+            "nombre": "Gamba paella",
+            "cantidad": 0.19,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000323",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 28,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000192",
+            "nombre": "Limones extra",
+            "cantidad": 0.1,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000192",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 29,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000316",
+            "nombre": "Zanahorias",
+            "cantidad": 0.15,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000316",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 30,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000173",
+            "nombre": "Huevos \"L\" Granja Vidal, pqt de 6 unid: 1,60€",
+            "cantidad": 1.0,
+            "unidad": "u",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000173",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 31,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000224",
+            "nombre": "OLIVAS PARTIDAS DE LA ABUELA LATA 2,5 KG. 9,95€",
+            "cantidad": 0.05,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000224",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 32,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000229",
+            "nombre": "Palitos pan",
+            "cantidad": 0.1,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000229",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 33,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          }
+        ]
+      },
+      "coste_total": 0.0,
+      "precio_venta_unitario": 9.5,
+      "precio_venta_actualizado_en": "2026-07-10T12:01:45.979996+00:00",
+      "precio_venta_origen": "HOST_AI_5.5.5B.7.3.2"
+    },
+    {
+      "receta": {
+        "codigo": "REC-EXCEL-CAF1B25D3D",
+        "nombre": "Tartar de fuet con encurtidos",
+        "rendimiento": 4.0,
+        "unidad_rendimiento": "u",
+        "ingredientes": [
+          {
+            "codigo": "ART000155",
+            "nombre": "Fuet tradicional precio kg* calçotada",
+            "cantidad": 0.1,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000155",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 45,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000350",
+            "nombre": "Encurtidos tartar",
+            "cantidad": 1.0,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000350",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 46,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000173",
+            "nombre": "Huevos \"L\" Granja Vidal, pqt de 6 unid: 1,60€",
+            "cantidad": 1.0,
+            "unidad": "u",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000173",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 47,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000039",
+            "nombre": "ACEITE DE OLIVA VIRGEN EXTRA SALOMO",
+            "cantidad": 0.075,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000039",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 48,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000230",
+            "nombre": "Pan cristal precortado. (3,200 gr). 64 *50. 26,78€ Caja. 0,20€ medio trozo",
+            "cantidad": 1.0,
+            "unidad": "u",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000230",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 49,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          }
+        ]
+      },
+      "coste_total": 0.0
+    },
+    {
+      "receta": {
+        "codigo": "REC-EXCEL-DE94BB6F0B",
+        "nombre": "Calçot en tempura y salsa romesco",
+        "rendimiento": 4.0,
+        "unidad_rendimiento": "u",
+        "ingredientes": [
+          {
+            "codigo": "ART000097",
+            "nombre": "Calçots Valls. Majols. crudos",
+            "cantidad": 10.0,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000097",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 62,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000280",
+            "nombre": "Salsa romesco",
+            "cantidad": 0.15,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000280",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 63,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000273",
+            "nombre": "Sal negra en escamas",
+            "cantidad": 0.01,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000273",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 64,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000169",
+            "nombre": "Harina TEmpura samlip 1 kg",
+            "cantidad": 0.1,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000169",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 65,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          }
+        ]
+      },
+      "coste_total": 0.0
+    },
+    {
+      "receta": {
+        "codigo": "REC-EXCEL-DEE9FC8603",
+        "nombre": "Parrillada bbq fin de semana",
+        "rendimiento": 1.0,
+        "unidad_rendimiento": "u",
+        "ingredientes": [
+          {
+            "codigo": "ART000156",
+            "nombre": "Entraña de ternera. Carnes palau",
+            "cantidad": 0.15,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000156",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 78,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000087",
+            "nombre": "Butifarra fresca corta 14.cm. calçots. 90 gr porcianda",
+            "cantidad": 0.09,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000087",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 79,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000088",
+            "nombre": "Butifarra negra* calçotada racionada a 70 gr",
+            "cantidad": 0.07,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000088",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 80,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000187",
+            "nombre": "MENU CALÇOTADA GUARNICION DE CORDERO",
+            "cantidad": 1.0,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000187",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 81,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000249",
+            "nombre": "Pimienta negra molida",
+            "cantidad": 0.002,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000249",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 82,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000039",
+            "nombre": "ACEITE DE OLIVA VIRGEN EXTRA SALOMO",
+            "cantidad": 0.01,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000039",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 83,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          }
+        ]
+      },
+      "coste_total": 0.0
+    },
+    {
+      "receta": {
+        "codigo": "REC-EXCEL-92C8E95AD8",
+        "nombre": "GUARNICION DE CALÇOTADA",
+        "rendimiento": 1.0,
+        "unidad_rendimiento": "u",
+        "ingredientes": [
+          {
+            "codigo": "ART000238",
+            "nombre": "Patata Monalisa",
+            "cantidad": 0.24,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000238",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 94,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000054",
+            "nombre": "Alcachofas",
+            "cantidad": 0.18,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000054",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 95,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000038",
+            "nombre": "ACEITE DE OLIVA SUAVE 5 LT",
+            "cantidad": 0.02,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000038",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 96,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000272",
+            "nombre": "Sal gruesa",
+            "cantidad": 0.008,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000272",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 97,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000249",
+            "nombre": "Pimienta negra molida",
+            "cantidad": 0.002,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000249",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 98,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          }
+        ]
+      },
+      "coste_total": 0.0
+    },
+    {
+      "receta": {
+        "codigo": "REC-EXCEL-20E3549F72",
+        "nombre": "CORDERO y butifarra N CALÇOTADA",
+        "rendimiento": 1.0,
+        "unidad_rendimiento": "u",
+        "ingredientes": [
+          {
+            "codigo": "ART000088",
+            "nombre": "Butifarra negra* calçotada racionada a 70 gr",
+            "cantidad": 0.07,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000088",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 109,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000120",
+            "nombre": "Chuleta de corderdo para calçotada con riñonada. caja 3 kg",
+            "cantidad": 0.075,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000120",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 110,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000131",
+            "nombre": "Costilla cordero * calçotada. congelada caja 3 kg",
+            "cantidad": 0.075,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000131",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 111,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000272",
+            "nombre": "Sal gruesa",
+            "cantidad": 0.01,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000272",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 112,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000249",
+            "nombre": "Pimienta negra molida",
+            "cantidad": 0.005,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000249",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 113,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000038",
+            "nombre": "ACEITE DE OLIVA SUAVE 5 LT",
+            "cantidad": 0.02,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000038",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 114,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000273",
+            "nombre": "Sal negra en escamas",
+            "cantidad": 0.005,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000273",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 115,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          }
+        ]
+      },
+      "coste_total": 0.0
+    },
+    {
+      "receta": {
+        "codigo": "REC-EXCEL-6B4B251F8E",
+        "nombre": "APERITIVO CALÇOTADA",
+        "rendimiento": 1.0,
+        "unidad_rendimiento": "u",
+        "ingredientes": [
+          {
+            "codigo": "ART000155",
+            "nombre": "Fuet tradicional precio kg* calçotada",
+            "cantidad": 0.01,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000155",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 149,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000222",
+            "nombre": "OLIVAS ARBERQUINAS EXTRA. 10 KG. 24,90€ BOTE DE 10 KG",
+            "cantidad": 0.015,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000222",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 150,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000223",
+            "nombre": "OLIVAS CHUPADEDOS LATA 2,5 KG.10,25€",
+            "cantidad": 0.015,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000223",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 151,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000070",
+            "nombre": "AVELLANA APERITIVO TOSTADA REPELADA",
+            "cantidad": 0.01,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000070",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 152,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000285",
+            "nombre": "Servilleta MPRO 2C40 200 UNI NATU. 6,89€",
+            "cantidad": 1.0,
+            "unidad": "u",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000285",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 153,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          }
+        ]
+      },
+      "coste_total": 0.0
+    },
+    {
+      "receta": {
+        "codigo": "REC-EXCEL-E11F0015E2",
+        "nombre": "CALÇOTADA EN MESA A COMPARTIR ENSALADA VERDE",
+        "rendimiento": 1.0,
+        "unidad_rendimiento": "u",
+        "ingredientes": [
+          {
+            "codigo": "ART000183",
+            "nombre": "Lechuga de pages larga. 1,00€ unid",
+            "cantidad": 0.03,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000183",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 164,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000301",
+            "nombre": "Tomate Extasis",
+            "cantidad": 0.01,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000301",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 165,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000113",
+            "nombre": "Cebolla morada",
+            "cantidad": 0.005,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000113",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 166,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000159",
+            "nombre": "ESPARRAGOS 9/12 LATA EXTRA 1 KG",
+            "cantidad": 0.05,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000159",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 167,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000069",
+            "nombre": "ATUN CLARO. OVIDIO. LATA 1 KG",
+            "cantidad": 0.015,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000069",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 168,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000316",
+            "nombre": "Zanahorias",
+            "cantidad": 0.01,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000316",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 169,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000195",
+            "nombre": "MAIZ DULCE LATA 400 GR. (0,75€) LATA",
+            "cantidad": 0.005,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000195",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 170,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000312",
+            "nombre": "Vinagreta clasica",
+            "cantidad": 0.02,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000312",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Elaboración interna referenciada",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 171,
+              "tipo": "ELABORACION",
+              "referencia_elaboracion": "VINAGRETA CLASICA",
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000273",
+            "nombre": "Sal negra en escamas",
+            "cantidad": 0.003,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000273",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 172,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          }
+        ]
+      },
+      "coste_total": 0.0
+    },
+    {
+      "receta": {
+        "codigo": "REC-EXCEL-AD9995FDE1",
+        "nombre": "VINAGRETA CLASICA",
+        "rendimiento": 1.0,
+        "unidad_rendimiento": "u",
+        "ingredientes": [
+          {
+            "codigo": "ART000039",
+            "nombre": "ACEITE DE OLIVA VIRGEN EXTRA SALOMO",
+            "cantidad": 0.8,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000039",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 183,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000311",
+            "nombre": "Vinagre de modena garrafa de 5 lt",
+            "cantidad": 0.2,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000311",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 184,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          }
+        ]
+      },
+      "coste_total": 0.0
+    },
+    {
+      "receta": {
+        "codigo": "REC-EXCEL-AF3A99FAD1",
+        "nombre": "CALÇOTADA EN MESA PAN PAGES, TOMACO Y AJO",
+        "rendimiento": 1.0,
+        "unidad_rendimiento": "u",
+        "ingredientes": [
+          {
+            "codigo": "ART000297",
+            "nombre": "Tomaco granel",
+            "cantidad": 0.05,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000297",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 195,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000049",
+            "nombre": "Ajo rojo extra a granel",
+            "cantidad": 0.02,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000049",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 196,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000039",
+            "nombre": "ACEITE DE OLIVA VIRGEN EXTRA SALOMO",
+            "cantidad": 0.02,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000039",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 197,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000232",
+            "nombre": "Pan de pages de Forn Virgili. Precio kg",
+            "cantidad": 0.04,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000232",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 198,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          }
+        ]
+      },
+      "coste_total": 0.0
+    },
+    {
+      "receta": {
+        "codigo": "REC-EXCEL-75D2AD5C38",
+        "nombre": "Carpaccio de tomate con burrata i aceite albahaca",
+        "rendimiento": 12.0,
+        "unidad_rendimiento": "u",
+        "ingredientes": [
+          {
+            "codigo": "ART000303",
+            "nombre": "Tomate Maduro",
+            "cantidad": 0.2,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000303",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 12,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000091",
+            "nombre": "Burrata 6 uni",
+            "cantidad": 0.5,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000091",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 13,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000052",
+            "nombre": "Albahaca bandeja de 80 gr. 2,00€",
+            "cantidad": 0.5,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000052",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 14,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000273",
+            "nombre": "Sal negra en escamas",
+            "cantidad": 0.005,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000273",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 15,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          }
+        ]
+      },
+      "coste_total": 0.0
+    },
+    {
+      "receta": {
+        "codigo": "REC-EXCEL-4D71B5DA51",
+        "nombre": "Huevos rotos con jamón i foie",
+        "rendimiento": 1.0,
+        "unidad_rendimiento": "pax",
+        "ingredientes": [
+          {
+            "codigo": "ART000238",
+            "nombre": "Patata Monalisa",
+            "cantidad": 0.2,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000238",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 29,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000252",
+            "nombre": "Pimiento del padron",
+            "cantidad": 0.1,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000252",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 30,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000173",
+            "nombre": "Huevos \"L\" Granja Vidal, pqt de 6 unid: 1,60€",
+            "cantidad": 2.0,
+            "unidad": "u",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000173",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 31,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000164",
+            "nombre": "Foie mi cuit 250g",
+            "cantidad": 0.02,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000164",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 32,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000273",
+            "nombre": "Sal negra en escamas",
+            "cantidad": 0.005,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000273",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 33,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000228",
+            "nombre": "Paletilla jamón casa marcial",
+            "cantidad": 0.05,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000228",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 34,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          }
+        ]
+      },
+      "coste_total": 0.0
+    },
+    {
+      "receta": {
+        "codigo": "REC-EXCEL-EADA8B8A27",
+        "nombre": "Pulpo a la feira a la brasa",
+        "rendimiento": 1.0,
+        "unidad_rendimiento": "u",
+        "ingredientes": [
+          {
+            "codigo": "ART000238",
+            "nombre": "Patata Monalisa",
+            "cantidad": 0.1,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000238",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 46,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000337",
+            "nombre": "Pata pulpo 250g",
+            "cantidad": 0.25,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000337",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 47,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000248",
+            "nombre": "PIMENTON DULCE DE LA VERA",
+            "cantidad": 0.01,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000248",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 48,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000273",
+            "nombre": "Sal negra en escamas",
+            "cantidad": 0.005,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000273",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 49,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000038",
+            "nombre": "ACEITE DE OLIVA SUAVE 5 LT",
+            "cantidad": 0.1,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000038",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 50,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          }
+        ]
+      },
+      "coste_total": 0.0
+    },
+    {
+      "receta": {
+        "codigo": "REC-EXCEL-4804A1D7CA",
+        "nombre": "Chuleta lomo bajo con pimiento de piquillo y alcachofa",
+        "rendimiento": 1.0,
+        "unidad_rendimiento": "u",
+        "ingredientes": [
+          {
+            "codigo": "ART000126",
+            "nombre": "Chuleta lomo bajo 300-350g",
+            "cantidad": 1.0,
+            "unidad": "u",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000126",
+            "proveedor_habitual": null,
+            "precio_unitario": 9.95,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 64,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000251",
+            "nombre": "PIMIENTO DE PIQUILLO LATA 1/2 KG",
+            "cantidad": 0.15,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000251",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 65,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000054",
+            "nombre": "Alcachofas",
+            "cantidad": 0.25,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000054",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 66,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          }
+        ]
+      },
+      "coste_total": 9.95
+    },
+    {
+      "receta": {
+        "codigo": "REC-EXCEL-09CF4F6FBE",
+        "nombre": "Vermouth rojo",
+        "rendimiento": 1.0,
+        "unidad_rendimiento": "u",
+        "ingredientes": [
+          {
+            "codigo": "ART000211",
+            "nombre": "Mirrah. rojo 15% 5 l. 15,01€ precio backin box",
+            "cantidad": 0.1,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000211",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 12,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000217",
+            "nombre": "Naranja extra de mesa",
+            "cantidad": 0.025,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000217",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 13,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000225",
+            "nombre": "OLIVAS RELLENAS GIGANTES LATA 2 KG. 4,79€",
+            "cantidad": 0.05,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000225",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 14,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          }
+        ]
+      },
+      "coste_total": 0.0
+    },
+    {
+      "receta": {
+        "codigo": "REC-EXCEL-130DFF7137",
+        "nombre": "Naranja con miel",
+        "rendimiento": 1.0,
+        "unidad_rendimiento": "pax",
+        "ingredientes": [
+          {
+            "codigo": "ART000217",
+            "nombre": "Naranja extra de mesa",
+            "cantidad": 0.15,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000217",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 28,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000209",
+            "nombre": "Miel del perello",
+            "cantidad": 0.01,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000209",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 29,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          }
+        ]
+      },
+      "coste_total": 0.0
+    },
+    {
+      "receta": {
+        "codigo": "REC-EXCEL-F851AC82AC",
+        "nombre": "Crema catalana",
+        "rendimiento": 7.0,
+        "unidad_rendimiento": "u",
+        "ingredientes": [
+          {
+            "codigo": "ING-REC-EXCEL-F851AC82AC-001",
+            "nombre": "Leche entera",
+            "cantidad": 1.0,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": null,
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 41,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000103",
+            "nombre": "CANELA EN RAMA BOTE",
+            "cantidad": 0.016,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000103",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 42,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000216",
+            "nombre": "Naranja de zumo",
+            "cantidad": 0.04,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000216",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 43,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000192",
+            "nombre": "Limones extra",
+            "cantidad": 0.04,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000192",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 44,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000073",
+            "nombre": "AZUCAR",
+            "cantidad": 0.14,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000073",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 45,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000196",
+            "nombre": "MAIZENA 700 GR",
+            "cantidad": 0.04,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000196",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 46,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000173",
+            "nombre": "Huevos \"L\" Granja Vidal, pqt de 6 unid: 1,60€",
+            "cantidad": 7.0,
+            "unidad": "u",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000173",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 47,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          }
+        ]
+      },
+      "coste_total": 0.0
+    },
+    {
+      "receta": {
+        "codigo": "REC-EXCEL-BBE14A0601",
+        "nombre": "Crema Catalana quemada con carquiñoli",
+        "rendimiento": 1.0,
+        "unidad_rendimiento": "u",
+        "ingredientes": [
+          {
+            "codigo": "ART000144",
+            "nombre": "Crema Catalana",
+            "cantidad": 1.0,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000144",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Elaboración interna referenciada",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 59,
+              "tipo": "ELABORACION",
+              "referencia_elaboracion": "Crema catalana",
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000073",
+            "nombre": "AZUCAR",
+            "cantidad": 0.025,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000073",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 60,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000105",
+            "nombre": "Carquiñolis. 200 gr. 3,75€ pqt",
+            "cantidad": 0.01,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000105",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 61,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          }
+        ]
+      },
+      "coste_total": 0.0
+    },
+    {
+      "receta": {
+        "codigo": "REC-EXCEL-A763F10EE4",
+        "nombre": "Ceviche de corvina",
+        "rendimiento": 58.0,
+        "unidad_rendimiento": "u",
+        "ingredientes": [
+          {
+            "codigo": "ART000139",
+            "nombre": "Corvina fileteada",
+            "cantidad": 7.0,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000139",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 12,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000192",
+            "nombre": "Limones extra",
+            "cantidad": 2.0,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000192",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 13,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000113",
+            "nombre": "Cebolla morada",
+            "cantidad": 1.0,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000113",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 14,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000046",
+            "nombre": "Ají limo",
+            "cantidad": 0.5,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000046",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 15,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000127",
+            "nombre": "Cilantro",
+            "cantidad": 0.2,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000127",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 16,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000050",
+            "nombre": "Ajo rojo pelado. pqt 1 kg",
+            "cantidad": 0.02,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000050",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 17,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000180",
+            "nombre": "Jenjibre bandeja de 500 gr",
+            "cantidad": 0.2,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000180",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 18,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          }
+        ]
+      },
+      "coste_total": 0.0
+    },
+    {
+      "receta": {
+        "codigo": "REC-EXCEL-E2BC710519",
+        "nombre": "TABLA DE QUESOS Y EMBUTIDOS",
+        "rendimiento": 1.0,
+        "unidad_rendimiento": "u",
+        "ingredientes": [
+          {
+            "codigo": "ART000263",
+            "nombre": "Queso Garrotxa Cabra. Bauma",
+            "cantidad": 0.015,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000263",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 12,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000265",
+            "nombre": "Queso Serrat Cruda de oveja",
+            "cantidad": 0.005,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000265",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 13,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000262",
+            "nombre": "Queso Azul Blau Cereta. Moli de ger",
+            "cantidad": 0.005,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000262",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 14,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000261",
+            "nombre": "Queso Altejo moli de ger Vaca",
+            "cantidad": 0.01,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000261",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 15,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000275",
+            "nombre": "Salchichon iberico",
+            "cantidad": 0.005,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000275",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 16,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000193",
+            "nombre": "Lomo embuchado blanco",
+            "cantidad": 0.005,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000193",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 17,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000227",
+            "nombre": "Paleta iberico cebo",
+            "cantidad": 0.01,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000227",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 18,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000155",
+            "nombre": "Fuet tradicional precio kg* calçotada",
+            "cantidad": 0.005,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000155",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 19,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          }
+        ]
+      },
+      "coste_total": 0.0
+    },
+    {
+      "receta": {
+        "codigo": "REC-EXCEL-BB4265CD66",
+        "nombre": "salsa brava",
+        "rendimiento": 0.42,
+        "unidad_rendimiento": "u",
+        "ingredientes": [
+          {
+            "codigo": "ART000278",
+            "nombre": "Salsa Brava. bote de 1,850. precio bote 5,20€. Coosur",
+            "cantidad": 1.0,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000278",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 46,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000276",
+            "nombre": "Salsa Allioli. natural. bote de 1 lt",
+            "cantidad": 0.016,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000276",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 47,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000248",
+            "nombre": "PIMENTON DULCE DE LA VERA",
+            "cantidad": 0.04,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000248",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 48,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000201",
+            "nombre": "Mayonesa. bote 750 ml. MAKRO",
+            "cantidad": 0.04,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000201",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 49,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000150",
+            "nombre": "Curcuma. en povo. MAKRO",
+            "cantidad": 0.14,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000150",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 50,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000151",
+            "nombre": "Curry polvo",
+            "cantidad": 0.04,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000151",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 51,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000173",
+            "nombre": "Huevos \"L\" Granja Vidal, pqt de 6 unid: 1,60€",
+            "cantidad": 7.0,
+            "unidad": "u",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000173",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 52,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          }
+        ]
+      },
+      "coste_total": 0.0
+    },
+    {
+      "receta": {
+        "codigo": "REC-EXCEL-DC06E37BF1",
+        "nombre": "Parrilada de verduras",
+        "rendimiento": 1.0,
+        "unidad_rendimiento": "u",
+        "ingredientes": [
+          {
+            "codigo": "ART000250",
+            "nombre": "Pimiento amarillo",
+            "cantidad": 0.025,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000250",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 79,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000253",
+            "nombre": "Pimiento rojo",
+            "cantidad": 0.025,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000253",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 80,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000254",
+            "nombre": "Pimiento verde",
+            "cantidad": 0.025,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000254",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 81,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000078",
+            "nombre": "Berengena",
+            "cantidad": 0.025,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000078",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 82,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000093",
+            "nombre": "Calabacin. makro",
+            "cantidad": 0.3,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000093",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 83,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000158",
+            "nombre": "Esparrago verde triguero. manojo 400 gr.5,85€",
+            "cantidad": 0.015,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000158",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 84,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000316",
+            "nombre": "Zanahorias",
+            "cantidad": 0.02,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000316",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 85,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          },
+          {
+            "codigo": "ART000054",
+            "nombre": "Alcachofas",
+            "cantidad": 0.04,
+            "unidad": "kg",
+            "merma_pct": 0.0,
+            "articulo_id": "ART000054",
+            "proveedor_habitual": null,
+            "precio_unitario": 0.0,
+            "observaciones": "Importado desde Excel 5.5.5B",
+            "metadata": {
+              "origen": "excel",
+              "fila_origen": 86,
+              "tipo": "ARTICULO",
+              "referencia_elaboracion": null,
+              "confianza_enlace": 100.0
+            }
+          }
+        ]
+      },
+      "coste_total": 0.0
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "menu_id": "MENU-BASE",
+    "nombre": "Menú diagnóstico base"
+  },
+  {
+    "menu_id": "MENU-NUEVO",
+    "nombre": "Menú diagnóstico nuevo"
+  }
+]

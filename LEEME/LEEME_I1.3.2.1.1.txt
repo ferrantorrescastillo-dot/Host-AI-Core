@@ -1,0 +1,18 @@
+HOST AI — I1.3.2.1.1 CORRECCIÓN DEL CATÁLOGO DE RECONOCIMIENTO
+
+INSTALACIÓN
+1. Haz una copia de seguridad de Host AI.
+2. Copia el contenido de este ZIP encima del proyecto actual.
+3. Inicia Host AI.
+4. En Excel / Importaciones selecciona la opción 12.
+5. Usa Escandallos Boronat.xlsx y la hoja MENU BODA 31-1.
+
+RESULTADO ESPERADO
+- Catálogo: 38 recetas en la línea de prueba entregada.
+- 11 recetas completas.
+- 1 mapa parcial: el solomillo compuesto.
+- 0 artículos completos.
+- 0 platos sin coincidencia exacta.
+
+SEGURIDAD
+Este sprint es solo lectura. No importa menús ni modifica recetas, artículos o base de datos.

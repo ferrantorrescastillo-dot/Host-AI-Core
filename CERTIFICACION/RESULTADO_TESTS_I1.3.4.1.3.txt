@@ -1,0 +1,2 @@
+102 passed in 10.47s
+Prueba real: 40 incidencias; 16 bloqueantes; 24 avisos; 0 escrituras de negocio.

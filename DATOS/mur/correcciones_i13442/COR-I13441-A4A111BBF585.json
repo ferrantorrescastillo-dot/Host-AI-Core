@@ -1,0 +1,86 @@
+{
+  "version": "I1.3.4.4.2",
+  "sesion_id": "COR-I13441-A4A111BBF585",
+  "actualizado_en": "2026-07-13T09:48:38.764765+00:00",
+  "resumen": {
+    "sesion_id": "COR-I13441-A4A111BBF585",
+    "estado": "CERTIFICADA_CON_AVISOS",
+    "errores": 0,
+    "avisos": 1,
+    "total": 1,
+    "acciones": 4
+  },
+  "historial": [
+    {
+      "fecha": "2026-07-13T09:48:38.663477+00:00",
+      "accion": "CAMBIAR_SECCION",
+      "indices": [
+        1
+      ],
+      "nueva_seccion": "Postre",
+      "cambios": 1
+    },
+    {
+      "fecha": "2026-07-13T09:48:38.700967+00:00",
+      "accion": "VINCULAR_RECETA",
+      "indice": 1,
+      "receta_id": "R1",
+      "receta": "Crema catalana"
+    },
+    {
+      "fecha": "2026-07-13T09:48:38.733450+00:00",
+      "accion": "RECALCULAR_ECONOMIA",
+      "indices": [
+        2
+      ],
+      "cambios": 1
+    },
+    {
+      "fecha": "2026-07-13T09:48:38.764359+00:00",
+      "accion": "RESOLUCION_AUTOMATICA_UNIVOCA",
+      "resueltas": 3,
+      "omitidas": 1
+    }
+  ],
+  "auditoria_actual": {
+    "version": "I1.3.4.4",
+    "auditoria_id": "AUD-I1344-89ECC66007EA",
+    "generado_en": "2026-07-13T09:48:38.762705+00:00",
+    "estado": "CERTIFICADA_CON_AVISOS",
+    "integridad": "OK",
+    "estadisticas": {
+      "menus": 1,
+      "secciones": 2,
+      "platos": 2,
+      "articulos_directos": 1,
+      "bebidas": 0,
+      "complementos": 0,
+      "servicios": 0,
+      "componentes": 1
+    },
+    "incidencias": [
+      {
+        "codigo": "PLATO_SIN_RECETA_PRINCIPAL",
+        "severidad": "AVISO",
+        "mensaje": "El plato no tiene receta principal vinculada.",
+        "menu_id": "M1",
+        "menu": "Menú diagnóstico",
+        "plato_id": "P2",
+        "plato": "Plato ambiguo",
+        "entidad": "PLATO",
+        "referencia": null
+      }
+    ],
+    "resumen": {
+      "errores": 0,
+      "avisos": 1,
+      "informativos": 0,
+      "total": 1
+    },
+    "fuentes": {
+      "menus": "menus.json",
+      "recetas": "recetas.json",
+      "articulos": "articulos.json"
+    }
+  }
+}

@@ -1,0 +1,203 @@
+{
+  "resultado_pipeline": {
+    "ok": true,
+    "pipeline": "relacionador_automatico_articulos_factura",
+    "accion": "relacionar_bloque",
+    "mensaje": "Relación automática: 2 automáticas, 0 para revisar, 0 sin relación.",
+    "datos": {
+      "archivo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "F-2026-001",
+      "fecha_factura": "",
+      "relaciones": [
+        {
+          "descripcion_factura": "CARR TERN",
+          "cantidad": 8.0,
+          "unidad": "kg",
+          "precio_unitario": 8.45,
+          "importe": 67.6,
+          "proveedor_id": "PROV-MAKRO",
+          "articulo_id": "ART-CARRILLERA",
+          "nombre_articulo": "Carrillera de ternera",
+          "confianza": 94.23,
+          "metodo": "similitud_texto",
+          "requiere_revision": false,
+          "candidatos": [
+            {
+              "articulo_id": "ART-CARRILLERA",
+              "nombre_articulo": "Carrillera de ternera",
+              "confianza": 94.23,
+              "metodo": "similitud_texto",
+              "motivos": [
+                "Palabras coincidentes: carrillera, ternera"
+              ],
+              "proveedor_id": "PROV-MAKRO",
+              "unidad": "kg",
+              "familia": "carnes"
+            }
+          ],
+          "decision_usuario": "",
+          "avisos": [],
+          "origen_linea": {
+            "descripcion": "CARR TERN",
+            "cantidad": 8,
+            "unidad": "kg",
+            "precio_unitario": 8.45,
+            "importe": 67.6
+          },
+          "id": "RELLINART-E17DE53B32",
+          "creado_en": "2026-07-08T10:39:38"
+        },
+        {
+          "descripcion_factura": "Cebolla",
+          "cantidad": 15.0,
+          "unidad": "kg",
+          "precio_unitario": 1.12,
+          "importe": 16.8,
+          "proveedor_id": "PROV-MAKRO",
+          "articulo_id": "ART-CEBOLLA",
+          "nombre_articulo": "Cebolla",
+          "confianza": 100.0,
+          "metodo": "similitud_texto",
+          "requiere_revision": false,
+          "candidatos": [
+            {
+              "articulo_id": "ART-CEBOLLA",
+              "nombre_articulo": "Cebolla",
+              "confianza": 100.0,
+              "metodo": "similitud_texto",
+              "motivos": [
+                "Coincidencia exacta normalizada."
+              ],
+              "proveedor_id": "PROV-MAKRO",
+              "unidad": "kg",
+              "familia": "verduras"
+            }
+          ],
+          "decision_usuario": "",
+          "avisos": [],
+          "origen_linea": {
+            "descripcion": "Cebolla",
+            "cantidad": 15,
+            "unidad": "kg",
+            "precio_unitario": 1.12,
+            "importe": 16.8
+          },
+          "id": "RELLINART-D2B8677BA4",
+          "creado_en": "2026-07-08T10:39:38"
+        }
+      ],
+      "total_lineas": 2,
+      "relacionadas_auto": 2,
+      "requieren_revision": 0,
+      "sin_relacion": 0,
+      "confianza_media": 97.12,
+      "puede_continuar": true,
+      "avisos_generales": [],
+      "id": "INFRELART-B7FDC79BFB",
+      "creado_en": "2026-07-08T10:39:38",
+      "lectura_host_ai": "Relación automática: 2 automáticas, 0 para revisar, 0 sin relación."
+    },
+    "acciones_recomendadas": [
+      "Revisar relaciones pendientes."
+    ],
+    "requiere_aprobacion": false,
+    "errores": [],
+    "id": "RES-495B665B31",
+    "creado_en": "2026-07-08T10:39:38"
+  },
+  "archivo": "",
+  "proveedor_id": "PROV-MAKRO",
+  "proveedor_nombre": "Makro",
+  "numero_factura": "F-2026-001",
+  "fecha_factura": "",
+  "relaciones": [
+    {
+      "descripcion_factura": "CARR TERN",
+      "cantidad": 8.0,
+      "unidad": "kg",
+      "precio_unitario": 8.45,
+      "importe": 67.6,
+      "proveedor_id": "PROV-MAKRO",
+      "articulo_id": "ART-CARRILLERA",
+      "nombre_articulo": "Carrillera de ternera",
+      "confianza": 94.23,
+      "metodo": "similitud_texto",
+      "requiere_revision": false,
+      "candidatos": [
+        {
+          "articulo_id": "ART-CARRILLERA",
+          "nombre_articulo": "Carrillera de ternera",
+          "confianza": 94.23,
+          "metodo": "similitud_texto",
+          "motivos": [
+            "Palabras coincidentes: carrillera, ternera"
+          ],
+          "proveedor_id": "PROV-MAKRO",
+          "unidad": "kg",
+          "familia": "carnes"
+        }
+      ],
+      "decision_usuario": "",
+      "avisos": [],
+      "origen_linea": {
+        "descripcion": "CARR TERN",
+        "cantidad": 8,
+        "unidad": "kg",
+        "precio_unitario": 8.45,
+        "importe": 67.6
+      },
+      "id": "RELLINART-E17DE53B32",
+      "creado_en": "2026-07-08T10:39:38"
+    },
+    {
+      "descripcion_factura": "Cebolla",
+      "cantidad": 15.0,
+      "unidad": "kg",
+      "precio_unitario": 1.12,
+      "importe": 16.8,
+      "proveedor_id": "PROV-MAKRO",
+      "articulo_id": "ART-CEBOLLA",
+      "nombre_articulo": "Cebolla",
+      "confianza": 100.0,
+      "metodo": "similitud_texto",
+      "requiere_revision": false,
+      "candidatos": [
+        {
+          "articulo_id": "ART-CEBOLLA",
+          "nombre_articulo": "Cebolla",
+          "confianza": 100.0,
+          "metodo": "similitud_texto",
+          "motivos": [
+            "Coincidencia exacta normalizada."
+          ],
+          "proveedor_id": "PROV-MAKRO",
+          "unidad": "kg",
+          "familia": "verduras"
+        }
+      ],
+      "decision_usuario": "",
+      "avisos": [],
+      "origen_linea": {
+        "descripcion": "Cebolla",
+        "cantidad": 15,
+        "unidad": "kg",
+        "precio_unitario": 1.12,
+        "importe": 16.8
+      },
+      "id": "RELLINART-D2B8677BA4",
+      "creado_en": "2026-07-08T10:39:38"
+    }
+  ],
+  "total_lineas": 2,
+  "relacionadas_auto": 2,
+  "requieren_revision": 0,
+  "sin_relacion": 0,
+  "confianza_media": 97.12,
+  "puede_continuar": true,
+  "avisos_generales": [],
+  "id": "INFRELART-B7FDC79BFB",
+  "creado_en": "2026-07-08T10:39:38",
+  "lectura_host_ai": "Relación automática: 2 automáticas, 0 para revisar, 0 sin relación."
+}

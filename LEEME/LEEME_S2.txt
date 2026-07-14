@@ -1,0 +1,35 @@
+HOST AI 6.0.4 — SPRINT S2: STOCK OPERATIVO
+
+INSTALACIÓN
+1. Haz una copia de tu carpeta actual, que debe contener E1, E2, E3 y S1.
+2. Descomprime este ZIP.
+3. Copia las carpetas APP, MOTORES y TESTS encima de tu proyecto.
+4. Acepta sustituir los archivos existentes.
+5. Ejecuta: python main.py
+
+ARCHIVOS MODIFICADOS
+- APP/consola.py
+- MOTORES/motor_stock.py
+- TESTS/test_s2_stock_operativo.py
+
+FUNCIONES INCLUIDAS
+- Ubicación y caducidad al registrar entradas.
+- Coste unitario opcional para valorar stock.
+- Listado y edición de lotes.
+- Cambio de ubicación y caducidad.
+- Registro de mermas con motivo.
+- Ajustes de inventario físico positivos y negativos.
+- Historial de movimientos por artículo, código o tipo.
+- Filtros por artículo, ubicación, familia y estado.
+- Diagnóstico por caducidad, stock mínimo y lotes sin ubicación.
+- Resumen operativo por ubicación, valor y alertas.
+- Persistencia automática y recuperación tras reinicio.
+
+VALIDACIÓN
+40 pruebas superadas.
+0 fallos.
+0 errores de recogida.
+
+ALCANCE
+Este sprint no modifica Eventos, Compras, Escandallos, Costes ni Producción.
+No añade predicciones ni automatizaciones Premium.

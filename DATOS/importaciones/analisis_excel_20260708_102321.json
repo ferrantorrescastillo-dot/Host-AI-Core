@@ -1,0 +1,182 @@
+{
+  "archivo": "C:\\Proyecto Host IA 3.0\\DATOS\\importaciones\\excel_demo_importador_escandallos.xlsx",
+  "nombre_archivo": "excel_demo_importador_escandallos.xlsx",
+  "hojas": [
+    {
+      "nombre": "Escandallos",
+      "filas": 5,
+      "columnas": 8,
+      "celdas_utilizadas": 40,
+      "columnas_detectadas": [
+        {
+          "indice": 1,
+          "letra": "A",
+          "nombre_detectado": "Receta",
+          "tipo_detectado": "texto",
+          "total_celdas": 4,
+          "celdas_con_dato": 4,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "Carrillera melosa",
+            "Carrillera melosa",
+            "Bacalao pilpil",
+            "Bacalao pilpil"
+          ]
+        },
+        {
+          "indice": 2,
+          "letra": "B",
+          "nombre_detectado": "Ingrediente",
+          "tipo_detectado": "texto",
+          "total_celdas": 4,
+          "celdas_con_dato": 4,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "Carrillera de ternera",
+            "Demi-glace",
+            "Bacalao",
+            "Aceite oliva"
+          ]
+        },
+        {
+          "indice": 3,
+          "letra": "C",
+          "nombre_detectado": "Cantidad",
+          "tipo_detectado": "numero",
+          "total_celdas": 4,
+          "celdas_con_dato": 4,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            1.8,
+            0.8,
+            1.5,
+            0.5
+          ]
+        },
+        {
+          "indice": 4,
+          "letra": "D",
+          "nombre_detectado": "Unidad",
+          "tipo_detectado": "texto",
+          "total_celdas": 4,
+          "celdas_con_dato": 4,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "kg",
+            "L",
+            "kg",
+            "L"
+          ]
+        },
+        {
+          "indice": 5,
+          "letra": "E",
+          "nombre_detectado": "Merma",
+          "tipo_detectado": "numero",
+          "total_celdas": 4,
+          "celdas_con_dato": 4,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            10,
+            0,
+            5,
+            0
+          ]
+        },
+        {
+          "indice": 6,
+          "letra": "F",
+          "nombre_detectado": "Precio",
+          "tipo_detectado": "numero",
+          "total_celdas": 4,
+          "celdas_con_dato": 4,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            8.5,
+            3,
+            12,
+            5
+          ]
+        },
+        {
+          "indice": 7,
+          "letra": "G",
+          "nombre_detectado": "Familia",
+          "tipo_detectado": "texto",
+          "total_celdas": 4,
+          "celdas_con_dato": 4,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "carnes",
+            "salsas",
+            "pescados",
+            "aceites"
+          ]
+        },
+        {
+          "indice": 8,
+          "letra": "H",
+          "nombre_detectado": "Proveedor",
+          "tipo_detectado": "texto",
+          "total_celdas": 4,
+          "celdas_con_dato": 4,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "Proveedor Carnes",
+            "Producción interna",
+            "Proveedor Pescado",
+            "Proveedor Aceite"
+          ]
+        }
+      ],
+      "vista_previa": [
+        {
+          "Receta": "Carrillera melosa",
+          "Ingrediente": "Carrillera de ternera",
+          "Cantidad": 1.8,
+          "Unidad": "kg",
+          "Merma": 10,
+          "Precio": 8.5,
+          "Familia": "carnes",
+          "Proveedor": "Proveedor Carnes"
+        },
+        {
+          "Receta": "Carrillera melosa",
+          "Ingrediente": "Demi-glace",
+          "Cantidad": 0.8,
+          "Unidad": "L",
+          "Merma": 0,
+          "Precio": 3,
+          "Familia": "salsas",
+          "Proveedor": "Producción interna"
+        },
+        {
+          "Receta": "Bacalao pilpil",
+          "Ingrediente": "Bacalao",
+          "Cantidad": 1.5,
+          "Unidad": "kg",
+          "Merma": 5,
+          "Precio": 12,
+          "Familia": "pescados",
+          "Proveedor": "Proveedor Pescado"
+        },
+        {
+          "Receta": "Bacalao pilpil",
+          "Ingrediente": "Aceite oliva",
+          "Cantidad": 0.5,
+          "Unidad": "L",
+          "Merma": 0,
+          "Precio": 5,
+          "Familia": "aceites",
+          "Proveedor": "Proveedor Aceite"
+        }
+      ]
+    }
+  ],
+  "total_hojas": 1,
+  "total_filas": 5,
+  "total_columnas": 8,
+  "total_celdas_utilizadas": 40,
+  "id": "ANEXCEL-2C402D1F0F",
+  "creado_en": "2026-07-08T10:23:21"
+}

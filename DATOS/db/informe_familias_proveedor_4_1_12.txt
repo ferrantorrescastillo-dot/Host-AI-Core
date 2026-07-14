@@ -1,0 +1,58 @@
+HOST AI 4.1.12 - CLASIFICADOR FAMILIAS POR PROVEEDOR
+======================================================================
+Artículos: 358
+Sin familia antes: 89
+Familias aplicadas: 48
+Sin familia después: 41
+Estado: apto_con_observaciones
+
+CAMBIOS
+----------------------------------------------------------------------
+ART000046 | Ají limo | Pau GAVALDA -> Verduras | Proveedor habitual de fruta/verdura.
+ART000051 | Albahaca | PAU GAVALDA -> Verduras | Proveedor habitual de fruta/verdura.
+ART000064 | Apionabo. makro | PAU GAVALDA -> Verduras | Proveedor habitual de fruta/verdura.
+ART000078 | Berengena | PAU GAVALDA -> Verduras | Proveedor habitual de fruta/verdura.
+ART000084 | Boniato. kg | PAU GAVALDA -> Verduras | Proveedor habitual de fruta/verdura.
+ART000085 | Botifarra blanca grande. | BUNDO. -> Panadería | Proveedor asociado a panadería/pastelería.
+ART000089 | Botifarra negra tombada. Carnes palau. | CARNES PALAU. -> Carnes | Proveedor de carnes.
+ART000090 | Brocoli. | PAU GAVALDA -> Verduras | Proveedor habitual de fruta/verdura.
+ART000095 | Calabaza dados 400 gr. | PAU GAVALDA -> Verduras | Proveedor habitual de fruta/verdura.
+ART000101 | Cafe Natural. 1 kg. 120 cafes. 24,48€  .kg. 0,22 unid | Disbesa. -> Bebidas | Proveedor de bebidas.
+ART000102 | Cane de ñora " la legua". bote 650 gr. | PAU GAVALDA -> Verduras | Proveedor habitual de fruta/verdura.
+ART000105 | Carquiñolis. 200 gr. 3,75€ pqt | PAU GAVALDA -> Verduras | Proveedor habitual de fruta/verdura.
+ART000106 | Carxofa confitada flor | PAU GAVALDA -> Verduras | Proveedor habitual de fruta/verdura.
+ART000116 | Cep congelat | PAU GAVALDA -> Verduras | Proveedor habitual de fruta/verdura.
+ART000117 | Ceps troceado congelado. kg | PAU GAVALDA -> Verduras | Proveedor habitual de fruta/verdura.
+ART000122 | Chirivia. | PAU GAVALDA -> Verduras | Proveedor habitual de fruta/verdura.
+ART000124 | Chorizo Criollo. | CARNES PALAU. -> Carnes | Proveedor de carnes.
+ART000125 | Chorizo Sarta picante. Carnes palau. | BUNDO. -> Panadería | Proveedor asociado a panadería/pastelería.
+ART000127 | Cilantro | PAU GAVALDA -> Verduras | Proveedor habitual de fruta/verdura.
+ART000137 | Cogollos paquete de 3 unid. | PAU GAVALDA -> Verduras | Proveedor habitual de fruta/verdura.
+ART000157 | Escalonia pelada. | PAU GAVALDA -> Verduras | Proveedor habitual de fruta/verdura.
+ART000158 | Esparrago verde triguero. manojo 400 gr.5,85€ | PAU GAVALDA -> Verduras | Proveedor habitual de fruta/verdura.
+ART000163 | Flores | PAU GAVALDA -> Verduras | Proveedor habitual de fruta/verdura.
+ART000166 | Frambuesa MC-125 gr. (2,05€). | PAU GAVALDA -> Verduras | Proveedor habitual de fruta/verdura.
+ART000167 | Gelespesa goma xantana sosa. bote 500 gr. ( 10,95€) bote | PAU GAVALDA -> Verduras | Proveedor habitual de fruta/verdura.
+ART000168 | Ginebra barata. limpiar. botella lt. | Disbesa. -> Bebidas | Proveedor de bebidas.
+ART000177 | Infusion Menta Poleo.  1*15 unid. 5,81 | Disbesa. -> Bebidas | Proveedor de bebidas.
+ART000178 | Jamon de bellota. corta a cuchillo. sobre de 80 gr. unid. 149.35 precio kg. ojo cambiar | AVICSA -> Carnes | Proveedor de carnes/aves.
+ART000193 | Lomo embuchado blanco. | BUNDO. -> Panadería | Proveedor asociado a panadería/pastelería.
+ART000203 | menta manojo de 100 gr. 1,20€ manojo. | PAU GAVALDA -> Verduras | Proveedor habitual de fruta/verdura.
+ART000204 | menta manojo de 100 gr. 1,20€ manojo. | PAU GAVALDA -> Verduras | Proveedor habitual de fruta/verdura.
+ART000208 | Microbrotes | PAU GAVALDA -> Verduras | Proveedor habitual de fruta/verdura.
+ART000226 | Packchoy. | PAU GAVALDA -> Verduras | Proveedor habitual de fruta/verdura.
+ART000227 | Paleta iberico cebo. | AVICSA -> Carnes | Proveedor de carnes/aves.
+ART000228 | Paletilla jamón casa marcial | AVICSA -> Carnes | Proveedor de carnes/aves.
+ART000235 | Papel Secamano. Reg. natural 2 capas. | SARDA/DISBESA -> Bebidas | Proveedor de bebidas.
+ART000240 | Pepino. | PAU GAVALDA -> Verduras | Proveedor habitual de fruta/verdura.
+ART000241 | perejil manojo, 0,85 manojo. | PAU GAVALDA -> Verduras | Proveedor habitual de fruta/verdura.
+ART000258 | Pomelo. kg | PAU GAVALDA -> Verduras | Proveedor habitual de fruta/verdura.
+ART000266 | Ragout añojo. kg | BUNDO. -> Panadería | Proveedor asociado a panadería/pastelería.
+ART000268 | Romero | PAU GAVALDA -> Verduras | Proveedor habitual de fruta/verdura.
+ART000269 | Rucula sevaltica. | PAU GAVALDA -> Verduras | Proveedor habitual de fruta/verdura.
+ART000289 | Seta colmenilla deshidrada | PAU GAVALDA -> Verduras | Proveedor habitual de fruta/verdura.
+ART000290 | Seta de cardo. | PAU GAVALDA -> Verduras | Proveedor habitual de fruta/verdura.
+ART000297 | Tomaco granel | PAU GAVALDA -> Verduras | Proveedor habitual de fruta/verdura.
+ART000307 | Tomillo | PAU GAVALDA -> Verduras | Proveedor habitual de fruta/verdura.
+ART000309 | Vainilla fresca en rama madagascar. Vaina de 3 gr: 5,00€ unid | PAU GAVALDA -> Verduras | Proveedor habitual de fruta/verdura.
+ART000321 | Galtes porc | BUNDO. -> Panadería | Proveedor asociado a panadería/pastelería.

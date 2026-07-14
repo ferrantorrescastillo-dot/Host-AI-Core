@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Entornos virtuales
+.venv/
+venv/
+env/
+
+# Variables privadas
+.env
+.env.*
+*.pem
+*.key
+
+# Archivos temporales
+*.tmp
+*.temp
+*.bak
+~$*
+
+# Logs de ejecución
+*.log
+
+# Sistema operativo
+Thumbs.db
+.DS_Store

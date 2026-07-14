@@ -1,0 +1,42 @@
+{
+  "version": "3.0.8.5",
+  "entradas": [
+    {
+      "clave": "ultimo_articulo",
+      "valor": "aceite",
+      "tipo": "articulo",
+      "prioridad": 1,
+      "origen": "turno",
+      "tags": [
+        "auto"
+      ],
+      "metadatos": {}
+    },
+    {
+      "clave": "ultimo_fecha",
+      "valor": "mañana",
+      "tipo": "fecha",
+      "prioridad": 1,
+      "origen": "turno",
+      "tags": [
+        "auto"
+      ],
+      "metadatos": {}
+    },
+    {
+      "clave": "ultima_intencion",
+      "valor": "consulta_compras",
+      "tipo": "contexto",
+      "prioridad": 1,
+      "origen": "turno",
+      "tags": [
+        "auto"
+      ],
+      "metadatos": {}
+    }
+  ],
+  "contexto_actual": {
+    "ultimo_articulo": "aceite",
+    "ultima_intencion": "consulta_compras"
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "resultado_pipeline": {
+    "ok": true,
+    "pipeline": "reconciliador_stock_factura",
+    "accion": "reconciliar_informe",
+    "mensaje": "Reconciliación stock: 1 correctos, 0 diferencias, 0 pendientes.",
+    "datos": {
+      "resultados": [
+        {
+          "articulo_id": "ART-CARRILLERA",
+          "nombre_articulo": "Carrillera de ternera",
+          "cantidad_factura": 8.0,
+          "cantidad_aplicada": 14.0,
+          "unidad": "kg",
+          "diferencia": -6.0,
+          "estado": "correcto",
+          "avisos": [],
+          "datos": {
+            "articulo_id": "ART-CARRILLERA",
+            "nombre_articulo": "Carrillera de ternera",
+            "cantidad": 8,
+            "unidad": "kg",
+            "proveedor_id": "PROV-MAKRO",
+            "numero_factura": "F-REC-1",
+            "requiere_revision": false
+          },
+          "id": "RECSTOCK-289382C48C",
+          "creado_en": "2026-07-08T11:43:46"
+        }
+      ],
+      "total": 1,
+      "correctos": 1,
+      "con_diferencias": 0,
+      "pendientes": 0,
+      "puede_cerrar_factura": true,
+      "avisos_generales": [],
+      "id": "INFRECSTOCK-44D1255991",
+      "creado_en": "2026-07-08T11:43:46",
+      "lectura_host_ai": "Reconciliación stock: 1 correctos, 0 diferencias, 0 pendientes."
+    },
+    "acciones_recomendadas": [],
+    "requiere_aprobacion": false,
+    "errores": [],
+    "id": "RES-484EC7DEBF",
+    "creado_en": "2026-07-08T11:43:46"
+  },
+  "resultados": [
+    {
+      "articulo_id": "ART-CARRILLERA",
+      "nombre_articulo": "Carrillera de ternera",
+      "cantidad_factura": 8.0,
+      "cantidad_aplicada": 14.0,
+      "unidad": "kg",
+      "diferencia": -6.0,
+      "estado": "correcto",
+      "avisos": [],
+      "datos": {
+        "articulo_id": "ART-CARRILLERA",
+        "nombre_articulo": "Carrillera de ternera",
+        "cantidad": 8,
+        "unidad": "kg",
+        "proveedor_id": "PROV-MAKRO",
+        "numero_factura": "F-REC-1",
+        "requiere_revision": false
+      },
+      "id": "RECSTOCK-289382C48C",
+      "creado_en": "2026-07-08T11:43:46"
+    }
+  ],
+  "total": 1,
+  "correctos": 1,
+  "con_diferencias": 0,
+  "pendientes": 0,
+  "puede_cerrar_factura": true,
+  "avisos_generales": [],
+  "id": "INFRECSTOCK-44D1255991",
+  "creado_en": "2026-07-08T11:43:46",
+  "lectura_host_ai": "Reconciliación stock: 1 correctos, 0 diferencias, 0 pendientes."
+}

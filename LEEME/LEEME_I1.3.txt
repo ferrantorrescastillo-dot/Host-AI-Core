@@ -1,0 +1,14 @@
+I1.3 — IMPORTACIÓN DE MENÚS
+
+1. Haz una copia de tu carpeta Host AI.
+2. Copia el contenido de este ZIP encima de tu instalación actual.
+3. Abre Host AI.
+4. Entra en: Excel / importaciones.
+5. Selecciona: 11. I1.3 Vista previa e importación segura de menús.
+6. Usa primero una sola hoja, por ejemplo: MENU BODA 31-1.
+7. Revisa la vista previa antes de confirmar.
+
+IMPORTANTE:
+- Debes tener ya importadas las recetas relacionadas.
+- Los menús con recetas dudosas o sin vincular no se importan por defecto.
+- La vista previa no modifica la base de datos.

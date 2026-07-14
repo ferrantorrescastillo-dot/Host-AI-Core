@@ -1,0 +1,10 @@
+107 passed in 11.16s
+
+Caso real multimenú:
+- 21 hojas
+- 11 menús
+- 4 platos reinterpretados
+- 32 fragmentos pendientes antes
+- 27 conceptos después
+- 12 bloqueos finales
+- 0 escrituras

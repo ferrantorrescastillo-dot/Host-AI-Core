@@ -1,0 +1,8 @@
+I1.3.2.4 — RESULTADO DE TESTS
+
+28 passed in 3.74s
+Compilación APP/consola.py: OK
+Compilación motor_aprendizaje_culinario_i1324.py: OK
+Escrituras permitidas: solo memoria culinaria confirmada
+Importación de menús: NO DISPONIBLE
+Creación de recetas/artículos: NO DISPONIBLE

@@ -1,0 +1,88 @@
+
+  "receta": "Ensaladilla de gamba",
+  "rendimiento_base": 4,
+  "unidad_rendimiento": "u",
+  "validada_por": "jefe_cocina",
+  "fases": [
+    {
+      "nombre": "Cocer patatas",
+      "duracion_base_min": 35,
+      "tipo_tiempo": "pasivo",
+      "requiere_presencia": false,
+      "escalable_por_volumen": false,
+      "recursos": [
+        "fogones"
+      ]
+    },
+    {
+      "nombre": "Cocer huevos",
+      "duracion_base_min": 12,
+      "tipo_tiempo": "pasivo",
+      "requiere_presencia": false,
+      "escalable_por_volumen": false,
+      "recursos": [
+        "fogones"
+      ]
+    },
+    {
+      "nombre": "Cocinar gambas",
+      "duracion_base_min": 10,
+      "tipo_tiempo": "activo",
+      "requiere_presencia": true,
+      "escalable_por_volumen": true,
+      "recursos": [
+        "fogones"
+      ]
+    },
+    {
+      "nombre": "Enfriar",
+      "duracion_base_min": 40,
+      "tipo_tiempo": "pasivo",
+      "requiere_presencia": false,
+      "escalable_por_volumen": false,
+      "recursos": [
+        "abatidor"
+      ]
+    },
+    {
+      "nombre": "Pelar y cortar",
+      "duracion_base_min": 30,
+      "tipo_tiempo": "activo",
+      "requiere_presencia": true,
+      "escalable_por_volumen": true,
+      "recursos": [
+        "mesa_trabajo"
+      ]
+    },
+    {
+      "nombre": "Mezclar",
+      "duracion_base_min": 20,
+      "tipo_tiempo": "activo",
+      "requiere_presencia": true,
+      "escalable_por_volumen": true,
+      "recursos": [
+        "mesa_trabajo"
+      ]
+    },
+    {
+      "nombre": "Reposar en cámara",
+      "duracion_base_min": 120,
+      "tipo_tiempo": "pasivo",
+      "requiere_presencia": false,
+      "escalable_por_volumen": false,
+      "recursos": [
+        "camara_fria"
+      ]
+    },
+    {
+      "nombre": "Porcionar y etiquetar",
+      "duracion_base_min": 30,
+      "tipo_tiempo": "activo",
+      "requiere_presencia": true,
+      "escalable_por_volumen": true,
+      "recursos": [
+        "mesa_trabajo"
+      ]
+    }
+  ]
+}

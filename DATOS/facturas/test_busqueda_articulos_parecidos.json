@@ -1,0 +1,153 @@
+{
+  "resultado_pipeline": {
+    "ok": true,
+    "pipeline": "buscador_articulos_parecidos",
+    "accion": "buscar_lote",
+    "mensaje": "Búsqueda realizada para 2 líneas.",
+    "datos": {
+      "resultados": [
+        {
+          "descripcion": "CARR TERN",
+          "descripcion_normalizada": "carrillera ternera",
+          "candidatos": [
+            {
+              "articulo_id": "ART-CARRILLERA",
+              "nombre_articulo": "Carrillera de ternera",
+              "confianza": 94.23,
+              "metodo": "similitud_texto",
+              "motivos": [
+                "Palabras coincidentes: carrillera, ternera"
+              ],
+              "proveedor_id": "PROV-MAKRO",
+              "unidad": "kg",
+              "familia": "carnes"
+            }
+          ],
+          "total_candidatos": 1,
+          "mejor_candidato": {
+            "articulo_id": "ART-CARRILLERA",
+            "nombre_articulo": "Carrillera de ternera",
+            "confianza": 94.23,
+            "metodo": "similitud_texto",
+            "motivos": [
+              "Palabras coincidentes: carrillera, ternera"
+            ],
+            "proveedor_id": "PROV-MAKRO",
+            "unidad": "kg",
+            "familia": "carnes"
+          },
+          "lectura_host_ai": "Mejor candidato: Carrillera de ternera (94.23%)."
+        },
+        {
+          "descripcion": "Cebolla",
+          "descripcion_normalizada": "cebolla",
+          "candidatos": [
+            {
+              "articulo_id": "ART-CEBOLLA",
+              "nombre_articulo": "Cebolla",
+              "confianza": 100.0,
+              "metodo": "similitud_texto",
+              "motivos": [
+                "Coincidencia exacta normalizada."
+              ],
+              "proveedor_id": "PROV-MAKRO",
+              "unidad": "kg",
+              "familia": "verduras"
+            }
+          ],
+          "total_candidatos": 1,
+          "mejor_candidato": {
+            "articulo_id": "ART-CEBOLLA",
+            "nombre_articulo": "Cebolla",
+            "confianza": 100.0,
+            "metodo": "similitud_texto",
+            "motivos": [
+              "Coincidencia exacta normalizada."
+            ],
+            "proveedor_id": "PROV-MAKRO",
+            "unidad": "kg",
+            "familia": "verduras"
+          },
+          "lectura_host_ai": "Mejor candidato: Cebolla (100.0%)."
+        }
+      ],
+      "total": 2,
+      "con_candidatos": 2,
+      "lectura_host_ai": "Búsqueda realizada para 2 líneas."
+    },
+    "acciones_recomendadas": [],
+    "requiere_aprobacion": false,
+    "errores": [],
+    "id": "RES-532D1D8902",
+    "creado_en": "2026-07-08T10:33:23"
+  },
+  "resultados": [
+    {
+      "descripcion": "CARR TERN",
+      "descripcion_normalizada": "carrillera ternera",
+      "candidatos": [
+        {
+          "articulo_id": "ART-CARRILLERA",
+          "nombre_articulo": "Carrillera de ternera",
+          "confianza": 94.23,
+          "metodo": "similitud_texto",
+          "motivos": [
+            "Palabras coincidentes: carrillera, ternera"
+          ],
+          "proveedor_id": "PROV-MAKRO",
+          "unidad": "kg",
+          "familia": "carnes"
+        }
+      ],
+      "total_candidatos": 1,
+      "mejor_candidato": {
+        "articulo_id": "ART-CARRILLERA",
+        "nombre_articulo": "Carrillera de ternera",
+        "confianza": 94.23,
+        "metodo": "similitud_texto",
+        "motivos": [
+          "Palabras coincidentes: carrillera, ternera"
+        ],
+        "proveedor_id": "PROV-MAKRO",
+        "unidad": "kg",
+        "familia": "carnes"
+      },
+      "lectura_host_ai": "Mejor candidato: Carrillera de ternera (94.23%)."
+    },
+    {
+      "descripcion": "Cebolla",
+      "descripcion_normalizada": "cebolla",
+      "candidatos": [
+        {
+          "articulo_id": "ART-CEBOLLA",
+          "nombre_articulo": "Cebolla",
+          "confianza": 100.0,
+          "metodo": "similitud_texto",
+          "motivos": [
+            "Coincidencia exacta normalizada."
+          ],
+          "proveedor_id": "PROV-MAKRO",
+          "unidad": "kg",
+          "familia": "verduras"
+        }
+      ],
+      "total_candidatos": 1,
+      "mejor_candidato": {
+        "articulo_id": "ART-CEBOLLA",
+        "nombre_articulo": "Cebolla",
+        "confianza": 100.0,
+        "metodo": "similitud_texto",
+        "motivos": [
+          "Coincidencia exacta normalizada."
+        ],
+        "proveedor_id": "PROV-MAKRO",
+        "unidad": "kg",
+        "familia": "verduras"
+      },
+      "lectura_host_ai": "Mejor candidato: Cebolla (100.0%)."
+    }
+  ],
+  "total": 2,
+  "con_candidatos": 2,
+  "lectura_host_ai": "Búsqueda realizada para 2 líneas."
+}

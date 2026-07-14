@@ -1,0 +1,121 @@
+{
+  "creado_en": "2026-07-07T23:47:19",
+  "colecciones": {
+    "eventos": [
+      {
+        "nombre": "Boda 60 pax",
+        "fecha": "2026-07-08",
+        "pax": 60,
+        "tipo": "boda",
+        "cliente": "",
+        "ubicacion": "",
+        "servicios": [],
+        "id": "EVT-E72EBA3B"
+      }
+    ],
+    "stock_lotes": [
+      {
+        "nombre": "Carrillera de ternera",
+        "cantidad": 5.0,
+        "unidad": "kg",
+        "familia": "carnes",
+        "ubicacion": "",
+        "proveedor": "",
+        "articulo_id": "ART-CARRILLERA",
+        "fecha_entrada": "2026-07-07",
+        "caducidad": "",
+        "coste_unitario": 0.0,
+        "id": "LOTE-5A80844AE4",
+        "creado_en": "2026-07-07T23:47:19"
+      }
+    ],
+    "stock_movimientos": [
+      {
+        "tipo": "entrada",
+        "nombre": "Carrillera de ternera",
+        "cantidad": 5.0,
+        "unidad": "kg",
+        "motivo": "entrada mercancía",
+        "lote_id": "LOTE-5A80844AE4",
+        "articulo_id": "ART-CARRILLERA",
+        "id": "MOV-95FC86BDAD",
+        "creado_en": "2026-07-07T23:47:19"
+      }
+    ],
+    "compras_necesidades": [
+      {
+        "nombre": "Vino tinto",
+        "cantidad": 6.0,
+        "unidad": "L",
+        "familia": "",
+        "proveedor_preferente": "Proveedor Bebidas",
+        "motivo": "",
+        "prioridad": 50,
+        "articulo_id": "",
+        "fecha_necesaria": "",
+        "id": "NEC-56166752FC",
+        "creado_en": "2026-07-07T23:47:19"
+      }
+    ],
+    "compras_pedidos": [],
+    "escandallos": [],
+    "precios": [],
+    "planes_produccion": [],
+    "ideas_culinarias": [],
+    "historial_chat": [
+      {
+        "texto_usuario": "Tengo una boda de 60 pax",
+        "respuesta": "He creado el evento 'Boda 60 pax' para 60 pax. Siguiente paso: añadir servicios, pases y recetas.",
+        "intencion": {
+          "texto": "Tengo una boda de 60 pax",
+          "intencion": "crear_evento",
+          "confianza": 0.86,
+          "parametros": {
+            "nombre": "Boda 60 pax",
+            "fecha": "2026-07-08",
+            "pax": 60,
+            "tipo": "boda",
+            "cliente": "",
+            "ubicacion": ""
+          },
+          "pipeline": "evento",
+          "accion": "crear",
+          "avisos": [],
+          "id": "INTCONV-CC5F844376",
+          "creado_en": "2026-07-07T23:47:19"
+        },
+        "resultado": {
+          "ok": true,
+          "pipeline": "evento",
+          "accion": "crear",
+          "mensaje": "Evento creado: Boda 60 pax.",
+          "datos": {
+            "evento": {
+              "nombre": "Boda 60 pax",
+              "fecha": "2026-07-08",
+              "pax": 60,
+              "tipo": "boda",
+              "cliente": "",
+              "ubicacion": "",
+              "servicios": [],
+              "id": "EVT-E72EBA3B"
+            }
+          },
+          "acciones_recomendadas": [
+            "Añadir servicios."
+          ],
+          "requiere_aprobacion": false,
+          "errores": [],
+          "id": "RES-8DA2984236",
+          "creado_en": "2026-07-07T23:47:19"
+        },
+        "acciones_recomendadas": [
+          "Añadir servicios."
+        ],
+        "requiere_aprobacion": false,
+        "id": "RESPCONV-0962E0DC3F",
+        "creado_en": "2026-07-07T23:47:19"
+      }
+    ]
+  }
+}

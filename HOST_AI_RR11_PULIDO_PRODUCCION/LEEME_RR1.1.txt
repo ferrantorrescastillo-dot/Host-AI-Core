@@ -1,0 +1,18 @@
+HOST AI 6.0.4 — RR1.1 PULIDO DE PRODUCCIÓN
+
+INSTALACIÓN
+1. Cierra Host AI.
+2. Haz una copia de la carpeta actual.
+3. Copia el contenido de este ZIP encima de tu proyecto actual.
+4. Acepta reemplazar APP/consola.py.
+5. Ejecuta: python main.py
+
+REQUISITO
+Instalar encima de la versión que ya contiene IA1.4 y todos los sprints anteriores.
+
+PRUEBA RÁPIDA
+1. Entra en Producción.
+2. Planifica el último evento.
+3. Entra en 9, 10, 11 y 12: debe reutilizar el plan activo sin pedir el nombre cada vez.
+4. La opción 10 debe mostrar horarios, responsables, carga y días reales.
+5. La opción 11 debe mostrar acciones para iniciar, pausar, reanudar y finalizar tareas.

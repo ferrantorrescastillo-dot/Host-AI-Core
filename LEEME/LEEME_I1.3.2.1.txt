@@ -1,0 +1,19 @@
+HOST AI — I1.3.2.1 MOTOR DE RECONOCIMIENTO
+
+INSTALACIÓN
+1. Haz una copia de seguridad de Host AI.
+2. Descomprime este ZIP.
+3. Copia todas sus carpetas encima de tu proyecto Host AI 6.0.
+4. Acepta reemplazar APP/consola.py y los archivos acumulativos de I1.3.1.
+
+PRUEBA
+1. Abre Host AI.
+2. Entra en Excel / Importaciones.
+3. Selecciona: 12. I1.3.2.1 Motor de reconocimiento.
+4. Indica el Excel Escandallos Boronat.xlsx.
+5. Indica la hoja MENU BODA 31-1.
+6. Copia y envía el resultado completo.
+
+ALCANCE
+Este sprint reconoce recetas y artículos existentes. No decide qué componente es
+principal, salsa o guarnición. No permite importar y no escribe en la base de datos.

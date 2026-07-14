@@ -1,0 +1,17 @@
+HOST AI — M1.2 RESOLUTOR DE ARTÍCULOS
+
+INSTALACIÓN
+1. Haz una copia de seguridad de Host AI.
+2. Copia el contenido del ZIP encima del proyecto certificado con M1.1.
+3. Abre Host AI.
+4. Entra en Excel / Importaciones.
+5. Ejecuta la opción 19: M1.2 Diagnóstico del resolutor de artículos.
+
+RESULTADO ESPERADO
+- Diagnóstico: OK
+- Estado final: CERRADO
+- Artículo de prueba: Nuez moscada M12
+- Calidad: PENDIENTE
+- El catálogo real DATOS/db/articulos.json no se modifica.
+
+M1.2 todavía no está conectado a la importación real de recetas. Esa integración llegará en M1.3/M1.3.1.

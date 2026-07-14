@@ -1,0 +1,5 @@
+I1.3.4.1.1
+Tests I1.3 + M1 + multimenú: 90 passed
+Fallos: 0
+Excel real: 21 hojas, 11 menús confirmados
+Simulación total: 365 acciones, 32 bloqueadas, 0 escrituras

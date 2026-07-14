@@ -1,0 +1,31 @@
+{"fecha": "2026-07-13T01:01:54.875180+00:00", "evento": "TRANSACCION_INICIADA", "transaccion_id": "TX-298ED71E4C69", "idempotency_key": "DIAG-COMMIT-I1342"}
+{"fecha": "2026-07-13T01:01:54.932195+00:00", "evento": "BACKUP_CREADO", "transaccion_id": "TX-298ED71E4C69", "backup_dir": "C:\\PROYECTO HOST IA\\Proyecto Host AI  6.0\\Host AI 6.0\\DATOS\\backups\\i1342\\TX-298ED71E4C69"}
+{"fecha": "2026-07-13T01:01:54.952883+00:00", "evento": "ARCHIVO_ESCRITO", "transaccion_id": "TX-298ED71E4C69", "ruta": "DATOS/mur/diagnostico_i1342/menus.json", "sha256": "b86bfcf5b8688ff68a8a683aa5064f96ce4ad511b8116b946a534727e715b710"}
+{"fecha": "2026-07-13T01:01:54.953527+00:00", "evento": "VERIFICACION_OK", "transaccion_id": "TX-298ED71E4C69"}
+{"fecha": "2026-07-13T01:01:54.953539+00:00", "evento": "COMMIT", "transaccion_id": "TX-298ED71E4C69", "archivos": 1}
+{"fecha": "2026-07-13T01:01:54.956153+00:00", "evento": "TRANSACCION_INICIADA", "transaccion_id": "TX-1E27BF87C241", "idempotency_key": "DIAG-ROLLBACK-I1342"}
+{"fecha": "2026-07-13T01:01:54.968808+00:00", "evento": "BACKUP_CREADO", "transaccion_id": "TX-1E27BF87C241", "backup_dir": "C:\\PROYECTO HOST IA\\Proyecto Host AI  6.0\\Host AI 6.0\\DATOS\\backups\\i1342\\TX-1E27BF87C241"}
+{"fecha": "2026-07-13T01:01:54.989385+00:00", "evento": "ARCHIVO_ESCRITO", "transaccion_id": "TX-1E27BF87C241", "ruta": "DATOS/mur/diagnostico_i1342/menus.json", "sha256": "b7d2936d9e8bc85fa1b2785fd5135749895735c328252ff94ec07c89542639bc"}
+{"fecha": "2026-07-13T01:01:54.989439+00:00", "evento": "ERROR", "transaccion_id": "TX-1E27BF87C241", "error": "Fallo de diagnóstico forzado"}
+{"fecha": "2026-07-13T01:01:55.008265+00:00", "evento": "ROLLBACK", "transaccion_id": "TX-1E27BF87C241", "restaurados": 1}
+{"fecha": "2026-07-13T01:01:55.011539+00:00", "evento": "INTEGRIDAD_POST_ROLLBACK", "transaccion_id": "TX-1E27BF87C241", "ok": true}
+{"fecha": "2026-07-13T01:11:58.787875+00:00", "evento": "TRANSACCION_INICIADA", "transaccion_id": "TX-E3494499368D", "idempotency_key": "DIAG-I1343"}
+{"fecha": "2026-07-13T01:11:58.806037+00:00", "evento": "BACKUP_CREADO", "transaccion_id": "TX-E3494499368D", "backup_dir": "C:\\PROYECTO HOST IA\\Proyecto Host AI  6.0\\Host AI 6.0\\DATOS\\backups\\i1342\\TX-E3494499368D"}
+{"fecha": "2026-07-13T01:11:58.842766+00:00", "evento": "ARCHIVO_ESCRITO", "transaccion_id": "TX-E3494499368D", "ruta": "DATOS/mur/diagnostico_i1343/menus.json", "sha256": "c1d3fe09d4bff4acb51f7d0d4ef095f13795bc0d955b42e7a78ac6d204e202e1"}
+{"fecha": "2026-07-13T01:11:58.843737+00:00", "evento": "VERIFICACION_OK", "transaccion_id": "TX-E3494499368D"}
+{"fecha": "2026-07-13T01:11:58.843756+00:00", "evento": "COMMIT", "transaccion_id": "TX-E3494499368D", "archivos": 1}
+{"fecha": "2026-07-13T01:11:58.846919+00:00", "evento": "TRANSACCION_INICIADA", "transaccion_id": "TX-5E47FE126C75", "idempotency_key": "DIAG-I1343-REPEAT"}
+{"fecha": "2026-07-13T01:11:58.861487+00:00", "evento": "BACKUP_CREADO", "transaccion_id": "TX-5E47FE126C75", "backup_dir": "C:\\PROYECTO HOST IA\\Proyecto Host AI  6.0\\Host AI 6.0\\DATOS\\backups\\i1342\\TX-5E47FE126C75"}
+{"fecha": "2026-07-13T01:11:58.883088+00:00", "evento": "ARCHIVO_ESCRITO", "transaccion_id": "TX-5E47FE126C75", "ruta": "DATOS/mur/diagnostico_i1343/menus.json", "sha256": "3ddb6e198f080e567707d62c534f1e090a7515e483aa12bb1f05e9fae22cb375"}
+{"fecha": "2026-07-13T01:11:58.883714+00:00", "evento": "VERIFICACION_OK", "transaccion_id": "TX-5E47FE126C75"}
+{"fecha": "2026-07-13T01:11:58.883726+00:00", "evento": "COMMIT", "transaccion_id": "TX-5E47FE126C75", "archivos": 1}
+{"fecha": "2026-07-13T09:06:53.804704+00:00", "evento": "TRANSACCION_INICIADA", "transaccion_id": "TX-644DBF8B3298", "idempotency_key": "PLAN-CC2E745987A7"}
+{"fecha": "2026-07-13T09:06:53.828855+00:00", "evento": "BACKUP_CREADO", "transaccion_id": "TX-644DBF8B3298", "backup_dir": "C:\\PROYECTO HOST IA\\Proyecto Host AI  6.0\\Host AI 6.0\\DATOS\\backups\\i1342\\TX-644DBF8B3298"}
+{"fecha": "2026-07-13T09:06:53.863398+00:00", "evento": "ARCHIVO_ESCRITO", "transaccion_id": "TX-644DBF8B3298", "ruta": "DATOS/db/menus.json", "sha256": "2519b37a654874f1f9e2fe09db99bd2d060d858dc0066d94a172ed1a27dd4e73"}
+{"fecha": "2026-07-13T09:06:53.865269+00:00", "evento": "VERIFICACION_OK", "transaccion_id": "TX-644DBF8B3298"}
+{"fecha": "2026-07-13T09:06:53.865301+00:00", "evento": "COMMIT", "transaccion_id": "TX-644DBF8B3298", "archivos": 1}
+{"fecha": "2026-07-13T09:35:10.208224+00:00", "evento": "TRANSACCION_INICIADA", "transaccion_id": "TX-7E61EFBE36ED", "idempotency_key": "COR-I13441-25AC2E37FAB0"}
+{"fecha": "2026-07-13T09:35:10.233580+00:00", "evento": "BACKUP_CREADO", "transaccion_id": "TX-7E61EFBE36ED", "backup_dir": "C:\\PROYECTO HOST IA\\Proyecto Host AI  6.0\\Host AI 6.0\\DATOS\\backups\\i1342\\TX-7E61EFBE36ED"}
+{"fecha": "2026-07-13T09:35:10.241564+00:00", "evento": "ARCHIVO_ESCRITO", "transaccion_id": "TX-7E61EFBE36ED", "ruta": "DATOS/mur/diagnostico_i13441/menus.json", "sha256": "5fc9796afba9636fe3718299c9daf918709cd567244e009d5a48b613ef35fc6b"}
+{"fecha": "2026-07-13T09:35:10.242369+00:00", "evento": "VERIFICACION_OK", "transaccion_id": "TX-7E61EFBE36ED"}
+{"fecha": "2026-07-13T09:35:10.242382+00:00", "evento": "COMMIT", "transaccion_id": "TX-7E61EFBE36ED", "archivos": 1}

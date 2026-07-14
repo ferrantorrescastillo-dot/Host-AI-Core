@@ -1,0 +1,370 @@
+{
+  "archivo_excel": "C:\\Proyecto Host AI 4.0\\Host AI 4.0\\Documentos\\Escandallos Boronat  (HostIA)_CODIGOS_4_1_3.xlsx",
+  "informe_preimportacion": "DATOS\\informes\\preimportacion_555b.json",
+  "decisiones": [
+    {
+      "grupo": "RES-DE89957C",
+      "nombre": "APERITIVO CALÇOTADA",
+      "tipo": "DUPLICADO_EQUIVALENTE",
+      "accion_propuesta": "SELECCIONAR_MEJOR_FICHA",
+      "confianza": 100.0,
+      "motivo": "Las fichas tienen el mismo rendimiento y una composición equivalente.",
+      "fichas_origen": [
+        "M.P Menú finde 45€:141",
+        "M.P menú bbq 95€:157",
+        "M.P CALÇOTADA:152"
+      ],
+      "ficha_recomendada": "REC-EXCEL-6B4B251F8E",
+      "nombres_propuestos": [],
+      "requiere_confirmacion": false,
+      "detalles": {
+        "similitud_ingredientes": 100.0
+      }
+    },
+    {
+      "grupo": "RES-EE1D4EF7",
+      "nombre": "Botifarra con mongetes del ganxet",
+      "tipo": "VARIANTES_REALES",
+      "accion_propuesta": "MANTENER_COMO_VARIANTES",
+      "confianza": 19.05,
+      "motivo": "La composición difiere suficientemente como para no fusionar automáticamente.",
+      "fichas_origen": [
+        "M.P menú bbq 95€:70",
+        "M.P menú bbq 95€:86",
+        "M.P CALÇOTADA:65",
+        "M.P CALÇOTADA:81"
+      ],
+      "ficha_recomendada": null,
+      "nombres_propuestos": [
+        "Botifarra con mongetes del ganxet — bbq 95€",
+        "Botifarra con mongetes del ganxet — bbq 95€",
+        "Botifarra con mongetes del ganxet — CALÇOTADA",
+        "Botifarra con mongetes del ganxet — CALÇOTADA"
+      ],
+      "requiere_confirmacion": true,
+      "detalles": {
+        "similitud_ingredientes": 80.95,
+        "rendimientos": [
+          1.0
+        ],
+        "unidades_rendimiento": [
+          "u"
+        ]
+      }
+    },
+    {
+      "grupo": "RES-A93642AF",
+      "nombre": "CALÇOTADA EN MESA A COMPARTIR ENSALADA VERDE",
+      "tipo": "DUPLICADO_EQUIVALENTE",
+      "accion_propuesta": "SELECCIONAR_MEJOR_FICHA",
+      "confianza": 100.0,
+      "motivo": "Las fichas tienen el mismo rendimiento y una composición equivalente.",
+      "fichas_origen": [
+        "M.P Menú finde 45€:156",
+        "M.P menú bbq 95€:172",
+        "M.P CALÇOTADA:167"
+      ],
+      "ficha_recomendada": "REC-EXCEL-E11F0015E2",
+      "nombres_propuestos": [],
+      "requiere_confirmacion": false,
+      "detalles": {
+        "similitud_ingredientes": 100.0
+      }
+    },
+    {
+      "grupo": "RES-350AFEE0",
+      "nombre": "CALÇOTADA EN MESA PAN PAGES, TOMACO Y AJO",
+      "tipo": "DUPLICADO_EQUIVALENTE",
+      "accion_propuesta": "SELECCIONAR_MEJOR_FICHA",
+      "confianza": 100.0,
+      "motivo": "Las fichas tienen el mismo rendimiento y una composición equivalente.",
+      "fichas_origen": [
+        "M.P Menú finde 45€:187",
+        "M.P menú bbq 95€:203",
+        "M.P CALÇOTADA:198"
+      ],
+      "ficha_recomendada": "REC-EXCEL-AF3A99FAD1",
+      "nombres_propuestos": [],
+      "requiere_confirmacion": false,
+      "detalles": {
+        "similitud_ingredientes": 100.0
+      }
+    },
+    {
+      "grupo": "RES-54B84719",
+      "nombre": "CORDERO y butifarra N CALÇOTADA",
+      "tipo": "DUPLICADO_EQUIVALENTE",
+      "accion_propuesta": "SELECCIONAR_MEJOR_FICHA",
+      "confianza": 100.0,
+      "motivo": "Las fichas tienen el mismo rendimiento y una composición equivalente.",
+      "fichas_origen": [
+        "M.P Menú finde 45€:101",
+        "M.P menú bbq 95€:117",
+        "M.P CALÇOTADA:112"
+      ],
+      "ficha_recomendada": "REC-EXCEL-20E3549F72",
+      "nombres_propuestos": [],
+      "requiere_confirmacion": false,
+      "detalles": {
+        "similitud_ingredientes": 100.0
+      }
+    },
+    {
+      "grupo": "RES-75665B6E",
+      "nombre": "Crema Catalana quemada con carquiñoli",
+      "tipo": "DUPLICADO_EQUIVALENTE",
+      "accion_propuesta": "SELECCIONAR_MEJOR_FICHA",
+      "confianza": 100.0,
+      "motivo": "Las fichas tienen el mismo rendimiento y una composición equivalente.",
+      "fichas_origen": [
+        "M.P CALÇOTADA:51",
+        "M.P MENU BBQ.:56"
+      ],
+      "ficha_recomendada": "REC-EXCEL-BBE14A0601",
+      "nombres_propuestos": [],
+      "requiere_confirmacion": false,
+      "detalles": {
+        "similitud_ingredientes": 100.0
+      }
+    },
+    {
+      "grupo": "RES-F7B6DC49",
+      "nombre": "GUARNICION DE CALÇOTADA",
+      "tipo": "DUPLICADO_EQUIVALENTE",
+      "accion_propuesta": "SELECCIONAR_MEJOR_FICHA",
+      "confianza": 100.0,
+      "motivo": "Las fichas tienen el mismo rendimiento y una composición equivalente.",
+      "fichas_origen": [
+        "M.P Menú finde 45€:86",
+        "M.P menú bbq 95€:102",
+        "M.P CALÇOTADA:97"
+      ],
+      "ficha_recomendada": "REC-EXCEL-92C8E95AD8",
+      "nombres_propuestos": [],
+      "requiere_confirmacion": false,
+      "detalles": {
+        "similitud_ingredientes": 100.0
+      }
+    },
+    {
+      "grupo": "RES-EA31E109",
+      "nombre": "Patatas Bravas",
+      "tipo": "VARIANTES_REALES",
+      "accion_propuesta": "MANTENER_COMO_VARIANTES",
+      "confianza": 100.0,
+      "motivo": "La composición difiere suficientemente como para no fusionar automáticamente.",
+      "fichas_origen": [
+        "M.P Aperitivos:4",
+        "M.P MENU BBQ.:25"
+      ],
+      "ficha_recomendada": null,
+      "nombres_propuestos": [
+        "Patatas Bravas — Aperitivos",
+        "Patatas Bravas — BBQ"
+      ],
+      "requiere_confirmacion": true,
+      "detalles": {
+        "similitud_ingredientes": 0.0,
+        "rendimientos": [
+          1.0
+        ],
+        "unidades_rendimiento": [
+          "pax",
+          "u"
+        ]
+      }
+    },
+    {
+      "grupo": "RES-6BBD7F2E",
+      "nombre": "SALSA ROMESCO PARA CALÇOTS",
+      "tipo": "VARIANTES_REALES",
+      "accion_propuesta": "MANTENER_COMO_VARIANTES",
+      "confianza": 40.0,
+      "motivo": "La composición difiere suficientemente como para no fusionar automáticamente.",
+      "fichas_origen": [
+        "M.P Menú finde 45€:119",
+        "M.P menú bbq 95€:135",
+        "M.P CALÇOTADA:130",
+        "M.P COCTEL COMUNIONES.:3",
+        "M.P COCTEL COMUNIONES.:29"
+      ],
+      "ficha_recomendada": null,
+      "nombres_propuestos": [
+        "SALSA ROMESCO PARA CALÇOTS — finde 45€",
+        "SALSA ROMESCO PARA CALÇOTS — bbq 95€",
+        "SALSA ROMESCO PARA CALÇOTS — CALÇOTADA",
+        "SALSA ROMESCO PARA CALÇOTS — COCTEL COMUNIONES",
+        "SALSA ROMESCO PARA CALÇOTS — COCTEL COMUNIONES"
+      ],
+      "requiere_confirmacion": true,
+      "detalles": {
+        "similitud_ingredientes": 60.0,
+        "rendimientos": [
+          1.0,
+          15.0
+        ],
+        "unidades_rendimiento": [
+          "kg"
+        ]
+      }
+    },
+    {
+      "grupo": "RES-C1586EF1",
+      "nombre": "VINAGRETA CLASICA",
+      "tipo": "DUPLICADO_EQUIVALENTE",
+      "accion_propuesta": "SELECCIONAR_MEJOR_FICHA",
+      "confianza": 100.0,
+      "motivo": "Las fichas tienen el mismo rendimiento y una composición equivalente.",
+      "fichas_origen": [
+        "M.P Menú finde 45€:175",
+        "M.P menú bbq 95€:191",
+        "M.P CALÇOTADA:186"
+      ],
+      "ficha_recomendada": "REC-EXCEL-AD9995FDE1",
+      "nombres_propuestos": [],
+      "requiere_confirmacion": false,
+      "detalles": {
+        "similitud_ingredientes": 100.0
+      }
+    }
+  ],
+  "fichas_individuales": [
+    {
+      "codigo": "REC-EXCEL-975B9E3767",
+      "nombre": "KG",
+      "hoja": "M.P Menú finde 45€",
+      "fila_inicio": 201,
+      "accion_propuesta": "REVISAR_TITULO",
+      "motivo": "El valor detectado no parece un nombre de receta. No se propone un nombre inventado.",
+      "requiere_confirmacion": true
+    },
+    {
+      "codigo": "REC-EXCEL-6986B4D5E9",
+      "nombre": "KG",
+      "hoja": "M.P menú bbq 95€",
+      "fila_inicio": 217,
+      "accion_propuesta": "REVISAR_TITULO",
+      "motivo": "El valor detectado no parece un nombre de receta. No se propone un nombre inventado.",
+      "requiere_confirmacion": true
+    },
+    {
+      "codigo": "REC-EXCEL-3D4815BAA6",
+      "nombre": "KG",
+      "hoja": "M.P CALÇOTADA",
+      "fila_inicio": 212,
+      "accion_propuesta": "REVISAR_TITULO",
+      "motivo": "El valor detectado no parece un nombre de receta. No se propone un nombre inventado.",
+      "requiere_confirmacion": true
+    },
+    {
+      "codigo": "REC-EXCEL-44289F21FE",
+      "nombre": "SALSA ROMESCO PARA CALÇOTS",
+      "hoja": "M.P Menú finde 45€",
+      "fila_inicio": 119,
+      "accion_propuesta": "REVISAR_FICHA",
+      "motivo": "Existen variantes con el mismo nombre; requiere elección humana.",
+      "requiere_confirmacion": true
+    },
+    {
+      "codigo": "REC-EXCEL-9BE9787929",
+      "nombre": "Botifarra con mongetes del ganxet",
+      "hoja": "M.P menú bbq 95€",
+      "fila_inicio": 70,
+      "accion_propuesta": "REVISAR_FICHA",
+      "motivo": "Existen variantes con el mismo nombre; requiere elección humana.",
+      "requiere_confirmacion": true
+    },
+    {
+      "codigo": "REC-EXCEL-0BB800B0D4",
+      "nombre": "Botifarra con mongetes del ganxet",
+      "hoja": "M.P menú bbq 95€",
+      "fila_inicio": 86,
+      "accion_propuesta": "REVISAR_FICHA",
+      "motivo": "Existen variantes con el mismo nombre; requiere elección humana.",
+      "requiere_confirmacion": true
+    },
+    {
+      "codigo": "REC-EXCEL-DA70E9A0E1",
+      "nombre": "SALSA ROMESCO PARA CALÇOTS",
+      "hoja": "M.P menú bbq 95€",
+      "fila_inicio": 135,
+      "accion_propuesta": "REVISAR_FICHA",
+      "motivo": "Existen variantes con el mismo nombre; requiere elección humana.",
+      "requiere_confirmacion": true
+    },
+    {
+      "codigo": "REC-EXCEL-DB745CC97D",
+      "nombre": "Botifarra con mongetes del ganxet",
+      "hoja": "M.P CALÇOTADA",
+      "fila_inicio": 65,
+      "accion_propuesta": "REVISAR_FICHA",
+      "motivo": "Existen variantes con el mismo nombre; requiere elección humana.",
+      "requiere_confirmacion": true
+    },
+    {
+      "codigo": "REC-EXCEL-0C045EFA5F",
+      "nombre": "Botifarra con mongetes del ganxet",
+      "hoja": "M.P CALÇOTADA",
+      "fila_inicio": 81,
+      "accion_propuesta": "REVISAR_FICHA",
+      "motivo": "Existen variantes con el mismo nombre; requiere elección humana.",
+      "requiere_confirmacion": true
+    },
+    {
+      "codigo": "REC-EXCEL-F0D43532CD",
+      "nombre": "SALSA ROMESCO PARA CALÇOTS",
+      "hoja": "M.P CALÇOTADA",
+      "fila_inicio": 130,
+      "accion_propuesta": "REVISAR_FICHA",
+      "motivo": "Existen variantes con el mismo nombre; requiere elección humana.",
+      "requiere_confirmacion": true
+    },
+    {
+      "codigo": "REC-EXCEL-D2580D825E",
+      "nombre": "Patatas Bravas",
+      "hoja": "M.P Aperitivos",
+      "fila_inicio": 4,
+      "accion_propuesta": "REVISAR_FICHA",
+      "motivo": "Existen variantes con el mismo nombre; requiere elección humana.",
+      "requiere_confirmacion": true
+    },
+    {
+      "codigo": "REC-EXCEL-E9F622452F",
+      "nombre": "SALSA ROMESCO PARA CALÇOTS",
+      "hoja": "M.P COCTEL COMUNIONES.",
+      "fila_inicio": 3,
+      "accion_propuesta": "REVISAR_FICHA",
+      "motivo": "Existen variantes con el mismo nombre; requiere elección humana.",
+      "requiere_confirmacion": true
+    },
+    {
+      "codigo": "REC-EXCEL-D46F53CF5C",
+      "nombre": "SALSA ROMESCO PARA CALÇOTS",
+      "hoja": "M.P COCTEL COMUNIONES.",
+      "fila_inicio": 29,
+      "accion_propuesta": "REVISAR_FICHA",
+      "motivo": "Existen variantes con el mismo nombre; requiere elección humana.",
+      "requiere_confirmacion": true
+    },
+    {
+      "codigo": "REC-EXCEL-061DB55AB1",
+      "nombre": "Patatas bravas",
+      "hoja": "M.P MENU BBQ.",
+      "fila_inicio": 25,
+      "accion_propuesta": "REVISAR_FICHA",
+      "motivo": "Existen variantes con el mismo nombre; requiere elección humana.",
+      "requiere_confirmacion": true
+    }
+  ],
+  "resumen": {
+    "grupos_analizados": 10,
+    "fusionar_duplicados": 0,
+    "mantener_variantes": 3,
+    "seleccionar_una": 7,
+    "revisar_titulo": 3,
+    "listas_sin_confirmacion": 7,
+    "requieren_confirmacion": 3
+  },
+  "errores": [],
+  "datos_reales_modificados": false
+}

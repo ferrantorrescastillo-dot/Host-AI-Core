@@ -1,0 +1,81 @@
+[
+  {
+    "id": "PED-5BA723A547",
+    "proveedor": "Sardà",
+    "lineas": [
+      {
+        "nombre": "Tomate triturado",
+        "cantidad": 5.0,
+        "unidad": "kg",
+        "articulo_id": "",
+        "familia": "",
+        "necesidad_id": "NEC-8B60EFC4B2",
+        "precio_unitario": 0.0,
+        "observaciones": "",
+        "id": "LIN-F1B2E5AFD3"
+      }
+    ],
+    "estado": "recibido",
+    "observaciones": "",
+    "historial": [
+      {
+        "fecha": "2026-07-10T20:47:19",
+        "accion": "creado",
+        "detalle": "Pedido creado en borrador."
+      },
+      {
+        "fecha": "2026-07-11T10:17:42",
+        "accion": "estado_cambiado",
+        "detalle": "Pedido marcado como preparado."
+      },
+      {
+        "fecha": "2026-07-11T10:18:20",
+        "accion": "pedido_recibido",
+        "detalle": "Recepción completada con 1 línea(s)."
+      }
+    ],
+    "creado_en": "2026-07-10T20:47:19",
+    "actualizado_en": "2026-07-11T10:18:20",
+    "enviado_en": "",
+    "recibido_en": "2026-07-11T10:18:20",
+    "total_lineas": 1,
+    "importe_estimado": 0.0
+  },
+  {
+    "id": "PED-AE8D703DEA",
+    "proveedor": "makro",
+    "lineas": [
+      {
+        "nombre": "Arroz bomba",
+        "cantidad": 5.0,
+        "unidad": "kg",
+        "articulo_id": "ART000355",
+        "familia": "Arroces",
+        "necesidad_id": "NEC-847E840E75",
+        "precio_unitario": 0.0,
+        "observaciones": "",
+        "id": "LIN-CCF4361C6B"
+      }
+    ],
+    "estado": "recibido",
+    "observaciones": "",
+    "historial": [
+      {
+        "fecha": "2026-07-11T16:31:03",
+        "accion": "creado",
+        "detalle": "Pedido creado en borrador."
+      },
+      {
+        "fecha": "2026-07-11T16:57:52",
+        "accion": "pedido_recibido",
+        "detalle": "Recepción completada con 1 línea(s)."
+      }
+    ],
+    "creado_en": "2026-07-11T16:31:03",
+    "actualizado_en": "2026-07-11T16:57:52",
+    "enviado_en": "",
+    "recibido_en": "2026-07-11T16:57:52",
+    "total_lineas": 1,
+    "importe_estimado": 0.0
+  }
+]

@@ -1,0 +1,21 @@
+HOST AI — I1.3.2.3 VISTA PREVIA INTELIGENTE Y RESOLUCIÓN ASISTIDA
+
+INSTALACIÓN
+1. Haz una copia del proyecto actual.
+2. Descomprime este ZIP.
+3. Copia APP, SERVICIOS, TESTS y CERTIFICACION encima del proyecto Host AI.
+4. Sustituye los archivos cuando Windows lo solicite.
+
+PRUEBA
+1. Abre Host AI.
+2. Entra en Excel / Importaciones.
+3. Selecciona 14. I1.3.2.3 Vista previa inteligente y resolución asistida.
+4. Indica Escandallos Boronat.xlsx.
+5. Indica la hoja MENU BODA 31-1.
+6. Revisa el pendiente "parmentier patata".
+
+IMPORTANTE
+- Vincular o proponer afecta inicialmente solo a la vista previa.
+- "Proponer nueva receta" NO crea una receta real.
+- Solo se guarda memoria si respondes expresamente que deseas recordar la decisión.
+- No existe opción de importar el menú.

@@ -1,0 +1,9 @@
+I1.3.4.4 — RESULTADO DE TESTS
+========================================
+Tests ejecutados: 25
+Superados: 25
+Fallidos: 0
+Estado: CERTIFICADO
+
+Comando:
+pytest -q TESTS/test_i1344_auditoria_integridad_postimportacion.py TESTS/test_i1343_importacion_definitiva_menus.py TESTS/test_i1342_motor_escritura_segura.py

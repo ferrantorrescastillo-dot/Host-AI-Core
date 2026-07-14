@@ -1,0 +1,10 @@
+INSTALACIÓN
+1. Haz una copia de tu carpeta actual Host AI 6.0.
+2. Descomprime este ZIP.
+3. Copia APP, MODELOS, MOTORES y TESTS encima del proyecto.
+4. Acepta sustituir los archivos existentes.
+5. Ejecuta: python main.py
+6. Entra en Host AI Base > Producción real.
+
+Este parche debe instalarse encima de la versión que ya contiene UX1.
+No incluye ni modifica datos del restaurante.

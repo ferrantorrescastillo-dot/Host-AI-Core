@@ -1,0 +1,69 @@
+{
+  "resultado_pipeline": {
+    "ok": true,
+    "pipeline": "validador_relaciones_articulos_factura",
+    "accion": "validar_informe",
+    "mensaje": "Validación relaciones: 1 válidas, 0 revisión, 0 inválidas.",
+    "datos": {
+      "total_relaciones": 1,
+      "validas": 1,
+      "con_revision": 0,
+      "invalidas": 0,
+      "sin_articulo": 0,
+      "puede_continuar": true,
+      "validaciones": [
+        {
+          "descripcion_factura": "CARR TERN",
+          "articulo_id": "ART-CARRILLERA",
+          "nombre_articulo": "Carrillera de ternera",
+          "valida": true,
+          "confianza": 94.0,
+          "requiere_revision": false,
+          "errores": [],
+          "avisos": [],
+          "metodo": "similitud_texto",
+          "id": "VALRELART-89169FC23F",
+          "creado_en": "2026-07-08T10:47:30"
+        }
+      ],
+      "avisos_generales": [],
+      "errores_generales": [],
+      "id": "INFVALREL-F18F1B7846",
+      "creado_en": "2026-07-08T10:47:30",
+      "lectura_host_ai": "Validación relaciones: 1 válidas, 0 revisión, 0 inválidas."
+    },
+    "acciones_recomendadas": [
+      "Revisar relaciones pendientes."
+    ],
+    "requiere_aprobacion": false,
+    "errores": [],
+    "id": "RES-FCC1C4EDAB",
+    "creado_en": "2026-07-08T10:47:30"
+  },
+  "total_relaciones": 1,
+  "validas": 1,
+  "con_revision": 0,
+  "invalidas": 0,
+  "sin_articulo": 0,
+  "puede_continuar": true,
+  "validaciones": [
+    {
+      "descripcion_factura": "CARR TERN",
+      "articulo_id": "ART-CARRILLERA",
+      "nombre_articulo": "Carrillera de ternera",
+      "valida": true,
+      "confianza": 94.0,
+      "requiere_revision": false,
+      "errores": [],
+      "avisos": [],
+      "metodo": "similitud_texto",
+      "id": "VALRELART-89169FC23F",
+      "creado_en": "2026-07-08T10:47:30"
+    }
+  ],
+  "avisos_generales": [],
+  "errores_generales": [],
+  "id": "INFVALREL-F18F1B7846",
+  "creado_en": "2026-07-08T10:47:30",
+  "lectura_host_ai": "Validación relaciones: 1 válidas, 0 revisión, 0 inválidas."
+}

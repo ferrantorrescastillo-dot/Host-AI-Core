@@ -1,0 +1,10 @@
+I1.3.2.1 — RESULTADO DE TESTS
+========================================
+Tests específicos y regresión I1.3: 10 passed
+Compilación servicio y consola: OK
+Lectura catálogo real: OK
+Excel oficial MENU BODA 31-1: OK
+Huellas de datos antes/después: SIN CAMBIOS
+Importación de menús: NO EXISTE
+Interpretación semántica: NO EXISTE (reservada para I1.3.2.2)
+========================================

@@ -1,0 +1,14 @@
+HOST AI 6.0.4 — P3.3 PANEL DE PRODUCCIÓN
+
+INSTALACIÓN
+1. Haz una copia de tu carpeta actual.
+2. Descomprime este ZIP.
+3. Copia APP, MOTORES y TESTS encima de tu proyecto.
+4. Acepta sustituir los archivos.
+5. Ejecuta: python main.py
+
+REQUISITO
+Debe instalarse encima de una versión que ya contenga P1, P2, P3.1 y P3.2.
+
+NUEVA OPCIÓN
+Producción > 12. Panel de producción

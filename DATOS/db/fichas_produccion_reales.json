@@ -1,0 +1,118 @@
+{
+  "version_modelo": "5.5.6E.3.1",
+  "actualizado_en": "2026-07-10T15:37:56.738662+00:00",
+  "fichas": [
+    {
+      "id": "FPROD-9700254225",
+      "receta": "Ensaladilla de gamba",
+      "rendimiento_base": 1.0,
+      "unidad_rendimiento": "u",
+      "version": 2,
+      "estado": "VALIDADA",
+      "origen": "TEXTO_LENGUAJE_NATURAL",
+      "validada_por": "jefe_cocina",
+      "validada_en": "2026-07-10T15:37:56.689431+00:00",
+      "fases": [
+        {
+          "orden": 1,
+          "nombre": "Cocer patatas",
+          "descripcion": "Cocer las patatas durante 35 minutos",
+          "duracion_base_min": 35,
+          "tipo_tiempo": "pasivo",
+          "requiere_presencia": false,
+          "escalable_por_volumen": false,
+          "recursos": [
+            "fogones"
+          ],
+          "puede_paralelizar": true,
+          "punto_control": ""
+        },
+        {
+          "orden": 2,
+          "nombre": "Cocer huevos",
+          "descripcion": "Cocer los huevos durante 12 minutos",
+          "duracion_base_min": 12,
+          "tipo_tiempo": "pasivo",
+          "requiere_presencia": false,
+          "escalable_por_volumen": false,
+          "recursos": [
+            "fogones"
+          ],
+          "puede_paralelizar": true,
+          "punto_control": ""
+        },
+        {
+          "orden": 3,
+          "nombre": "Enfriar en abatidor",
+          "descripcion": "Enfriar en abatidor durante 40 minutos",
+          "duracion_base_min": 40,
+          "tipo_tiempo": "pasivo",
+          "requiere_presencia": false,
+          "escalable_por_volumen": false,
+          "recursos": [
+            "abatidor"
+          ],
+          "puede_paralelizar": true,
+          "punto_control": ""
+        },
+        {
+          "orden": 4,
+          "nombre": "Pelar y cortar",
+          "descripcion": "Pelar y cortar durante 30 minutos",
+          "duracion_base_min": 30,
+          "tipo_tiempo": "activo",
+          "requiere_presencia": true,
+          "escalable_por_volumen": true,
+          "recursos": [
+            "mesa_trabajo"
+          ],
+          "puede_paralelizar": false,
+          "punto_control": ""
+        },
+        {
+          "orden": 5,
+          "nombre": "Mezclar",
+          "descripcion": "Mezclar durante 20 minutos",
+          "duracion_base_min": 20,
+          "tipo_tiempo": "activo",
+          "requiere_presencia": true,
+          "escalable_por_volumen": true,
+          "recursos": [
+            "mesa_trabajo"
+          ],
+          "puede_paralelizar": false,
+          "punto_control": ""
+        },
+        {
+          "orden": 6,
+          "nombre": "Reposar en cámara",
+          "descripcion": "Reposar en cámara durante 2 horas",
+          "duracion_base_min": 120,
+          "tipo_tiempo": "pasivo",
+          "requiere_presencia": false,
+          "escalable_por_volumen": false,
+          "recursos": [
+            "camara_fria"
+          ],
+          "puede_paralelizar": true,
+          "punto_control": ""
+        },
+        {
+          "orden": 7,
+          "nombre": "Porcionar y etiquetar",
+          "descripcion": "Porcionar y etiquetar durante 30 minutos",
+          "duracion_base_min": 30,
+          "tipo_tiempo": "activo",
+          "requiere_presencia": true,
+          "escalable_por_volumen": true,
+          "recursos": [
+            "mesa_trabajo"
+          ],
+          "puede_paralelizar": false,
+          "punto_control": ""
+        }
+      ],
+      "observaciones": "Ficha generada automáticamente desde texto. Requiere confirmación humana antes de guardarse."
+    }
+  ]
+}

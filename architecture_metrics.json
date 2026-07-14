@@ -1,0 +1,1060 @@
+{
+  "py_count": 1030,
+  "module_count": 1030,
+  "parse_errors": [],
+  "counts_by_top": {
+    "COMPROBAR_PILOTO_1.3.py": 1,
+    "COMPROBAR_PILOTO_1.4.py": 1,
+    "demo_host_ai_3.py": 1,
+    "ejecutar_certificacion_rr162.py": 1,
+    "ejecutar_certificacion_rr163.py": 1,
+    "main.py": 1,
+    "APP": 156,
+    "CORE": 18,
+    "HERRAMIENTAS": 1,
+    "HOST_AI_6.0.3_MODO_MANUAL_OPERATIVO": 4,
+    "MODELOS": 68,
+    "MOTORES": 13,
+    "PIPELINES": 92,
+    "SERVICIOS": 312,
+    "TESTS": 346,
+    "PILOTO-1.2.1_Humanizacion_Mi_Jornada": 3,
+    "HOST_AI_RR14_PULIDO_ESCANDALLOS_COSTES": 2,
+    "HOST_AI_RR13_PULIDO_STOCK_COMPRAS": 3,
+    "HOST_AI_RR12_PULIDO_EVENTOS": 2,
+    "HOST_AI_RR11_PULIDO_PRODUCCION": 2,
+    "HOST_AI_6.0.2_LINEA_BASE_VERDE": 2
+  },
+  "reachable_from_main": 325,
+  "reachable_counts": {
+    "MODELOS": 60,
+    "APP": 6,
+    "SERVICIOS": 146,
+    "main.py": 1,
+    "PIPELINES": 90,
+    "MOTORES": 12,
+    "CORE": 10
+  },
+  "top_incoming": [
+    [
+      "CORE.host_ai_core",
+      144
+    ],
+    [
+      "CORE.orquestador",
+      120
+    ],
+    [
+      "MODELOS.api_interna",
+      94
+    ],
+    [
+      "PIPELINES.base_pipeline",
+      90
+    ],
+    [
+      "SERVICIOS.generador_flujo_operativo_531",
+      19
+    ],
+    [
+      "SERVICIOS.orquestador_inteligente_52",
+      16
+    ],
+    [
+      "CORE.MUR.modelos",
+      12
+    ],
+    [
+      "MODELOS.importacion_articulos_excel",
+      12
+    ],
+    [
+      "APP.consola",
+      12
+    ],
+    [
+      "SERVICIOS.simulador_importacion_menus_i13411",
+      11
+    ],
+    [
+      "CORE.entidades.escandallo",
+      11
+    ],
+    [
+      "SERVICIOS.repositorio_escandallos_555a",
+      11
+    ],
+    [
+      "SERVICIOS.conector_escandallos_real_555",
+      10
+    ],
+    [
+      "CORE.entidades.receta",
+      10
+    ],
+    [
+      "SERVICIOS.clasificador_intenciones_503",
+      10
+    ],
+    [
+      "SERVICIOS.planificador_inteligente_535",
+      9
+    ],
+    [
+      "CORE.entidades.ingrediente",
+      9
+    ],
+    [
+      "SERVICIOS.motor_planificacion_recetas_reales_556e31",
+      8
+    ],
+    [
+      "SERVICIOS.importador_inteligente_recetas_m131",
+      8
+    ],
+    [
+      "MODELOS.ia_conversacional_308",
+      8
+    ],
+    [
+      "SERVICIOS.menus_evento_472",
+      7
+    ],
+    [
+      "SERVICIOS.bootloader_host_ai_502",
+      7
+    ],
+    [
+      "CORE.MUR.registro",
+      7
+    ],
+    [
+      "SERVICIOS.conector_produccion_real_556",
+      7
+    ],
+    [
+      "SERVICIOS.gestion_eventos_471",
+      7
+    ],
+    [
+      "SERVICIOS.bandeja_trabajo_piloto_11",
+      7
+    ],
+    [
+      "SERVICIOS.ejecutor_flujo_operativo_532",
+      7
+    ],
+    [
+      "SERVICIOS.gestor_base_datos_definitiva_451",
+      7
+    ],
+    [
+      "SERVICIOS.priorizador_tareas_536",
+      7
+    ],
+    [
+      "SERVICIOS.base_datos_local",
+      6
+    ],
+    [
+      "SERVICIOS.interprete_recepcion_texto_441",
+      6
+    ],
+    [
+      "SERVICIOS.fichas_produccion_reales_556e31",
+      6
+    ],
+    [
+      "SERVICIOS.motor_movimientos_stock_437",
+      6
+    ],
+    [
+      "SERVICIOS.motor_reconocimiento_menus_i1321",
+      6
+    ],
+    [
+      "SERVICIOS.confirmacion_inteligente_534",
+      5
+    ],
+    [
+      "CORE.MUR.repositorios",
+      5
+    ],
+    [
+      "SERVICIOS.coste_real_receta_481",
+      5
+    ],
+    [
+      "SERVICIOS.validador_recepcion_mercancia_442",
+      5
+    ],
+    [
+      "SERVICIOS.ingesta_recetas_lenguaje_natural_556e32",
+      5
+    ],
+    [
+      "SERVICIOS.importador_seguro_escandallos_i12",
+      5
+    ]
+  ],
+  "top_outgoing": [
+    [
+      "CORE.host_ai_core",
+      189
+    ],
+    [
+      "APP.consola",
+      33
+    ],
+    [
+      "HOST_AI_6.0.2_LINEA_BASE_VERDE.SERVICIOS.orquestador_inteligente_52",
+      17
+    ],
+    [
+      "SERVICIOS.orquestador_inteligente_52",
+      13
+    ],
+    [
+      "SERVICIOS.integracion_operativa_539",
+      8
+    ],
+    [
+      "SERVICIOS.preimportador_escandallos_555b",
+      7
+    ],
+    [
+      "TESTS.test_555a_parte4",
+      7
+    ],
+    [
+      "SERVICIOS.importador_canonico_seguro_555b71",
+      6
+    ],
+    [
+      "SERVICIOS.resolucion_ingredientes_m132",
+      6
+    ],
+    [
+      "APP.replanificador_inteligente_538",
+      5
+    ],
+    [
+      "SERVICIOS.diagnostico_resolutor_articulos_m12",
+      5
+    ],
+    [
+      "SERVICIOS.diagnostico_resolutor_recetas_m13",
+      5
+    ],
+    [
+      "SERVICIOS.lanzador_piloto_01",
+      5
+    ],
+    [
+      "SERVICIOS.repositorio_escandallos_555a",
+      5
+    ],
+    [
+      "SERVICIOS.serializador_escandallos_555a",
+      5
+    ],
+    [
+      "SERVICIOS.validador_escandallos_555a",
+      5
+    ],
+    [
+      "TESTS.test_538_replanificador_inteligente",
+      5
+    ],
+    [
+      "TESTS.test_555a_parte2",
+      5
+    ],
+    [
+      "TESTS.test_555a_parte3",
+      5
+    ],
+    [
+      "TESTS.test_piloto_01_estabilizacion",
+      5
+    ],
+    [
+      "APP.consola_piloto_01",
+      4
+    ],
+    [
+      "APP.detector_incidencias_537",
+      4
+    ],
+    [
+      "MOTORES.motor_asistente_conversacional",
+      4
+    ],
+    [
+      "SERVICIOS.auditor_modelo_escandallos_555a",
+      4
+    ],
+    [
+      "SERVICIOS.conector_escandallos_real_555",
+      4
+    ],
+    [
+      "SERVICIOS.integracion_nucleo_ia_505",
+      4
+    ],
+    [
+      "SERVICIOS.integrador_eventos_escandallos_555a",
+      4
+    ],
+    [
+      "SERVICIOS.panel_ia_central_497",
+      4
+    ],
+    [
+      "SERVICIOS.resolutor_articulos_m12",
+      4
+    ],
+    [
+      "TESTS.test_537_detector_incidencias",
+      4
+    ],
+    [
+      "CORE.MUR.orquestador",
+      4
+    ],
+    [
+      "CORE.MUR",
+      4
+    ],
+    [
+      "COMPROBAR_PILOTO_1.4",
+      3
+    ],
+    [
+      "APP.compras_evento_474",
+      3
+    ],
+    [
+      "APP.priorizador_tareas_536",
+      3
+    ],
+    [
+      "APP.produccion_evento_473",
+      3
+    ],
+    [
+      "APP.respuesta_ejecutiva_533",
+      3
+    ],
+    [
+      "SERVICIOS.bandeja_correccion_inteligente_i13442",
+      3
+    ],
+    [
+      "SERVICIOS.bandeja_correccion_postimportacion_i13441",
+      3
+    ],
+    [
+      "SERVICIOS.certificador_piloto_01",
+      3
+    ]
+  ],
+  "candidate_orphans_count": 175,
+  "candidate_orphans": [
+    "demo_host_ai_3.py",
+    "ejecutar_certificacion_rr162.py",
+    "ejecutar_certificacion_rr163.py",
+    "APP/acciones_automaticas_seguras_492.py",
+    "APP/alertas_rentabilidad_487.py",
+    "APP/alertas_stock_bajo_434.py",
+    "APP/alta_articulos_recepcion_444.py",
+    "APP/alta_articulo_416.py",
+    "APP/analizador_situacion_541.py",
+    "APP/analizar_excel_escandallos_555b.py",
+    "APP/aplicar_ajustes_inventario_43114.py",
+    "APP/aplicar_recepcion_mercancia_443.py",
+    "APP/aprendizaje_operativo_546.py",
+    "APP/asignacion_cocineros_463.py",
+    "APP/asignar_familia_4111.py",
+    "APP/asistente_urgencias_495.py",
+    "APP/auditoria_dependencias_4103.py",
+    "APP/auditoria_modulos_4101.py",
+    "APP/auditoria_nucleo_ia_501.py",
+    "APP/auditoria_sistema_457.py",
+    "APP/auditoria_tests_4102.py",
+    "APP/base_datos_definitiva_451.py",
+    "APP/beta_conversacional_qa_506.py",
+    "APP/bootloader_host_ai_502.py",
+    "APP/buscador_catalogo_cocina_552.py",
+    "APP/buscar_articulos_415.py",
+    "APP/chat_host_ai_504.py",
+    "APP/chat_host_ai_505.py",
+    "APP/checklist_final_produccion_467.py",
+    "APP/cierre_catalogo_base_4113.py",
+    "APP/cierre_host_ai_4_498.py",
+    "APP/cierre_importador_escandallos_555b74.py",
+    "APP/cierre_inteligencia_operativa_539.py",
+    "APP/cierre_modelo_escandallos_555a.py",
+    "APP/cierre_modulo_stock_4312.py",
+    "APP/cierre_tecnico_host_ai_4108.py",
+    "APP/clasificador_consultas_datos_551.py",
+    "APP/clasificador_intenciones_503.py",
+    "APP/clasificar_articulos_412.py",
+    "APP/clasificar_familias_articulos_419.py",
+    "APP/clasificar_familias_proveedor_4112.py",
+    "APP/clasificar_tests_historicos_4105.py",
+    "APP/comparador_economico_proveedores_486.py",
+    "APP/comparar_inventario_43113.py",
+    "APP/compras_evento_474.py",
+    "APP/conector_escandallos_real_555.py",
+    "APP/conector_produccion_real_556.py",
+    "APP/conector_proveedores_real_554.py",
+    "APP/conector_stock_real_553.py",
+    "APP/configuracion_host_ai_4414.py",
+    "APP/confirmaciones_inteligentes_5412.py",
+    "APP/confirmacion_inteligente_534.py",
+    "APP/confirmar_pedido_sugerido_436.py",
+    "APP/conflictos_replanificacion_466.py",
+    "APP/continuador_flujo_5411.py",
+    "APP/continuidad_conversacional_549.py",
+    "APP/control_mermas_485.py",
+    "APP/conversacion_natural_5413.py",
+    "APP/coste_real_receta_481.py",
+    "APP/cronograma_evento_477.py",
+    "APP/depurar_fichas_tecnicas_555b.py",
+    "APP/detector_incidencias_537.py",
+    "APP/editar_articulo_417.py",
+    "APP/editar_proveedor_422.py",
+    "APP/ejecutor_flujo_operativo_532.py",
+    "APP/entrada_stock_desde_pedido_438.py",
+    "APP/escandallo_economico_555b73.py",
+    "APP/evaluador_alternativas_543.py",
+    "APP/explicacion_decisiones_547.py",
+    "APP/extraer_fichas_tecnicas_555b.py",
+    "APP/extraer_proveedores_421.py",
+    "APP/flujo_diario_automatico_494.py",
+    "APP/generador_flujo_operativo_531.py",
+    "APP/generar_codigos_articulos_413.py",
+    "APP/generar_plantilla_inventario_43111.py",
+    "APP/generar_plantilla_stock_431.py",
+    "APP/gestionar_ficha_produccion_556e31.py",
+    "APP/gestionar_inventario_inicial_556cd2.py",
+    "APP/gestionar_pendientes_recepcion_444.py",
+    "APP/gestionar_precio_venta_555b732.py",
+    "APP/gestion_eventos_471.py",
+    "APP/gestor_contexto_permanente_5410.py",
+    "APP/historial_movimientos_stock_4310.py",
+    "APP/importar_articulos_414.py",
+    "APP/importar_canonico_seguro_555b71.py",
+    "APP/importar_inventario_43112.py",
+    "APP/importar_stock_inicial_432.py",
+    "APP/informe_catalogo_articulos_418.py",
+    "APP/informe_diario_produccion_468.py",
+    "APP/informe_final_evento_478.py",
+    "APP/informe_final_host_ai_4104.py",
+    "APP/informe_final_inventario_43115.py",
+    "APP/informe_financiero_inteligente_488.py",
+    "APP/informe_pendientes_familia_4110.py",
+    "APP/informe_proveedores_423.py",
+    "APP/informe_stock_inicial_433.py",
+    "APP/instalar_host_ai_4415.py",
+    "APP/integracion_conversacional_5414.py",
+    "APP/interpretar_recepcion_texto_441.py",
+    "APP/limpieza_apps_antiguas_4106.py",
+    "APP/logs_proyecto_4413.py",
+    "APP/mapa_maestro_modulos_4107.py",
+    "APP/margen_plato_menu_482.py",
+    "APP/material_evento_476.py",
+    "APP/menus_evento_472.py",
+    "APP/motor_decisiones_542.py",
+    "APP/motor_decisiones_operativas_491.py",
+    "APP/movimiento_stock_437.py",
+    "APP/multi_restaurante_452.py",
+    "APP/nucleo_ia_host_ai_51.py",
+    "APP/optimizador_global_545.py",
+    "APP/orquestador_inteligente_51.py",
+    "APP/orquestador_inteligente_52.py",
+    "APP/panel_estado_455.py",
+    "APP/panel_ia_central_497.py",
+    "APP/pedido_sugerido_stock_bajo_435.py",
+    "APP/permisos_avanzados_458.py",
+    "APP/personal_evento_475.py",
+    "APP/planificador_diario_produccion_461.py",
+    "APP/planificador_inteligente_535.py",
+    "APP/planificar_receta_real_556e31.py",
+    "APP/preimportar_escandallos_555b.py",
+    "APP/prioridades_inteligentes_cocina_462.py",
+    "APP/priorizador_tareas_536.py",
+    "APP/probar_cruce_stock_plan_556cd.py",
+    "APP/probar_enriquecimiento_precios_555b731.py",
+    "APP/probar_escalado_explosion_556ab.py",
+    "APP/probar_flujo_post_ficha_556e33.py",
+    "APP/probar_ingesta_receta_556e32.py",
+    "APP/probar_paralelizacion_556e4.py",
+    "APP/probar_recursos_produccion_556e2.py",
+    "APP/probar_reparto_cocineros_556e3.py",
+    "APP/probar_tiempos_produccion_556e1.py",
+    "APP/produccion_evento_473.py",
+    "APP/recepcion_mercancia_texto_442.py",
+    "APP/recomendaciones_inteligentes_496.py",
+    "APP/recursos_cocina_465.py",
+    "APP/reforzador_clasificador_507.py",
+    "APP/release_candidate_548.py",
+    "APP/release_candidate_conversacional_5415.py",
+    "APP/rentabilidad_carta_483.py",
+    "APP/replanificador_inteligente_538.py",
+    "APP/resolver_variantes_escandallos_555b.py",
+    "APP/respuestas_jefe_cocina_493.py",
+    "APP/respuesta_ejecutiva_533.py",
+    "APP/salida_stock_439.py",
+    "APP/simulador_escenarios_544.py",
+    "APP/simulador_precios_484.py",
+    "APP/tiempos_activos_pasivos_464.py",
+    "APP/usuarios_roles_456.py",
+    "APP/vista_previa_importador_escandallos_555b.py",
+    "APP/__init__.py",
+    "CORE/__init__.py",
+    "HERRAMIENTAS/clasificar_tests_legacy.py",
+    "HOST_AI_6.0.3_MODO_MANUAL_OPERATIVO/main.py",
+    "MODELOS/__init__.py",
+    "MOTORES/__init__.py",
+    "PIPELINES/pipeline_evento_api.py",
+    "PIPELINES/__init__.py",
+    "SERVICIOS/clasificador_menus_555b.py",
+    "SERVICIOS/detector_fichas_tecnicas_555b.py",
+    "SERVICIOS/__init__.py",
+    "PILOTO-1.2.1_Humanizacion_Mi_Jornada/APP/consola_jornada_piloto_12.py",
+    "PILOTO-1.2.1_Humanizacion_Mi_Jornada/SERVICIOS/jornada_piloto_12.py",
+    "HOST_AI_RR14_PULIDO_ESCANDALLOS_COSTES/APP/consola.py",
+    "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+    "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/MOTORES/motor_compras.py",
+    "HOST_AI_RR12_PULIDO_EVENTOS/APP/consola.py",
+    "HOST_AI_RR11_PULIDO_PRODUCCION/APP/consola.py",
+    "HOST_AI_6.0.3_MODO_MANUAL_OPERATIVO/APP/consola.py",
+    "HOST_AI_6.0.3_MODO_MANUAL_OPERATIVO/SERVICIOS/lanzador_host_ai_base_603.py",
+    "HOST_AI_6.0.2_LINEA_BASE_VERDE/SERVICIOS/motor_paralelizacion_produccion_556e4.py",
+    "HOST_AI_6.0.2_LINEA_BASE_VERDE/SERVICIOS/orquestador_inteligente_52.py",
+    "CORE/entidades/__init__.py",
+    "CORE/gestores/__init__.py"
+  ],
+  "duplicate_stems_count": 99,
+  "duplicate_stems": {
+    "acciones_automaticas_seguras_492": [
+      "APP/acciones_automaticas_seguras_492.py",
+      "SERVICIOS/acciones_automaticas_seguras_492.py"
+    ],
+    "alertas_rentabilidad_487": [
+      "APP/alertas_rentabilidad_487.py",
+      "SERVICIOS/alertas_rentabilidad_487.py"
+    ],
+    "alertas_stock_bajo_434": [
+      "APP/alertas_stock_bajo_434.py",
+      "SERVICIOS/alertas_stock_bajo_434.py"
+    ],
+    "alta_articulos_recepcion_444": [
+      "APP/alta_articulos_recepcion_444.py",
+      "SERVICIOS/alta_articulos_recepcion_444.py"
+    ],
+    "analizador_situacion_541": [
+      "APP/analizador_situacion_541.py",
+      "SERVICIOS/analizador_situacion_541.py"
+    ],
+    "aprendizaje_operativo_546": [
+      "APP/aprendizaje_operativo_546.py",
+      "SERVICIOS/aprendizaje_operativo_546.py"
+    ],
+    "asignacion_cocineros_463": [
+      "APP/asignacion_cocineros_463.py",
+      "SERVICIOS/asignacion_cocineros_463.py"
+    ],
+    "asistente_importacion_excel": [
+      "MODELOS/asistente_importacion_excel.py",
+      "SERVICIOS/asistente_importacion_excel.py"
+    ],
+    "asistente_urgencias_495": [
+      "APP/asistente_urgencias_495.py",
+      "SERVICIOS/asistente_urgencias_495.py"
+    ],
+    "auditoria_dependencias_4103": [
+      "APP/auditoria_dependencias_4103.py",
+      "SERVICIOS/auditoria_dependencias_4103.py"
+    ],
+    "auditoria_modulos_4101": [
+      "APP/auditoria_modulos_4101.py",
+      "SERVICIOS/auditoria_modulos_4101.py"
+    ],
+    "auditoria_nucleo_ia_501": [
+      "APP/auditoria_nucleo_ia_501.py",
+      "SERVICIOS/auditoria_nucleo_ia_501.py"
+    ],
+    "auditoria_sistema_457": [
+      "APP/auditoria_sistema_457.py",
+      "SERVICIOS/auditoria_sistema_457.py"
+    ],
+    "auditoria_tests_4102": [
+      "APP/auditoria_tests_4102.py",
+      "SERVICIOS/auditoria_tests_4102.py"
+    ],
+    "beta_conversacional_qa_506": [
+      "APP/beta_conversacional_qa_506.py",
+      "SERVICIOS/beta_conversacional_qa_506.py"
+    ],
+    "bootloader_host_ai_502": [
+      "APP/bootloader_host_ai_502.py",
+      "SERVICIOS/bootloader_host_ai_502.py"
+    ],
+    "buscador_catalogo_cocina_552": [
+      "APP/buscador_catalogo_cocina_552.py",
+      "SERVICIOS/buscador_catalogo_cocina_552.py"
+    ],
+    "checklist_final_produccion_467": [
+      "APP/checklist_final_produccion_467.py",
+      "SERVICIOS/checklist_final_produccion_467.py"
+    ],
+    "cierre_catalogo_base_4113": [
+      "APP/cierre_catalogo_base_4113.py",
+      "SERVICIOS/cierre_catalogo_base_4113.py"
+    ],
+    "cierre_host_ai_4_498": [
+      "APP/cierre_host_ai_4_498.py",
+      "SERVICIOS/cierre_host_ai_4_498.py"
+    ],
+    "cierre_importador_universal": [
+      "MODELOS/cierre_importador_universal.py",
+      "SERVICIOS/cierre_importador_universal.py"
+    ],
+    "cierre_inteligencia_compras": [
+      "MODELOS/cierre_inteligencia_compras.py",
+      "SERVICIOS/cierre_inteligencia_compras.py"
+    ],
+    "cierre_modulo_stock_4312": [
+      "APP/cierre_modulo_stock_4312.py",
+      "SERVICIOS/cierre_modulo_stock_4312.py"
+    ],
+    "cierre_tecnico_host_ai_4108": [
+      "APP/cierre_tecnico_host_ai_4108.py",
+      "SERVICIOS/cierre_tecnico_host_ai_4108.py"
+    ],
+    "clasificador_consultas_datos_551": [
+      "APP/clasificador_consultas_datos_551.py",
+      "SERVICIOS/clasificador_consultas_datos_551.py"
+    ],
+    "clasificador_intenciones_503": [
+      "APP/clasificador_intenciones_503.py",
+      "SERVICIOS/clasificador_intenciones_503.py"
+    ],
+    "comparador_economico_proveedores_486": [
+      "APP/comparador_economico_proveedores_486.py",
+      "SERVICIOS/comparador_economico_proveedores_486.py"
+    ],
+    "compras_evento_474": [
+      "APP/compras_evento_474.py",
+      "SERVICIOS/compras_evento_474.py"
+    ],
+    "conector_escandallos_real_555": [
+      "APP/conector_escandallos_real_555.py",
+      "SERVICIOS/conector_escandallos_real_555.py"
+    ],
+    "conector_produccion_real_556": [
+      "APP/conector_produccion_real_556.py",
+      "SERVICIOS/conector_produccion_real_556.py"
+    ],
+    "conector_proveedores_real_554": [
+      "APP/conector_proveedores_real_554.py",
+      "SERVICIOS/conector_proveedores_real_554.py"
+    ],
+    "conector_stock_real_553": [
+      "APP/conector_stock_real_553.py",
+      "SERVICIOS/conector_stock_real_553.py"
+    ],
+    "confirmacion_inteligente_534": [
+      "APP/confirmacion_inteligente_534.py",
+      "SERVICIOS/confirmacion_inteligente_534.py"
+    ],
+    "confirmaciones_inteligentes_5412": [
+      "APP/confirmaciones_inteligentes_5412.py",
+      "SERVICIOS/confirmaciones_inteligentes_5412.py"
+    ],
+    "conflictos_replanificacion_466": [
+      "APP/conflictos_replanificacion_466.py",
+      "SERVICIOS/conflictos_replanificacion_466.py"
+    ],
+    "consola": [
+      "APP/consola.py",
+      "HOST_AI_RR14_PULIDO_ESCANDALLOS_COSTES/APP/consola.py",
+      "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "HOST_AI_RR12_PULIDO_EVENTOS/APP/consola.py",
+      "HOST_AI_RR11_PULIDO_PRODUCCION/APP/consola.py",
+      "HOST_AI_6.0.3_MODO_MANUAL_OPERATIVO/APP/consola.py"
+    ],
+    "consola_jornada_piloto_12": [
+      "APP/consola_jornada_piloto_12.py",
+      "PILOTO-1.2.1_Humanizacion_Mi_Jornada/APP/consola_jornada_piloto_12.py"
+    ],
+    "continuador_flujo_5411": [
+      "APP/continuador_flujo_5411.py",
+      "SERVICIOS/continuador_flujo_5411.py"
+    ],
+    "control_mermas_485": [
+      "APP/control_mermas_485.py",
+      "SERVICIOS/control_mermas_485.py"
+    ],
+    "conversacion_natural_5413": [
+      "APP/conversacion_natural_5413.py",
+      "SERVICIOS/conversacion_natural_5413.py"
+    ],
+    "coste_real_receta_481": [
+      "APP/coste_real_receta_481.py",
+      "SERVICIOS/coste_real_receta_481.py"
+    ],
+    "cronograma_evento_477": [
+      "APP/cronograma_evento_477.py",
+      "SERVICIOS/cronograma_evento_477.py"
+    ],
+    "detector_incidencias_537": [
+      "APP/detector_incidencias_537.py",
+      "SERVICIOS/detector_incidencias_537.py"
+    ],
+    "ejecutor_flujo_operativo_532": [
+      "APP/ejecutor_flujo_operativo_532.py",
+      "SERVICIOS/ejecutor_flujo_operativo_532.py"
+    ],
+    "entrada_stock_desde_pedido_438": [
+      "APP/entrada_stock_desde_pedido_438.py",
+      "SERVICIOS/entrada_stock_desde_pedido_438.py"
+    ],
+    "evaluador_alternativas_543": [
+      "APP/evaluador_alternativas_543.py",
+      "SERVICIOS/evaluador_alternativas_543.py"
+    ],
+    "explicacion_decisiones_547": [
+      "APP/explicacion_decisiones_547.py",
+      "SERVICIOS/explicacion_decisiones_547.py"
+    ],
+    "flujo_diario_automatico_494": [
+      "APP/flujo_diario_automatico_494.py",
+      "SERVICIOS/flujo_diario_automatico_494.py"
+    ],
+    "generador_flujo_operativo_531": [
+      "APP/generador_flujo_operativo_531.py",
+      "SERVICIOS/generador_flujo_operativo_531.py"
+    ],
+    "gestion_eventos_471": [
+      "APP/gestion_eventos_471.py",
+      "SERVICIOS/gestion_eventos_471.py"
+    ],
+    "gestor_contexto_permanente_5410": [
+      "APP/gestor_contexto_permanente_5410.py",
+      "SERVICIOS/gestor_contexto_permanente_5410.py"
+    ],
+    "historial_movimientos_stock_4310": [
+      "APP/historial_movimientos_stock_4310.py",
+      "SERVICIOS/historial_movimientos_stock_4310.py"
+    ],
+    "informe_catalogo_articulos_418": [
+      "APP/informe_catalogo_articulos_418.py",
+      "SERVICIOS/informe_catalogo_articulos_418.py"
+    ],
+    "informe_diario_produccion_468": [
+      "APP/informe_diario_produccion_468.py",
+      "SERVICIOS/informe_diario_produccion_468.py"
+    ],
+    "informe_final_evento_478": [
+      "APP/informe_final_evento_478.py",
+      "SERVICIOS/informe_final_evento_478.py"
+    ],
+    "informe_final_host_ai_4104": [
+      "APP/informe_final_host_ai_4104.py",
+      "SERVICIOS/informe_final_host_ai_4104.py"
+    ],
+    "informe_final_inventario_43115": [
+      "APP/informe_final_inventario_43115.py",
+      "SERVICIOS/informe_final_inventario_43115.py"
+    ],
+    "informe_financiero_inteligente_488": [
+      "APP/informe_financiero_inteligente_488.py",
+      "SERVICIOS/informe_financiero_inteligente_488.py"
+    ],
+    "informe_pendientes_familia_4110": [
+      "APP/informe_pendientes_familia_4110.py",
+      "SERVICIOS/informe_pendientes_familia_4110.py"
+    ],
+    "informe_proveedores_423": [
+      "APP/informe_proveedores_423.py",
+      "SERVICIOS/informe_proveedores_423.py"
+    ],
+    "informe_stock_inicial_433": [
+      "APP/informe_stock_inicial_433.py",
+      "SERVICIOS/informe_stock_inicial_433.py"
+    ],
+    "jornada_piloto_12": [
+      "SERVICIOS/jornada_piloto_12.py",
+      "PILOTO-1.2.1_Humanizacion_Mi_Jornada/SERVICIOS/jornada_piloto_12.py"
+    ],
+    "lanzador_host_ai_base_603": [
+      "SERVICIOS/lanzador_host_ai_base_603.py",
+      "HOST_AI_6.0.3_MODO_MANUAL_OPERATIVO/SERVICIOS/lanzador_host_ai_base_603.py"
+    ],
+    "limpieza_apps_antiguas_4106": [
+      "APP/limpieza_apps_antiguas_4106.py",
+      "SERVICIOS/limpieza_apps_antiguas_4106.py"
+    ],
+    "main": [
+      "main.py",
+      "HOST_AI_6.0.3_MODO_MANUAL_OPERATIVO/main.py"
+    ],
+    "mapa_maestro_modulos_4107": [
+      "APP/mapa_maestro_modulos_4107.py",
+      "SERVICIOS/mapa_maestro_modulos_4107.py"
+    ],
+    "margen_plato_menu_482": [
+      "APP/margen_plato_menu_482.py",
+      "SERVICIOS/margen_plato_menu_482.py"
+    ],
+    "material_evento_476": [
+      "APP/material_evento_476.py",
+      "SERVICIOS/material_evento_476.py"
+    ],
+    "menus_evento_472": [
+      "APP/menus_evento_472.py",
+      "SERVICIOS/menus_evento_472.py"
+    ],
+    "motor_compras": [
+      "MOTORES/motor_compras.py",
+      "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/MOTORES/motor_compras.py"
+    ],
+    "motor_decisiones_542": [
+      "APP/motor_decisiones_542.py",
+      "SERVICIOS/motor_decisiones_542.py"
+    ],
+    "motor_decisiones_operativas_491": [
+      "APP/motor_decisiones_operativas_491.py",
+      "SERVICIOS/motor_decisiones_operativas_491.py"
+    ],
+    "motor_paralelizacion_produccion_556e4": [
+      "SERVICIOS/motor_paralelizacion_produccion_556e4.py",
+      "HOST_AI_6.0.2_LINEA_BASE_VERDE/SERVICIOS/motor_paralelizacion_produccion_556e4.py"
+    ],
+    "nucleo_ia_host_ai_51": [
+      "APP/nucleo_ia_host_ai_51.py",
+      "SERVICIOS/nucleo_ia_host_ai_51.py"
+    ],
+    "optimizador_global_545": [
+      "APP/optimizador_global_545.py",
+      "SERVICIOS/optimizador_global_545.py"
+    ],
+    "orquestador": [
+      "CORE/orquestador.py",
+      "CORE/MUR/orquestador.py"
+    ],
+    "orquestador_inteligente_51": [
+      "APP/orquestador_inteligente_51.py",
+      "SERVICIOS/orquestador_inteligente_51.py"
+    ],
+    "orquestador_inteligente_52": [
+      "APP/orquestador_inteligente_52.py",
+      "SERVICIOS/orquestador_inteligente_52.py",
+      "HOST_AI_6.0.2_LINEA_BASE_VERDE/SERVICIOS/orquestador_inteligente_52.py"
+    ],
+    "panel_estado_455": [
+      "APP/panel_estado_455.py",
+      "SERVICIOS/panel_estado_455.py"
+    ],
+    "panel_ia_central_497": [
+      "APP/panel_ia_central_497.py",
+      "SERVICIOS/panel_ia_central_497.py"
+    ],
+    "permisos_avanzados_458": [
+      "APP/permisos_avanzados_458.py",
+      "SERVICIOS/permisos_avanzados_458.py"
+    ],
+    "personal_evento_475": [
+      "APP/personal_evento_475.py",
+      "SERVICIOS/personal_evento_475.py"
+    ],
+    "planificador_diario_produccion_461": [
+      "APP/planificador_diario_produccion_461.py",
+      "SERVICIOS/planificador_diario_produccion_461.py"
+    ],
+    "planificador_inteligente_535": [
+      "APP/planificador_inteligente_535.py",
+      "SERVICIOS/planificador_inteligente_535.py"
+    ],
+    "prediccion_necesidades_stock": [
+      "MODELOS/prediccion_necesidades_stock.py",
+      "SERVICIOS/prediccion_necesidades_stock.py"
+    ],
+    "prioridades_inteligentes_cocina_462": [
+      "APP/prioridades_inteligentes_cocina_462.py",
+      "SERVICIOS/prioridades_inteligentes_cocina_462.py"
+    ],
+    "priorizador_tareas_536": [
+      "APP/priorizador_tareas_536.py",
+      "SERVICIOS/priorizador_tareas_536.py"
+    ],
+    "produccion_evento_473": [
+      "APP/produccion_evento_473.py",
+      "SERVICIOS/produccion_evento_473.py"
+    ],
+    "recomendaciones_inteligentes_496": [
+      "APP/recomendaciones_inteligentes_496.py",
+      "SERVICIOS/recomendaciones_inteligentes_496.py"
+    ],
+    "recursos_cocina_465": [
+      "APP/recursos_cocina_465.py",
+      "SERVICIOS/recursos_cocina_465.py"
+    ],
+    "release_candidate_548": [
+      "APP/release_candidate_548.py",
+      "SERVICIOS/release_candidate_548.py"
+    ],
+    "release_candidate_conversacional_5415": [
+      "APP/release_candidate_conversacional_5415.py",
+      "SERVICIOS/release_candidate_conversacional_5415.py"
+    ],
+    "rentabilidad_carta_483": [
+      "APP/rentabilidad_carta_483.py",
+      "SERVICIOS/rentabilidad_carta_483.py"
+    ],
+    "replanificador_inteligente_538": [
+      "APP/replanificador_inteligente_538.py",
+      "SERVICIOS/replanificador_inteligente_538.py"
+    ],
+    "respuesta_ejecutiva_533": [
+      "APP/respuesta_ejecutiva_533.py",
+      "SERVICIOS/respuesta_ejecutiva_533.py"
+    ],
+    "respuestas_jefe_cocina_493": [
+      "APP/respuestas_jefe_cocina_493.py",
+      "SERVICIOS/respuestas_jefe_cocina_493.py"
+    ],
+    "simulador_escenarios_544": [
+      "APP/simulador_escenarios_544.py",
+      "SERVICIOS/simulador_escenarios_544.py"
+    ],
+    "simulador_precios_484": [
+      "APP/simulador_precios_484.py",
+      "SERVICIOS/simulador_precios_484.py"
+    ],
+    "tiempos_activos_pasivos_464": [
+      "APP/tiempos_activos_pasivos_464.py",
+      "SERVICIOS/tiempos_activos_pasivos_464.py"
+    ]
+  },
+  "exact_duplicate_groups": [
+    [
+      "SERVICIOS/lanzador_host_ai_base_603.py",
+      "HOST_AI_6.0.3_MODO_MANUAL_OPERATIVO/SERVICIOS/lanzador_host_ai_base_603.py"
+    ]
+  ],
+  "symbols_selected": {
+    "main": {
+      "classes": [],
+      "functions": [
+        "main"
+      ]
+    },
+    "APP.consola_piloto_01": {
+      "classes": [
+        "ConsolaPiloto01"
+      ],
+      "functions": [
+        "__init__",
+        "ejecutar",
+        "_cabecera",
+        "_menu"
+      ]
+    },
+    "CORE.host_ai_core": {
+      "classes": [
+        "HostAICore"
+      ],
+      "functions": [
+        "__init__",
+        "_registrar_pipelines",
+        "_cargar_diccionario"
+      ]
+    },
+    "MOTORES.motor_produccion_real": {
+      "classes": [
+        "MotorProduccionReal"
+      ],
+      "functions": [
+        "__init__",
+        "_cargar_desde_db",
+        "_persistir",
+        "obtener_plan",
+        "crear_plan_manual",
+        "buscar_planes",
+        "editar_plan",
+        "duplicar_plan",
+        "eliminar_plan",
+        "planificar_evento",
+        "listar_planes",
+        "diagnosticar_plan",
+        "sugerir_trabajo_por_responsable",
+        "anadir_tarea_manual",
+        "anadir_fase_manual",
+        "eliminar_tarea",
+        "planificar_inteligente",
+        "_obtener_tarea",
+        "_ahora",
+        "_segundos_desde",
+        "tiempo_real_tarea_segundos",
+        "iniciar_tarea",
+        "pausar_tarea",
+        "reanudar_tarea",
+        "finalizar_tarea",
+        "estado_tarea",
+        "resumen_ejecucion",
+        "actualizar_progreso_tarea",
+        "registrar_incidencia_tarea",
+        "resolver_bloqueo_tarea"
+      ]
+    },
+    "MOTORES.motor_stock": {
+      "classes": [
+        "MotorStock"
+      ],
+      "functions": [
+        "__init__",
+        "_cargar_desde_db",
+        "_guardar_automatico",
+        "registrar_entrada",
+        "consumir",
+        "registrar_merma",
+        "ajustar_inventario",
+        "actualizar_lote",
+        "ajustar_minimo",
+        "stock_actual",
+        "lotes_listado",
+        "movimientos_articulo",
+        "diagnosticar_stock",
+        "resumen_operativo",
+        "ultimo_coste_conocido",
+        "predecir_necesidad",
+        "corregir_ultima_entrada",
+        "ultima_entrada",
+        "movimientos_listado",
+        "_descontar_stock",
+        "_lotes_compatibles",
+        "_cantidad_disponible",
+        "_fecha_sort"
+      ]
+    },
+    "SERVICIOS.lanzador_piloto_01": {
+      "classes": [
+        "LanzadorPiloto01"
+      ],
+      "functions": [
+        "ejecutar_piloto_01",
+        "__init__",
+        "abrir_modo_piloto",
+        "abrir_modo_desarrollo",
+        "mostrar_auditoria",
+        "certificar",
+        "ejecutar"
+      ]
+    }
+  }
+}

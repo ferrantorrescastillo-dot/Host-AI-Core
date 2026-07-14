@@ -1,0 +1,10 @@
+HOST AI 6.0.4 — IA1.4 INTEGRACIÓN CON MOTORES
+
+Instalación:
+1. Haz una copia de tu versión actual con IA1.3.
+2. Copia las carpetas APP, CORE, SERVICIOS y TESTS encima del proyecto.
+3. Acepta sustituir archivos.
+4. Ejecuta: python main.py
+5. En Host AI Base entra en la opción 11.
+
+IA1.4 NO EJECUTA ACCIONES. Solo prepara y valida la propuesta técnica.

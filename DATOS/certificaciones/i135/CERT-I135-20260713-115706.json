@@ -1,0 +1,62 @@
+{
+  "version": "I1.3.5",
+  "fecha_utc": "2026-07-13T09:57:06.984655+00:00",
+  "estado": "CERTIFICADO",
+  "imports": [
+    {
+      "modulo": "SERVICIOS.detector_limpio_menus_i131",
+      "estado": "OK"
+    },
+    {
+      "modulo": "SERVICIOS.motor_reconocimiento_menus_i1321",
+      "estado": "OK"
+    },
+    {
+      "modulo": "SERVICIOS.constructor_arbol_semantico_menus_i1322",
+      "estado": "OK"
+    },
+    {
+      "modulo": "SERVICIOS.motor_aprendizaje_culinario_i1324",
+      "estado": "OK"
+    },
+    {
+      "modulo": "SERVICIOS.simulador_importacion_menus_i13415",
+      "estado": "OK"
+    },
+    {
+      "modulo": "SERVICIOS.importador_definitivo_menus_i1343",
+      "estado": "OK"
+    },
+    {
+      "modulo": "SERVICIOS.auditor_integridad_postimportacion_i1344",
+      "estado": "OK"
+    },
+    {
+      "modulo": "SERVICIOS.bandeja_correccion_inteligente_i13442",
+      "estado": "OK"
+    },
+    {
+      "modulo": "SERVICIOS.utilidades_importador_i135",
+      "estado": "OK"
+    }
+  ],
+  "modulos_ok": 9,
+  "modulos_total": 9,
+  "errores_import": [],
+  "metricas": {
+    "menus": 7,
+    "secciones": 19,
+    "platos": 24,
+    "componentes": 18,
+    "catalogo_presente": true,
+    "json_valido": true
+  },
+  "archivos_negocio_modificados": [],
+  "solo_lectura": true,
+  "principios": {
+    "sin_funcionalidad_nueva": true,
+    "utilidades_centralizadas": true,
+    "incidencias_centralizadas": true,
+    "coincidencias_exactas_centralizadas": true
+  }
+}

@@ -1,0 +1,64 @@
+[
+  {
+    "codigo": "ART000355",
+    "articulo": "Arroz bomba",
+    "proveedor": "Makro",
+    "familia": "Arroces",
+    "unidad": "kg",
+    "stock_actual": 60.0,
+    "stock_minimo": 10.0,
+    "ubicacion": "Almacen seco",
+    "observaciones_stock": null,
+    "fecha_importacion": "2026-07-09T12:54:02"
+  },
+  {
+    "codigo": "ART000356",
+    "articulo": "Harina fuerza",
+    "proveedor": "Makro",
+    "familia": "Harinas",
+    "unidad": "kg",
+    "stock_actual": 10.0,
+    "stock_minimo": 10.0,
+    "ubicacion": "Almacen seco",
+    "observaciones_stock": null,
+    "fecha_importacion": "2026-07-09T12:54:02"
+  },
+  {
+    "codigo": "ART000357",
+    "articulo": "Leche entera",
+    "proveedor": "Makro",
+    "familia": "Lácteos",
+    "unidad": "L",
+    "stock_actual": 15.0,
+    "stock_minimo": 10.0,
+    "ubicacion": "Almacen seco",
+    "observaciones_stock": null,
+    "fecha_importacion": "2026-07-09T12:54:02"
+  },
+  {
+    "codigo": "ART000358",
+    "articulo": "Tomate triturado",
+    "proveedor": "Makro",
+    "familia": "Conservas",
+    "unidad": "kg",
+    "stock_actual": 10.0,
+    "stock_minimo": 10.0,
+    "ubicacion": "Almacen seco",
+    "observaciones_stock": null,
+    "fecha_importacion": "2026-07-09T12:54:02"
+  },
+  {
+    "codigo": "ART000238",
+    "articulo_id": "ART000238",
+    "articulo": "Patata Monalisa.",
+    "nombre": "Patata Monalisa.",
+    "unidad": "kg",
+    "stock_actual": 25.0,
+    "cantidad": 25.0,
+    "stock_minimo": 2.0,
+    "ubicacion": "Almacen seco",
+    "proveedor": "PAU GAVALDA",
+    "origen": "INVENTARIO_INICIAL_5.5.6CD.2",
+    "actualizado_en": "2026-07-10T14:31:42.873517+00:00"
+  }
+]

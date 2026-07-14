@@ -1,0 +1,24 @@
+HOST AI 4.3.3 - INFORME STOCK INICIAL
+================================================================
+Registros de stock cargados: 4
+Artículos totales catálogo: 358
+Artículos sin stock cargado: 354
+Bajo mínimo: 3
+Sin unidad: 0
+Sin ubicación: 0
+Estado: apto_con_observaciones
+
+UBICACIONES
+----------------------------------------------------------------
+Almacen seco: 4
+
+UNIDADES
+----------------------------------------------------------------
+kg: 3
+L: 1
+
+ALERTAS
+----------------------------------------------------------------
+bajo_minimo | ART000355 | Arroz bomba | Stock: 3.0 kg | Mín: 10.0 | Stock actual por debajo del stock mínimo.
+bajo_minimo | ART000356 | Harina fuerza | Stock: 6.0 kg | Mín: 10.0 | Stock actual por debajo del stock mínimo.
+bajo_minimo | ART000358 | Tomate triturado | Stock: 2.0 kg | Mín: 10.0 | Stock actual por debajo del stock mínimo.

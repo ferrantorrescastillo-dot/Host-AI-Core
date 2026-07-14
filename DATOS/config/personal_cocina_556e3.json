@@ -1,0 +1,8 @@
+{
+  "cocineros": [
+    {"id": "COC-001", "nombre": "Cocinero 1", "habilidades": []},
+    {"id": "COC-002", "nombre": "Cocinero 2", "habilidades": []},
+    {"id": "COC-003", "nombre": "Cocinero 3", "habilidades": []}
+  ],
+  "jornada_defecto": {"inicio": "08:00", "fin": "15:30"}
+}

@@ -1,0 +1,7 @@
+I1.3.4.3b — Corrección de relaciones de componentes
+Tests específicos e integración: 32/32 superados
+Caso Solomillo + Parmentier + Salsa naranja: OK
+Orden independiente de acciones: OK
+Idempotencia: OK
+Fallo antes de escritura: OK
+Datos reales modificados: 0

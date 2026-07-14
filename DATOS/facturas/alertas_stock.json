@@ -1,0 +1,102 @@
+{
+  "version": "3.0.3.6.4",
+  "alertas": [
+    {
+      "articulo_id": "ART-CARRILLERA",
+      "nombre_articulo": "Carrillera de ternera",
+      "tipo": "stock_bajo",
+      "nivel": "aviso",
+      "mensaje": "Stock bajo: 14.0 kg.",
+      "stock_actual": 14.0,
+      "unidad": "kg",
+      "stock_minimo": 999.0,
+      "accion_sugerida": "Añadir al próximo pedido.",
+      "datos": {
+        "articulo_id": "ART-CARRILLERA",
+        "nombre_articulo": "Carrillera de ternera",
+        "total_registros": 3,
+        "entradas_totales": 14.0,
+        "salidas_totales": 0,
+        "ajustes_totales": 0,
+        "stock_estimado": 14.0,
+        "unidad_principal": "kg",
+        "registros": [
+          {
+            "articulo_id": "ART-CARRILLERA",
+            "nombre_articulo": "Carrillera de ternera",
+            "tipo": "entrada",
+            "cantidad": 8.0,
+            "unidad": "kg",
+            "stock_resultante": 0.0,
+            "proveedor_id": "PROV-MAKRO",
+            "numero_factura": "F-1",
+            "fecha_factura": "",
+            "motivo": "Entrada factura",
+            "origen": "factura",
+            "datos": {
+              "articulo_id": "ART-CARRILLERA",
+              "nombre_articulo": "Carrillera de ternera",
+              "tipo": "entrada",
+              "cantidad": 8,
+              "unidad": "kg",
+              "proveedor_id": "PROV-MAKRO",
+              "numero_factura": "F-1"
+            },
+            "id": "HISTSTOCK-6FF2AB9281",
+            "creado_en": "2026-07-08T11:31:20"
+          },
+          {
+            "articulo_id": "ART-CARRILLERA",
+            "nombre_articulo": "Carrillera de ternera",
+            "tipo": "entrada",
+            "cantidad": 3.0,
+            "unidad": "kg",
+            "stock_resultante": 0.0,
+            "proveedor_id": "PROV-MAKRO",
+            "numero_factura": "",
+            "fecha_factura": "",
+            "motivo": "Entrada factura",
+            "origen": "factura",
+            "datos": {
+              "articulo_id": "ART-CARRILLERA",
+              "nombre_articulo": "Carrillera de ternera",
+              "tipo": "entrada",
+              "cantidad": 3,
+              "unidad": "kg",
+              "proveedor_id": "PROV-MAKRO"
+            },
+            "id": "HISTSTOCK-07886CF034",
+            "creado_en": "2026-07-08T11:32:55"
+          },
+          {
+            "articulo_id": "ART-CARRILLERA",
+            "nombre_articulo": "Carrillera de ternera",
+            "tipo": "entrada",
+            "cantidad": 3.0,
+            "unidad": "kg",
+            "stock_resultante": 0.0,
+            "proveedor_id": "PROV-MAKRO",
+            "numero_factura": "",
+            "fecha_factura": "",
+            "motivo": "Entrada factura",
+            "origen": "factura",
+            "datos": {
+              "articulo_id": "ART-CARRILLERA",
+              "nombre_articulo": "Carrillera de ternera",
+              "tipo": "entrada",
+              "cantidad": 3,
+              "unidad": "kg",
+              "proveedor_id": "PROV-MAKRO"
+            },
+            "id": "HISTSTOCK-362C8365FC",
+            "creado_en": "2026-07-08T11:33:30"
+          }
+        ],
+        "encontrado": true,
+        "lectura_host_ai": "Histórico stock Carrillera de ternera: 3 movimientos."
+      },
+      "id": "ALSTOCK-E2879778F4",
+      "creado_en": "2026-07-08T11:33:30"
+    }
+  ]
+}

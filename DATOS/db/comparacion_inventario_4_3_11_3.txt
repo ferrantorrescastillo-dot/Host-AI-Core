@@ -1,0 +1,16 @@
+HOST AI 4.3.11.3 - COMPARADOR INTELIGENTE DE INVENTARIO
+==============================================================================
+Artículos contados: 0
+OK: 0
+Faltantes: 0
+Sobrantes: 0
+Revisar: 0
+Estado general: sin_datos
+
+DIFERENCIA TOTAL POR UNIDAD
+------------------------------------------------------------------------------
+Sin diferencias registradas.
+
+DETALLE
+------------------------------------------------------------------------------
+No hay inventario contado para comparar.

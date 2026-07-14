@@ -1,0 +1,9 @@
+I1.3.5 — REFACTORIZACIÓN Y CERTIFICACIÓN FINAL DEL IMPORTADOR
+==============================================================================
+Estado: CERTIFICADO | Solo lectura: SÍ
+Módulos críticos: 9/9 OK
+Menús: 7 | Secciones: 19 | Platos: 24 | Componentes: 18
+Archivos de negocio modificados: 0
+------------------------------------------------------------------------------
+Refactorización: normalización, huellas, filtros, agrupaciones y coincidencias exactas centralizadas.
+No se añadió funcionalidad nueva y no se modificaron datos operativos.

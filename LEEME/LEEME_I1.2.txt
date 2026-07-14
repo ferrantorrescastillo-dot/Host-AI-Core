@@ -1,0 +1,3 @@
+Instalar encima de I1.1 reemplazando los archivos.
+Menú: Excel / importaciones > 10. I1.2 Vista previa e importación segura.
+La vista previa nunca escribe. La importación requiere confirmación y omite por defecto duplicados, vínculos probables y artículos sin resolver.

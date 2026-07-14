@@ -1,0 +1,28 @@
+{
+  "archivo": "C:\\Proyecto Host IA 3.0\\DATOS\\facturas\\factura_demo_makro.pdf",
+  "nombre_archivo": "factura_demo_makro.pdf",
+  "paginas": [
+    {
+      "numero": 1,
+      "texto": "MAKRO ESPAÑA S.A.\nCIF A12345678\nFactura Nº F-2026-001\nFecha 08/07/2026\nCarrillera de ternera 10 kg 8,50 85,00\nCebolla 5 kg 1,20 6,00\nBase imponible 91,00\nIVA 9,10\nTotal factura 100,10\n",
+      "caracteres": 184
+    }
+  ],
+  "texto_completo": "MAKRO ESPAÑA S.A.\nCIF A12345678\nFactura Nº F-2026-001\nFecha 08/07/2026\nCarrillera de ternera 10 kg 8,50 85,00\nCebolla 5 kg 1,20 6,00\nBase imponible 91,00\nIVA 9,10\nTotal factura 100,10",
+  "total_paginas": 1,
+  "total_caracteres": 183,
+  "metodo_extraccion": "PyPDF2",
+  "id": "ANPDF-BF98EA0784",
+  "creado_en": "2026-07-08T11:47:16",
+  "deteccion_factura": {
+    "proveedor": "MAKRO ESPAÑA S.A.",
+    "cif": "A12345678",
+    "numero_factura": "F-2026-001",
+    "fecha": "08/07/2026",
+    "total": 100.1,
+    "base_imponible": 91.0,
+    "iva": 9.1,
+    "confianza": 100.0,
+    "avisos": []
+  }
+}

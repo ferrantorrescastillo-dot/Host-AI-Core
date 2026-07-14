@@ -1,0 +1,4 @@
+Host AI
+Versión: 3.0 RC3
+Estado: Preparación para Piloto
+Build: 2026.07.08

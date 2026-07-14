@@ -1,0 +1,5 @@
+118 passed in 13.28s
+Diagnóstico I1.3.4.3: OK
+Primera: COMMIT
+Repetición: COMMIT
+Duplicados: 0

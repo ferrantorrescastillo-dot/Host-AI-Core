@@ -1,0 +1,5 @@
+Instalar encima de I1.2.1.
+Reemplazar los archivos incluidos.
+Después ejecutar de nuevo I1.2 con la hoja MP boda 31-1.
+Debe aparecer "Catálogo cargado: ... artículos" antes de la vista previa.
+No confirmar la importación hasta revisar las coincidencias.

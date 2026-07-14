@@ -1,0 +1,29 @@
+{
+  "version": "I1.3.4.4",
+  "auditoria_id": "AUD-I1344-028151D2D326",
+  "generado_en": "2026-07-13T09:19:47.312013+00:00",
+  "estado": "CERTIFICADA",
+  "integridad": "OK",
+  "estadisticas": {
+    "menus": 1,
+    "secciones": 1,
+    "platos": 1,
+    "articulos_directos": 1,
+    "bebidas": 0,
+    "complementos": 0,
+    "servicios": 0,
+    "componentes": 1
+  },
+  "incidencias": [],
+  "resumen": {
+    "errores": 0,
+    "avisos": 0,
+    "informativos": 0,
+    "total": 0
+  },
+  "fuentes": {
+    "menus": "DATOS/mur/diagnostico_i1344/menus.json",
+    "recetas": "DATOS/mur/diagnostico_i1344/recetas.json",
+    "articulos": "DATOS/mur/diagnostico_i1344/articulos.json"
+  }
+}

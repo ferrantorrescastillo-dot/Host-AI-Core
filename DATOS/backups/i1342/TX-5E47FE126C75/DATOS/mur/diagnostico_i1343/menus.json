@@ -1,0 +1,59 @@
+[
+  {
+    "menu_id": "MENU-DIAG-I1343",
+    "nombre": "MENU DIAGNOSTICO I1343",
+    "hoja_origen": "MENU TEST",
+    "estado": "ACTIVO",
+    "secciones": [
+      {
+        "seccion_id": "SEC-E1631C71DCE6",
+        "nombre": "PRINCIPAL"
+      }
+    ],
+    "platos": [
+      {
+        "plato_id": "PLATO-02AE27DC406D",
+        "nombre": "Solomillo diagnóstico",
+        "seccion": "PRINCIPAL",
+        "coste_racion": 4.5,
+        "componentes": [
+          {
+            "rol": "RECETA_PRINCIPAL",
+            "nombre": "Solomillo de cerdo",
+            "catalogado": true,
+            "accion_id": "A4"
+          }
+        ],
+        "fila_origen": null
+      }
+    ],
+    "articulos_directos": [
+      {
+        "nombre": "Pan individual",
+        "tipo": "ARTICULO_DIRECTO",
+        "coste_racion": 0.2
+      }
+    ],
+    "bebidas": [],
+    "complementos": [],
+    "servicios": [],
+    "economico": {
+      "precio_venta": 50,
+      "venta_neta": null,
+      "coste_total": 12,
+      "food_cost_pct": 24,
+      "beneficio": 38
+    },
+    "origen_importacion": "I1.3.4.3",
+    "actualizado_en": "2026-07-13T01:11:58.787391+00:00",
+    "creado_en": "2026-07-13T01:11:58.787419+00:00",
+    "resumen": {
+      "secciones": 1,
+      "platos": 1,
+      "componentes": 1,
+      "articulos_directos": 1,
+      "bebidas": 0,
+      "complementos": 0
+    }
+  }
+]

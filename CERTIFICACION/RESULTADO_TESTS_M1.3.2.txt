@@ -1,0 +1,9 @@
+74 passed in 9.53s
+
+Incluye:
+- I1.3 completo
+- M1.1 núcleo MUR
+- M1.2 resolutor de artículos
+- M1.3 resolutor de recetas
+- M1.3.1 importador inteligente de recetas
+- M1.3.2 resolución anidada de ingredientes

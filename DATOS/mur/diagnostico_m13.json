@@ -1,0 +1,311 @@
+{
+  "version": "M1.1",
+  "esquema": 1,
+  "conflictos": {
+    "MUR-742B54C9BCBE": {
+      "organizacion_id": "DIAG",
+      "flujo_id": "DIAG-M13",
+      "origen_modulo": "DIAGNOSTICO",
+      "tipo_entidad": "RECETA",
+      "tipo_conflicto": "ENTIDAD_NO_EXISTE",
+      "severidad": "BLOQUEANTE",
+      "dato_original": "Parmentier M13",
+      "dato_normalizado": "Parmentier M13",
+      "rol_contextual": "GUARNICION",
+      "contexto": {},
+      "candidatos": [],
+      "acciones_permitidas": [
+        "CREAR",
+        "VINCULAR",
+        "MANTENER_PENDIENTE"
+      ],
+      "checkpoint_id": "CHK-2320E3C4C750",
+      "politica_aplicada": "",
+      "conflicto_id": "MUR-742B54C9BCBE",
+      "estado": "CERRADO",
+      "version": 6,
+      "creado_en": "2026-07-12T22:06:22+00:00",
+      "actualizado_en": "2026-07-12T22:06:22+00:00",
+      "motivo_estado": "La receta existe y el flujo puede continuar.",
+      "resolutor_id": "M1.3-RESOLUTOR-RECETAS"
+    }
+  },
+  "checkpoints": {
+    "CHK-2320E3C4C750": {
+      "flujo_id": "DIAG-M13",
+      "modulo": "DIAGNOSTICO",
+      "operacion": "resolver_receta",
+      "paso": "receta_pendiente",
+      "estado_parcial": {
+        "receta": "Parmentier M13"
+      },
+      "huella_entrada": "",
+      "version_flujo": 1,
+      "dependencias": [],
+      "checkpoint_id": "CHK-2320E3C4C750",
+      "creado_en": "2026-07-12T22:06:22+00:00",
+      "actualizado_en": "2026-07-12T22:06:22+00:00",
+      "activo": true
+    }
+  },
+  "sesiones": {
+    "SES-9A88B78CC676": {
+      "conflicto_id": "MUR-742B54C9BCBE",
+      "usuario_id": "diagnostico",
+      "resolutor_id": "M1.3-RESOLUTOR-RECETAS",
+      "acciones_disponibles": [
+        "CREAR",
+        "MANTENER_PENDIENTE",
+        "CANCELAR"
+      ],
+      "sesion_id": "SES-9A88B78CC676",
+      "estado": "RESUELTA",
+      "payload": {
+        "preparacion": {
+          "consulta": "Parmentier M13",
+          "candidatos": [],
+          "acciones": [
+            "CREAR",
+            "MANTENER_PENDIENTE",
+            "CANCELAR"
+          ],
+          "modos_creacion_disponibles": [
+            "MANUAL"
+          ],
+          "modos_reservados_m131": [
+            "TEXTO",
+            "WORD",
+            "PDF",
+            "EXCEL",
+            "DOCUMENTOS"
+          ]
+        },
+        "resultado": {
+          "ok": true,
+          "accion": "CREAR",
+          "mensaje": "Receta creada desde el flujo oficial manual y vinculada al conflicto.",
+          "datos": {
+            "receta": {
+              "receta_id": "REC-PARMENTIER-M13",
+              "nombre": "Parmentier M13",
+              "raciones_base": 10.0,
+              "lineas": [
+                {
+                  "nombre": "A.P BRIOX DE CURRI, SECRETO A BAJA TEMPERATURA Y CEBOLLITA ENCURTIDA.",
+                  "cantidad": 1.0,
+                  "unidad": "kg",
+                  "tipo": "articulo",
+                  "articulo_id": "ART000005",
+                  "elaboracion_id": "",
+                  "coste_unitario": 0.63,
+                  "coste_total": 0.63
+                }
+              ],
+              "grupo": "GUARNICION",
+              "subgrupo": "",
+              "observaciones": "Alta manual controlada por M1.3.",
+              "activo": true,
+              "id": "ESC-REC-PARMENTIER-M13",
+              "creado_en": "2026-07-13T00:06:22",
+              "actualizado_en": "2026-07-13T00:06:22",
+              "coste_total_base": 0.63,
+              "coste_por_racion": 0.063,
+              "estado_calidad": "COMPLETA",
+              "origen": "MUR_M1.3_MANUAL"
+            },
+            "backup": "C:\\PROYECTO HOST IA\\Proyecto Host AI  6.0\\Host AI 6.0\\DATOS\\mur\\backups_m13\\recetas_20260713_000622_201144.json",
+            "estado_calidad": "COMPLETA",
+            "bloqueo_resuelto": true
+          },
+          "requiere_recalculo": true,
+          "aprendizaje_sugerido": {
+            "clave_original": "Parmentier M13",
+            "valor_resuelto": "Parmentier M13",
+            "tipo_entidad": "RECETA",
+            "accion": "VINCULAR",
+            "entidad_id": "REC-PARMENTIER-M13",
+            "confianza": 1.0
+          }
+        }
+      },
+      "creada_en": "2026-07-12T22:06:22+00:00",
+      "actualizada_en": "2026-07-12T22:06:22+00:00"
+    }
+  },
+  "auditoria": [
+    {
+      "conflicto_id": "",
+      "evento": "CHECKPOINT_CREADO",
+      "actor": "sistema",
+      "detalle": {
+        "checkpoint_id": "CHK-2320E3C4C750",
+        "flujo_id": "DIAG-M13"
+      },
+      "evento_id": "AUD-B797180A8C0E",
+      "creado_en": "2026-07-12T22:06:22+00:00"
+    },
+    {
+      "conflicto_id": "MUR-742B54C9BCBE",
+      "evento": "CONFLICTO_DETECTADO",
+      "actor": "sistema",
+      "detalle": {
+        "organizacion_id": "DIAG",
+        "flujo_id": "DIAG-M13",
+        "origen_modulo": "DIAGNOSTICO",
+        "tipo_entidad": "RECETA",
+        "tipo_conflicto": "ENTIDAD_NO_EXISTE",
+        "severidad": "BLOQUEANTE",
+        "dato_original": "Parmentier M13",
+        "dato_normalizado": "Parmentier M13",
+        "rol_contextual": "GUARNICION",
+        "contexto": {},
+        "candidatos": [],
+        "acciones_permitidas": [
+          "CREAR",
+          "VINCULAR",
+          "MANTENER_PENDIENTE"
+        ],
+        "checkpoint_id": "CHK-2320E3C4C750",
+        "politica_aplicada": "",
+        "conflicto_id": "MUR-742B54C9BCBE",
+        "estado": "DETECTADO",
+        "version": 1,
+        "creado_en": "2026-07-12T22:06:22+00:00",
+        "actualizado_en": "2026-07-12T22:06:22+00:00",
+        "motivo_estado": "",
+        "resolutor_id": ""
+      },
+      "evento_id": "AUD-F5A6ED776B23",
+      "creado_en": "2026-07-12T22:06:22+00:00"
+    },
+    {
+      "conflicto_id": "MUR-742B54C9BCBE",
+      "evento": "ESTADO_CAMBIADO",
+      "actor": "diagnostico",
+      "detalle": {
+        "anterior": "DETECTADO",
+        "nuevo": "CLASIFICADO",
+        "motivo": "Resolutor compatible asignado."
+      },
+      "evento_id": "AUD-23620E946D15",
+      "creado_en": "2026-07-12T22:06:22+00:00"
+    },
+    {
+      "conflicto_id": "MUR-742B54C9BCBE",
+      "evento": "ESTADO_CAMBIADO",
+      "actor": "diagnostico",
+      "detalle": {
+        "anterior": "CLASIFICADO",
+        "nuevo": "EN_RESOLUCION",
+        "motivo": "Sesión de resolución abierta."
+      },
+      "evento_id": "AUD-4C4F5636B35B",
+      "creado_en": "2026-07-12T22:06:22+00:00"
+    },
+    {
+      "conflicto_id": "MUR-742B54C9BCBE",
+      "evento": "RESOLUCION_INICIADA",
+      "actor": "diagnostico",
+      "detalle": {
+        "sesion_id": "SES-9A88B78CC676",
+        "acciones": [
+          "CREAR",
+          "MANTENER_PENDIENTE",
+          "CANCELAR"
+        ]
+      },
+      "evento_id": "AUD-0679E969DBA7",
+      "creado_en": "2026-07-12T22:06:22+00:00"
+    },
+    {
+      "conflicto_id": "MUR-742B54C9BCBE",
+      "evento": "ESTADO_CAMBIADO",
+      "actor": "diagnostico",
+      "detalle": {
+        "anterior": "EN_RESOLUCION",
+        "nuevo": "RESUELTO",
+        "motivo": "Receta creada desde el flujo oficial manual y vinculada al conflicto."
+      },
+      "evento_id": "AUD-7A346970B0B5",
+      "creado_en": "2026-07-12T22:06:22+00:00"
+    },
+    {
+      "conflicto_id": "MUR-742B54C9BCBE",
+      "evento": "RESOLUCION_VALIDADA",
+      "actor": "diagnostico",
+      "detalle": {
+        "ok": true,
+        "accion": "CREAR",
+        "mensaje": "Receta creada desde el flujo oficial manual y vinculada al conflicto.",
+        "datos": {
+          "receta": {
+            "receta_id": "REC-PARMENTIER-M13",
+            "nombre": "Parmentier M13",
+            "raciones_base": 10.0,
+            "lineas": [
+              {
+                "nombre": "A.P BRIOX DE CURRI, SECRETO A BAJA TEMPERATURA Y CEBOLLITA ENCURTIDA.",
+                "cantidad": 1.0,
+                "unidad": "kg",
+                "tipo": "articulo",
+                "articulo_id": "ART000005",
+                "elaboracion_id": "",
+                "coste_unitario": 0.63,
+                "coste_total": 0.63
+              }
+            ],
+            "grupo": "GUARNICION",
+            "subgrupo": "",
+            "observaciones": "Alta manual controlada por M1.3.",
+            "activo": true,
+            "id": "ESC-REC-PARMENTIER-M13",
+            "creado_en": "2026-07-13T00:06:22",
+            "actualizado_en": "2026-07-13T00:06:22",
+            "coste_total_base": 0.63,
+            "coste_por_racion": 0.063,
+            "estado_calidad": "COMPLETA",
+            "origen": "MUR_M1.3_MANUAL"
+          },
+          "backup": "C:\\PROYECTO HOST IA\\Proyecto Host AI  6.0\\Host AI 6.0\\DATOS\\mur\\backups_m13\\recetas_20260713_000622_201144.json",
+          "estado_calidad": "COMPLETA",
+          "bloqueo_resuelto": true
+        },
+        "requiere_recalculo": true,
+        "aprendizaje_sugerido": {
+          "clave_original": "Parmentier M13",
+          "valor_resuelto": "Parmentier M13",
+          "tipo_entidad": "RECETA",
+          "accion": "VINCULAR",
+          "entidad_id": "REC-PARMENTIER-M13",
+          "confianza": 1.0
+        }
+      },
+      "evento_id": "AUD-F159132E0F7B",
+      "creado_en": "2026-07-12T22:06:22+00:00"
+    },
+    {
+      "conflicto_id": "MUR-742B54C9BCBE",
+      "evento": "ESTADO_CAMBIADO",
+      "actor": "diagnostico",
+      "detalle": {
+        "anterior": "RESUELTO",
+        "nuevo": "APLICADO",
+        "motivo": "Solución incorporada al flujo de origen."
+      },
+      "evento_id": "AUD-3C6B6A060827",
+      "creado_en": "2026-07-12T22:06:22+00:00"
+    },
+    {
+      "conflicto_id": "MUR-742B54C9BCBE",
+      "evento": "ESTADO_CAMBIADO",
+      "actor": "diagnostico",
+      "detalle": {
+        "anterior": "APLICADO",
+        "nuevo": "CERRADO",
+        "motivo": "La receta existe y el flujo puede continuar."
+      },
+      "evento_id": "AUD-A0FD7685DF3C",
+      "creado_en": "2026-07-12T22:06:22+00:00"
+    }
+  ]
+}

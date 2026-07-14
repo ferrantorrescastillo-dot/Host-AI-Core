@@ -1,0 +1,57 @@
+I1.3.4.4 — AUDITORÍA E INTEGRIDAD POSTIMPORTACIÓN
+==============================================================================
+Estado: NO_CERTIFICADA | Integridad: ERROR
+Menús: 7 | Secciones: 19 | Platos: 24 | Componentes: 18
+Artículos directos: 55 | Bebidas: 8 | Complementos: 22 | Servicios: 0
+Errores: 11 | Avisos: 36 | Informativos: 0
+------------------------------------------------------------------------------
+INCIDENCIAS
+1. [AVISO] SECCION_REFERENCIA_INEXISTENTE: La sección del plato no está registrada: Postre. | Menú bbq finde 45€ | Crema Catalana.
+2. [ERROR] RECETA_REFERENCIA_INEXISTENTE: No se encontró la receta/elaboración vinculada: Crema catalana. | Menú bbq finde 45€ | Crema Catalana. | Crema catalana
+3. [AVISO] FOOD_COST_INCOHERENTE: Food cost guardado=32.87690163043479; recalculado=29.8881%. | Menú bbq finde 45€
+4. [AVISO] BENEFICIO_INCOHERENTE: Beneficio guardado=None; recalculado=32.2515 €. | Menú bbq finde 45€
+5. [AVISO] SECCION_REFERENCIA_INEXISTENTE: La sección del plato no está registrada: Postre. | Menú paella finde 45€ | Crema Catalana.
+6. [ERROR] RECETA_REFERENCIA_INEXISTENTE: No se encontró la receta/elaboración vinculada: Crema catalana. | Menú paella finde 45€ | Crema Catalana. | Crema catalana
+7. [AVISO] SECCION_REFERENCIA_INEXISTENTE: La sección del plato no está registrada: Postre. | Menú paella finde 45€ | MENU CALÇOTADA NARANJA CON MIEL. POR PAX.
+8. [ERROR] RECETA_REFERENCIA_INEXISTENTE: No se encontró la receta/elaboración vinculada: Naranja con miel. | Menú paella finde 45€ | MENU CALÇOTADA NARANJA CON MIEL. POR PAX. | Naranja con miel
+9. [AVISO] FOOD_COST_INCOHERENTE: Food cost guardado=34.071932065217396; recalculado=30.9745%. | Menú paella finde 45€
+10. [AVISO] BENEFICIO_INCOHERENTE: Beneficio guardado=None; recalculado=31.7517 €. | Menú paella finde 45€
+11. [AVISO] SECCION_REFERENCIA_INEXISTENTE: La sección del plato no está registrada: Entrante. | MENU BBQ 95€  13-03-26 | Carpaccio de tomate con burrata y aceite albahaca
+12. [AVISO] PLATO_SIN_RECETA_PRINCIPAL: El plato no tiene receta principal vinculada. | MENU BBQ 95€  13-03-26 | Carpaccio de tomate con burrata y aceite albahaca
+13. [AVISO] SECCION_REFERENCIA_INEXISTENTE: La sección del plato no está registrada: Entrante. | MENU BBQ 95€  13-03-26 | Huevos rotos con jamón y foie
+14. [AVISO] PLATO_SIN_RECETA_PRINCIPAL: El plato no tiene receta principal vinculada. | MENU BBQ 95€  13-03-26 | Huevos rotos con jamón y foie
+15. [AVISO] SECCION_REFERENCIA_INEXISTENTE: La sección del plato no está registrada: Principal. | MENU BBQ 95€  13-03-26 | Chuleta lomo bajo con pimiento del piquillo y alcachofa
+16. [ERROR] RECETA_REFERENCIA_INEXISTENTE: No se encontró la receta/elaboración vinculada: Chuleta lomo bajo con pimiento de piquillo y alcachofa. | MENU BBQ 95€  13-03-26 | Chuleta lomo bajo con pimiento del piquillo y alcachofa | Chuleta lomo bajo con pimiento de piquillo y alcachofa
+17. [AVISO] FOOD_COST_INCOHERENTE: Food cost guardado=35.857848245614036; recalculado=32.5980%. | MENU BBQ 95€  13-03-26
+18. [AVISO] BENEFICIO_INCOHERENTE: Beneficio guardado=None; recalculado=64.0319 €. | MENU BBQ 95€  13-03-26
+19. [AVISO] SECCION_REFERENCIA_INEXISTENTE: La sección del plato no está registrada: Sin sección. | MENU CALÇOTADA CARTA. 15-12-25 | Tabla de embutidos y quesos variados.
+20. [ERROR] RECETA_REFERENCIA_INEXISTENTE: No se encontró la receta/elaboración vinculada: TABLA DE QUESOS Y EMBUTIDOS. | MENU CALÇOTADA CARTA. 15-12-25 | Tabla de embutidos y quesos variados. | TABLA DE QUESOS Y EMBUTIDOS
+21. [AVISO] SECCION_REFERENCIA_INEXISTENTE: La sección del plato no está registrada: Postre. | MENU CALÇOTADA CARTA. 15-12-25 | Crema Catalana.
+22. [ERROR] RECETA_REFERENCIA_INEXISTENTE: No se encontró la receta/elaboración vinculada: Crema catalana. | MENU CALÇOTADA CARTA. 15-12-25 | Crema Catalana. | Crema catalana
+23. [AVISO] FOOD_COST_INCOHERENTE: Food cost guardado=67.32380952380953; recalculado=60.5914%. | MENU CALÇOTADA CARTA. 15-12-25
+24. [AVISO] BENEFICIO_INCOHERENTE: Beneficio guardado=None; recalculado=13.7930 €. | MENU CALÇOTADA CARTA. 15-12-25
+25. [AVISO] SECCION_REFERENCIA_INEXISTENTE: La sección del plato no está registrada: Cóctel. | MENU BODA | Ceviche de corvina
+26. [AVISO] SECCION_REFERENCIA_INEXISTENTE: La sección del plato no está registrada: Cóctel. | MENU BODA | Taco de Carrillera porc
+27. [AVISO] SECCION_REFERENCIA_INEXISTENTE: La sección del plato no está registrada: Cóctel. | MENU BODA | Guacamole y totopos
+28. [AVISO] SECCION_REFERENCIA_INEXISTENTE: La sección del plato no está registrada: Cóctel. | MENU BODA | Pan de cristal con jamón
+29. [AVISO] SECCION_REFERENCIA_INEXISTENTE: La sección del plato no está registrada: Cóctel. | MENU BODA | Tabla de quesos
+30. [AVISO] SECCION_REFERENCIA_INEXISTENTE: La sección del plato no está registrada: Cóctel. | MENU BODA | Agua de jamaica
+31. [AVISO] SECCION_REFERENCIA_INEXISTENTE: La sección del plato no está registrada: Cóctel. | MENU BODA | Agua de limón
+32. [AVISO] PLATO_SIN_RECETA_PRINCIPAL: El plato no tiene receta principal vinculada. | MENU BODA | Crema calenta tomàquet
+33. [AVISO] PLATO_SIN_RECETA_PRINCIPAL: El plato no tiene receta principal vinculada. | MENU BODA | Solomillo de cerdo
+34. [AVISO] SECCION_REFERENCIA_INEXISTENTE: La sección del plato no está registrada: Cóctel. | MENU COCTEL. | Tabla de embutidos y quesos variados.
+35. [ERROR] RECETA_REFERENCIA_INEXISTENTE: No se encontró la receta/elaboración vinculada: TABLA DE QUESOS Y EMBUTIDOS. | MENU COCTEL. | Tabla de embutidos y quesos variados. | TABLA DE QUESOS Y EMBUTIDOS
+36. [AVISO] SECCION_REFERENCIA_INEXISTENTE: La sección del plato no está registrada: Postre. | MENU COCTEL. | Crema Catalana.
+37. [ERROR] RECETA_REFERENCIA_INEXISTENTE: No se encontró la receta/elaboración vinculada: Crema catalana. | MENU COCTEL. | Crema Catalana. | Crema catalana
+38. [ERROR] ARTICULO_REFERENCIA_INEXISTENTE: No se encontró el artículo directo: CALÇOTADA EN MESA ENSALADA. LECHUGA UNID.. | MENU COCTEL. | CALÇOTADA EN MESA ENSALADA. LECHUGA UNID.
+39. [ERROR] ARTICULO_REFERENCIA_INEXISTENTE: No se encontró el artículo directo: pan, agua mineral.. | MENU COCTEL. | pan, agua mineral.
+40. [ERROR] ARTICULO_REFERENCIA_INEXISTENTE: No se encontró el artículo directo: Refresco, cerveza y vermouth.. | MENU COCTEL. | Refresco, cerveza y vermouth.
+41. [AVISO] FOOD_COST_INCOHERENTE: Food cost guardado=61.79722222222222; recalculado=55.6175%. | MENU COCTEL.
+42. [AVISO] BENEFICIO_INCOHERENTE: Beneficio guardado=None; recalculado=8.8765 €. | MENU COCTEL.
+43. [AVISO] PLATO_SIN_RECETA_PRINCIPAL: El plato no tiene receta principal vinculada. | MENU FIN DE AÑO 2025 | Crema de marisco, vieras con bombon de coco y curri.
+44. [AVISO] PLATO_SIN_RECETA_PRINCIPAL: El plato no tiene receta principal vinculada. | MENU FIN DE AÑO 2025 | Lenguado a la menier de yondu con hinojo y avellanas
+45. [AVISO] PLATO_SIN_RECETA_PRINCIPAL: El plato no tiene receta principal vinculada. | MENU FIN DE AÑO 2025 | Tournedo de solomillo Rossini con chalotas glaseadas.
+46. [AVISO] FOOD_COST_INCOHERENTE: Food cost guardado=32.761481481481475; recalculado=29.4853%. | MENU FIN DE AÑO 2025
+47. [AVISO] BENEFICIO_INCOHERENTE: Beneficio guardado=None; recalculado=52.8860 €. | MENU FIN DE AÑO 2025
+------------------------------------------------------------------------------
+Auditoría de solo lectura: no se modificaron menús, recetas ni artículos.

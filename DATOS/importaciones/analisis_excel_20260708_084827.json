@@ -1,0 +1,198 @@
+{
+  "archivo": "/mnt/data/Host_AI_3_0_2_6_Importador_Inventario_Excel/DATOS/importaciones/excel_demo_importador_inventario.xlsx",
+  "nombre_archivo": "excel_demo_importador_inventario.xlsx",
+  "hojas": [
+    {
+      "nombre": "Inventario",
+      "filas": 4,
+      "columnas": 10,
+      "celdas_utilizadas": 40,
+      "columnas_detectadas": [
+        {
+          "indice": 1,
+          "letra": "A",
+          "nombre_detectado": "Codigo",
+          "tipo_detectado": "texto",
+          "total_celdas": 3,
+          "celdas_con_dato": 3,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "ART-CARRILLERA",
+            "ART-CEBOLLA",
+            "ART-DEMI"
+          ]
+        },
+        {
+          "indice": 2,
+          "letra": "B",
+          "nombre_detectado": "Producto",
+          "tipo_detectado": "texto",
+          "total_celdas": 3,
+          "celdas_con_dato": 3,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "Carrillera de ternera",
+            "Cebolla",
+            "Demi-glace"
+          ]
+        },
+        {
+          "indice": 3,
+          "letra": "C",
+          "nombre_detectado": "Cantidad",
+          "tipo_detectado": "numero",
+          "total_celdas": 3,
+          "celdas_con_dato": 3,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            10,
+            5,
+            2
+          ]
+        },
+        {
+          "indice": 4,
+          "letra": "D",
+          "nombre_detectado": "Unidad",
+          "tipo_detectado": "texto",
+          "total_celdas": 3,
+          "celdas_con_dato": 3,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "kg",
+            "kg",
+            "L"
+          ]
+        },
+        {
+          "indice": 5,
+          "letra": "E",
+          "nombre_detectado": "Ubicacion",
+          "tipo_detectado": "texto",
+          "total_celdas": 3,
+          "celdas_con_dato": 3,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "Camara 1",
+            "Almacen seco",
+            "Camara 2"
+          ]
+        },
+        {
+          "indice": 6,
+          "letra": "F",
+          "nombre_detectado": "Caducidad",
+          "tipo_detectado": "fecha",
+          "total_celdas": 3,
+          "celdas_con_dato": 3,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "2026-07-20T00:00:00",
+            "2026-07-25T00:00:00",
+            "2026-07-18T00:00:00"
+          ]
+        },
+        {
+          "indice": 7,
+          "letra": "G",
+          "nombre_detectado": "Lote",
+          "tipo_detectado": "texto",
+          "total_celdas": 3,
+          "celdas_con_dato": 3,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "L001",
+            "L002",
+            "L003"
+          ]
+        },
+        {
+          "indice": 8,
+          "letra": "H",
+          "nombre_detectado": "Proveedor",
+          "tipo_detectado": "texto",
+          "total_celdas": 3,
+          "celdas_con_dato": 3,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "Proveedor Carnes",
+            "Proveedor Verduras",
+            "Producción interna"
+          ]
+        },
+        {
+          "indice": 9,
+          "letra": "I",
+          "nombre_detectado": "Precio",
+          "tipo_detectado": "numero",
+          "total_celdas": 3,
+          "celdas_con_dato": 3,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            8.5,
+            1.2,
+            3
+          ]
+        },
+        {
+          "indice": 10,
+          "letra": "J",
+          "nombre_detectado": "Familia",
+          "tipo_detectado": "texto",
+          "total_celdas": 3,
+          "celdas_con_dato": 3,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "carnes",
+            "verduras",
+            "salsas"
+          ]
+        }
+      ],
+      "vista_previa": [
+        {
+          "Codigo": "ART-CARRILLERA",
+          "Producto": "Carrillera de ternera",
+          "Cantidad": 10,
+          "Unidad": "kg",
+          "Ubicacion": "Camara 1",
+          "Caducidad": "2026-07-20T00:00:00",
+          "Lote": "L001",
+          "Proveedor": "Proveedor Carnes",
+          "Precio": 8.5,
+          "Familia": "carnes"
+        },
+        {
+          "Codigo": "ART-CEBOLLA",
+          "Producto": "Cebolla",
+          "Cantidad": 5,
+          "Unidad": "kg",
+          "Ubicacion": "Almacen seco",
+          "Caducidad": "2026-07-25T00:00:00",
+          "Lote": "L002",
+          "Proveedor": "Proveedor Verduras",
+          "Precio": 1.2,
+          "Familia": "verduras"
+        },
+        {
+          "Codigo": "ART-DEMI",
+          "Producto": "Demi-glace",
+          "Cantidad": 2,
+          "Unidad": "L",
+          "Ubicacion": "Camara 2",
+          "Caducidad": "2026-07-18T00:00:00",
+          "Lote": "L003",
+          "Proveedor": "Producción interna",
+          "Precio": 3,
+          "Familia": "salsas"
+        }
+      ]
+    }
+  ],
+  "total_hojas": 1,
+  "total_filas": 4,
+  "total_columnas": 10,
+  "total_celdas_utilizadas": 40,
+  "id": "ANEXCEL-1449B48C79",
+  "creado_en": "2026-07-08T08:48:27"
+}

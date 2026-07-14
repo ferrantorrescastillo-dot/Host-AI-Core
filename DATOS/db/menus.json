@@ -1,0 +1,1092 @@
+[
+  {
+    "menu_id": "MENU-6904594E7245",
+    "nombre": "Menú bbq finde 45€",
+    "hoja_origen": "Menú bbq finde 45€",
+    "estado": "ACTIVO",
+    "secciones": [
+      {
+        "seccion_id": "SEC-772865CEB898",
+        "nombre": "APERITIVO."
+      },
+      {
+        "seccion_id": "SEC-501622A3D5AE",
+        "nombre": "POSTRES"
+      }
+    ],
+    "platos": [
+      {
+        "plato_id": "PLATO-CA43D4D633AE",
+        "nombre": "Crema Catalana.",
+        "seccion": "Postre",
+        "coste_racion": 0.5,
+        "componentes": [
+          {
+            "componente_id": "COMP-B11A7E8D7B7E",
+            "rol": "RECETA_PRINCIPAL",
+            "nombre": "Crema catalana",
+            "catalogado": true,
+            "accion_id": "ACT-96A8C79D8760",
+            "plato_id": "PLATO-CA43D4D633AE"
+          }
+        ],
+        "fila_origen": 16,
+        "accion_origen": "ACT-E47290528358"
+      }
+    ],
+    "articulos_directos": [
+      {
+        "nombre": "Parrillada bbq fin de semana",
+        "tipo": "APERITIVO_PREPARADO",
+        "coste_racion": 5.42026
+      },
+      {
+        "nombre": "Parrillada bbq fin de semana",
+        "tipo": "APERITIVO_PREPARADO",
+        "coste_racion": null
+      },
+      {
+        "nombre": "Agua Fon vella 1 LT Caja de 12 unid.",
+        "tipo": "ARTICULO_DIRECTO",
+        "coste_racion": 0.4
+      },
+      {
+        "nombre": "Tartar de fuet",
+        "tipo": "APERITIVO_PREPARADO",
+        "coste_racion": 1.2956875
+      },
+      {
+        "nombre": "Cafe Natural. 1 kg. 120 cafes. 24,48€  .kg. 0,22 unid",
+        "tipo": "ARTICULO_DIRECTO",
+        "coste_racion": null
+      },
+      {
+        "nombre": "Calçots en tempura!!!",
+        "tipo": "APERITIVO_PREPARADO",
+        "coste_racion": null
+      },
+      {
+        "nombre": "Salsa Allioli. natural. bote de 1 lt.",
+        "tipo": "ARTICULO_DIRECTO",
+        "coste_racion": null
+      }
+    ],
+    "bebidas": [
+      {
+        "nombre": "Vermuth rojo con Gilda MasBoronat",
+        "tipo": "BEBIDA"
+      },
+      {
+        "nombre": "CLOS PINELL  TERRA TINTO ALTA",
+        "tipo": "BEBIDA"
+      }
+    ],
+    "complementos": [
+      {
+        "nombre": "Ensaladilla de Gamba",
+        "tipo": "ELABORACION_MENU"
+      },
+      {
+        "nombre": "Ensaladilla de gamba",
+        "tipo": "ELABORACION_MENU"
+      },
+      {
+        "nombre": "Ensalada para calçotada terminada lechuga de pages.",
+        "tipo": "ELABORACION_MENU"
+      },
+      {
+        "nombre": "MENU CALÇOTADA. CESTA DE PAN, TOMATE Y AJO.",
+        "tipo": "COMPLEMENTO"
+      }
+    ],
+    "servicios": [],
+    "economico": {
+      "precio_venta": 46.0,
+      "venta_neta": 41.81818181818181,
+      "coste_total": 13.748522500000002,
+      "food_cost_pct": 32.87690163043479,
+      "beneficio": null
+    },
+    "origen_importacion": "I1.3.4.3",
+    "actualizado_en": "2026-07-13T09:06:53.794090+00:00",
+    "creado_en": "2026-07-13T09:06:53.794844+00:00",
+    "resumen": {
+      "secciones": 2,
+      "platos": 1,
+      "componentes": 1,
+      "articulos_directos": 7,
+      "bebidas": 2,
+      "complementos": 4
+    }
+  },
+  {
+    "menu_id": "MENU-A635255585B3",
+    "nombre": "Menú paella finde 45€",
+    "hoja_origen": "Menú paella finde 45€",
+    "estado": "ACTIVO",
+    "secciones": [
+      {
+        "seccion_id": "SEC-EE8EBECB3D2A",
+        "nombre": "APERITIVO."
+      },
+      {
+        "seccion_id": "SEC-F0B5C87A2601",
+        "nombre": "POSTRES"
+      }
+    ],
+    "platos": [
+      {
+        "plato_id": "PLATO-E8CAB5A05F90",
+        "nombre": "Crema Catalana.",
+        "seccion": "Postre",
+        "coste_racion": 0.5,
+        "componentes": [
+          {
+            "componente_id": "COMP-08107706137B",
+            "rol": "RECETA_PRINCIPAL",
+            "nombre": "Crema catalana",
+            "catalogado": true,
+            "accion_id": "ACT-6D35276E69C2",
+            "plato_id": "PLATO-E8CAB5A05F90"
+          }
+        ],
+        "fila_origen": 16,
+        "accion_origen": "ACT-A26353BBEBDF"
+      },
+      {
+        "plato_id": "PLATO-4727ABCB18F7",
+        "nombre": "MENU CALÇOTADA NARANJA CON MIEL. POR PAX.",
+        "seccion": "Postre",
+        "coste_racion": 0.37,
+        "componentes": [
+          {
+            "componente_id": "COMP-2F6BE93B9E45",
+            "rol": "RECETA_PRINCIPAL",
+            "nombre": "Naranja con miel",
+            "catalogado": true,
+            "accion_id": "ACT-D9EDBC2AF1AA",
+            "plato_id": "PLATO-4727ABCB18F7"
+          }
+        ],
+        "fila_origen": 17,
+        "accion_origen": "ACT-0CD18286F9B7"
+      }
+    ],
+    "articulos_directos": [
+      {
+        "nombre": "Tartar de fuet",
+        "tipo": "APERITIVO_PREPARADO",
+        "coste_racion": 1.2956875
+      },
+      {
+        "nombre": "Cafe Natural. 1 kg. 120 cafes. 24,48€  .kg. 0,22 unid",
+        "tipo": "ARTICULO_DIRECTO",
+        "coste_racion": null
+      },
+      {
+        "nombre": "Calçots en tempura!!!",
+        "tipo": "APERITIVO_PREPARADO",
+        "coste_racion": null
+      },
+      {
+        "nombre": "Salsa Allioli. natural. bote de 1 lt.",
+        "tipo": "ARTICULO_DIRECTO",
+        "coste_racion": null
+      }
+    ],
+    "bebidas": [
+      {
+        "nombre": "Vermuth rojo con Gilda MasBoronat",
+        "tipo": "BEBIDA"
+      },
+      {
+        "nombre": "CLOS PINELL  TERRA TINTO ALTA",
+        "tipo": "BEBIDA"
+      }
+    ],
+    "complementos": [
+      {
+        "nombre": "Ensaladilla de Gamba",
+        "tipo": "ELABORACION_MENU"
+      },
+      {
+        "nombre": "Ensaladilla de gamba",
+        "tipo": "ELABORACION_MENU"
+      },
+      {
+        "nombre": "Ensalada para calçotada terminada lechuga de pages.",
+        "tipo": "ELABORACION_MENU"
+      },
+      {
+        "nombre": "MENU CALÇOTADA. CESTA DE PAN, TOMATE Y AJO.",
+        "tipo": "COMPLEMENTO"
+      }
+    ],
+    "servicios": [],
+    "economico": {
+      "precio_venta": 46.0,
+      "venta_neta": 41.81818181818181,
+      "coste_total": 14.248262500000001,
+      "food_cost_pct": 34.071932065217396,
+      "beneficio": null
+    },
+    "origen_importacion": "I1.3.4.3",
+    "actualizado_en": "2026-07-13T09:06:53.795017+00:00",
+    "creado_en": "2026-07-13T09:06:53.795028+00:00",
+    "resumen": {
+      "secciones": 2,
+      "platos": 2,
+      "componentes": 2,
+      "articulos_directos": 4,
+      "bebidas": 2,
+      "complementos": 4
+    }
+  },
+  {
+    "menu_id": "MENU-539E473892CA",
+    "nombre": "MENU BBQ 95€  13-03-26",
+    "hoja_origen": "Menú bbq 95€",
+    "estado": "ACTIVO",
+    "secciones": [
+      {
+        "seccion_id": "SEC-1AF322AC23CD",
+        "nombre": "Entrantes"
+      },
+      {
+        "seccion_id": "SEC-96DB3F513CB6",
+        "nombre": "Plato principal"
+      }
+    ],
+    "platos": [
+      {
+        "plato_id": "PLATO-CEE49A7FB767",
+        "nombre": "Carpaccio de tomate con burrata y aceite albahaca",
+        "seccion": "Entrante",
+        "coste_racion": 0.10324166666666666,
+        "componentes": [],
+        "fila_origen": 6,
+        "accion_origen": "ACT-4779CD573129"
+      },
+      {
+        "plato_id": "PLATO-DFCFCC331E7F",
+        "nombre": "Huevos rotos con jamón y foie",
+        "seccion": "Entrante",
+        "coste_racion": 2.0265,
+        "componentes": [],
+        "fila_origen": 7,
+        "accion_origen": "ACT-C103FA3C63AC"
+      },
+      {
+        "plato_id": "PLATO-07A6D6F1CE57",
+        "nombre": "Chuleta lomo bajo con pimiento del piquillo y alcachofa",
+        "seccion": "Principal",
+        "coste_racion": 15.269499999999999,
+        "componentes": [
+          {
+            "componente_id": "COMP-548566D0EAE6",
+            "rol": "RECETA_PRINCIPAL",
+            "nombre": "Chuleta lomo bajo con pimiento de piquillo y alcachofa",
+            "catalogado": true,
+            "accion_id": "ACT-794011301A66",
+            "plato_id": "PLATO-07A6D6F1CE57"
+          }
+        ],
+        "fila_origen": 10,
+        "accion_origen": "ACT-E3539DAC9A43"
+      }
+    ],
+    "articulos_directos": [
+      {
+        "nombre": "Agua Fon vella 1 LT Caja de 12 unid.",
+        "tipo": "ARTICULO_DIRECTO",
+        "coste_racion": 0.24
+      },
+      {
+        "nombre": "Vaso Pulpo a la feira",
+        "tipo": "ARTICULO_DIRECTO",
+        "coste_racion": 3.6789000000000005
+      },
+      {
+        "nombre": "Cafe Natural. 1 kg. 120 cafes. 24,48€  .kg. 0,22 unid",
+        "tipo": "ARTICULO_DIRECTO",
+        "coste_racion": null
+      }
+    ],
+    "bebidas": [],
+    "complementos": [],
+    "servicios": [],
+    "economico": {
+      "precio_venta": 95.0,
+      "venta_neta": 86.36363636363636,
+      "coste_total": 30.968141666666664,
+      "food_cost_pct": 35.857848245614036,
+      "beneficio": null
+    },
+    "origen_importacion": "I1.3.4.3",
+    "actualizado_en": "2026-07-13T09:06:53.795099+00:00",
+    "creado_en": "2026-07-13T09:06:53.795219+00:00",
+    "resumen": {
+      "secciones": 2,
+      "platos": 3,
+      "componentes": 1,
+      "articulos_directos": 3,
+      "bebidas": 0,
+      "complementos": 0
+    }
+  },
+  {
+    "menu_id": "MENU-A21F9C4816F6",
+    "nombre": "MENU CALÇOTADA CARTA. 15-12-25",
+    "hoja_origen": "MENU BBQ",
+    "estado": "ACTIVO",
+    "secciones": [
+      {
+        "seccion_id": "SEC-49E49FFE4F88",
+        "nombre": "POSTRES"
+      }
+    ],
+    "platos": [
+      {
+        "plato_id": "PLATO-89491B6B95C0",
+        "nombre": "Tabla de embutidos y quesos variados.",
+        "seccion": "Sin sección",
+        "coste_racion": 6.65,
+        "componentes": [
+          {
+            "componente_id": "COMP-53DA0799BA9C",
+            "rol": "RECETA_PRINCIPAL",
+            "nombre": "TABLA DE QUESOS Y EMBUTIDOS",
+            "catalogado": true,
+            "accion_id": "ACT-4155603A5B1C",
+            "plato_id": "PLATO-89491B6B95C0"
+          }
+        ],
+        "fila_origen": 6,
+        "accion_origen": "ACT-F8DD70646F0E"
+      },
+      {
+        "plato_id": "PLATO-AE18C7CC390B",
+        "nombre": "Crema Catalana.",
+        "seccion": "Postre",
+        "coste_racion": 0.25,
+        "componentes": [
+          {
+            "componente_id": "COMP-C22C0BFDE46E",
+            "rol": "RECETA_PRINCIPAL",
+            "nombre": "Crema catalana",
+            "catalogado": true,
+            "accion_id": "ACT-15AEBF4F4B57",
+            "plato_id": "PLATO-AE18C7CC390B"
+          }
+        ],
+        "fila_origen": 18,
+        "accion_origen": "ACT-A92154538C8D"
+      }
+    ],
+    "articulos_directos": [
+      {
+        "nombre": "Agua Fon vella 1 LT Caja de 12 unid.",
+        "tipo": "ARTICULO_DIRECTO",
+        "coste_racion": 0.24
+      },
+      {
+        "nombre": "Patatas Bravas. menu BBQ. Precio pax.",
+        "tipo": "ARTICULO_DIRECTO",
+        "coste_racion": 5.27
+      },
+      {
+        "nombre": "Pimiento del padron.",
+        "tipo": "ARTICULO_DIRECTO",
+        "coste_racion": 0.5175
+      },
+      {
+        "nombre": "Pollo muslo fresco.",
+        "tipo": "ARTICULO_DIRECTO",
+        "coste_racion": 0.432
+      },
+      {
+        "nombre": "Butifarra negra* calçotada racionada a 70 gr.",
+        "tipo": "ARTICULO_DIRECTO",
+        "coste_racion": 0.532
+      },
+      {
+        "nombre": "Cafe Natural. 1 kg. 120 cafes. 24,48€  .kg. 0,22 unid",
+        "tipo": "ARTICULO_DIRECTO",
+        "coste_racion": null
+      },
+      {
+        "nombre": "Salsa Allioli. natural. bote de 1 lt.",
+        "tipo": "ARTICULO_DIRECTO",
+        "coste_racion": null
+      }
+    ],
+    "bebidas": [],
+    "complementos": [
+      {
+        "nombre": "PAN, AGUA, SELECCION DE VINOS Y CAFES",
+        "tipo": "COMPLEMENTO"
+      },
+      {
+        "nombre": "Ensalada para calçotada terminada lechuga de pages.",
+        "tipo": "ELABORACION_MENU"
+      },
+      {
+        "nombre": "MENU CALÇOTADA. CESTA DE PAN, TOMATE Y AJO.",
+        "tipo": "COMPLEMENTO"
+      },
+      {
+        "nombre": "Coulant de chocolate",
+        "tipo": "POSTRE_MENU"
+      }
+    ],
+    "servicios": [],
+    "economico": {
+      "precio_venta": 35.0,
+      "venta_neta": 31.5,
+      "coste_total": 21.207,
+      "food_cost_pct": 67.32380952380953,
+      "beneficio": null
+    },
+    "origen_importacion": "I1.3.4.3",
+    "actualizado_en": "2026-07-13T09:06:53.799627+00:00",
+    "creado_en": "2026-07-13T09:06:53.795283+00:00",
+    "resumen": {
+      "secciones": 1,
+      "platos": 2,
+      "componentes": 2,
+      "articulos_directos": 7,
+      "bebidas": 0,
+      "complementos": 4
+    }
+  },
+  {
+    "menu_id": "MENU-4014D262A786",
+    "nombre": "MENU BODA",
+    "hoja_origen": "MENU BODA 31-1",
+    "estado": "ACTIVO",
+    "secciones": [
+      {
+        "seccion_id": "SEC-F86E7FE5BAD8",
+        "nombre": "APERITIVO."
+      },
+      {
+        "seccion_id": "SEC-7650E25141FF",
+        "nombre": "COCTEL BIENVENIDA EN LA PLAZA 1 HORA"
+      },
+      {
+        "seccion_id": "SEC-5E2DC131BB31",
+        "nombre": "Entrante"
+      },
+      {
+        "seccion_id": "SEC-680A28BA067D",
+        "nombre": "PRIMERO."
+      },
+      {
+        "seccion_id": "SEC-802C4103A10D",
+        "nombre": "SEGUNDO"
+      },
+      {
+        "seccion_id": "SEC-502109520515",
+        "nombre": "POSTRE"
+      }
+    ],
+    "platos": [
+      {
+        "plato_id": "PLATO-2B8B2E9B18E0",
+        "nombre": "Ceviche de corvina",
+        "seccion": "Cóctel",
+        "coste_racion": 0.5946172413793105,
+        "componentes": [
+          {
+            "componente_id": "COMP-66DC4D4CBBD9",
+            "rol": "RECETA_PRINCIPAL",
+            "nombre": "Ceviche de corvina",
+            "catalogado": true,
+            "accion_id": "ACT-166FB6A625B3",
+            "plato_id": "PLATO-2B8B2E9B18E0"
+          }
+        ],
+        "fila_origen": 6,
+        "accion_origen": "ACT-CE3951386F42"
+      },
+      {
+        "plato_id": "PLATO-1B9EE40595EB",
+        "nombre": "Taco de Carrillera porc",
+        "seccion": "Cóctel",
+        "coste_racion": 1.4557586206896551,
+        "componentes": [
+          {
+            "componente_id": "COMP-09877E05665B",
+            "rol": "RECETA_PRINCIPAL",
+            "nombre": "Taco de carrillera",
+            "catalogado": true,
+            "accion_id": "ACT-797408722D3A",
+            "plato_id": "PLATO-1B9EE40595EB"
+          }
+        ],
+        "fila_origen": 7,
+        "accion_origen": "ACT-4D13DDDD4B9A"
+      },
+      {
+        "plato_id": "PLATO-BA40E55B35CB",
+        "nombre": "Guacamole y totopos",
+        "seccion": "Cóctel",
+        "coste_racion": 0.8370689655172413,
+        "componentes": [
+          {
+            "componente_id": "COMP-6D1E44BF602B",
+            "rol": "RECETA_PRINCIPAL",
+            "nombre": "Guacamole i totopos",
+            "catalogado": true,
+            "accion_id": "ACT-F8847101B167",
+            "plato_id": "PLATO-BA40E55B35CB"
+          }
+        ],
+        "fila_origen": 8,
+        "accion_origen": "ACT-917A6ADE1E4F"
+      },
+      {
+        "plato_id": "PLATO-970E36476B45",
+        "nombre": "Pan de cristal con jamón",
+        "seccion": "Cóctel",
+        "coste_racion": 1.6584999999999999,
+        "componentes": [
+          {
+            "componente_id": "COMP-5874F8E280FF",
+            "rol": "RECETA_PRINCIPAL",
+            "nombre": "Pan de cristal con jamón",
+            "catalogado": true,
+            "accion_id": "ACT-F5CC052F0EA9",
+            "plato_id": "PLATO-970E36476B45"
+          }
+        ],
+        "fila_origen": 10,
+        "accion_origen": "ACT-2AAA57EF0E79"
+      },
+      {
+        "plato_id": "PLATO-BAE1BF64A65A",
+        "nombre": "Tabla de quesos",
+        "seccion": "Cóctel",
+        "coste_racion": 0.15748275862068967,
+        "componentes": [
+          {
+            "componente_id": "COMP-8171189C9FB3",
+            "rol": "RECETA_PRINCIPAL",
+            "nombre": "Tabla de quesos",
+            "catalogado": true,
+            "accion_id": "ACT-745128D4468C",
+            "plato_id": "PLATO-BAE1BF64A65A"
+          }
+        ],
+        "fila_origen": 11,
+        "accion_origen": "ACT-897D692AF81E"
+      },
+      {
+        "plato_id": "PLATO-F097E27F0330",
+        "nombre": "Agua de jamaica",
+        "seccion": "Cóctel",
+        "coste_racion": 0.15172413793103445,
+        "componentes": [
+          {
+            "componente_id": "COMP-C74147404B39",
+            "rol": "RECETA_PRINCIPAL",
+            "nombre": "Agua de jamaica",
+            "catalogado": true,
+            "accion_id": "ACT-30D65FFB78F6",
+            "plato_id": "PLATO-F097E27F0330"
+          }
+        ],
+        "fila_origen": 12,
+        "accion_origen": "ACT-F61BF3D3AF0A"
+      },
+      {
+        "plato_id": "PLATO-F8892D30242C",
+        "nombre": "Agua de limón",
+        "seccion": "Cóctel",
+        "coste_racion": 0.10620689655172413,
+        "componentes": [
+          {
+            "componente_id": "COMP-520BD6F1D098",
+            "rol": "RECETA_PRINCIPAL",
+            "nombre": "Agua de limón",
+            "catalogado": true,
+            "accion_id": "ACT-1032DF7BBF14",
+            "plato_id": "PLATO-F8892D30242C"
+          }
+        ],
+        "fila_origen": 13,
+        "accion_origen": "ACT-3F0EB31939CF"
+      },
+      {
+        "plato_id": "PLATO-D7C49C71F65D",
+        "nombre": "Crema calenta tomàquet",
+        "seccion": "Entrante",
+        "coste_racion": 0.8870258620689655,
+        "componentes": [],
+        "fila_origen": 15,
+        "accion_origen": "ACT-ECF8C4F875C1"
+      },
+      {
+        "plato_id": "PLATO-BF67082715BD",
+        "nombre": "Flor de alcachofa con jamón",
+        "seccion": "Primero",
+        "coste_racion": 0.3939655172413793,
+        "componentes": [
+          {
+            "componente_id": "COMP-EC74B0881CE0",
+            "rol": "RECETA_PRINCIPAL",
+            "nombre": "Flor de alcachofa con jamón",
+            "catalogado": true,
+            "accion_id": "ACT-2FB0387862FE",
+            "plato_id": "PLATO-BF67082715BD"
+          }
+        ],
+        "fila_origen": 17,
+        "accion_origen": "ACT-C06BBD43FCE0"
+      },
+      {
+        "plato_id": "PLATO-635B9DF3F559",
+        "nombre": "Solomillo de cerdo",
+        "seccion": null,
+        "coste_racion": null,
+        "componentes": [
+          {
+            "componente_id": "COMP-3A04327B625A",
+            "rol": "SALSA",
+            "nombre": "Salsa naranja",
+            "catalogado": true,
+            "accion_id": "ACT-E50BFAD4DF36",
+            "plato_id": "PLATO-635B9DF3F559"
+          }
+        ],
+        "fila_origen": null,
+        "accion_origen": "ACT-44ACD289CF87"
+      },
+      {
+        "plato_id": "PLATO-60650A424FFE",
+        "nombre": "Sorbete mandarina boda",
+        "seccion": "Postre",
+        "coste_racion": 0.2493103448275862,
+        "componentes": [
+          {
+            "componente_id": "COMP-736E8FC19076",
+            "rol": "RECETA_PRINCIPAL",
+            "nombre": "Sorbete mandarina",
+            "catalogado": true,
+            "accion_id": "ACT-8FC7E2961FBC",
+            "plato_id": "PLATO-60650A424FFE"
+          }
+        ],
+        "fila_origen": 21,
+        "accion_origen": "ACT-224BDA5E1C5C"
+      }
+    ],
+    "articulos_directos": [
+      {
+        "nombre": "Brocheta langostino",
+        "tipo": "APERITIVO_PREPARADO",
+        "coste_racion": 0.7561379310344828
+      },
+      {
+        "nombre": "Brocheta langostino",
+        "tipo": "APERITIVO_PREPARADO",
+        "coste_racion": null
+      },
+      {
+        "nombre": "Pan individual rombo makro",
+        "tipo": "ARTICULO_DIRECTO",
+        "coste_racion": 0.1925
+      }
+    ],
+    "bebidas": [],
+    "complementos": [
+      {
+        "nombre": "Solomillo de cerdo con parmentier patata i salsa naranja",
+        "tipo": "SALSA_MENU"
+      },
+      {
+        "nombre": "BODEGA, PAN, VINO Y CAFES.",
+        "tipo": "COMPLEMENTO"
+      }
+    ],
+    "servicios": [],
+    "economico": {
+      "precio_venta": 75.0,
+      "venta_neta": 67.5,
+      "coste_total": 8.867970689655172,
+      "food_cost_pct": 11.823960919540228,
+      "beneficio": 66.13202931034483
+    },
+    "origen_importacion": "I1.3.4.3",
+    "actualizado_en": "2026-07-13T09:06:53.795326+00:00",
+    "creado_en": "2026-07-13T09:06:53.795332+00:00",
+    "resumen": {
+      "secciones": 6,
+      "platos": 11,
+      "componentes": 10,
+      "articulos_directos": 3,
+      "bebidas": 0,
+      "complementos": 2
+    }
+  },
+  {
+    "menu_id": "MENU-8D27EB553275",
+    "nombre": "MENU COCTEL.",
+    "hoja_origen": "COMUNION  ALEJANDRO FERNANDEZ ",
+    "estado": "ACTIVO",
+    "secciones": [
+      {
+        "seccion_id": "SEC-7C7C83A3F58E",
+        "nombre": "APERITIVO."
+      },
+      {
+        "seccion_id": "SEC-6C1440B0E82E",
+        "nombre": "POSTRES"
+      }
+    ],
+    "platos": [
+      {
+        "plato_id": "PLATO-49F7485EBCDC",
+        "nombre": "Tabla de embutidos y quesos variados.",
+        "seccion": "Cóctel",
+        "coste_racion": 1.1,
+        "componentes": [
+          {
+            "componente_id": "COMP-AD9B23E6C229",
+            "rol": "RECETA_PRINCIPAL",
+            "nombre": "TABLA DE QUESOS Y EMBUTIDOS",
+            "catalogado": true,
+            "accion_id": "ACT-0F7A66D62CE4",
+            "plato_id": "PLATO-49F7485EBCDC"
+          }
+        ],
+        "fila_origen": 6,
+        "accion_origen": "ACT-A275B93FEFA6"
+      },
+      {
+        "plato_id": "PLATO-8348562498A9",
+        "nombre": "Crema Catalana.",
+        "seccion": "Postre",
+        "coste_racion": 0.25,
+        "componentes": [
+          {
+            "componente_id": "COMP-25E6BA82DFC9",
+            "rol": "RECETA_PRINCIPAL",
+            "nombre": "Crema catalana",
+            "catalogado": true,
+            "accion_id": "ACT-87333FF2BDE2",
+            "plato_id": "PLATO-8348562498A9"
+          }
+        ],
+        "fila_origen": 46,
+        "accion_origen": "ACT-BAE7ACD98161"
+      }
+    ],
+    "articulos_directos": [
+      {
+        "nombre": "CALÇOTADA EN MESA ENSALADA. LECHUGA UNID.",
+        "tipo": "ARTICULO_DIRECTO",
+        "coste_racion": 0.0
+      },
+      {
+        "nombre": "Agua Fon vella 1 LT Caja de 12 unid.",
+        "tipo": "ARTICULO_DIRECTO",
+        "coste_racion": 0.4
+      },
+      {
+        "nombre": "Pan de pages de Forn Virgili. Precio kg",
+        "tipo": "ARTICULO_DIRECTO",
+        "coste_racion": 0.14250000000000002
+      },
+      {
+        "nombre": "Agua Fon vella 1 LT Caja de 12 unid.",
+        "tipo": "ARTICULO_DIRECTO",
+        "coste_racion": 0.24
+      },
+      {
+        "nombre": "pan, agua mineral.",
+        "tipo": "ARTICULO_DIRECTO",
+        "coste_racion": null
+      },
+      {
+        "nombre": "Refresco, cerveza y vermouth.",
+        "tipo": "ARTICULO_DIRECTO",
+        "coste_racion": null
+      },
+      {
+        "nombre": "A.P JAMON AL CENTRO EVENTOS SOCIALES.",
+        "tipo": "APERITIVO_PREPARADO",
+        "coste_racion": 1.44
+      },
+      {
+        "nombre": "Croqueta cocido . ( caja 4 kg).  30,49€",
+        "tipo": "ARTICULO_DIRECTO",
+        "coste_racion": 0.375
+      },
+      {
+        "nombre": "A.P GAZPACHO DE FRAMBUESA Y BITER KAS.",
+        "tipo": "APERITIVO_PREPARADO",
+        "coste_racion": 0.18
+      },
+      {
+        "nombre": "A.P CREMA DE AJO BLANCO, SARDINA Y UVA.",
+        "tipo": "APERITIVO_PREPARADO",
+        "coste_racion": 0.7
+      },
+      {
+        "nombre": "A.P SALMOREJO DE SANDIA.",
+        "tipo": "APERITIVO_PREPARADO",
+        "coste_racion": 0.55
+      },
+      {
+        "nombre": "A.P TARTAR DE SALMON MARINADO.",
+        "tipo": "APERITIVO_PREPARADO",
+        "coste_racion": 0.75
+      },
+      {
+        "nombre": "A.P DEGUSTACION DE FIDEOS ROSSOS.",
+        "tipo": "APERITIVO_PREPARADO",
+        "coste_racion": 0.65
+      },
+      {
+        "nombre": "A.P DEGUSTACION DE ARROZ NEGRO.",
+        "tipo": "APERITIVO_PREPARADO",
+        "coste_racion": 0.8
+      },
+      {
+        "nombre": "A.P MINI BURGUER DE PAN DE SESAMO.",
+        "tipo": "APERITIVO_PREPARADO",
+        "coste_racion": 0.68
+      },
+      {
+        "nombre": "A.P BROCHETA DE POLLO CON SALSA KARE.",
+        "tipo": "APERITIVO_PREPARADO",
+        "coste_racion": 0.6
+      },
+      {
+        "nombre": "A.P OSTRA DEL DELTA, EN ESCABECHE DE CITRICOS Y GEL DE FRUTA DE LA PASION.",
+        "tipo": "APERITIVO_PREPARADO",
+        "coste_racion": 1.48
+      },
+      {
+        "nombre": "Patatas Bravas. menu BBQ. Precio pax.",
+        "tipo": "ARTICULO_DIRECTO",
+        "coste_racion": 5.27
+      },
+      {
+        "nombre": "Pimiento del padron.",
+        "tipo": "ARTICULO_DIRECTO",
+        "coste_racion": 0.5175
+      },
+      {
+        "nombre": "Pollo muslo fresco.",
+        "tipo": "ARTICULO_DIRECTO",
+        "coste_racion": 0.432
+      },
+      {
+        "nombre": "Butifarra  fresca corta 14.cm. calçots. 90 gr porcianda",
+        "tipo": "ARTICULO_DIRECTO",
+        "coste_racion": 0.5535
+      },
+      {
+        "nombre": "Parrillada de verduras. Precio Pax.",
+        "tipo": "ARTICULO_DIRECTO",
+        "coste_racion": 2.33
+      },
+      {
+        "nombre": "Cafe Natural. 1 kg. 120 cafes. 24,48€  .kg. 0,22 unid",
+        "tipo": "ARTICULO_DIRECTO",
+        "coste_racion": null
+      },
+      {
+        "nombre": "Salsa Allioli. natural. bote de 1 lt.",
+        "tipo": "ARTICULO_DIRECTO",
+        "coste_racion": null
+      },
+      {
+        "nombre": "Aquarius Limon lata 33cl*24",
+        "tipo": "ARTICULO_DIRECTO",
+        "coste_racion": 7.95
+      }
+    ],
+    "bebidas": [
+      {
+        "nombre": "CLOS PINELL  TERRA TINTO ALTA",
+        "tipo": "BEBIDA"
+      },
+      {
+        "nombre": "CAVA ROGER DE FLOR",
+        "tipo": "BEBIDA"
+      },
+      {
+        "nombre": "Caña de cerveza",
+        "tipo": "BEBIDA"
+      }
+    ],
+    "complementos": [
+      {
+        "nombre": "Tarta de celebracion CAL JAN",
+        "tipo": "POSTRE_MENU"
+      },
+      {
+        "nombre": "PAN, AGUA, SELECCION DE VINOS Y CAFES",
+        "tipo": "COMPLEMENTO"
+      },
+      {
+        "nombre": "Pan, agua mineral y cafes.",
+        "tipo": "COMPLEMENTO"
+      },
+      {
+        "nombre": "MENU CALÇOTADA. CESTA DE PAN, TOMATE Y AJO.",
+        "tipo": "COMPLEMENTO"
+      }
+    ],
+    "servicios": [],
+    "economico": {
+      "precio_venta": 20.0,
+      "venta_neta": 18.0,
+      "coste_total": 11.1235,
+      "food_cost_pct": 61.79722222222222,
+      "beneficio": null
+    },
+    "origen_importacion": "I1.3.4.3",
+    "actualizado_en": "2026-07-13T09:06:53.795366+00:00",
+    "creado_en": "2026-07-13T09:06:53.795373+00:00",
+    "resumen": {
+      "secciones": 2,
+      "platos": 2,
+      "componentes": 2,
+      "articulos_directos": 25,
+      "bebidas": 3,
+      "complementos": 4
+    }
+  },
+  {
+    "menu_id": "MENU-656A44021665",
+    "nombre": "MENU FIN DE AÑO 2025",
+    "hoja_origen": "MENU FIN DE AÑO",
+    "estado": "ACTIVO",
+    "secciones": [
+      {
+        "seccion_id": "SEC-16617664CE61",
+        "nombre": "APERITIVO."
+      },
+      {
+        "seccion_id": "SEC-877DF5BC0CFC",
+        "nombre": "ENTRANTE."
+      },
+      {
+        "seccion_id": "SEC-1ECB82A2BBE2",
+        "nombre": "PRINCIPAL"
+      },
+      {
+        "seccion_id": "SEC-3788CF3E0BB7",
+        "nombre": "POSTRES"
+      }
+    ],
+    "platos": [
+      {
+        "plato_id": "PLATO-9432B848D8C2",
+        "nombre": "Crema de marisco, vieras con bombon de coco y curri.",
+        "seccion": "Entrante",
+        "coste_racion": 2.25,
+        "componentes": [],
+        "fila_origen": 10,
+        "accion_origen": "ACT-AA759FD7E2B7"
+      },
+      {
+        "plato_id": "PLATO-4B30A6CA3326",
+        "nombre": "Lenguado a la menier de yondu con hinojo y avellanas",
+        "seccion": "Entrante",
+        "coste_racion": 4.5,
+        "componentes": [],
+        "fila_origen": 12,
+        "accion_origen": "ACT-53CFF29CA711"
+      },
+      {
+        "plato_id": "PLATO-574EA7778AF5",
+        "nombre": "Tournedo de solomillo Rossini con chalotas glaseadas.",
+        "seccion": "Principal",
+        "coste_racion": 5.2,
+        "componentes": [],
+        "fila_origen": 14,
+        "accion_origen": "ACT-21FBB58B99B7"
+      }
+    ],
+    "articulos_directos": [
+      {
+        "nombre": "Agua Fon vella 1 LT Caja de 12 unid.",
+        "tipo": "ARTICULO_DIRECTO",
+        "coste_racion": 0.24
+      },
+      {
+        "nombre": "Jamon de bellota. corta a cuchillo. sobre de 80 gr. unid. 149.35 precio kg. ojo cambiar",
+        "tipo": "ARTICULO_DIRECTO",
+        "coste_racion": 0.6080000000000001
+      },
+      {
+        "nombre": "A.P TARTAR DE SALMON MARINADO.",
+        "tipo": "APERITIVO_PREPARADO",
+        "coste_racion": 0.58
+      },
+      {
+        "nombre": "A.P ESPUMA DE ALLIPEBRE CON PULPO.",
+        "tipo": "APERITIVO_PREPARADO",
+        "coste_racion": 0.78
+      },
+      {
+        "nombre": "Cafe Natural. 1 kg. 120 cafes. 24,48€  .kg. 0,22 unid",
+        "tipo": "ARTICULO_DIRECTO",
+        "coste_racion": null
+      },
+      {
+        "nombre": "Cava Petit Instant. Botella",
+        "tipo": "ARTICULO_DIRECTO",
+        "coste_racion": 1.076
+      }
+    ],
+    "bebidas": [
+      {
+        "nombre": "mas cabellut tinto.",
+        "tipo": "BEBIDA"
+      }
+    ],
+    "complementos": [
+      {
+        "nombre": "BODEGA",
+        "tipo": "COMPLEMENTO"
+      },
+      {
+        "nombre": "lingote de ferrero rocher, espuma de baeylis, y frambuesa liofilizada",
+        "tipo": "POSTRE_MENU"
+      },
+      {
+        "nombre": "COTILLON",
+        "tipo": "COMPLEMENTO"
+      },
+      {
+        "nombre": "TURRONES Y NEULAS.",
+        "tipo": "COMPLEMENTO"
+      }
+    ],
+    "servicios": [],
+    "economico": {
+      "precio_venta": 75.0,
+      "venta_neta": 67.5,
+      "coste_total": 22.113999999999997,
+      "food_cost_pct": 32.761481481481475,
+      "beneficio": null
+    },
+    "origen_importacion": "I1.3.4.3",
+    "actualizado_en": "2026-07-13T09:06:53.795454+00:00",
+    "creado_en": "2026-07-13T09:06:53.795460+00:00",
+    "resumen": {
+      "secciones": 4,
+      "platos": 3,
+      "componentes": 0,
+      "articulos_directos": 6,
+      "bebidas": 1,
+      "complementos": 4
+    }
+  }
+]

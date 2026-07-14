@@ -1,0 +1,30 @@
+PILOTO-1.4 — COMPROBACIÓN
+
+1. Copia el contenido del ZIP encima de Host AI 6.0.
+2. Abre PowerShell en la carpeta principal.
+3. Ejecuta:
+
+   python COMPROBAR_PILOTO_1.4.py
+
+Resultado esperado:
+
+PILOTO-1.4 — PRODUCCIÓN → STOCK
+==============================================================================
+Diagnóstico: OK | Consumos: 1 | Entradas: 1
+Trazabilidad: OK | Protección duplicados: OK | Rollback: ACTIVO
+
+COMPROBACIÓN MANUAL
+
+1. Ejecuta: python main.py
+2. Entra en Modo Piloto → 4. Producción.
+3. Abre una tarea con receta/escandallo y stock suficiente.
+4. Elige "He terminado una tarea".
+5. Debe mostrar primero las salidas previstas y la entrada generada.
+6. Confirma la actualización.
+7. Revisa Stock: deben haberse consumido ingredientes y añadido la elaboración.
+8. Intenta repetir el cierre: Host AI debe indicar que ya se registró.
+9. Prueba una tarea sin stock suficiente: no debe modificar nada y debe permitir registrar incidencia.
+
+IMPORTANTE
+- Las tareas antiguas ya finalizadas antes del 1.4 no se actualizan automáticamente.
+- Sin escandallo relacionado, Host AI no toca el stock.

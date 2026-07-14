@@ -1,0 +1,177 @@
+{
+  "archivo": "/mnt/data/Host_AI_3_0_2_5_Importador_Articulos_Excel/DATOS/importaciones/excel_demo_importador_articulos.xlsx",
+  "nombre_archivo": "excel_demo_importador_articulos.xlsx",
+  "hojas": [
+    {
+      "nombre": "Listado Articulos",
+      "filas": 4,
+      "columnas": 9,
+      "celdas_utilizadas": 33,
+      "columnas_detectadas": [
+        {
+          "indice": 1,
+          "letra": "A",
+          "nombre_detectado": "Codigo",
+          "tipo_detectado": "texto",
+          "total_celdas": 3,
+          "celdas_con_dato": 3,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "ART-CARRILLERA",
+            "ART-CEBOLLA",
+            "ART-DEMI"
+          ]
+        },
+        {
+          "indice": 2,
+          "letra": "B",
+          "nombre_detectado": "Articulo",
+          "tipo_detectado": "texto",
+          "total_celdas": 3,
+          "celdas_con_dato": 3,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "Carrillera de ternera",
+            "Cebolla",
+            "Demi-glace"
+          ]
+        },
+        {
+          "indice": 3,
+          "letra": "C",
+          "nombre_detectado": "Unidad",
+          "tipo_detectado": "texto",
+          "total_celdas": 3,
+          "celdas_con_dato": 3,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "kg",
+            "kg",
+            "L"
+          ]
+        },
+        {
+          "indice": 4,
+          "letra": "D",
+          "nombre_detectado": "Familia",
+          "tipo_detectado": "texto",
+          "total_celdas": 3,
+          "celdas_con_dato": 3,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "carnes",
+            "verduras",
+            "salsas"
+          ]
+        },
+        {
+          "indice": 5,
+          "letra": "E",
+          "nombre_detectado": "Proveedor",
+          "tipo_detectado": "texto",
+          "total_celdas": 3,
+          "celdas_con_dato": 3,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "Proveedor Carnes",
+            "Proveedor Verduras",
+            "Producción interna"
+          ]
+        },
+        {
+          "indice": 6,
+          "letra": "F",
+          "nombre_detectado": "Precio",
+          "tipo_detectado": "numero",
+          "total_celdas": 3,
+          "celdas_con_dato": 3,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            8.5,
+            1.2,
+            3
+          ]
+        },
+        {
+          "indice": 7,
+          "letra": "G",
+          "nombre_detectado": "Stock Minimo",
+          "tipo_detectado": "numero",
+          "total_celdas": 3,
+          "celdas_con_dato": 3,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            3,
+            5,
+            2
+          ]
+        },
+        {
+          "indice": 8,
+          "letra": "H",
+          "nombre_detectado": "Ubicacion",
+          "tipo_detectado": "texto",
+          "total_celdas": 3,
+          "celdas_con_dato": 3,
+          "porcentaje_vacio": 0.0,
+          "ejemplos": [
+            "Camara 1",
+            "Almacen seco",
+            "Camara 2"
+          ]
+        },
+        {
+          "indice": 9,
+          "letra": "I",
+          "nombre_detectado": "Alergenos",
+          "tipo_detectado": "vacio",
+          "total_celdas": 3,
+          "celdas_con_dato": 0,
+          "porcentaje_vacio": 100.0,
+          "ejemplos": []
+        }
+      ],
+      "vista_previa": [
+        {
+          "Codigo": "ART-CARRILLERA",
+          "Articulo": "Carrillera de ternera",
+          "Unidad": "kg",
+          "Familia": "carnes",
+          "Proveedor": "Proveedor Carnes",
+          "Precio": 8.5,
+          "Stock Minimo": 3,
+          "Ubicacion": "Camara 1",
+          "Alergenos": null
+        },
+        {
+          "Codigo": "ART-CEBOLLA",
+          "Articulo": "Cebolla",
+          "Unidad": "kg",
+          "Familia": "verduras",
+          "Proveedor": "Proveedor Verduras",
+          "Precio": 1.2,
+          "Stock Minimo": 5,
+          "Ubicacion": "Almacen seco",
+          "Alergenos": null
+        },
+        {
+          "Codigo": "ART-DEMI",
+          "Articulo": "Demi-glace",
+          "Unidad": "L",
+          "Familia": "salsas",
+          "Proveedor": "Producción interna",
+          "Precio": 3,
+          "Stock Minimo": 2,
+          "Ubicacion": "Camara 2",
+          "Alergenos": null
+        }
+      ]
+    }
+  ],
+  "total_hojas": 1,
+  "total_filas": 4,
+  "total_columnas": 9,
+  "total_celdas_utilizadas": 33,
+  "id": "ANEXCEL-8598DBDE68",
+  "creado_en": "2026-07-08T08:32:04"
+}

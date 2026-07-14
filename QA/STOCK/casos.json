@@ -1,0 +1,197 @@
+[
+  {
+    "id": "QA-STO-001",
+    "categoria": "stock",
+    "usuario": "¿Cuánto arroz bomba tengo?",
+    "intencion_esperada": "stock",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-STO-002",
+    "categoria": "stock",
+    "usuario": "Consulta stock de aceite.",
+    "intencion_esperada": "stock",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-STO-003",
+    "categoria": "stock",
+    "usuario": "¿Hay tomate en almacén?",
+    "intencion_esperada": "stock",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-STO-004",
+    "categoria": "stock",
+    "usuario": "Muéstrame roturas de stock.",
+    "intencion_esperada": "stock",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-STO-005",
+    "categoria": "stock",
+    "usuario": "¿Cuánto queda de gambón?",
+    "intencion_esperada": "stock",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-STO-006",
+    "categoria": "stock",
+    "usuario": "Revisa almacén de congelado.",
+    "intencion_esperada": "stock",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-STO-007",
+    "categoria": "stock",
+    "usuario": "¿Tengo suficiente pollo?",
+    "intencion_esperada": "stock",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-STO-008",
+    "categoria": "stock",
+    "usuario": "Stock actual de harina.",
+    "intencion_esperada": "stock",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-STO-009",
+    "categoria": "stock",
+    "usuario": "Qué artículos tengo bajos de stock.",
+    "intencion_esperada": "stock",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-STO-010",
+    "categoria": "stock",
+    "usuario": "Hay arroz suficiente para mañana?",
+    "intencion_esperada": "stock",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-STO-011",
+    "categoria": "stock",
+    "usuario": "Mira si queda leche.",
+    "intencion_esperada": "stock",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-STO-012",
+    "categoria": "stock",
+    "usuario": "Consulta almacén seco.",
+    "intencion_esperada": "stock",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-STO-013",
+    "categoria": "stock",
+    "usuario": "Qué producto está en rotura.",
+    "intencion_esperada": "stock",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-STO-014",
+    "categoria": "stock",
+    "usuario": "Cuánto stock tengo de patata.",
+    "intencion_esperada": "stock",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-STO-015",
+    "categoria": "stock",
+    "usuario": "Revisa existencias de pescado.",
+    "intencion_esperada": "stock",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  }
+]

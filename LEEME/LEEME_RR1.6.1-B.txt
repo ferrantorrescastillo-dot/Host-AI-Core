@@ -1,0 +1,14 @@
+HOST AI 6.0.4 — RR1.6.1-B COMPRAS Y RECEPCIÓN
+
+1. Haz una copia completa de tu proyecto actual.
+2. Confirma que ya tienes instalado RR1.6.1-A.
+3. Copia el contenido de este ZIP encima de la carpeta raíz de Host AI.
+4. Acepta reemplazar los archivos existentes.
+5. Ejecuta: python main.py
+
+Prueba recomendada:
+- Crear una necesidad.
+- Generar un pedido.
+- Recibirlo todavía en borrador y comprobar el aviso.
+- Aceptar el último coste conocido con Enter.
+- Revisar el resumen completo de recepción y el stock actualizado.

@@ -1,0 +1,52 @@
+HOST AI 4.1.8 - INFORME CATÁLOGO DE ARTÍCULOS
+==========================================================
+Total artículos: 358
+Activos: 358
+Inactivos: 0
+
+CALIDAD DEL CATÁLOGO
+----------------------------------------------------------
+Sin proveedor: 27
+Sin familia: 41
+Sin precio: 31
+Precio cero: 0
+Precio negativo: 0
+
+ORÍGENES
+----------------------------------------------------------
+excel: 354
+alta_manual_416: 4
+
+TOP PROVEEDORES
+----------------------------------------------------------
+PAU GAVALDA: 81
+SARDA: 48
+M.P APERITIVOS.: 44
+M.P: 33
+SIN_PROVEEDOR: 27
+Disbesa.: 25
+BUNDO.: 20
+AVICSA: 15
+MAKRO: 11
+ASSOLIN: 11
+
+TOP FAMILIAS
+----------------------------------------------------------
+Verduras: 90
+SIN_FAMILIA: 41
+Carnes: 36
+Consumibles: 24
+Lácteos: 21
+Especias y condimentos: 20
+Panadería: 17
+Bebidas: 15
+Pescados: 14
+Frutas: 14
+
+RECOMENDACIONES
+----------------------------------------------------------
+- Completar proveedores para mejorar compras, comparativas y pedidos.
+- Completar familias para mejorar filtros, informes y escandallos.
+- Revisar artículos sin precio o con precio cero antes de escandallar.
+
+ESTADO FINAL: apto_con_observaciones

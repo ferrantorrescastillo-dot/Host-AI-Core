@@ -1,0 +1,26 @@
+{
+  "fecha_aplicacion": "2026-07-09T21:59:07",
+  "total_lineas": 1,
+  "entradas_stock_ok": 1,
+  "precios_actualizados": 0,
+  "pendientes_articulo_nuevo": 0,
+  "omitidas_revision": 0,
+  "errores": 0,
+  "lineas": [
+    {
+      "producto_texto": "arroz bomba",
+      "codigo_articulo": "ART000355",
+      "articulo": "Arroz bomba",
+      "cantidad": 25.0,
+      "unidad": "kg",
+      "proveedor": "Makro",
+      "precio_unitario": 2.15,
+      "accion_origen": "entrada_stock",
+      "aplicada_stock": true,
+      "precio_actualizado": false,
+      "id_movimiento": "MOV00000006",
+      "mensaje": "Movimiento registrado correctamente."
+    }
+  ],
+  "estado": "aplicado"
+}

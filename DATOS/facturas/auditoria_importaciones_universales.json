@@ -1,0 +1,4659 @@
+{
+  "version": "3.0.3.8.3",
+  "registros": [
+    {
+      "archivo": "/mnt/data/Host_AI_3_0_3_8_3_Auditoria_Importaciones_Universales/DATOS/facturas/factura_auditoria_universal.png",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "total_lineas": 1,
+      "relaciones_auto": 1,
+      "precios_aplicados": 1,
+      "stock_aplicado": 1,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "El documento necesita OCR."
+      ],
+      "resumen": "Importación ejecutada: precios 1 aplicados, stock 1 aplicado.",
+      "datos": {
+        "ok": true,
+        "aplicado": true,
+        "forzado": true,
+        "fecha_ejecucion": "2026-07-08T12:18:00",
+        "preparacion": {
+          "archivo": "/mnt/data/Host_AI_3_0_3_8_3_Auditoria_Importaciones_Universales/DATOS/facturas/factura_auditoria_universal.png",
+          "ok": true,
+          "plan": {
+            "archivo": "/mnt/data/Host_AI_3_0_3_8_3_Auditoria_Importaciones_Universales/DATOS/facturas/factura_auditoria_universal.png",
+            "tipo_archivo": "png",
+            "necesita_ocr": true,
+            "pasos": [
+              "diagnosticar_archivo",
+              "extraer_texto_ocr",
+              "leer_factura_con_ocr",
+              "validar_lineas",
+              "relacionar_articulos",
+              "validar_relaciones",
+              "preparar_precios",
+              "preparar_stock"
+            ],
+            "puede_importar": true,
+            "requiere_revision": true,
+            "avisos": [
+              "El documento necesita OCR."
+            ],
+            "datos_previos": {
+              "diagnostico_ocr": {
+                "archivo": "/mnt/data/Host_AI_3_0_3_8_3_Auditoria_Importaciones_Universales/DATOS/facturas/factura_auditoria_universal.png",
+                "nombre_archivo": "factura_auditoria_universal.png",
+                "necesita_ocr": true,
+                "motivo": "Es una imagen; necesita OCR para extraer texto.",
+                "texto_actual": "",
+                "caracteres_detectados": 0,
+                "paginas": 1,
+                "confianza": 95,
+                "recomendaciones": [
+                  "Enviar a motor OCR en 3.0.3.7.2."
+                ],
+                "id": "DIAGOCR-41B0B98EDE",
+                "creado_en": "2026-07-08T12:18:00",
+                "lectura_host_ai": "Imagen detectada: necesita OCR."
+              }
+            },
+            "id": "PLANIMPFAC-EEAB9A84BC",
+            "creado_en": "2026-07-08T12:18:00",
+            "lectura_host_ai": "Plan de importación creado: 8 pasos."
+          },
+          "lectura": {
+            "archivo": "/mnt/data/Host_AI_3_0_3_8_3_Auditoria_Importaciones_Universales/DATOS/facturas/factura_auditoria_universal.png",
+            "proveedor_id": "PROV-MAKRO",
+            "proveedor_nombre": "Makro",
+            "numero_factura": "",
+            "fecha_factura": "",
+            "lineas": [
+              {
+                "descripcion": "Carrillera Ternera",
+                "cantidad": 8.0,
+                "unidad": "kg",
+                "precio_unitario": 8.45,
+                "importe": 67.6,
+                "descuento": 0.0,
+                "iva_porcentaje": 0.0,
+                "codigo_proveedor": "",
+                "articulo_id_sugerido": "",
+                "proveedor_id": "PROV-MAKRO",
+                "numero_factura": "",
+                "fecha_factura": "",
+                "confianza": 100.0,
+                "origen_texto": "Carrillera Ternera 8 KG 8,45 67,60",
+                "avisos": [],
+                "id": "LINFAC-F00AC677C3",
+                "creado_en": "2026-07-08T12:18:00"
+              }
+            ],
+            "lineas_descartadas": [
+              {
+                "numero": 1,
+                "texto": "MAKRO ESPAÑA S.A.",
+                "motivo": "no_parseable"
+              },
+              {
+                "numero": 2,
+                "texto": "Factura Nº F-AUD-1",
+                "motivo": "cabecera_pie"
+              },
+              {
+                "numero": 4,
+                "texto": "Total factura 67,60",
+                "motivo": "cabecera_pie"
+              }
+            ],
+            "total_lineas": 1,
+            "total_importe_lineas": 67.6,
+            "total_factura_detectado": 0.0,
+            "diferencia_total": 0.0,
+            "confianza_media": 100.0,
+            "avisos": [],
+            "id": "BLOQLINFAC-216731350C",
+            "creado_en": "2026-07-08T12:18:00",
+            "lectura_host_ai": "Factura leída mediante OCR: 1 líneas.",
+            "deteccion_proveedor": {
+              "proveedor_id": "PROV-MAKRO",
+              "nombre": "Makro",
+              "confianza": 90,
+              "metodo": "nombre_en_texto",
+              "coincidencias": [
+                "Dominio makro.es",
+                "Texto makro",
+                "Texto makro españa",
+                "Texto makro españa s.a.",
+                "Clave makro"
+              ],
+              "candidatos": [
+                {
+                  "proveedor_id": "PROV-MAKRO",
+                  "nombre": "Makro",
+                  "confianza": 90,
+                  "metodo": "nombre_en_texto",
+                  "coincidencias": [
+                    "Dominio makro.es",
+                    "Texto makro",
+                    "Texto makro españa",
+                    "Texto makro españa s.a.",
+                    "Clave makro"
+                  ],
+                  "categoria": "mayorista"
+                }
+              ],
+              "requiere_aprendizaje": false,
+              "avisos": [],
+              "id": "DETPROV-42F8DA5EB4",
+              "creado_en": "2026-07-08T12:18:00",
+              "contexto": {},
+              "lectura_host_ai": "Proveedor detectado: Makro (90%)."
+            },
+            "ok": true,
+            "diagnostico_ocr": {
+              "archivo": "/mnt/data/Host_AI_3_0_3_8_3_Auditoria_Importaciones_Universales/DATOS/facturas/factura_auditoria_universal.png",
+              "nombre_archivo": "factura_auditoria_universal.png",
+              "necesita_ocr": true,
+              "motivo": "Es una imagen; necesita OCR para extraer texto.",
+              "texto_actual": "",
+              "caracteres_detectados": 0,
+              "paginas": 1,
+              "confianza": 95,
+              "recomendaciones": [
+                "Enviar a motor OCR en 3.0.3.7.2."
+              ],
+              "id": "DIAGOCR-09DECD6D87",
+              "creado_en": "2026-07-08T12:18:00",
+              "lectura_host_ai": "Imagen detectada: necesita OCR."
+            },
+            "resultado_ocr": {
+              "archivo": "/mnt/data/Host_AI_3_0_3_8_3_Auditoria_Importaciones_Universales/DATOS/facturas/factura_auditoria_universal.png",
+              "nombre_archivo": "factura_auditoria_universal.png",
+              "texto_extraido": "MAKRO ESPAÑA S.A.\nFactura Nº F-AUD-1\nCarrillera Ternera 8 KG 8,45 67,60\nTotal factura 67,60",
+              "metodo": "manual_parametro",
+              "confianza": 85.0,
+              "paginas": 1,
+              "requiere_revision": false,
+              "avisos": [],
+              "diagnostico": {
+                "archivo": "/mnt/data/Host_AI_3_0_3_8_3_Auditoria_Importaciones_Universales/DATOS/facturas/factura_auditoria_universal.png",
+                "nombre_archivo": "factura_auditoria_universal.png",
+                "necesita_ocr": true,
+                "motivo": "Es una imagen; necesita OCR para extraer texto.",
+                "texto_actual": "",
+                "caracteres_detectados": 0,
+                "paginas": 1,
+                "confianza": 95,
+                "recomendaciones": [
+                  "Enviar a motor OCR en 3.0.3.7.2."
+                ],
+                "id": "DIAGOCR-5CB25F3AF1",
+                "creado_en": "2026-07-08T12:18:00",
+                "lectura_host_ai": "Imagen detectada: necesita OCR."
+              },
+              "id": "RESOCR-D9FCA54685",
+              "creado_en": "2026-07-08T12:18:00",
+              "lectura_host_ai": "OCR simulado extraído: 91 caracteres."
+            },
+            "validacion_ocr": {
+              "texto_original": "MAKRO ESPAÑA S.A.\nFactura Nº F-AUD-1\nCarrillera Ternera 8 KG 8,45 67,60\nTotal factura 67,60",
+              "texto_corregido": "MAKRO ESPAÑA S.A.\nFactura Nº F-AUD-1\nCarrillera Ternera 8 KG 8,45 67,60\nTotal factura 67,60",
+              "valido": true,
+              "confianza": 100.0,
+              "correcciones": [],
+              "avisos": [],
+              "errores": [],
+              "id": "VALOCR-4034D06726",
+              "creado_en": "2026-07-08T12:18:00",
+              "lectura_host_ai": "Texto OCR validado y corregido."
+            },
+            "origen": "ocr",
+            "json_exportado_ocr": "/mnt/data/Host_AI_3_0_3_8_3_Auditoria_Importaciones_Universales/DATOS/facturas/lectura_factura_con_ocr.json"
+          },
+          "validacion_lineas": {
+            "archivo": "/mnt/data/Host_AI_3_0_3_8_3_Auditoria_Importaciones_Universales/DATOS/facturas/factura_auditoria_universal.png",
+            "total_lineas": 1,
+            "lineas_validas": 1,
+            "lineas_con_avisos": 0,
+            "lineas_invalidas": 0,
+            "importe_lineas": 67.6,
+            "total_factura_detectado": 0.0,
+            "diferencia_total": 0.0,
+            "confianza_media": 100.0,
+            "puede_importar": true,
+            "validaciones": [
+              {
+                "descripcion": "Carrillera Ternera",
+                "valida": true,
+                "errores": [],
+                "avisos": [],
+                "confianza_original": 100.0,
+                "confianza_validacion": 100.0,
+                "cantidad": 8.0,
+                "unidad": "kg",
+                "precio_unitario": 8.45,
+                "importe": 67.6,
+                "importe_calculado": 67.6,
+                "diferencia": 0.0,
+                "origen_texto": "Carrillera Ternera 8 KG 8,45 67,60",
+                "id": "VALLINFAC-EF7A952FA5",
+                "creado_en": "2026-07-08T12:18:00"
+              }
+            ],
+            "duplicados": [],
+            "avisos_generales": [],
+            "errores_generales": [],
+            "id": "INFVALLINFAC-7719EAAB17",
+            "creado_en": "2026-07-08T12:18:00",
+            "lectura_host_ai": "Validación factura: 1 válidas, 0 con avisos, 0 inválidas."
+          },
+          "relaciones": {
+            "archivo": "/mnt/data/Host_AI_3_0_3_8_3_Auditoria_Importaciones_Universales/DATOS/facturas/factura_auditoria_universal.png",
+            "proveedor_id": "PROV-MAKRO",
+            "proveedor_nombre": "Makro",
+            "numero_factura": "",
+            "fecha_factura": "",
+            "relaciones": [
+              {
+                "descripcion_factura": "Carrillera Ternera",
+                "cantidad": 8.0,
+                "unidad": "kg",
+                "precio_unitario": 8.45,
+                "importe": 67.6,
+                "proveedor_id": "PROV-MAKRO",
+                "articulo_id": "ART-CARRILLERA",
+                "nombre_articulo": "Carrillera de ternera",
+                "confianza": 94.23,
+                "metodo": "similitud_texto",
+                "requiere_revision": false,
+                "candidatos": [
+                  {
+                    "articulo_id": "ART-CARRILLERA",
+                    "nombre_articulo": "Carrillera de ternera",
+                    "confianza": 94.23,
+                    "metodo": "similitud_texto",
+                    "motivos": [
+                      "Palabras coincidentes: carrillera, ternera"
+                    ],
+                    "proveedor_id": "PROV-MAKRO",
+                    "unidad": "kg",
+                    "familia": "carnes"
+                  }
+                ],
+                "decision_usuario": "",
+                "avisos": [],
+                "origen_linea": {
+                  "descripcion": "Carrillera Ternera",
+                  "cantidad": 8.0,
+                  "unidad": "kg",
+                  "precio_unitario": 8.45,
+                  "importe": 67.6,
+                  "descuento": 0.0,
+                  "iva_porcentaje": 0.0,
+                  "codigo_proveedor": "",
+                  "articulo_id_sugerido": "",
+                  "proveedor_id": "PROV-MAKRO",
+                  "numero_factura": "",
+                  "fecha_factura": "",
+                  "confianza": 100.0,
+                  "origen_texto": "Carrillera Ternera 8 KG 8,45 67,60",
+                  "avisos": [],
+                  "id": "LINFAC-F00AC677C3",
+                  "creado_en": "2026-07-08T12:18:00"
+                },
+                "id": "RELLINART-9E40495C55",
+                "creado_en": "2026-07-08T12:18:00"
+              }
+            ],
+            "total_lineas": 1,
+            "relacionadas_auto": 1,
+            "requieren_revision": 0,
+            "sin_relacion": 0,
+            "confianza_media": 94.23,
+            "puede_continuar": true,
+            "avisos_generales": [],
+            "id": "INFRELART-2F5C0459DC",
+            "creado_en": "2026-07-08T12:18:00",
+            "lectura_host_ai": "Relación automática: 1 automáticas, 0 para revisar, 0 sin relación."
+          },
+          "validacion_relaciones": {
+            "total_relaciones": 1,
+            "validas": 1,
+            "con_revision": 0,
+            "invalidas": 0,
+            "sin_articulo": 0,
+            "puede_continuar": true,
+            "validaciones": [
+              {
+                "descripcion_factura": "Carrillera Ternera",
+                "articulo_id": "ART-CARRILLERA",
+                "nombre_articulo": "Carrillera de ternera",
+                "valida": true,
+                "confianza": 94.23,
+                "requiere_revision": false,
+                "errores": [],
+                "avisos": [],
+                "metodo": "similitud_texto",
+                "id": "VALRELART-1D81255319",
+                "creado_en": "2026-07-08T12:18:00"
+              }
+            ],
+            "avisos_generales": [],
+            "errores_generales": [],
+            "id": "INFVALREL-D9098632DB",
+            "creado_en": "2026-07-08T12:18:00",
+            "lectura_host_ai": "Validación relaciones: 1 válidas, 0 revisión, 0 inválidas."
+          },
+          "informe_precios": {
+            "total_cambios": 1,
+            "actualizables": 1,
+            "requieren_revision": 0,
+            "sin_precio_anterior": 1,
+            "cambios": [
+              {
+                "articulo_id": "ART-CARRILLERA",
+                "nombre_articulo": "Carrillera de ternera",
+                "proveedor_id": "PROV-MAKRO",
+                "proveedor_nombre": "",
+                "precio_anterior": 0.0,
+                "precio_nuevo": 8.45,
+                "unidad": "kg",
+                "diferencia": 8.45,
+                "variacion_porcentaje": 0.0,
+                "numero_factura": "",
+                "fecha_factura": "",
+                "origen_linea": {
+                  "descripcion_factura": "Carrillera Ternera",
+                  "cantidad": 8.0,
+                  "unidad": "kg",
+                  "precio_unitario": 8.45,
+                  "importe": 67.6,
+                  "proveedor_id": "PROV-MAKRO",
+                  "articulo_id": "ART-CARRILLERA",
+                  "nombre_articulo": "Carrillera de ternera",
+                  "confianza": 94.23,
+                  "metodo": "similitud_texto",
+                  "requiere_revision": false,
+                  "candidatos": [
+                    {
+                      "articulo_id": "ART-CARRILLERA",
+                      "nombre_articulo": "Carrillera de ternera",
+                      "confianza": 94.23,
+                      "metodo": "similitud_texto",
+                      "motivos": [
+                        "Palabras coincidentes: carrillera, ternera"
+                      ],
+                      "proveedor_id": "PROV-MAKRO",
+                      "unidad": "kg",
+                      "familia": "carnes"
+                    }
+                  ],
+                  "decision_usuario": "",
+                  "avisos": [],
+                  "origen_linea": {
+                    "descripcion": "Carrillera Ternera",
+                    "cantidad": 8.0,
+                    "unidad": "kg",
+                    "precio_unitario": 8.45,
+                    "importe": 67.6,
+                    "descuento": 0.0,
+                    "iva_porcentaje": 0.0,
+                    "codigo_proveedor": "",
+                    "articulo_id_sugerido": "",
+                    "proveedor_id": "PROV-MAKRO",
+                    "numero_factura": "",
+                    "fecha_factura": "",
+                    "confianza": 100.0,
+                    "origen_texto": "Carrillera Ternera 8 KG 8,45 67,60",
+                    "avisos": [],
+                    "id": "LINFAC-F00AC677C3",
+                    "creado_en": "2026-07-08T12:18:00"
+                  },
+                  "id": "RELLINART-9E40495C55",
+                  "creado_en": "2026-07-08T12:18:00"
+                },
+                "accion_sugerida": "actualizar",
+                "requiere_revision": false,
+                "avisos": [
+                  "No hay precio anterior."
+                ],
+                "id": "CAMBPREC-AEBD62D94B",
+                "creado_en": "2026-07-08T12:18:00"
+              }
+            ],
+            "avisos_generales": [],
+            "id": "INFUPDPREC-ACB420DB70",
+            "creado_en": "2026-07-08T12:18:00",
+            "lectura_host_ai": "Informe precios: 1 actualizables, 0 para revisar."
+          },
+          "informe_stock": {
+            "movimientos": [
+              {
+                "articulo_id": "ART-CARRILLERA",
+                "nombre_articulo": "Carrillera de ternera",
+                "cantidad": 8.0,
+                "unidad": "kg",
+                "proveedor_id": "PROV-MAKRO",
+                "proveedor_nombre": "",
+                "numero_factura": "",
+                "fecha_factura": "",
+                "precio_unitario": 8.45,
+                "importe": 67.6,
+                "ubicacion": "",
+                "lote": "",
+                "caducidad": "",
+                "origen_linea": {
+                  "descripcion_factura": "Carrillera Ternera",
+                  "cantidad": 8.0,
+                  "unidad": "kg",
+                  "precio_unitario": 8.45,
+                  "importe": 67.6,
+                  "proveedor_id": "PROV-MAKRO",
+                  "articulo_id": "ART-CARRILLERA",
+                  "nombre_articulo": "Carrillera de ternera",
+                  "confianza": 94.23,
+                  "metodo": "similitud_texto",
+                  "requiere_revision": false,
+                  "candidatos": [
+                    {
+                      "articulo_id": "ART-CARRILLERA",
+                      "nombre_articulo": "Carrillera de ternera",
+                      "confianza": 94.23,
+                      "metodo": "similitud_texto",
+                      "motivos": [
+                        "Palabras coincidentes: carrillera, ternera"
+                      ],
+                      "proveedor_id": "PROV-MAKRO",
+                      "unidad": "kg",
+                      "familia": "carnes"
+                    }
+                  ],
+                  "decision_usuario": "",
+                  "avisos": [],
+                  "origen_linea": {
+                    "descripcion": "Carrillera Ternera",
+                    "cantidad": 8.0,
+                    "unidad": "kg",
+                    "precio_unitario": 8.45,
+                    "importe": 67.6,
+                    "descuento": 0.0,
+                    "iva_porcentaje": 0.0,
+                    "codigo_proveedor": "",
+                    "articulo_id_sugerido": "",
+                    "proveedor_id": "PROV-MAKRO",
+                    "numero_factura": "",
+                    "fecha_factura": "",
+                    "confianza": 100.0,
+                    "origen_texto": "Carrillera Ternera 8 KG 8,45 67,60",
+                    "avisos": [],
+                    "id": "LINFAC-F00AC677C3",
+                    "creado_en": "2026-07-08T12:18:00"
+                  },
+                  "id": "RELLINART-9E40495C55",
+                  "creado_en": "2026-07-08T12:18:00"
+                },
+                "accion_sugerida": "entrada_stock",
+                "requiere_revision": false,
+                "avisos": [],
+                "id": "MOVSTFAC-3D056DE23E",
+                "creado_en": "2026-07-08T12:18:00"
+              }
+            ],
+            "total_movimientos": 1,
+            "entradas_preparadas": 1,
+            "requieren_revision": 0,
+            "sin_articulo": 0,
+            "cantidad_total_lineas": 8.0,
+            "avisos_generales": [],
+            "id": "INFSTFAC-49D04324AF",
+            "creado_en": "2026-07-08T12:18:00",
+            "lectura_host_ai": "Informe stock: 1 entradas preparadas, 0 para revisar."
+          },
+          "requiere_revision": true,
+          "errores": [],
+          "avisos": [
+            "El documento necesita OCR."
+          ],
+          "id": "RESIMPFAC-8C8DA95ECF",
+          "creado_en": "2026-07-08T12:18:00",
+          "lectura_host_ai": "Importación preparada: 1 líneas, 1 relaciones automáticas."
+        },
+        "aplicacion_precios": {
+          "resultados": [
+            {
+              "aplicado": true,
+              "articulo_id": "ART-CARRILLERA",
+              "nombre_articulo": "Carrillera de ternera",
+              "precio_anterior": 0.0,
+              "precio_nuevo": 8.45,
+              "unidad": "kg",
+              "proveedor_id": "PROV-MAKRO",
+              "variacion_porcentaje": 0.0,
+              "forzado": true,
+              "fecha_aplicacion": "2026-07-08T12:18:00",
+              "errores": [],
+              "avisos": [],
+              "cambio": {
+                "articulo_id": "ART-CARRILLERA",
+                "nombre_articulo": "Carrillera de ternera",
+                "proveedor_id": "PROV-MAKRO",
+                "proveedor_nombre": "",
+                "precio_anterior": 0.0,
+                "precio_nuevo": 8.45,
+                "unidad": "kg",
+                "diferencia": 8.45,
+                "variacion_porcentaje": 0.0,
+                "numero_factura": "",
+                "fecha_factura": "",
+                "origen_linea": {
+                  "descripcion_factura": "Carrillera Ternera",
+                  "cantidad": 8.0,
+                  "unidad": "kg",
+                  "precio_unitario": 8.45,
+                  "importe": 67.6,
+                  "proveedor_id": "PROV-MAKRO",
+                  "articulo_id": "ART-CARRILLERA",
+                  "nombre_articulo": "Carrillera de ternera",
+                  "confianza": 94.23,
+                  "metodo": "similitud_texto",
+                  "requiere_revision": false,
+                  "candidatos": [
+                    {
+                      "articulo_id": "ART-CARRILLERA",
+                      "nombre_articulo": "Carrillera de ternera",
+                      "confianza": 94.23,
+                      "metodo": "similitud_texto",
+                      "motivos": [
+                        "Palabras coincidentes: carrillera, ternera"
+                      ],
+                      "proveedor_id": "PROV-MAKRO",
+                      "unidad": "kg",
+                      "familia": "carnes"
+                    }
+                  ],
+                  "decision_usuario": "",
+                  "avisos": [],
+                  "origen_linea": {
+                    "descripcion": "Carrillera Ternera",
+                    "cantidad": 8.0,
+                    "unidad": "kg",
+                    "precio_unitario": 8.45,
+                    "importe": 67.6,
+                    "descuento": 0.0,
+                    "iva_porcentaje": 0.0,
+                    "codigo_proveedor": "",
+                    "articulo_id_sugerido": "",
+                    "proveedor_id": "PROV-MAKRO",
+                    "numero_factura": "",
+                    "fecha_factura": "",
+                    "confianza": 100.0,
+                    "origen_texto": "Carrillera Ternera 8 KG 8,45 67,60",
+                    "avisos": [],
+                    "id": "LINFAC-F00AC677C3",
+                    "creado_en": "2026-07-08T12:18:00"
+                  },
+                  "id": "RELLINART-9E40495C55",
+                  "creado_en": "2026-07-08T12:18:00"
+                },
+                "accion_sugerida": "actualizar",
+                "requiere_revision": false,
+                "avisos": [
+                  "No hay precio anterior."
+                ],
+                "id": "CAMBPREC-AEBD62D94B",
+                "creado_en": "2026-07-08T12:18:00"
+              },
+              "lectura_host_ai": "Precio actualizado: Carrillera de ternera 0.0 -> 8.45.",
+              "historico": {
+                "registrado": true,
+                "registro": {
+                  "articulo_id": "ART-CARRILLERA",
+                  "nombre_articulo": "Carrillera de ternera",
+                  "precio": 8.45,
+                  "unidad": "kg",
+                  "proveedor_id": "PROV-MAKRO",
+                  "proveedor_nombre": "",
+                  "numero_factura": "",
+                  "fecha_factura": "",
+                  "origen": "actualizacion_factura",
+                  "id": "HISTPREC-8C71470037",
+                  "creado_en": "2026-07-08T12:18:00"
+                },
+                "lectura_host_ai": "Precio histórico registrado: Carrillera de ternera 8.45."
+              }
+            }
+          ],
+          "total": 1,
+          "aplicados": 1,
+          "bloqueados": 0,
+          "lectura_host_ai": "Actualización precios: 1 aplicados, 0 bloqueados."
+        },
+        "aplicacion_stock": {
+          "resultados": [
+            {
+              "aplicado": true,
+              "articulo_id": "ART-CARRILLERA",
+              "nombre_articulo": "Carrillera de ternera",
+              "cantidad": 8.0,
+              "unidad": "kg",
+              "proveedor_id": "PROV-MAKRO",
+              "numero_factura": "",
+              "fecha_factura": "",
+              "fecha_aplicacion": "2026-07-08T12:18:00",
+              "forzado": true,
+              "errores": [],
+              "avisos": [],
+              "movimiento": {
+                "articulo_id": "ART-CARRILLERA",
+                "nombre_articulo": "Carrillera de ternera",
+                "cantidad": 8.0,
+                "unidad": "kg",
+                "proveedor_id": "PROV-MAKRO",
+                "proveedor_nombre": "",
+                "numero_factura": "",
+                "fecha_factura": "",
+                "precio_unitario": 8.45,
+                "importe": 67.6,
+                "ubicacion": "",
+                "lote": "",
+                "caducidad": "",
+                "origen_linea": {
+                  "descripcion_factura": "Carrillera Ternera",
+                  "cantidad": 8.0,
+                  "unidad": "kg",
+                  "precio_unitario": 8.45,
+                  "importe": 67.6,
+                  "proveedor_id": "PROV-MAKRO",
+                  "articulo_id": "ART-CARRILLERA",
+                  "nombre_articulo": "Carrillera de ternera",
+                  "confianza": 94.23,
+                  "metodo": "similitud_texto",
+                  "requiere_revision": false,
+                  "candidatos": [
+                    {
+                      "articulo_id": "ART-CARRILLERA",
+                      "nombre_articulo": "Carrillera de ternera",
+                      "confianza": 94.23,
+                      "metodo": "similitud_texto",
+                      "motivos": [
+                        "Palabras coincidentes: carrillera, ternera"
+                      ],
+                      "proveedor_id": "PROV-MAKRO",
+                      "unidad": "kg",
+                      "familia": "carnes"
+                    }
+                  ],
+                  "decision_usuario": "",
+                  "avisos": [],
+                  "origen_linea": {
+                    "descripcion": "Carrillera Ternera",
+                    "cantidad": 8.0,
+                    "unidad": "kg",
+                    "precio_unitario": 8.45,
+                    "importe": 67.6,
+                    "descuento": 0.0,
+                    "iva_porcentaje": 0.0,
+                    "codigo_proveedor": "",
+                    "articulo_id_sugerido": "",
+                    "proveedor_id": "PROV-MAKRO",
+                    "numero_factura": "",
+                    "fecha_factura": "",
+                    "confianza": 100.0,
+                    "origen_texto": "Carrillera Ternera 8 KG 8,45 67,60",
+                    "avisos": [],
+                    "id": "LINFAC-F00AC677C3",
+                    "creado_en": "2026-07-08T12:18:00"
+                  },
+                  "id": "RELLINART-9E40495C55",
+                  "creado_en": "2026-07-08T12:18:00"
+                },
+                "accion_sugerida": "entrada_stock",
+                "requiere_revision": false,
+                "avisos": [],
+                "id": "MOVSTFAC-3D056DE23E",
+                "creado_en": "2026-07-08T12:18:00"
+              },
+              "lectura_host_ai": "Stock actualizado: Carrillera de ternera +8.0 kg.",
+              "historico": {
+                "registrado": true,
+                "registro": {
+                  "articulo_id": "ART-CARRILLERA",
+                  "nombre_articulo": "Carrillera de ternera",
+                  "tipo": "entrada",
+                  "cantidad": 8.0,
+                  "unidad": "kg",
+                  "stock_resultante": 8.0,
+                  "proveedor_id": "PROV-MAKRO",
+                  "numero_factura": "",
+                  "fecha_factura": "",
+                  "motivo": "Entrada factura",
+                  "origen": "actualizacion_factura",
+                  "datos": {
+                    "articulo_id": "ART-CARRILLERA",
+                    "nombre_articulo": "Carrillera de ternera",
+                    "cantidad": 8.0,
+                    "unidad": "kg",
+                    "proveedor_id": "PROV-MAKRO",
+                    "proveedor_nombre": "",
+                    "numero_factura": "",
+                    "fecha_factura": "",
+                    "precio_unitario": 8.45,
+                    "importe": 67.6,
+                    "ubicacion": "",
+                    "lote": "",
+                    "caducidad": "",
+                    "origen_linea": {
+                      "descripcion_factura": "Carrillera Ternera",
+                      "cantidad": 8.0,
+                      "unidad": "kg",
+                      "precio_unitario": 8.45,
+                      "importe": 67.6,
+                      "proveedor_id": "PROV-MAKRO",
+                      "articulo_id": "ART-CARRILLERA",
+                      "nombre_articulo": "Carrillera de ternera",
+                      "confianza": 94.23,
+                      "metodo": "similitud_texto",
+                      "requiere_revision": false,
+                      "candidatos": [
+                        {
+                          "articulo_id": "ART-CARRILLERA",
+                          "nombre_articulo": "Carrillera de ternera",
+                          "confianza": 94.23,
+                          "metodo": "similitud_texto",
+                          "motivos": [
+                            "Palabras coincidentes: carrillera, ternera"
+                          ],
+                          "proveedor_id": "PROV-MAKRO",
+                          "unidad": "kg",
+                          "familia": "carnes"
+                        }
+                      ],
+                      "decision_usuario": "",
+                      "avisos": [],
+                      "origen_linea": {
+                        "descripcion": "Carrillera Ternera",
+                        "cantidad": 8.0,
+                        "unidad": "kg",
+                        "precio_unitario": 8.45,
+                        "importe": 67.6,
+                        "descuento": 0.0,
+                        "iva_porcentaje": 0.0,
+                        "codigo_proveedor": "",
+                        "articulo_id_sugerido": "",
+                        "proveedor_id": "PROV-MAKRO",
+                        "numero_factura": "",
+                        "fecha_factura": "",
+                        "confianza": 100.0,
+                        "origen_texto": "Carrillera Ternera 8 KG 8,45 67,60",
+                        "avisos": [],
+                        "id": "LINFAC-F00AC677C3",
+                        "creado_en": "2026-07-08T12:18:00"
+                      },
+                      "id": "RELLINART-9E40495C55",
+                      "creado_en": "2026-07-08T12:18:00"
+                    },
+                    "accion_sugerida": "entrada_stock",
+                    "requiere_revision": false,
+                    "avisos": [],
+                    "id": "MOVSTFAC-3D056DE23E",
+                    "creado_en": "2026-07-08T12:18:00",
+                    "tipo": "entrada",
+                    "origen": "actualizacion_factura"
+                  },
+                  "id": "HISTSTOCK-76BCF6FE75",
+                  "creado_en": "2026-07-08T12:18:00"
+                },
+                "lectura_host_ai": "Histórico stock registrado: Carrillera de ternera 8.0 kg."
+              }
+            }
+          ],
+          "total": 1,
+          "aplicados": 1,
+          "bloqueados": 0,
+          "lectura_host_ai": "Actualización stock: 1 aplicados, 0 bloqueados."
+        },
+        "reconciliacion_stock": {
+          "resultados": [
+            {
+              "articulo_id": "ART-CARRILLERA",
+              "nombre_articulo": "Carrillera de ternera",
+              "cantidad_factura": 8.0,
+              "cantidad_aplicada": 38.0,
+              "unidad": "kg",
+              "diferencia": -30.0,
+              "estado": "correcto",
+              "avisos": [],
+              "datos": {
+                "articulo_id": "ART-CARRILLERA",
+                "nombre_articulo": "Carrillera de ternera",
+                "cantidad": 8.0,
+                "unidad": "kg",
+                "proveedor_id": "PROV-MAKRO",
+                "proveedor_nombre": "",
+                "numero_factura": "",
+                "fecha_factura": "",
+                "precio_unitario": 8.45,
+                "importe": 67.6,
+                "ubicacion": "",
+                "lote": "",
+                "caducidad": "",
+                "origen_linea": {
+                  "descripcion_factura": "Carrillera Ternera",
+                  "cantidad": 8.0,
+                  "unidad": "kg",
+                  "precio_unitario": 8.45,
+                  "importe": 67.6,
+                  "proveedor_id": "PROV-MAKRO",
+                  "articulo_id": "ART-CARRILLERA",
+                  "nombre_articulo": "Carrillera de ternera",
+                  "confianza": 94.23,
+                  "metodo": "similitud_texto",
+                  "requiere_revision": false,
+                  "candidatos": [
+                    {
+                      "articulo_id": "ART-CARRILLERA",
+                      "nombre_articulo": "Carrillera de ternera",
+                      "confianza": 94.23,
+                      "metodo": "similitud_texto",
+                      "motivos": [
+                        "Palabras coincidentes: carrillera, ternera"
+                      ],
+                      "proveedor_id": "PROV-MAKRO",
+                      "unidad": "kg",
+                      "familia": "carnes"
+                    }
+                  ],
+                  "decision_usuario": "",
+                  "avisos": [],
+                  "origen_linea": {
+                    "descripcion": "Carrillera Ternera",
+                    "cantidad": 8.0,
+                    "unidad": "kg",
+                    "precio_unitario": 8.45,
+                    "importe": 67.6,
+                    "descuento": 0.0,
+                    "iva_porcentaje": 0.0,
+                    "codigo_proveedor": "",
+                    "articulo_id_sugerido": "",
+                    "proveedor_id": "PROV-MAKRO",
+                    "numero_factura": "",
+                    "fecha_factura": "",
+                    "confianza": 100.0,
+                    "origen_texto": "Carrillera Ternera 8 KG 8,45 67,60",
+                    "avisos": [],
+                    "id": "LINFAC-F00AC677C3",
+                    "creado_en": "2026-07-08T12:18:00"
+                  },
+                  "id": "RELLINART-9E40495C55",
+                  "creado_en": "2026-07-08T12:18:00"
+                },
+                "accion_sugerida": "entrada_stock",
+                "requiere_revision": false,
+                "avisos": [],
+                "id": "MOVSTFAC-3D056DE23E",
+                "creado_en": "2026-07-08T12:18:00"
+              },
+              "id": "RECSTOCK-559A613403",
+              "creado_en": "2026-07-08T12:18:00"
+            }
+          ],
+          "total": 1,
+          "correctos": 1,
+          "con_diferencias": 0,
+          "pendientes": 0,
+          "puede_cerrar_factura": true,
+          "avisos_generales": [],
+          "id": "INFRECSTOCK-EC118AB4AB",
+          "creado_en": "2026-07-08T12:18:00",
+          "lectura_host_ai": "Reconciliación stock: 1 correctos, 0 diferencias, 0 pendientes."
+        },
+        "errores": [],
+        "avisos": [
+          "El documento necesita OCR."
+        ],
+        "lectura_host_ai": "Importación ejecutada: precios 1 aplicados, stock 1 aplicado.",
+        "auditoria": {
+          "registrado": true,
+          "registro": {
+            "archivo": "/mnt/data/Host_AI_3_0_3_8_3_Auditoria_Importaciones_Universales/DATOS/facturas/factura_auditoria_universal.png",
+            "estado": "aplicado",
+            "proveedor_id": "PROV-MAKRO",
+            "proveedor_nombre": "Makro",
+            "total_lineas": 1,
+            "relaciones_auto": 1,
+            "precios_aplicados": 1,
+            "stock_aplicado": 1,
+            "requiere_revision": true,
+            "errores": [],
+            "avisos": [
+              "El documento necesita OCR."
+            ],
+            "resumen": "Importación ejecutada: precios 1 aplicados, stock 1 aplicado.",
+            "datos": {
+              "ok": true,
+              "aplicado": true,
+              "forzado": true,
+              "fecha_ejecucion": "2026-07-08T12:18:00",
+              "preparacion": {
+                "archivo": "/mnt/data/Host_AI_3_0_3_8_3_Auditoria_Importaciones_Universales/DATOS/facturas/factura_auditoria_universal.png",
+                "ok": true,
+                "plan": {
+                  "archivo": "/mnt/data/Host_AI_3_0_3_8_3_Auditoria_Importaciones_Universales/DATOS/facturas/factura_auditoria_universal.png",
+                  "tipo_archivo": "png",
+                  "necesita_ocr": true,
+                  "pasos": [
+                    "diagnosticar_archivo",
+                    "extraer_texto_ocr",
+                    "leer_factura_con_ocr",
+                    "validar_lineas",
+                    "relacionar_articulos",
+                    "validar_relaciones",
+                    "preparar_precios",
+                    "preparar_stock"
+                  ],
+                  "puede_importar": true,
+                  "requiere_revision": true,
+                  "avisos": [
+                    "El documento necesita OCR."
+                  ],
+                  "datos_previos": {
+                    "diagnostico_ocr": {
+                      "archivo": "/mnt/data/Host_AI_3_0_3_8_3_Auditoria_Importaciones_Universales/DATOS/facturas/factura_auditoria_universal.png",
+                      "nombre_archivo": "factura_auditoria_universal.png",
+                      "necesita_ocr": true,
+                      "motivo": "Es una imagen; necesita OCR para extraer texto.",
+                      "texto_actual": "",
+                      "caracteres_detectados": 0,
+                      "paginas": 1,
+                      "confianza": 95,
+                      "recomendaciones": [
+                        "Enviar a motor OCR en 3.0.3.7.2."
+                      ],
+                      "id": "DIAGOCR-41B0B98EDE",
+                      "creado_en": "2026-07-08T12:18:00",
+                      "lectura_host_ai": "Imagen detectada: necesita OCR."
+                    }
+                  },
+                  "id": "PLANIMPFAC-EEAB9A84BC",
+                  "creado_en": "2026-07-08T12:18:00",
+                  "lectura_host_ai": "Plan de importación creado: 8 pasos."
+                },
+                "lectura": {
+                  "archivo": "/mnt/data/Host_AI_3_0_3_8_3_Auditoria_Importaciones_Universales/DATOS/facturas/factura_auditoria_universal.png",
+                  "proveedor_id": "PROV-MAKRO",
+                  "proveedor_nombre": "Makro",
+                  "numero_factura": "",
+                  "fecha_factura": "",
+                  "lineas": [
+                    {
+                      "descripcion": "Carrillera Ternera",
+                      "cantidad": 8.0,
+                      "unidad": "kg",
+                      "precio_unitario": 8.45,
+                      "importe": 67.6,
+                      "descuento": 0.0,
+                      "iva_porcentaje": 0.0,
+                      "codigo_proveedor": "",
+                      "articulo_id_sugerido": "",
+                      "proveedor_id": "PROV-MAKRO",
+                      "numero_factura": "",
+                      "fecha_factura": "",
+                      "confianza": 100.0,
+                      "origen_texto": "Carrillera Ternera 8 KG 8,45 67,60",
+                      "avisos": [],
+                      "id": "LINFAC-F00AC677C3",
+                      "creado_en": "2026-07-08T12:18:00"
+                    }
+                  ],
+                  "lineas_descartadas": [
+                    {
+                      "numero": 1,
+                      "texto": "MAKRO ESPAÑA S.A.",
+                      "motivo": "no_parseable"
+                    },
+                    {
+                      "numero": 2,
+                      "texto": "Factura Nº F-AUD-1",
+                      "motivo": "cabecera_pie"
+                    },
+                    {
+                      "numero": 4,
+                      "texto": "Total factura 67,60",
+                      "motivo": "cabecera_pie"
+                    }
+                  ],
+                  "total_lineas": 1,
+                  "total_importe_lineas": 67.6,
+                  "total_factura_detectado": 0.0,
+                  "diferencia_total": 0.0,
+                  "confianza_media": 100.0,
+                  "avisos": [],
+                  "id": "BLOQLINFAC-216731350C",
+                  "creado_en": "2026-07-08T12:18:00",
+                  "lectura_host_ai": "Factura leída mediante OCR: 1 líneas.",
+                  "deteccion_proveedor": {
+                    "proveedor_id": "PROV-MAKRO",
+                    "nombre": "Makro",
+                    "confianza": 90,
+                    "metodo": "nombre_en_texto",
+                    "coincidencias": [
+                      "Dominio makro.es",
+                      "Texto makro",
+                      "Texto makro españa",
+                      "Texto makro españa s.a.",
+                      "Clave makro"
+                    ],
+                    "candidatos": [
+                      {
+                        "proveedor_id": "PROV-MAKRO",
+                        "nombre": "Makro",
+                        "confianza": 90,
+                        "metodo": "nombre_en_texto",
+                        "coincidencias": [
+                          "Dominio makro.es",
+                          "Texto makro",
+                          "Texto makro españa",
+                          "Texto makro españa s.a.",
+                          "Clave makro"
+                        ],
+                        "categoria": "mayorista"
+                      }
+                    ],
+                    "requiere_aprendizaje": false,
+                    "avisos": [],
+                    "id": "DETPROV-42F8DA5EB4",
+                    "creado_en": "2026-07-08T12:18:00",
+                    "contexto": {},
+                    "lectura_host_ai": "Proveedor detectado: Makro (90%)."
+                  },
+                  "ok": true,
+                  "diagnostico_ocr": {
+                    "archivo": "/mnt/data/Host_AI_3_0_3_8_3_Auditoria_Importaciones_Universales/DATOS/facturas/factura_auditoria_universal.png",
+                    "nombre_archivo": "factura_auditoria_universal.png",
+                    "necesita_ocr": true,
+                    "motivo": "Es una imagen; necesita OCR para extraer texto.",
+                    "texto_actual": "",
+                    "caracteres_detectados": 0,
+                    "paginas": 1,
+                    "confianza": 95,
+                    "recomendaciones": [
+                      "Enviar a motor OCR en 3.0.3.7.2."
+                    ],
+                    "id": "DIAGOCR-09DECD6D87",
+                    "creado_en": "2026-07-08T12:18:00",
+                    "lectura_host_ai": "Imagen detectada: necesita OCR."
+                  },
+                  "resultado_ocr": {
+                    "archivo": "/mnt/data/Host_AI_3_0_3_8_3_Auditoria_Importaciones_Universales/DATOS/facturas/factura_auditoria_universal.png",
+                    "nombre_archivo": "factura_auditoria_universal.png",
+                    "texto_extraido": "MAKRO ESPAÑA S.A.\nFactura Nº F-AUD-1\nCarrillera Ternera 8 KG 8,45 67,60\nTotal factura 67,60",
+                    "metodo": "manual_parametro",
+                    "confianza": 85.0,
+                    "paginas": 1,
+                    "requiere_revision": false,
+                    "avisos": [],
+                    "diagnostico": {
+                      "archivo": "/mnt/data/Host_AI_3_0_3_8_3_Auditoria_Importaciones_Universales/DATOS/facturas/factura_auditoria_universal.png",
+                      "nombre_archivo": "factura_auditoria_universal.png",
+                      "necesita_ocr": true,
+                      "motivo": "Es una imagen; necesita OCR para extraer texto.",
+                      "texto_actual": "",
+                      "caracteres_detectados": 0,
+                      "paginas": 1,
+                      "confianza": 95,
+                      "recomendaciones": [
+                        "Enviar a motor OCR en 3.0.3.7.2."
+                      ],
+                      "id": "DIAGOCR-5CB25F3AF1",
+                      "creado_en": "2026-07-08T12:18:00",
+                      "lectura_host_ai": "Imagen detectada: necesita OCR."
+                    },
+                    "id": "RESOCR-D9FCA54685",
+                    "creado_en": "2026-07-08T12:18:00",
+                    "lectura_host_ai": "OCR simulado extraído: 91 caracteres."
+                  },
+                  "validacion_ocr": {
+                    "texto_original": "MAKRO ESPAÑA S.A.\nFactura Nº F-AUD-1\nCarrillera Ternera 8 KG 8,45 67,60\nTotal factura 67,60",
+                    "texto_corregido": "MAKRO ESPAÑA S.A.\nFactura Nº F-AUD-1\nCarrillera Ternera 8 KG 8,45 67,60\nTotal factura 67,60",
+                    "valido": true,
+                    "confianza": 100.0,
+                    "correcciones": [],
+                    "avisos": [],
+                    "errores": [],
+                    "id": "VALOCR-4034D06726",
+                    "creado_en": "2026-07-08T12:18:00",
+                    "lectura_host_ai": "Texto OCR validado y corregido."
+                  },
+                  "origen": "ocr",
+                  "json_exportado_ocr": "/mnt/data/Host_AI_3_0_3_8_3_Auditoria_Importaciones_Universales/DATOS/facturas/lectura_factura_con_ocr.json"
+                },
+                "validacion_lineas": {
+                  "archivo": "/mnt/data/Host_AI_3_0_3_8_3_Auditoria_Importaciones_Universales/DATOS/facturas/factura_auditoria_universal.png",
+                  "total_lineas": 1,
+                  "lineas_validas": 1,
+                  "lineas_con_avisos": 0,
+                  "lineas_invalidas": 0,
+                  "importe_lineas": 67.6,
+                  "total_factura_detectado": 0.0,
+                  "diferencia_total": 0.0,
+                  "confianza_media": 100.0,
+                  "puede_importar": true,
+                  "validaciones": [
+                    {
+                      "descripcion": "Carrillera Ternera",
+                      "valida": true,
+                      "errores": [],
+                      "avisos": [],
+                      "confianza_original": 100.0,
+                      "confianza_validacion": 100.0,
+                      "cantidad": 8.0,
+                      "unidad": "kg",
+                      "precio_unitario": 8.45,
+                      "importe": 67.6,
+                      "importe_calculado": 67.6,
+                      "diferencia": 0.0,
+                      "origen_texto": "Carrillera Ternera 8 KG 8,45 67,60",
+                      "id": "VALLINFAC-EF7A952FA5",
+                      "creado_en": "2026-07-08T12:18:00"
+                    }
+                  ],
+                  "duplicados": [],
+                  "avisos_generales": [],
+                  "errores_generales": [],
+                  "id": "INFVALLINFAC-7719EAAB17",
+                  "creado_en": "2026-07-08T12:18:00",
+                  "lectura_host_ai": "Validación factura: 1 válidas, 0 con avisos, 0 inválidas."
+                },
+                "relaciones": {
+                  "archivo": "/mnt/data/Host_AI_3_0_3_8_3_Auditoria_Importaciones_Universales/DATOS/facturas/factura_auditoria_universal.png",
+                  "proveedor_id": "PROV-MAKRO",
+                  "proveedor_nombre": "Makro",
+                  "numero_factura": "",
+                  "fecha_factura": "",
+                  "relaciones": [
+                    {
+                      "descripcion_factura": "Carrillera Ternera",
+                      "cantidad": 8.0,
+                      "unidad": "kg",
+                      "precio_unitario": 8.45,
+                      "importe": 67.6,
+                      "proveedor_id": "PROV-MAKRO",
+                      "articulo_id": "ART-CARRILLERA",
+                      "nombre_articulo": "Carrillera de ternera",
+                      "confianza": 94.23,
+                      "metodo": "similitud_texto",
+                      "requiere_revision": false,
+                      "candidatos": [
+                        {
+                          "articulo_id": "ART-CARRILLERA",
+                          "nombre_articulo": "Carrillera de ternera",
+                          "confianza": 94.23,
+                          "metodo": "similitud_texto",
+                          "motivos": [
+                            "Palabras coincidentes: carrillera, ternera"
+                          ],
+                          "proveedor_id": "PROV-MAKRO",
+                          "unidad": "kg",
+                          "familia": "carnes"
+                        }
+                      ],
+                      "decision_usuario": "",
+                      "avisos": [],
+                      "origen_linea": {
+                        "descripcion": "Carrillera Ternera",
+                        "cantidad": 8.0,
+                        "unidad": "kg",
+                        "precio_unitario": 8.45,
+                        "importe": 67.6,
+                        "descuento": 0.0,
+                        "iva_porcentaje": 0.0,
+                        "codigo_proveedor": "",
+                        "articulo_id_sugerido": "",
+                        "proveedor_id": "PROV-MAKRO",
+                        "numero_factura": "",
+                        "fecha_factura": "",
+                        "confianza": 100.0,
+                        "origen_texto": "Carrillera Ternera 8 KG 8,45 67,60",
+                        "avisos": [],
+                        "id": "LINFAC-F00AC677C3",
+                        "creado_en": "2026-07-08T12:18:00"
+                      },
+                      "id": "RELLINART-9E40495C55",
+                      "creado_en": "2026-07-08T12:18:00"
+                    }
+                  ],
+                  "total_lineas": 1,
+                  "relacionadas_auto": 1,
+                  "requieren_revision": 0,
+                  "sin_relacion": 0,
+                  "confianza_media": 94.23,
+                  "puede_continuar": true,
+                  "avisos_generales": [],
+                  "id": "INFRELART-2F5C0459DC",
+                  "creado_en": "2026-07-08T12:18:00",
+                  "lectura_host_ai": "Relación automática: 1 automáticas, 0 para revisar, 0 sin relación."
+                },
+                "validacion_relaciones": {
+                  "total_relaciones": 1,
+                  "validas": 1,
+                  "con_revision": 0,
+                  "invalidas": 0,
+                  "sin_articulo": 0,
+                  "puede_continuar": true,
+                  "validaciones": [
+                    {
+                      "descripcion_factura": "Carrillera Ternera",
+                      "articulo_id": "ART-CARRILLERA",
+                      "nombre_articulo": "Carrillera de ternera",
+                      "valida": true,
+                      "confianza": 94.23,
+                      "requiere_revision": false,
+                      "errores": [],
+                      "avisos": [],
+                      "metodo": "similitud_texto",
+                      "id": "VALRELART-1D81255319",
+                      "creado_en": "2026-07-08T12:18:00"
+                    }
+                  ],
+                  "avisos_generales": [],
+                  "errores_generales": [],
+                  "id": "INFVALREL-D9098632DB",
+                  "creado_en": "2026-07-08T12:18:00",
+                  "lectura_host_ai": "Validación relaciones: 1 válidas, 0 revisión, 0 inválidas."
+                },
+                "informe_precios": {
+                  "total_cambios": 1,
+                  "actualizables": 1,
+                  "requieren_revision": 0,
+                  "sin_precio_anterior": 1,
+                  "cambios": [
+                    {
+                      "articulo_id": "ART-CARRILLERA",
+                      "nombre_articulo": "Carrillera de ternera",
+                      "proveedor_id": "PROV-MAKRO",
+                      "proveedor_nombre": "",
+                      "precio_anterior": 0.0,
+                      "precio_nuevo": 8.45,
+                      "unidad": "kg",
+                      "diferencia": 8.45,
+                      "variacion_porcentaje": 0.0,
+                      "numero_factura": "",
+                      "fecha_factura": "",
+                      "origen_linea": {
+                        "descripcion_factura": "Carrillera Ternera",
+                        "cantidad": 8.0,
+                        "unidad": "kg",
+                        "precio_unitario": 8.45,
+                        "importe": 67.6,
+                        "proveedor_id": "PROV-MAKRO",
+                        "articulo_id": "ART-CARRILLERA",
+                        "nombre_articulo": "Carrillera de ternera",
+                        "confianza": 94.23,
+                        "metodo": "similitud_texto",
+                        "requiere_revision": false,
+                        "candidatos": [
+                          {
+                            "articulo_id": "ART-CARRILLERA",
+                            "nombre_articulo": "Carrillera de ternera",
+                            "confianza": 94.23,
+                            "metodo": "similitud_texto",
+                            "motivos": [
+                              "Palabras coincidentes: carrillera, ternera"
+                            ],
+                            "proveedor_id": "PROV-MAKRO",
+                            "unidad": "kg",
+                            "familia": "carnes"
+                          }
+                        ],
+                        "decision_usuario": "",
+                        "avisos": [],
+                        "origen_linea": {
+                          "descripcion": "Carrillera Ternera",
+                          "cantidad": 8.0,
+                          "unidad": "kg",
+                          "precio_unitario": 8.45,
+                          "importe": 67.6,
+                          "descuento": 0.0,
+                          "iva_porcentaje": 0.0,
+                          "codigo_proveedor": "",
+                          "articulo_id_sugerido": "",
+                          "proveedor_id": "PROV-MAKRO",
+                          "numero_factura": "",
+                          "fecha_factura": "",
+                          "confianza": 100.0,
+                          "origen_texto": "Carrillera Ternera 8 KG 8,45 67,60",
+                          "avisos": [],
+                          "id": "LINFAC-F00AC677C3",
+                          "creado_en": "2026-07-08T12:18:00"
+                        },
+                        "id": "RELLINART-9E40495C55",
+                        "creado_en": "2026-07-08T12:18:00"
+                      },
+                      "accion_sugerida": "actualizar",
+                      "requiere_revision": false,
+                      "avisos": [
+                        "No hay precio anterior."
+                      ],
+                      "id": "CAMBPREC-AEBD62D94B",
+                      "creado_en": "2026-07-08T12:18:00"
+                    }
+                  ],
+                  "avisos_generales": [],
+                  "id": "INFUPDPREC-ACB420DB70",
+                  "creado_en": "2026-07-08T12:18:00",
+                  "lectura_host_ai": "Informe precios: 1 actualizables, 0 para revisar."
+                },
+                "informe_stock": {
+                  "movimientos": [
+                    {
+                      "articulo_id": "ART-CARRILLERA",
+                      "nombre_articulo": "Carrillera de ternera",
+                      "cantidad": 8.0,
+                      "unidad": "kg",
+                      "proveedor_id": "PROV-MAKRO",
+                      "proveedor_nombre": "",
+                      "numero_factura": "",
+                      "fecha_factura": "",
+                      "precio_unitario": 8.45,
+                      "importe": 67.6,
+                      "ubicacion": "",
+                      "lote": "",
+                      "caducidad": "",
+                      "origen_linea": {
+                        "descripcion_factura": "Carrillera Ternera",
+                        "cantidad": 8.0,
+                        "unidad": "kg",
+                        "precio_unitario": 8.45,
+                        "importe": 67.6,
+                        "proveedor_id": "PROV-MAKRO",
+                        "articulo_id": "ART-CARRILLERA",
+                        "nombre_articulo": "Carrillera de ternera",
+                        "confianza": 94.23,
+                        "metodo": "similitud_texto",
+                        "requiere_revision": false,
+                        "candidatos": [
+                          {
+                            "articulo_id": "ART-CARRILLERA",
+                            "nombre_articulo": "Carrillera de ternera",
+                            "confianza": 94.23,
+                            "metodo": "similitud_texto",
+                            "motivos": [
+                              "Palabras coincidentes: carrillera, ternera"
+                            ],
+                            "proveedor_id": "PROV-MAKRO",
+                            "unidad": "kg",
+                            "familia": "carnes"
+                          }
+                        ],
+                        "decision_usuario": "",
+                        "avisos": [],
+                        "origen_linea": {
+                          "descripcion": "Carrillera Ternera",
+                          "cantidad": 8.0,
+                          "unidad": "kg",
+                          "precio_unitario": 8.45,
+                          "importe": 67.6,
+                          "descuento": 0.0,
+                          "iva_porcentaje": 0.0,
+                          "codigo_proveedor": "",
+                          "articulo_id_sugerido": "",
+                          "proveedor_id": "PROV-MAKRO",
+                          "numero_factura": "",
+                          "fecha_factura": "",
+                          "confianza": 100.0,
+                          "origen_texto": "Carrillera Ternera 8 KG 8,45 67,60",
+                          "avisos": [],
+                          "id": "LINFAC-F00AC677C3",
+                          "creado_en": "2026-07-08T12:18:00"
+                        },
+                        "id": "RELLINART-9E40495C55",
+                        "creado_en": "2026-07-08T12:18:00"
+                      },
+                      "accion_sugerida": "entrada_stock",
+                      "requiere_revision": false,
+                      "avisos": [],
+                      "id": "MOVSTFAC-3D056DE23E",
+                      "creado_en": "2026-07-08T12:18:00"
+                    }
+                  ],
+                  "total_movimientos": 1,
+                  "entradas_preparadas": 1,
+                  "requieren_revision": 0,
+                  "sin_articulo": 0,
+                  "cantidad_total_lineas": 8.0,
+                  "avisos_generales": [],
+                  "id": "INFSTFAC-49D04324AF",
+                  "creado_en": "2026-07-08T12:18:00",
+                  "lectura_host_ai": "Informe stock: 1 entradas preparadas, 0 para revisar."
+                },
+                "requiere_revision": true,
+                "errores": [],
+                "avisos": [
+                  "El documento necesita OCR."
+                ],
+                "id": "RESIMPFAC-8C8DA95ECF",
+                "creado_en": "2026-07-08T12:18:00",
+                "lectura_host_ai": "Importación preparada: 1 líneas, 1 relaciones automáticas."
+              },
+              "aplicacion_precios": {
+                "resultados": [
+                  {
+                    "aplicado": true,
+                    "articulo_id": "ART-CARRILLERA",
+                    "nombre_articulo": "Carrillera de ternera",
+                    "precio_anterior": 0.0,
+                    "precio_nuevo": 8.45,
+                    "unidad": "kg",
+                    "proveedor_id": "PROV-MAKRO",
+                    "variacion_porcentaje": 0.0,
+                    "forzado": true,
+                    "fecha_aplicacion": "2026-07-08T12:18:00",
+                    "errores": [],
+                    "avisos": [],
+                    "cambio": {
+                      "articulo_id": "ART-CARRILLERA",
+                      "nombre_articulo": "Carrillera de ternera",
+                      "proveedor_id": "PROV-MAKRO",
+                      "proveedor_nombre": "",
+                      "precio_anterior": 0.0,
+                      "precio_nuevo": 8.45,
+                      "unidad": "kg",
+                      "diferencia": 8.45,
+                      "variacion_porcentaje": 0.0,
+                      "numero_factura": "",
+                      "fecha_factura": "",
+                      "origen_linea": {
+                        "descripcion_factura": "Carrillera Ternera",
+                        "cantidad": 8.0,
+                        "unidad": "kg",
+                        "precio_unitario": 8.45,
+                        "importe": 67.6,
+                        "proveedor_id": "PROV-MAKRO",
+                        "articulo_id": "ART-CARRILLERA",
+                        "nombre_articulo": "Carrillera de ternera",
+                        "confianza": 94.23,
+                        "metodo": "similitud_texto",
+                        "requiere_revision": false,
+                        "candidatos": [
+                          {
+                            "articulo_id": "ART-CARRILLERA",
+                            "nombre_articulo": "Carrillera de ternera",
+                            "confianza": 94.23,
+                            "metodo": "similitud_texto",
+                            "motivos": [
+                              "Palabras coincidentes: carrillera, ternera"
+                            ],
+                            "proveedor_id": "PROV-MAKRO",
+                            "unidad": "kg",
+                            "familia": "carnes"
+                          }
+                        ],
+                        "decision_usuario": "",
+                        "avisos": [],
+                        "origen_linea": {
+                          "descripcion": "Carrillera Ternera",
+                          "cantidad": 8.0,
+                          "unidad": "kg",
+                          "precio_unitario": 8.45,
+                          "importe": 67.6,
+                          "descuento": 0.0,
+                          "iva_porcentaje": 0.0,
+                          "codigo_proveedor": "",
+                          "articulo_id_sugerido": "",
+                          "proveedor_id": "PROV-MAKRO",
+                          "numero_factura": "",
+                          "fecha_factura": "",
+                          "confianza": 100.0,
+                          "origen_texto": "Carrillera Ternera 8 KG 8,45 67,60",
+                          "avisos": [],
+                          "id": "LINFAC-F00AC677C3",
+                          "creado_en": "2026-07-08T12:18:00"
+                        },
+                        "id": "RELLINART-9E40495C55",
+                        "creado_en": "2026-07-08T12:18:00"
+                      },
+                      "accion_sugerida": "actualizar",
+                      "requiere_revision": false,
+                      "avisos": [
+                        "No hay precio anterior."
+                      ],
+                      "id": "CAMBPREC-AEBD62D94B",
+                      "creado_en": "2026-07-08T12:18:00"
+                    },
+                    "lectura_host_ai": "Precio actualizado: Carrillera de ternera 0.0 -> 8.45.",
+                    "historico": {
+                      "registrado": true,
+                      "registro": {
+                        "articulo_id": "ART-CARRILLERA",
+                        "nombre_articulo": "Carrillera de ternera",
+                        "precio": 8.45,
+                        "unidad": "kg",
+                        "proveedor_id": "PROV-MAKRO",
+                        "proveedor_nombre": "",
+                        "numero_factura": "",
+                        "fecha_factura": "",
+                        "origen": "actualizacion_factura",
+                        "id": "HISTPREC-8C71470037",
+                        "creado_en": "2026-07-08T12:18:00"
+                      },
+                      "lectura_host_ai": "Precio histórico registrado: Carrillera de ternera 8.45."
+                    }
+                  }
+                ],
+                "total": 1,
+                "aplicados": 1,
+                "bloqueados": 0,
+                "lectura_host_ai": "Actualización precios: 1 aplicados, 0 bloqueados."
+              },
+              "aplicacion_stock": {
+                "resultados": [
+                  {
+                    "aplicado": true,
+                    "articulo_id": "ART-CARRILLERA",
+                    "nombre_articulo": "Carrillera de ternera",
+                    "cantidad": 8.0,
+                    "unidad": "kg",
+                    "proveedor_id": "PROV-MAKRO",
+                    "numero_factura": "",
+                    "fecha_factura": "",
+                    "fecha_aplicacion": "2026-07-08T12:18:00",
+                    "forzado": true,
+                    "errores": [],
+                    "avisos": [],
+                    "movimiento": {
+                      "articulo_id": "ART-CARRILLERA",
+                      "nombre_articulo": "Carrillera de ternera",
+                      "cantidad": 8.0,
+                      "unidad": "kg",
+                      "proveedor_id": "PROV-MAKRO",
+                      "proveedor_nombre": "",
+                      "numero_factura": "",
+                      "fecha_factura": "",
+                      "precio_unitario": 8.45,
+                      "importe": 67.6,
+                      "ubicacion": "",
+                      "lote": "",
+                      "caducidad": "",
+                      "origen_linea": {
+                        "descripcion_factura": "Carrillera Ternera",
+                        "cantidad": 8.0,
+                        "unidad": "kg",
+                        "precio_unitario": 8.45,
+                        "importe": 67.6,
+                        "proveedor_id": "PROV-MAKRO",
+                        "articulo_id": "ART-CARRILLERA",
+                        "nombre_articulo": "Carrillera de ternera",
+                        "confianza": 94.23,
+                        "metodo": "similitud_texto",
+                        "requiere_revision": false,
+                        "candidatos": [
+                          {
+                            "articulo_id": "ART-CARRILLERA",
+                            "nombre_articulo": "Carrillera de ternera",
+                            "confianza": 94.23,
+                            "metodo": "similitud_texto",
+                            "motivos": [
+                              "Palabras coincidentes: carrillera, ternera"
+                            ],
+                            "proveedor_id": "PROV-MAKRO",
+                            "unidad": "kg",
+                            "familia": "carnes"
+                          }
+                        ],
+                        "decision_usuario": "",
+                        "avisos": [],
+                        "origen_linea": {
+                          "descripcion": "Carrillera Ternera",
+                          "cantidad": 8.0,
+                          "unidad": "kg",
+                          "precio_unitario": 8.45,
+                          "importe": 67.6,
+                          "descuento": 0.0,
+                          "iva_porcentaje": 0.0,
+                          "codigo_proveedor": "",
+                          "articulo_id_sugerido": "",
+                          "proveedor_id": "PROV-MAKRO",
+                          "numero_factura": "",
+                          "fecha_factura": "",
+                          "confianza": 100.0,
+                          "origen_texto": "Carrillera Ternera 8 KG 8,45 67,60",
+                          "avisos": [],
+                          "id": "LINFAC-F00AC677C3",
+                          "creado_en": "2026-07-08T12:18:00"
+                        },
+                        "id": "RELLINART-9E40495C55",
+                        "creado_en": "2026-07-08T12:18:00"
+                      },
+                      "accion_sugerida": "entrada_stock",
+                      "requiere_revision": false,
+                      "avisos": [],
+                      "id": "MOVSTFAC-3D056DE23E",
+                      "creado_en": "2026-07-08T12:18:00"
+                    },
+                    "lectura_host_ai": "Stock actualizado: Carrillera de ternera +8.0 kg.",
+                    "historico": {
+                      "registrado": true,
+                      "registro": {
+                        "articulo_id": "ART-CARRILLERA",
+                        "nombre_articulo": "Carrillera de ternera",
+                        "tipo": "entrada",
+                        "cantidad": 8.0,
+                        "unidad": "kg",
+                        "stock_resultante": 8.0,
+                        "proveedor_id": "PROV-MAKRO",
+                        "numero_factura": "",
+                        "fecha_factura": "",
+                        "motivo": "Entrada factura",
+                        "origen": "actualizacion_factura",
+                        "datos": {
+                          "articulo_id": "ART-CARRILLERA",
+                          "nombre_articulo": "Carrillera de ternera",
+                          "cantidad": 8.0,
+                          "unidad": "kg",
+                          "proveedor_id": "PROV-MAKRO",
+                          "proveedor_nombre": "",
+                          "numero_factura": "",
+                          "fecha_factura": "",
+                          "precio_unitario": 8.45,
+                          "importe": 67.6,
+                          "ubicacion": "",
+                          "lote": "",
+                          "caducidad": "",
+                          "origen_linea": {
+                            "descripcion_factura": "Carrillera Ternera",
+                            "cantidad": 8.0,
+                            "unidad": "kg",
+                            "precio_unitario": 8.45,
+                            "importe": 67.6,
+                            "proveedor_id": "PROV-MAKRO",
+                            "articulo_id": "ART-CARRILLERA",
+                            "nombre_articulo": "Carrillera de ternera",
+                            "confianza": 94.23,
+                            "metodo": "similitud_texto",
+                            "requiere_revision": false,
+                            "candidatos": [
+                              {
+                                "articulo_id": "ART-CARRILLERA",
+                                "nombre_articulo": "Carrillera de ternera",
+                                "confianza": 94.23,
+                                "metodo": "similitud_texto",
+                                "motivos": [
+                                  "Palabras coincidentes: carrillera, ternera"
+                                ],
+                                "proveedor_id": "PROV-MAKRO",
+                                "unidad": "kg",
+                                "familia": "carnes"
+                              }
+                            ],
+                            "decision_usuario": "",
+                            "avisos": [],
+                            "origen_linea": {
+                              "descripcion": "Carrillera Ternera",
+                              "cantidad": 8.0,
+                              "unidad": "kg",
+                              "precio_unitario": 8.45,
+                              "importe": 67.6,
+                              "descuento": 0.0,
+                              "iva_porcentaje": 0.0,
+                              "codigo_proveedor": "",
+                              "articulo_id_sugerido": "",
+                              "proveedor_id": "PROV-MAKRO",
+                              "numero_factura": "",
+                              "fecha_factura": "",
+                              "confianza": 100.0,
+                              "origen_texto": "Carrillera Ternera 8 KG 8,45 67,60",
+                              "avisos": [],
+                              "id": "LINFAC-F00AC677C3",
+                              "creado_en": "2026-07-08T12:18:00"
+                            },
+                            "id": "RELLINART-9E40495C55",
+                            "creado_en": "2026-07-08T12:18:00"
+                          },
+                          "accion_sugerida": "entrada_stock",
+                          "requiere_revision": false,
+                          "avisos": [],
+                          "id": "MOVSTFAC-3D056DE23E",
+                          "creado_en": "2026-07-08T12:18:00",
+                          "tipo": "entrada",
+                          "origen": "actualizacion_factura"
+                        },
+                        "id": "HISTSTOCK-76BCF6FE75",
+                        "creado_en": "2026-07-08T12:18:00"
+                      },
+                      "lectura_host_ai": "Histórico stock registrado: Carrillera de ternera 8.0 kg."
+                    }
+                  }
+                ],
+                "total": 1,
+                "aplicados": 1,
+                "bloqueados": 0,
+                "lectura_host_ai": "Actualización stock: 1 aplicados, 0 bloqueados."
+              },
+              "reconciliacion_stock": {
+                "resultados": [
+                  {
+                    "articulo_id": "ART-CARRILLERA",
+                    "nombre_articulo": "Carrillera de ternera",
+                    "cantidad_factura": 8.0,
+                    "cantidad_aplicada": 38.0,
+                    "unidad": "kg",
+                    "diferencia": -30.0,
+                    "estado": "correcto",
+                    "avisos": [],
+                    "datos": {
+                      "articulo_id": "ART-CARRILLERA",
+                      "nombre_articulo": "Carrillera de ternera",
+                      "cantidad": 8.0,
+                      "unidad": "kg",
+                      "proveedor_id": "PROV-MAKRO",
+                      "proveedor_nombre": "",
+                      "numero_factura": "",
+                      "fecha_factura": "",
+                      "precio_unitario": 8.45,
+                      "importe": 67.6,
+                      "ubicacion": "",
+                      "lote": "",
+                      "caducidad": "",
+                      "origen_linea": {
+                        "descripcion_factura": "Carrillera Ternera",
+                        "cantidad": 8.0,
+                        "unidad": "kg",
+                        "precio_unitario": 8.45,
+                        "importe": 67.6,
+                        "proveedor_id": "PROV-MAKRO",
+                        "articulo_id": "ART-CARRILLERA",
+                        "nombre_articulo": "Carrillera de ternera",
+                        "confianza": 94.23,
+                        "metodo": "similitud_texto",
+                        "requiere_revision": false,
+                        "candidatos": [
+                          {
+                            "articulo_id": "ART-CARRILLERA",
+                            "nombre_articulo": "Carrillera de ternera",
+                            "confianza": 94.23,
+                            "metodo": "similitud_texto",
+                            "motivos": [
+                              "Palabras coincidentes: carrillera, ternera"
+                            ],
+                            "proveedor_id": "PROV-MAKRO",
+                            "unidad": "kg",
+                            "familia": "carnes"
+                          }
+                        ],
+                        "decision_usuario": "",
+                        "avisos": [],
+                        "origen_linea": {
+                          "descripcion": "Carrillera Ternera",
+                          "cantidad": 8.0,
+                          "unidad": "kg",
+                          "precio_unitario": 8.45,
+                          "importe": 67.6,
+                          "descuento": 0.0,
+                          "iva_porcentaje": 0.0,
+                          "codigo_proveedor": "",
+                          "articulo_id_sugerido": "",
+                          "proveedor_id": "PROV-MAKRO",
+                          "numero_factura": "",
+                          "fecha_factura": "",
+                          "confianza": 100.0,
+                          "origen_texto": "Carrillera Ternera 8 KG 8,45 67,60",
+                          "avisos": [],
+                          "id": "LINFAC-F00AC677C3",
+                          "creado_en": "2026-07-08T12:18:00"
+                        },
+                        "id": "RELLINART-9E40495C55",
+                        "creado_en": "2026-07-08T12:18:00"
+                      },
+                      "accion_sugerida": "entrada_stock",
+                      "requiere_revision": false,
+                      "avisos": [],
+                      "id": "MOVSTFAC-3D056DE23E",
+                      "creado_en": "2026-07-08T12:18:00"
+                    },
+                    "id": "RECSTOCK-559A613403",
+                    "creado_en": "2026-07-08T12:18:00"
+                  }
+                ],
+                "total": 1,
+                "correctos": 1,
+                "con_diferencias": 0,
+                "pendientes": 0,
+                "puede_cerrar_factura": true,
+                "avisos_generales": [],
+                "id": "INFRECSTOCK-EC118AB4AB",
+                "creado_en": "2026-07-08T12:18:00",
+                "lectura_host_ai": "Reconciliación stock: 1 correctos, 0 diferencias, 0 pendientes."
+              },
+              "errores": [],
+              "avisos": [
+                "El documento necesita OCR."
+              ],
+              "lectura_host_ai": "Importación ejecutada: precios 1 aplicados, stock 1 aplicado."
+            },
+            "id": "AUDIMP-1B2DD343E6",
+            "creado_en": "2026-07-08T12:18:00"
+          },
+          "lectura_host_ai": "Auditoría registrada: aplicado."
+        }
+      },
+      "id": "AUDIMP-1B2DD343E6",
+      "creado_en": "2026-07-08T12:18:00"
+    },
+    {
+      "archivo": "demo.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "total_lineas": 2,
+      "relaciones_auto": 2,
+      "precios_aplicados": 2,
+      "stock_aplicado": 2,
+      "requiere_revision": false,
+      "errores": [],
+      "avisos": [],
+      "resumen": "Importación ejecutada demo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación ejecutada demo.",
+        "preparacion": {
+          "archivo": "demo.pdf",
+          "ok": true,
+          "lectura": {
+            "proveedor_id": "PROV-MAKRO",
+            "proveedor_nombre": "Makro",
+            "total_lineas": 2
+          },
+          "relaciones": {
+            "relacionadas_auto": 2
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 2
+        },
+        "aplicacion_stock": {
+          "aplicados": 2
+        },
+        "errores": [],
+        "avisos": []
+      },
+      "id": "AUDIMP-E9ED2B24A8",
+      "creado_en": "2026-07-08T12:28:28"
+    },
+    {
+      "archivo": "demo.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "total_lineas": 2,
+      "relaciones_auto": 2,
+      "precios_aplicados": 2,
+      "stock_aplicado": 2,
+      "requiere_revision": false,
+      "errores": [],
+      "avisos": [],
+      "resumen": "Importación ejecutada demo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación ejecutada demo.",
+        "preparacion": {
+          "archivo": "demo.pdf",
+          "ok": true,
+          "lectura": {
+            "proveedor_id": "PROV-MAKRO",
+            "proveedor_nombre": "Makro",
+            "total_lineas": 2
+          },
+          "relaciones": {
+            "relacionadas_auto": 2
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 2
+        },
+        "aplicacion_stock": {
+          "aplicados": 2
+        },
+        "errores": [],
+        "avisos": []
+      },
+      "id": "AUDIMP-36B808E15C",
+      "creado_en": "2026-07-08T12:29:02"
+    },
+    {
+      "archivo": "demo.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "total_lineas": 2,
+      "relaciones_auto": 2,
+      "precios_aplicados": 2,
+      "stock_aplicado": 2,
+      "requiere_revision": false,
+      "errores": [],
+      "avisos": [],
+      "resumen": "Importación demo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo.",
+        "preparacion": {
+          "archivo": "demo.pdf",
+          "ok": true,
+          "lectura": {
+            "proveedor_id": "PROV-MAKRO",
+            "proveedor_nombre": "Makro",
+            "total_lineas": 2
+          },
+          "relaciones": {
+            "relacionadas_auto": 2
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 2
+        },
+        "aplicacion_stock": {
+          "aplicados": 2
+        },
+        "errores": [],
+        "avisos": []
+      },
+      "id": "AUDIMP-9DDEE1F4E0",
+      "creado_en": "2026-07-08T12:50:30"
+    },
+    {
+      "archivo": "demo.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "total_lineas": 2,
+      "relaciones_auto": 2,
+      "precios_aplicados": 2,
+      "stock_aplicado": 2,
+      "requiere_revision": false,
+      "errores": [],
+      "avisos": [],
+      "resumen": "Importación demo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo.",
+        "preparacion": {
+          "archivo": "demo.pdf",
+          "ok": true,
+          "lectura": {
+            "proveedor_id": "PROV-MAKRO",
+            "proveedor_nombre": "Makro",
+            "total_lineas": 2
+          },
+          "relaciones": {
+            "relacionadas_auto": 2
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 2
+        },
+        "aplicacion_stock": {
+          "aplicados": 2
+        },
+        "errores": [],
+        "avisos": []
+      },
+      "id": "AUDIMP-38E2CEB8F0",
+      "creado_en": "2026-07-08T13:51:26"
+    },
+    {
+      "archivo": "factura_anomalia_demo.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-TEST",
+      "proveedor_nombre": "Proveedor Test",
+      "total_lineas": 2,
+      "relaciones_auto": 1,
+      "precios_aplicados": 1,
+      "stock_aplicado": 1,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso en una línea"
+      ],
+      "resumen": "Factura test anomalías aplicada con aviso OCR.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Factura test anomalías aplicada con aviso OCR.",
+        "preparacion": {
+          "archivo": "factura_anomalia_demo.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-TEST",
+            "proveedor_nombre": "Proveedor Test",
+            "total_lineas": 2
+          },
+          "relaciones": {
+            "relacionadas_auto": 1,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Producto OCR dudoso",
+                "confianza": 0.2
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 1
+        },
+        "aplicacion_stock": {
+          "aplicados": 1
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso en una línea"
+        ]
+      },
+      "id": "AUDIMP-5B005D403C",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "archivo": "factura_anomalia_demo.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-TEST",
+      "proveedor_nombre": "Proveedor Test",
+      "total_lineas": 2,
+      "relaciones_auto": 1,
+      "precios_aplicados": 1,
+      "stock_aplicado": 1,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso en una línea"
+      ],
+      "resumen": "Factura test anomalías aplicada con aviso OCR.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Factura test anomalías aplicada con aviso OCR.",
+        "preparacion": {
+          "archivo": "factura_anomalia_demo.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-TEST",
+            "proveedor_nombre": "Proveedor Test",
+            "total_lineas": 2
+          },
+          "relaciones": {
+            "relacionadas_auto": 1,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Producto OCR dudoso",
+                "confianza": 0.2
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 1
+        },
+        "aplicacion_stock": {
+          "aplicados": 1
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso en una línea"
+        ]
+      },
+      "id": "AUDIMP-F980784EF3",
+      "creado_en": "2026-07-08T13:51:29"
+    },
+    {
+      "archivo": "factura_pack_304_demo.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-PACK",
+      "proveedor_nombre": "Proveedor Pack",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo bloque inteligencia compras.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo bloque inteligencia compras.",
+        "preparacion": {
+          "archivo": "factura_pack_304_demo.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-PACK",
+            "proveedor_nombre": "Proveedor Pack",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-381581602A",
+      "creado_en": "2026-07-08T13:51:32"
+    },
+    {
+      "archivo": "factura_pack_304_demo.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-PACK",
+      "proveedor_nombre": "Proveedor Pack",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo bloque inteligencia compras.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo bloque inteligencia compras.",
+        "preparacion": {
+          "archivo": "factura_pack_304_demo.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-PACK",
+            "proveedor_nombre": "Proveedor Pack",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-106842F8F9",
+      "creado_en": "2026-07-08T13:51:32"
+    },
+    {
+      "archivo": "factura_3045_3046.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3045_3046.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-F5D65705EE",
+      "creado_en": "2026-07-08T14:08:14"
+    },
+    {
+      "archivo": "factura_3045_3046.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3045_3046.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-999DC4BFD2",
+      "creado_en": "2026-07-08T14:08:14"
+    },
+    {
+      "archivo": "factura_cierre_304.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo cierre 304.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo cierre 304.",
+        "preparacion": {
+          "archivo": "factura_cierre_304.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-6979A75B4E",
+      "creado_en": "2026-07-08T14:24:17"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-03C06830CD",
+      "creado_en": "2026-07-08T14:24:19"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-170EBA8293",
+      "creado_en": "2026-07-08T14:24:19"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-CEC4677456",
+      "creado_en": "2026-07-08T20:15:34"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-7C3135BD63",
+      "creado_en": "2026-07-08T20:15:34"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-56EEBA4803",
+      "creado_en": "2026-07-08T20:24:18"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-7C852D2BCB",
+      "creado_en": "2026-07-08T20:24:18"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-6502BFA8CA",
+      "creado_en": "2026-07-08T22:02:42"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-A325695F86",
+      "creado_en": "2026-07-08T22:02:42"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-E4CB461E0F",
+      "creado_en": "2026-07-08T22:32:23"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-F3A4692C06",
+      "creado_en": "2026-07-08T22:32:23"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-48FB350F12",
+      "creado_en": "2026-07-08T22:38:33"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-76F8EB3134",
+      "creado_en": "2026-07-08T22:38:33"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-518A6DCF6A",
+      "creado_en": "2026-07-08T22:48:14"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-893B86E99F",
+      "creado_en": "2026-07-08T22:48:14"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-772A2A7197",
+      "creado_en": "2026-07-08T22:58:07"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-58D08769B6",
+      "creado_en": "2026-07-08T22:58:07"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-4D1905AB98",
+      "creado_en": "2026-07-08T23:02:35"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-A98C59B8F3",
+      "creado_en": "2026-07-08T23:02:35"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-06F68C1E9C",
+      "creado_en": "2026-07-08T23:08:03"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-A841DCE520",
+      "creado_en": "2026-07-08T23:08:03"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-0B3F0F1253",
+      "creado_en": "2026-07-08T23:08:30"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-3E98D8FBD2",
+      "creado_en": "2026-07-08T23:08:30"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-4F95776AF8",
+      "creado_en": "2026-07-08T23:12:26"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-E19FDDBB7B",
+      "creado_en": "2026-07-08T23:12:26"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-D739E949CD",
+      "creado_en": "2026-07-08T23:16:38"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-B7B220E774",
+      "creado_en": "2026-07-08T23:16:38"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-FC2D8BF37D",
+      "creado_en": "2026-07-08T23:26:20"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-FC6BA84AEB",
+      "creado_en": "2026-07-08T23:26:20"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-303079D043",
+      "creado_en": "2026-07-08T23:37:43"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-F5504A550C",
+      "creado_en": "2026-07-08T23:37:43"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-CB5659571F",
+      "creado_en": "2026-07-08T23:40:35"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-50F8B53728",
+      "creado_en": "2026-07-08T23:40:35"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-6D7F38203A",
+      "creado_en": "2026-07-08T23:40:53"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-84BC784973",
+      "creado_en": "2026-07-08T23:40:53"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-6F5355FB3B",
+      "creado_en": "2026-07-08T23:44:30"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-9D2E99FFB1",
+      "creado_en": "2026-07-08T23:44:30"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-F3D78CD719",
+      "creado_en": "2026-07-08T23:49:10"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-DEBE831263",
+      "creado_en": "2026-07-08T23:49:10"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-566E999456",
+      "creado_en": "2026-07-09T00:04:48"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-E68671F1D8",
+      "creado_en": "2026-07-09T00:04:48"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-A78326DD5A",
+      "creado_en": "2026-07-09T00:14:18"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-6C89E0EF2A",
+      "creado_en": "2026-07-09T00:14:18"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-F19C24D195",
+      "creado_en": "2026-07-09T11:43:55"
+    },
+    {
+      "archivo": "factura_3047_3048.pdf",
+      "estado": "aplicado",
+      "proveedor_id": "PROV-A",
+      "proveedor_nombre": "PROV-A",
+      "total_lineas": 3,
+      "relaciones_auto": 2,
+      "precios_aplicados": 3,
+      "stock_aplicado": 3,
+      "requiere_revision": true,
+      "errores": [],
+      "avisos": [
+        "OCR dudoso"
+      ],
+      "resumen": "Importación demo 304 completo.",
+      "datos": {
+        "aplicado": true,
+        "lectura_host_ai": "Importación demo 304 completo.",
+        "preparacion": {
+          "archivo": "factura_3047_3048.pdf",
+          "ok": true,
+          "requiere_revision": true,
+          "lectura": {
+            "proveedor_id": "PROV-A",
+            "proveedor_nombre": "PROV-A",
+            "total_lineas": 3
+          },
+          "relaciones": {
+            "relacionadas_auto": 2,
+            "lineas": [
+              {
+                "articulo_id": "DESCONOCIDO",
+                "descripcion": "Artículo sin relación",
+                "confianza": 0.1
+              }
+            ]
+          }
+        },
+        "aplicacion_precios": {
+          "aplicados": 3
+        },
+        "aplicacion_stock": {
+          "aplicados": 3
+        },
+        "errores": [],
+        "avisos": [
+          "OCR dudoso"
+        ]
+      },
+      "id": "AUDIMP-5A33B71A25",
+      "creado_en": "2026-07-09T11:43:55"
+    }
+  ]
+}

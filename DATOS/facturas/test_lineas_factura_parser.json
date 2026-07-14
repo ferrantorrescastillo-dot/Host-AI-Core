@@ -1,0 +1,215 @@
+{
+  "resultado_pipeline": {
+    "ok": true,
+    "pipeline": "parser_lineas_factura",
+    "accion": "leer_texto",
+    "mensaje": "Líneas de factura leídas: 3 líneas estructuradas.",
+    "datos": {
+      "archivo": "",
+      "proveedor_id": "PROV-MAKRO",
+      "proveedor_nombre": "Makro",
+      "numero_factura": "F-2026-001",
+      "fecha_factura": "08/07/2026",
+      "lineas": [
+        {
+          "descripcion": "Carrillera Ternera",
+          "cantidad": 8.0,
+          "unidad": "kg",
+          "precio_unitario": 8.45,
+          "importe": 67.6,
+          "descuento": 0.0,
+          "iva_porcentaje": 0.0,
+          "codigo_proveedor": "",
+          "articulo_id_sugerido": "",
+          "proveedor_id": "PROV-MAKRO",
+          "numero_factura": "F-2026-001",
+          "fecha_factura": "08/07/2026",
+          "confianza": 100.0,
+          "origen_texto": "Carrillera Ternera 8 KG 8,45 67,60",
+          "avisos": [],
+          "id": "LINFAC-4CAB538F66",
+          "creado_en": "2026-07-08T10:10:29"
+        },
+        {
+          "descripcion": "Cebolla",
+          "cantidad": 15.0,
+          "unidad": "kg",
+          "precio_unitario": 1.12,
+          "importe": 16.8,
+          "descuento": 0.0,
+          "iva_porcentaje": 0.0,
+          "codigo_proveedor": "",
+          "articulo_id_sugerido": "",
+          "proveedor_id": "PROV-MAKRO",
+          "numero_factura": "F-2026-001",
+          "fecha_factura": "08/07/2026",
+          "confianza": 100.0,
+          "origen_texto": "Cebolla 15 KG 1,12 16,80",
+          "avisos": [],
+          "id": "LINFAC-5B8AD5B988",
+          "creado_en": "2026-07-08T10:10:29"
+        },
+        {
+          "descripcion": "Aceite Oliva 5L",
+          "cantidad": 2.0,
+          "unidad": "ud",
+          "precio_unitario": 39.9,
+          "importe": 79.8,
+          "descuento": 0.0,
+          "iva_porcentaje": 0.0,
+          "codigo_proveedor": "",
+          "articulo_id_sugerido": "",
+          "proveedor_id": "PROV-MAKRO",
+          "numero_factura": "F-2026-001",
+          "fecha_factura": "08/07/2026",
+          "confianza": 100.0,
+          "origen_texto": "Aceite Oliva 5L 2 UD 39,90 79,80",
+          "avisos": [],
+          "id": "LINFAC-797F188D7A",
+          "creado_en": "2026-07-08T10:10:29"
+        }
+      ],
+      "lineas_descartadas": [
+        {
+          "numero": 2,
+          "texto": "MAKRO ESPAÑA S.A.",
+          "motivo": "no_parseable"
+        },
+        {
+          "numero": 3,
+          "texto": "Factura Nº F-2026-001",
+          "motivo": "cabecera_pie"
+        },
+        {
+          "numero": 7,
+          "texto": "Base imponible 164,20",
+          "motivo": "cabecera_pie"
+        },
+        {
+          "numero": 8,
+          "texto": "IVA 16,42",
+          "motivo": "cabecera_pie"
+        },
+        {
+          "numero": 9,
+          "texto": "Total factura 180,62",
+          "motivo": "cabecera_pie"
+        }
+      ],
+      "total_lineas": 3,
+      "total_importe_lineas": 164.2,
+      "total_factura_detectado": 180.62,
+      "diferencia_total": 16.42,
+      "confianza_media": 100.0,
+      "avisos": [],
+      "id": "BLOQLINFAC-4357E28E7E",
+      "creado_en": "2026-07-08T10:10:29",
+      "lectura_host_ai": "Líneas de factura leídas: 3 líneas estructuradas."
+    },
+    "acciones_recomendadas": [],
+    "requiere_aprobacion": false,
+    "errores": [],
+    "id": "RES-24F6D4CC12",
+    "creado_en": "2026-07-08T10:10:29"
+  },
+  "archivo": "",
+  "proveedor_id": "PROV-MAKRO",
+  "proveedor_nombre": "Makro",
+  "numero_factura": "F-2026-001",
+  "fecha_factura": "08/07/2026",
+  "lineas": [
+    {
+      "descripcion": "Carrillera Ternera",
+      "cantidad": 8.0,
+      "unidad": "kg",
+      "precio_unitario": 8.45,
+      "importe": 67.6,
+      "descuento": 0.0,
+      "iva_porcentaje": 0.0,
+      "codigo_proveedor": "",
+      "articulo_id_sugerido": "",
+      "proveedor_id": "PROV-MAKRO",
+      "numero_factura": "F-2026-001",
+      "fecha_factura": "08/07/2026",
+      "confianza": 100.0,
+      "origen_texto": "Carrillera Ternera 8 KG 8,45 67,60",
+      "avisos": [],
+      "id": "LINFAC-4CAB538F66",
+      "creado_en": "2026-07-08T10:10:29"
+    },
+    {
+      "descripcion": "Cebolla",
+      "cantidad": 15.0,
+      "unidad": "kg",
+      "precio_unitario": 1.12,
+      "importe": 16.8,
+      "descuento": 0.0,
+      "iva_porcentaje": 0.0,
+      "codigo_proveedor": "",
+      "articulo_id_sugerido": "",
+      "proveedor_id": "PROV-MAKRO",
+      "numero_factura": "F-2026-001",
+      "fecha_factura": "08/07/2026",
+      "confianza": 100.0,
+      "origen_texto": "Cebolla 15 KG 1,12 16,80",
+      "avisos": [],
+      "id": "LINFAC-5B8AD5B988",
+      "creado_en": "2026-07-08T10:10:29"
+    },
+    {
+      "descripcion": "Aceite Oliva 5L",
+      "cantidad": 2.0,
+      "unidad": "ud",
+      "precio_unitario": 39.9,
+      "importe": 79.8,
+      "descuento": 0.0,
+      "iva_porcentaje": 0.0,
+      "codigo_proveedor": "",
+      "articulo_id_sugerido": "",
+      "proveedor_id": "PROV-MAKRO",
+      "numero_factura": "F-2026-001",
+      "fecha_factura": "08/07/2026",
+      "confianza": 100.0,
+      "origen_texto": "Aceite Oliva 5L 2 UD 39,90 79,80",
+      "avisos": [],
+      "id": "LINFAC-797F188D7A",
+      "creado_en": "2026-07-08T10:10:29"
+    }
+  ],
+  "lineas_descartadas": [
+    {
+      "numero": 2,
+      "texto": "MAKRO ESPAÑA S.A.",
+      "motivo": "no_parseable"
+    },
+    {
+      "numero": 3,
+      "texto": "Factura Nº F-2026-001",
+      "motivo": "cabecera_pie"
+    },
+    {
+      "numero": 7,
+      "texto": "Base imponible 164,20",
+      "motivo": "cabecera_pie"
+    },
+    {
+      "numero": 8,
+      "texto": "IVA 16,42",
+      "motivo": "cabecera_pie"
+    },
+    {
+      "numero": 9,
+      "texto": "Total factura 180,62",
+      "motivo": "cabecera_pie"
+    }
+  ],
+  "total_lineas": 3,
+  "total_importe_lineas": 164.2,
+  "total_factura_detectado": 180.62,
+  "diferencia_total": 16.42,
+  "confianza_media": 100.0,
+  "avisos": [],
+  "id": "BLOQLINFAC-4357E28E7E",
+  "creado_en": "2026-07-08T10:10:29",
+  "lectura_host_ai": "Líneas de factura leídas: 3 líneas estructuradas."
+}

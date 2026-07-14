@@ -1,0 +1,13 @@
+RR1.6.2 — RECERTIFICACIÓN FINAL
+
+1. Haz una copia de tu proyecto.
+2. Copia el contenido de este ZIP sobre la versión que ya contiene RR1.6.1-A, B, C y D.
+3. Abre PowerShell en la carpeta raíz de Host AI.
+4. Ejecuta:
+
+   python ejecutar_certificacion_rr162.py
+
+5. Revisa INFORME_RR1.6.2_AUTOMATICO.md.
+6. Completa CERTIFICACION/CHECKLIST_RR1.6.2.md durante la prueba manual.
+
+La certificación final solo puede marcarse APROBADA cuando la prueba automática está verde y el flujo manual completo no presenta errores críticos.

@@ -1,0 +1,42 @@
+[
+  {
+    "menu_id": "M1",
+    "nombre": "Menu demo",
+    "secciones": [
+      {
+        "seccion_id": "S1",
+        "nombre": "Principal"
+      }
+    ],
+    "platos": [
+      {
+        "plato_id": "P1",
+        "nombre": "Plato demo",
+        "seccion": "Postre",
+        "componentes": []
+      }
+    ],
+    "articulos_directos": [
+      {
+        "nombre": "Pan inexistente"
+      }
+    ],
+    "bebidas": [],
+    "complementos": [],
+    "servicios": [],
+    "economico": {
+      "precio_venta": 10,
+      "coste_total": 3,
+      "food_cost_pct": 99,
+      "beneficio": null
+    },
+    "resumen": {
+      "secciones": 1,
+      "platos": 1,
+      "componentes": 0,
+      "articulos_directos": 1,
+      "bebidas": 0,
+      "complementos": 0
+    }
+  }
+]

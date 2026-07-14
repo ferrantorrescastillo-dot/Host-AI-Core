@@ -1,0 +1,7 @@
+{
+  "version": "3.0.3.2",
+  "pdf": [
+    "lector_pdf_facturas",
+    "detector_proveedores_pdf"
+  ]
+}

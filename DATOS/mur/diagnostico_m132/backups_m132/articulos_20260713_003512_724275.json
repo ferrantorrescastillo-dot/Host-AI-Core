@@ -1,0 +1,20 @@
+[
+  {
+    "codigo": "M.P-PATATA",
+    "nombre": "Patata monalisa",
+    "unidad": "kg",
+    "precio": 1.2
+  },
+  {
+    "codigo": "M.P-MANTEQUILLA",
+    "nombre": "Mantequilla",
+    "unidad": "kg",
+    "precio": 8.0
+  },
+  {
+    "codigo": "A.P-BRIOX",
+    "nombre": "A.P BRIOX DE CURRI, SECRETO A BAJA TEMPERATURA Y CEBOLLITA ENCURTIDA.",
+    "unidad": "ud",
+    "precio": 2.5
+  }
+]

@@ -1,0 +1,33 @@
+HOST AI 6.0.4 — SPRINT C1 GESTIÓN DE COMPRAS
+
+INSTALACIÓN
+1. Haz una copia de tu versión actual (debe incluir E1, E2, E3, S1 y S2).
+2. Descomprime este ZIP.
+3. Copia todas las carpetas y archivos encima de tu proyecto.
+4. Acepta sustituir los archivos existentes.
+5. Ejecuta: python main.py
+
+ALCANCE
+- Buscar y seleccionar artículos del catálogo real.
+- Crear artículo si no existe, reutilizando el flujo de Stock.
+- Proponer automáticamente el proveedor habitual.
+- Registrar una o varias necesidades seguidas.
+- Listar y buscar necesidades por artículo, proveedor, motivo, estado o ID.
+- Editar cantidades, unidad, proveedor, motivo, fecha y prioridad.
+- Marcar necesidades como pendientes, compradas o canceladas.
+- Eliminar necesidades con confirmación.
+- Generar pedidos sugeridos solo con necesidades pendientes.
+- Diagnóstico operativo de compras.
+- Persistencia automática y recuperación al reiniciar.
+
+NO INCLUYE TODAVÍA
+- Envío de pedidos al proveedor.
+- Estados completos del pedido.
+- Recepción de mercancía desde pedido.
+- Integración automática con Stock.
+Estas funciones corresponden al Sprint C2.
+
+VALIDACIÓN
+41 pruebas superadas.
+0 fallos.
+0 errores de recogida.

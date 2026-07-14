@@ -1,0 +1,5 @@
+I1.3.4.3a — Corrección modo R
+Tests específicos: 9/9 superados
+Regresión relevante: 140/140 superados
+Compilación: OK
+Escrituras reales durante pruebas: 0

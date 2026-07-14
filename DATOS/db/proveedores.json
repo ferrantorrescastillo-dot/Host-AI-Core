@@ -1,0 +1,272 @@
+[
+  {
+    "codigo": "PROV0001",
+    "nombre": "ALVILARDAN",
+    "nombre_normalizado": "alvilardan",
+    "articulos_asociados": 4,
+    "variantes_detectadas": [
+      "ALVILARDAN"
+    ],
+    "estado": "activo",
+    "observaciones": null
+  },
+  {
+    "codigo": "PROV0002",
+    "nombre": "ASSOLIN",
+    "nombre_normalizado": "assolin",
+    "articulos_asociados": 11,
+    "variantes_detectadas": [
+      "ASSOLIN"
+    ],
+    "estado": "activo",
+    "observaciones": null
+  },
+  {
+    "codigo": "PROV0003",
+    "nombre": "AVICSA",
+    "nombre_normalizado": "avicsa",
+    "articulos_asociados": 15,
+    "variantes_detectadas": [
+      "AVICSA"
+    ],
+    "estado": "activo",
+    "observaciones": null
+  },
+  {
+    "codigo": "PROV0004",
+    "nombre": "bodega",
+    "nombre_normalizado": "bodega",
+    "articulos_asociados": 1,
+    "variantes_detectadas": [
+      "bodega"
+    ],
+    "estado": "activo",
+    "observaciones": null
+  },
+  {
+    "codigo": "PROV0005",
+    "nombre": "BUNDO.",
+    "nombre_normalizado": "bundo",
+    "articulos_asociados": 20,
+    "variantes_detectadas": [
+      "BUNDO."
+    ],
+    "estado": "activo",
+    "observaciones": null
+  },
+  {
+    "codigo": "PROV0006",
+    "nombre": "CARNES PALAU",
+    "nombre_normalizado": "carnes palau",
+    "articulos_asociados": 4,
+    "variantes_detectadas": [
+      "CARNES PALAU",
+      "CARNES PALAU."
+    ],
+    "estado": "activo",
+    "observaciones": "Variantes detectadas. Revisar nombre oficial."
+  },
+  {
+    "codigo": "PROV0007",
+    "nombre": "DISBESA",
+    "nombre_normalizado": "disbesa",
+    "articulos_asociados": 26,
+    "variantes_detectadas": [
+      "DISBESA",
+      "Disbesa."
+    ],
+    "estado": "activo",
+    "observaciones": "Variantes detectadas. Revisar nombre oficial."
+  },
+  {
+    "codigo": "PROV0008",
+    "nombre": "Ferran",
+    "nombre_normalizado": "ferran",
+    "articulos_asociados": 5,
+    "variantes_detectadas": [
+      "Ferran"
+    ],
+    "estado": "activo",
+    "observaciones": null
+  },
+  {
+    "codigo": "PROV0009",
+    "nombre": "HIELO",
+    "nombre_normalizado": "hielo",
+    "articulos_asociados": 1,
+    "variantes_detectadas": [
+      "HIELO"
+    ],
+    "estado": "activo",
+    "observaciones": null
+  },
+  {
+    "codigo": "PROV0010",
+    "nombre": "MAJOLS",
+    "nombre_normalizado": "majols",
+    "articulos_asociados": 2,
+    "variantes_detectadas": [
+      "MAJOLS"
+    ],
+    "estado": "activo",
+    "observaciones": null
+  },
+  {
+    "codigo": "PROV0011",
+    "nombre": "MAKRO",
+    "nombre_normalizado": "makro",
+    "articulos_asociados": 16,
+    "variantes_detectadas": [
+      "MAKRO",
+      "MAKRO.",
+      "Makro"
+    ],
+    "estado": "activo",
+    "observaciones": "Variantes detectadas. Revisar nombre oficial."
+  },
+  {
+    "codigo": "PROV0012",
+    "nombre": "MAKRO.SARDA",
+    "nombre_normalizado": "makrosarda",
+    "articulos_asociados": 1,
+    "variantes_detectadas": [
+      "MAKRO.SARDA"
+    ],
+    "estado": "activo",
+    "observaciones": null
+  },
+  {
+    "codigo": "PROV0013",
+    "nombre": "M.P",
+    "nombre_normalizado": "mp",
+    "articulos_asociados": 33,
+    "variantes_detectadas": [
+      "M.P"
+    ],
+    "estado": "activo",
+    "observaciones": null
+  },
+  {
+    "codigo": "PROV0014",
+    "nombre": "M.P APERITIVOS.",
+    "nombre_normalizado": "mp aperitivos",
+    "articulos_asociados": 44,
+    "variantes_detectadas": [
+      "M.P APERITIVOS."
+    ],
+    "estado": "activo",
+    "observaciones": null
+  },
+  {
+    "codigo": "PROV0015",
+    "nombre": "M.P ELABORADOS.",
+    "nombre_normalizado": "mp elaborados",
+    "articulos_asociados": 2,
+    "variantes_detectadas": [
+      "M.P ELABORADOS."
+    ],
+    "estado": "activo",
+    "observaciones": null
+  },
+  {
+    "codigo": "PROV0016",
+    "nombre": "PAU GAVALDA",
+    "nombre_normalizado": "pau gavalda",
+    "articulos_asociados": 82,
+    "variantes_detectadas": [
+      "PAU GAVALDA",
+      "Pau GAVALDA"
+    ],
+    "estado": "activo",
+    "observaciones": "Variantes detectadas. Revisar nombre oficial."
+  },
+  {
+    "codigo": "PROV0017",
+    "nombre": "PESCADO JOPEP",
+    "nombre_normalizado": "pescado jopep",
+    "articulos_asociados": 1,
+    "variantes_detectadas": [
+      "PESCADO JOPEP"
+    ],
+    "estado": "activo",
+    "observaciones": null
+  },
+  {
+    "codigo": "PROV0018",
+    "nombre": "PESCADO JOSEP",
+    "nombre_normalizado": "pescado josep",
+    "articulos_asociados": 6,
+    "variantes_detectadas": [
+      "PESCADO JOSEP",
+      "Pescado Josep"
+    ],
+    "estado": "activo",
+    "observaciones": "Variantes detectadas. Revisar nombre oficial."
+  },
+  {
+    "codigo": "PROV0019",
+    "nombre": "PETIT INTSTANT",
+    "nombre_normalizado": "petit intstant",
+    "articulos_asociados": 1,
+    "variantes_detectadas": [
+      "PETIT INTSTANT"
+    ],
+    "estado": "activo",
+    "observaciones": null
+  },
+  {
+    "codigo": "PROV0020",
+    "nombre": "PRUEBA",
+    "nombre_normalizado": "prueba",
+    "articulos_asociados": 1,
+    "variantes_detectadas": [
+      "PRUEBA"
+    ],
+    "estado": "activo",
+    "observaciones": null
+  },
+  {
+    "codigo": "PROV0021",
+    "nombre": "SARDA",
+    "nombre_normalizado": "sarda",
+    "articulos_asociados": 48,
+    "variantes_detectadas": [
+      "SARDA"
+    ],
+    "estado": "activo",
+    "observaciones": null
+  },
+  {
+    "codigo": "PROV0022",
+    "nombre": "SARDA/DISBESA",
+    "nombre_normalizado": "sarda/disbesa",
+    "articulos_asociados": 1,
+    "variantes_detectadas": [
+      "SARDA/DISBESA"
+    ],
+    "estado": "activo",
+    "observaciones": null
+  },
+  {
+    "codigo": "PROV0023",
+    "nombre": "VERMOUTH PADRO.",
+    "nombre_normalizado": "vermouth padro",
+    "articulos_asociados": 2,
+    "variantes_detectadas": [
+      "VERMOUTH PADRO."
+    ],
+    "estado": "activo",
+    "observaciones": null
+  },
+  {
+    "codigo": "PROV0024",
+    "nombre": "VIRGILI POBLA MONTORNES",
+    "nombre_normalizado": "virgili pobla montornes",
+    "articulos_asociados": 1,
+    "variantes_detectadas": [
+      "VIRGILI POBLA MONTORNES"
+    ],
+    "estado": "activo",
+    "observaciones": null
+  }
+]

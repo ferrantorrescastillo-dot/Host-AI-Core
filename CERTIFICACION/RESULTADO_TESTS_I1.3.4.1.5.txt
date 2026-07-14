@@ -1,0 +1,6 @@
+I1.3.4.1.5
+Tests específicos: 4 passed
+Regresión relevante: 76 passed
+Compilación: OK
+Integración Excel real: OK
+Datos de negocio modificados: 0

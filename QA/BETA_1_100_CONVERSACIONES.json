@@ -1,0 +1,1302 @@
+[
+  {
+    "id": "QA-REC-001",
+    "categoria": "recepcion",
+    "usuario": "Han llegado 25 kg de arroz bomba de Makro a 2,15 €/kg.",
+    "intencion_esperada": "recepcion_mercancia",
+    "debe_pedir_confirmacion": true,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REC-002",
+    "categoria": "recepcion",
+    "usuario": "Ha llegado 10 kg de tomate pera de Frutas Plana.",
+    "intencion_esperada": "recepcion_mercancia",
+    "debe_pedir_confirmacion": true,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REC-003",
+    "categoria": "recepcion",
+    "usuario": "Me han traído 6 cajas de Coca-Cola.",
+    "intencion_esperada": "recepcion_mercancia",
+    "debe_pedir_confirmacion": true,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REC-004",
+    "categoria": "recepcion",
+    "usuario": "Acaba de venir Makro con 8 litros de aceite de oliva.",
+    "intencion_esperada": "recepcion_mercancia",
+    "debe_pedir_confirmacion": true,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REC-005",
+    "categoria": "recepcion",
+    "usuario": "Descarga de Disbesa: 12 paquetes de harina.",
+    "intencion_esperada": "recepcion_mercancia",
+    "debe_pedir_confirmacion": true,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REC-006",
+    "categoria": "recepcion",
+    "usuario": "Suma al stock 4 kg de gambón de Mercabarna.",
+    "intencion_esperada": "recepcion_mercancia",
+    "debe_pedir_confirmacion": true,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REC-007",
+    "categoria": "recepcion",
+    "usuario": "Entrada de mercancía: 15 kg de pollo.",
+    "intencion_esperada": "recepcion_mercancia",
+    "debe_pedir_confirmacion": true,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REC-008",
+    "categoria": "recepcion",
+    "usuario": "Han servido 3 bolsas de leche en polvo.",
+    "intencion_esperada": "recepcion_mercancia",
+    "debe_pedir_confirmacion": true,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REC-009",
+    "categoria": "recepcion",
+    "usuario": "Recibido albarán de Guzmán con 20 kg de cebolla.",
+    "intencion_esperada": "recepcion_mercancia",
+    "debe_pedir_confirmacion": true,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REC-010",
+    "categoria": "recepcion",
+    "usuario": "Sube al almacén 5 cajas de vino sin tocar todavía factura.",
+    "intencion_esperada": "recepcion_mercancia",
+    "debe_pedir_confirmacion": true,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REC-011",
+    "categoria": "recepcion",
+    "usuario": "Ha llegado el pedido recibido de Asia Food con 8 kg de salsa teriyaki.",
+    "intencion_esperada": "recepcion_mercancia",
+    "debe_pedir_confirmacion": true,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REC-012",
+    "categoria": "recepcion",
+    "usuario": "Me acaba de traer el proveedor 9 kg de carne.",
+    "intencion_esperada": "recepcion_mercancia",
+    "debe_pedir_confirmacion": true,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REC-013",
+    "categoria": "recepcion",
+    "usuario": "Entró mercancía: 7 unidades de nata.",
+    "intencion_esperada": "recepcion_mercancia",
+    "debe_pedir_confirmacion": true,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REC-014",
+    "categoria": "recepcion",
+    "usuario": "Han llegado 2 cajas de huevos.",
+    "intencion_esperada": "recepcion_mercancia",
+    "debe_pedir_confirmacion": true,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REC-015",
+    "categoria": "recepcion",
+    "usuario": "Recibir mercancía de Makro: 30 kg de patata.",
+    "intencion_esperada": "recepcion_mercancia",
+    "debe_pedir_confirmacion": true,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REC-016",
+    "categoria": "recepcion",
+    "usuario": "Acaban de descargar 11 kg de salmón.",
+    "intencion_esperada": "recepcion_mercancia",
+    "debe_pedir_confirmacion": true,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REC-017",
+    "categoria": "recepcion",
+    "usuario": "Albarán de La Sirena: 4 kg de calamar.",
+    "intencion_esperada": "recepcion_mercancia",
+    "debe_pedir_confirmacion": true,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REC-018",
+    "categoria": "recepcion",
+    "usuario": "Ha llegado 1 caja de bolsas al vacío.",
+    "intencion_esperada": "recepcion_mercancia",
+    "debe_pedir_confirmacion": true,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REC-019",
+    "categoria": "recepcion",
+    "usuario": "Me han dejado 14 kg de arroz redondo.",
+    "intencion_esperada": "recepcion_mercancia",
+    "debe_pedir_confirmacion": true,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REC-020",
+    "categoria": "recepcion",
+    "usuario": "Pedido recibido: 6 litros de vinagre.",
+    "intencion_esperada": "recepcion_mercancia",
+    "debe_pedir_confirmacion": true,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-COM-001",
+    "categoria": "compras",
+    "usuario": "¿Qué tengo que comprar para mañana?",
+    "intencion_esperada": "compras",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-COM-002",
+    "categoria": "compras",
+    "usuario": "Hazme el pedido de Makro.",
+    "intencion_esperada": "compras",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-COM-003",
+    "categoria": "compras",
+    "usuario": "Me falta aceite para el servicio.",
+    "intencion_esperada": "compras",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-COM-004",
+    "categoria": "compras",
+    "usuario": "¿Qué proveedor me recomiendas para el arroz?",
+    "intencion_esperada": "compras",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-COM-005",
+    "categoria": "compras",
+    "usuario": "Prepara la compra de hoy.",
+    "intencion_esperada": "compras",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-COM-006",
+    "categoria": "compras",
+    "usuario": "¿Qué falta comprar para el evento?",
+    "intencion_esperada": "compras",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-COM-007",
+    "categoria": "compras",
+    "usuario": "Genera pedido para stock bajo.",
+    "intencion_esperada": "compras",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-COM-008",
+    "categoria": "compras",
+    "usuario": "Tengo que pedir tomate.",
+    "intencion_esperada": "compras",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-COM-009",
+    "categoria": "compras",
+    "usuario": "Revisa si hay que comprar pescado.",
+    "intencion_esperada": "compras",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-COM-010",
+    "categoria": "compras",
+    "usuario": "Pedido urgente para mañana.",
+    "intencion_esperada": "compras",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-COM-011",
+    "categoria": "compras",
+    "usuario": "¿Qué artículos están por debajo del mínimo?",
+    "intencion_esperada": "compras",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-COM-012",
+    "categoria": "compras",
+    "usuario": "Haz la lista de la compra semanal.",
+    "intencion_esperada": "compras",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-COM-013",
+    "categoria": "compras",
+    "usuario": "¿A quién compro el gambón?",
+    "intencion_esperada": "compras",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-COM-014",
+    "categoria": "compras",
+    "usuario": "Compara proveedores antes de pedir aceite.",
+    "intencion_esperada": "compras",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-COM-015",
+    "categoria": "compras",
+    "usuario": "¿Cuánto tengo que pedir de arroz?",
+    "intencion_esperada": "compras",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-PRO-001",
+    "categoria": "produccion",
+    "usuario": "Organízame la producción de mañana.",
+    "intencion_esperada": "produccion",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-PRO-002",
+    "categoria": "produccion",
+    "usuario": "Planifica producción para el viernes.",
+    "intencion_esperada": "produccion",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-PRO-003",
+    "categoria": "produccion",
+    "usuario": "¿Qué elaboraciones puedo adelantar hoy?",
+    "intencion_esperada": "produccion",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-PRO-004",
+    "categoria": "produccion",
+    "usuario": "Tengo que preparar 40 raciones de canelón.",
+    "intencion_esperada": "produccion",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-PRO-005",
+    "categoria": "produccion",
+    "usuario": "Hazme el cronograma de cocina.",
+    "intencion_esperada": "produccion",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-PRO-006",
+    "categoria": "produccion",
+    "usuario": "Organiza a tres cocineros para mañana.",
+    "intencion_esperada": "produccion",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-PRO-007",
+    "categoria": "produccion",
+    "usuario": "¿Qué producción es prioritaria?",
+    "intencion_esperada": "produccion",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-PRO-008",
+    "categoria": "produccion",
+    "usuario": "Replanifica la producción porque falta un cocinero.",
+    "intencion_esperada": "produccion",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-PRO-009",
+    "categoria": "produccion",
+    "usuario": "Prepara fondos y salsas para el sábado.",
+    "intencion_esperada": "produccion",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-PRO-010",
+    "categoria": "produccion",
+    "usuario": "Quiero saber qué tareas hacen hoy los cocineros.",
+    "intencion_esperada": "produccion",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-PRO-011",
+    "categoria": "produccion",
+    "usuario": "Planifica las elaboraciones con horno y abatidor.",
+    "intencion_esperada": "produccion",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-PRO-012",
+    "categoria": "produccion",
+    "usuario": "¿Qué puedo dejar hecho hoy para mañana?",
+    "intencion_esperada": "produccion",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-PRO-013",
+    "categoria": "produccion",
+    "usuario": "Ordena la producción por prioridad.",
+    "intencion_esperada": "produccion",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-PRO-014",
+    "categoria": "produccion",
+    "usuario": "Necesito un plan de trabajo de cocina.",
+    "intencion_esperada": "produccion",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-PRO-015",
+    "categoria": "produccion",
+    "usuario": "Controla tiempos activos y pasivos.",
+    "intencion_esperada": "produccion",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-EVE-001",
+    "categoria": "eventos",
+    "usuario": "Tengo una boda para 180 personas el sábado.",
+    "intencion_esperada": "evento",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-EVE-002",
+    "categoria": "eventos",
+    "usuario": "Crea un evento para 120 pax.",
+    "intencion_esperada": "evento",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-EVE-003",
+    "categoria": "eventos",
+    "usuario": "Tengo un catering de empresa para 80 personas.",
+    "intencion_esperada": "evento",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-EVE-004",
+    "categoria": "eventos",
+    "usuario": "Organiza un banquete para el domingo.",
+    "intencion_esperada": "evento",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-EVE-005",
+    "categoria": "eventos",
+    "usuario": "Añade menú vegetariano al evento.",
+    "intencion_esperada": "evento",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-EVE-006",
+    "categoria": "eventos",
+    "usuario": "Calcula la producción del evento.",
+    "intencion_esperada": "evento",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-EVE-007",
+    "categoria": "eventos",
+    "usuario": "Evento de comunión para 60 comensales.",
+    "intencion_esperada": "evento",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-EVE-008",
+    "categoria": "eventos",
+    "usuario": "Necesito material para una boda.",
+    "intencion_esperada": "evento",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-EVE-009",
+    "categoria": "eventos",
+    "usuario": "Haz el cronograma del catering.",
+    "intencion_esperada": "evento",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-EVE-010",
+    "categoria": "eventos",
+    "usuario": "Calcula personal para banquete de 200 personas.",
+    "intencion_esperada": "evento",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-EVE-011",
+    "categoria": "eventos",
+    "usuario": "Tengo evento mañana a las 13:30 para 90 pax.",
+    "intencion_esperada": "evento",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-EVE-012",
+    "categoria": "eventos",
+    "usuario": "Prepara compras para la boda.",
+    "intencion_esperada": "evento",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-EVE-013",
+    "categoria": "eventos",
+    "usuario": "Quiero informe final del evento.",
+    "intencion_esperada": "evento",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-EVE-014",
+    "categoria": "eventos",
+    "usuario": "Servicio de hotel para 150 personas.",
+    "intencion_esperada": "evento",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-EVE-015",
+    "categoria": "eventos",
+    "usuario": "Menú de empresa para 40 pax.",
+    "intencion_esperada": "evento",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "alta",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-STO-001",
+    "categoria": "stock",
+    "usuario": "¿Cuánto arroz bomba tengo?",
+    "intencion_esperada": "stock",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-STO-002",
+    "categoria": "stock",
+    "usuario": "Consulta stock de aceite.",
+    "intencion_esperada": "stock",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-STO-003",
+    "categoria": "stock",
+    "usuario": "¿Hay tomate en almacén?",
+    "intencion_esperada": "stock",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-STO-004",
+    "categoria": "stock",
+    "usuario": "Muéstrame roturas de stock.",
+    "intencion_esperada": "stock",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-STO-005",
+    "categoria": "stock",
+    "usuario": "¿Cuánto queda de gambón?",
+    "intencion_esperada": "stock",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-STO-006",
+    "categoria": "stock",
+    "usuario": "Revisa almacén de congelado.",
+    "intencion_esperada": "stock",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-STO-007",
+    "categoria": "stock",
+    "usuario": "¿Tengo suficiente pollo?",
+    "intencion_esperada": "stock",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-STO-008",
+    "categoria": "stock",
+    "usuario": "Stock actual de harina.",
+    "intencion_esperada": "stock",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-STO-009",
+    "categoria": "stock",
+    "usuario": "Qué artículos tengo bajos de stock.",
+    "intencion_esperada": "stock",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-STO-010",
+    "categoria": "stock",
+    "usuario": "Hay arroz suficiente para mañana?",
+    "intencion_esperada": "stock",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-STO-011",
+    "categoria": "stock",
+    "usuario": "Mira si queda leche.",
+    "intencion_esperada": "stock",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-STO-012",
+    "categoria": "stock",
+    "usuario": "Consulta almacén seco.",
+    "intencion_esperada": "stock",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-STO-013",
+    "categoria": "stock",
+    "usuario": "Qué producto está en rotura.",
+    "intencion_esperada": "stock",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-STO-014",
+    "categoria": "stock",
+    "usuario": "Cuánto stock tengo de patata.",
+    "intencion_esperada": "stock",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-STO-015",
+    "categoria": "stock",
+    "usuario": "Revisa existencias de pescado.",
+    "intencion_esperada": "stock",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REN-001",
+    "categoria": "rentabilidad",
+    "usuario": "¿Qué plato deja menos margen?",
+    "intencion_esperada": "rentabilidad",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REN-002",
+    "categoria": "rentabilidad",
+    "usuario": "Cuál es el plato menos rentable.",
+    "intencion_esperada": "rentabilidad",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REN-003",
+    "categoria": "rentabilidad",
+    "usuario": "Calcula el food cost del menú.",
+    "intencion_esperada": "rentabilidad",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REN-004",
+    "categoria": "rentabilidad",
+    "usuario": "Qué receta me hace perder dinero.",
+    "intencion_esperada": "rentabilidad",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REN-005",
+    "categoria": "rentabilidad",
+    "usuario": "Beneficio del evento.",
+    "intencion_esperada": "rentabilidad",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REN-006",
+    "categoria": "rentabilidad",
+    "usuario": "Rentabilidad de carta.",
+    "intencion_esperada": "rentabilidad",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REN-007",
+    "categoria": "rentabilidad",
+    "usuario": "Simula subir la paella a 48 euros.",
+    "intencion_esperada": "rentabilidad",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REN-008",
+    "categoria": "rentabilidad",
+    "usuario": "Controla mermas de producción.",
+    "intencion_esperada": "rentabilidad",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REN-009",
+    "categoria": "rentabilidad",
+    "usuario": "Comparar coste entre proveedores.",
+    "intencion_esperada": "rentabilidad",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REN-010",
+    "categoria": "rentabilidad",
+    "usuario": "Alertas de rentabilidad bajas.",
+    "intencion_esperada": "rentabilidad",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REN-011",
+    "categoria": "rentabilidad",
+    "usuario": "Qué menú deja más beneficio.",
+    "intencion_esperada": "rentabilidad",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REN-012",
+    "categoria": "rentabilidad",
+    "usuario": "Calcula margen del plato de arroz.",
+    "intencion_esperada": "rentabilidad",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REN-013",
+    "categoria": "rentabilidad",
+    "usuario": "Informe financiero inteligente.",
+    "intencion_esperada": "rentabilidad",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REN-014",
+    "categoria": "rentabilidad",
+    "usuario": "Coste real por receta.",
+    "intencion_esperada": "rentabilidad",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-REN-015",
+    "categoria": "rentabilidad",
+    "usuario": "¿Dónde pierdo dinero?",
+    "intencion_esperada": "rentabilidad",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-GEN-001",
+    "categoria": "general",
+    "usuario": "Hola Host AI.",
+    "intencion_esperada": "conversacion_general",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-GEN-002",
+    "categoria": "general",
+    "usuario": "Buenas, ¿qué puedes hacer?",
+    "intencion_esperada": "conversacion_general",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-GEN-003",
+    "categoria": "general",
+    "usuario": "Gracias.",
+    "intencion_esperada": "conversacion_general",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-GEN-004",
+    "categoria": "general",
+    "usuario": "No entiendo el programa.",
+    "intencion_esperada": "conversacion_general",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  },
+  {
+    "id": "QA-GEN-005",
+    "categoria": "general",
+    "usuario": "Ayúdame a organizar el día.",
+    "intencion_esperada": "produccion",
+    "debe_pedir_confirmacion": false,
+    "debe_modificar_datos": false,
+    "prioridad": "media",
+    "criterios": [
+      "clasificar_intencion",
+      "no_modificar_sin_confirmacion"
+    ]
+  }
+]

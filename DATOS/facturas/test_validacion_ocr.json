@@ -1,0 +1,97 @@
+{
+  "resultado_pipeline": {
+    "ok": true,
+    "pipeline": "validador_corrector_ocr",
+    "accion": "validar_texto",
+    "mensaje": "Texto OCR validado y corregido.",
+    "datos": {
+      "texto_original": "MAKRO ESPAÑA S.A.\\nF actura N0 F-1\\nCarrillera Ternera 8 KG 8.45 67.60\\nT0TAL 67.60",
+      "texto_corregido": "MAKRO ESPAÑA S.A.\\nFactura Nº F-1\\nCarrillera Ternera 8 KG 8,45 67,60\\nTOTAL 67,60",
+      "valido": true,
+      "confianza": 100.0,
+      "correcciones": [
+        {
+          "antes": "F actura",
+          "despues": "Factura",
+          "tipo": "reemplazo_simple"
+        },
+        {
+          "antes": "T0TAL",
+          "despues": "TOTAL",
+          "tipo": "reemplazo_simple"
+        },
+        {
+          "antes": " N0 ",
+          "despues": " Nº ",
+          "tipo": "reemplazo_simple"
+        },
+        {
+          "antes": "8.45",
+          "despues": "8,45",
+          "tipo": "decimal"
+        },
+        {
+          "antes": "67.60",
+          "despues": "67,60",
+          "tipo": "decimal"
+        },
+        {
+          "antes": "67.60",
+          "despues": "67,60",
+          "tipo": "decimal"
+        }
+      ],
+      "avisos": [],
+      "errores": [],
+      "id": "VALOCR-658AA1384F",
+      "creado_en": "2026-07-08T12:05:38",
+      "lectura_host_ai": "Texto OCR validado y corregido."
+    },
+    "acciones_recomendadas": [],
+    "requiere_aprobacion": false,
+    "errores": [],
+    "id": "RES-E414B279DF",
+    "creado_en": "2026-07-08T12:05:38"
+  },
+  "texto_original": "MAKRO ESPAÑA S.A.\\nF actura N0 F-1\\nCarrillera Ternera 8 KG 8.45 67.60\\nT0TAL 67.60",
+  "texto_corregido": "MAKRO ESPAÑA S.A.\\nFactura Nº F-1\\nCarrillera Ternera 8 KG 8,45 67,60\\nTOTAL 67,60",
+  "valido": true,
+  "confianza": 100.0,
+  "correcciones": [
+    {
+      "antes": "F actura",
+      "despues": "Factura",
+      "tipo": "reemplazo_simple"
+    },
+    {
+      "antes": "T0TAL",
+      "despues": "TOTAL",
+      "tipo": "reemplazo_simple"
+    },
+    {
+      "antes": " N0 ",
+      "despues": " Nº ",
+      "tipo": "reemplazo_simple"
+    },
+    {
+      "antes": "8.45",
+      "despues": "8,45",
+      "tipo": "decimal"
+    },
+    {
+      "antes": "67.60",
+      "despues": "67,60",
+      "tipo": "decimal"
+    },
+    {
+      "antes": "67.60",
+      "despues": "67,60",
+      "tipo": "decimal"
+    }
+  ],
+  "avisos": [],
+  "errores": [],
+  "id": "VALOCR-658AA1384F",
+  "creado_en": "2026-07-08T12:05:38",
+  "lectura_host_ai": "Texto OCR validado y corregido."
+}

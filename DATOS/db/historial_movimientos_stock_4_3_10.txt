@@ -1,0 +1,11 @@
+HOST AI 4.3.10 - HISTORIAL MOVIMIENTOS DE STOCK
+============================================================================
+Total movimientos: 4
+Movimientos mostrados: 0
+Filtro código: -
+Filtro tipo: salida
+Estado: sin_resultados
+
+MOVIMIENTOS
+----------------------------------------------------------------------------
+No hay movimientos para mostrar.

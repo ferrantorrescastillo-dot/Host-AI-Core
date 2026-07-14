@@ -1,0 +1,43 @@
+{
+  "resultado_pipeline": {
+    "ok": true,
+    "pipeline": "base_ocr_documentos",
+    "accion": "diagnosticar_archivo",
+    "mensaje": "Imagen detectada: necesita OCR.",
+    "datos": {
+      "archivo": "/mnt/data/Host_AI_3_0_3_7_1_Base_OCR_Documentos_Escaneados/DATOS/facturas/test_ocr_imagen.png",
+      "nombre_archivo": "test_ocr_imagen.png",
+      "necesita_ocr": true,
+      "motivo": "Es una imagen; necesita OCR para extraer texto.",
+      "texto_actual": "",
+      "caracteres_detectados": 0,
+      "paginas": 1,
+      "confianza": 95,
+      "recomendaciones": [
+        "Enviar a motor OCR en 3.0.3.7.2."
+      ],
+      "id": "DIAGOCR-6A3C6F71CE",
+      "creado_en": "2026-07-08T11:44:34",
+      "lectura_host_ai": "Imagen detectada: necesita OCR."
+    },
+    "acciones_recomendadas": [],
+    "requiere_aprobacion": true,
+    "errores": [],
+    "id": "RES-5FEBCE240B",
+    "creado_en": "2026-07-08T11:44:34"
+  },
+  "archivo": "/mnt/data/Host_AI_3_0_3_7_1_Base_OCR_Documentos_Escaneados/DATOS/facturas/test_ocr_imagen.png",
+  "nombre_archivo": "test_ocr_imagen.png",
+  "necesita_ocr": true,
+  "motivo": "Es una imagen; necesita OCR para extraer texto.",
+  "texto_actual": "",
+  "caracteres_detectados": 0,
+  "paginas": 1,
+  "confianza": 95,
+  "recomendaciones": [
+    "Enviar a motor OCR en 3.0.3.7.2."
+  ],
+  "id": "DIAGOCR-6A3C6F71CE",
+  "creado_en": "2026-07-08T11:44:34",
+  "lectura_host_ai": "Imagen detectada: necesita OCR."
+}

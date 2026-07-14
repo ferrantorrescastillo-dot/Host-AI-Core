@@ -1,0 +1,26 @@
+PILOTO-0.1 — ESTABILIZACIÓN DE LA LÍNEA BASE
+==============================================================================
+Estado: CERTIFICADO | Solo lectura: SÍ
+Arranque: LISTO_PARA_PILOTO | Errores: 0 | Avisos: 0
+Módulos Python inventariados: 1011
+Clasificación: ACTIVO=650, HISTORICO_O_RAIZ=4, LEGACY=10, PRUEBA=346, SOPORTE=1
+Archivos de negocio modificados: 0
+------------------------------------------------------------------------------
+[OK] PYTHON: 3.13.14
+[OK] MAIN: C:\PROYECTO HOST IA\Proyecto Host AI  6.0\Host AI 6.0\main.py
+[OK] APP: C:\PROYECTO HOST IA\Proyecto Host AI  6.0\Host AI 6.0\APP
+[OK] CORE: C:\PROYECTO HOST IA\Proyecto Host AI  6.0\Host AI 6.0\CORE
+[OK] SERVICIOS: C:\PROYECTO HOST IA\Proyecto Host AI  6.0\Host AI 6.0\SERVICIOS
+[OK] DATOS: C:\PROYECTO HOST IA\Proyecto Host AI  6.0\Host AI 6.0\DATOS
+[OK] CONSOLA: C:\PROYECTO HOST IA\Proyecto Host AI  6.0\Host AI 6.0\APP\consola.py
+[OK] CORE_PRINCIPAL: C:\PROYECTO HOST IA\Proyecto Host AI  6.0\Host AI 6.0\CORE\host_ai_core.py
+[OK] CONFIGURACION: Configuración válida
+[OK] JSON:ARTICULOS: C:\PROYECTO HOST IA\Proyecto Host AI  6.0\Host AI 6.0\DATOS\db\articulos.json
+[OK] JSON:RECETAS: C:\PROYECTO HOST IA\Proyecto Host AI  6.0\Host AI 6.0\DATOS\db\escandallos.json
+[OK] JSON:MENUS: C:\PROYECTO HOST IA\Proyecto Host AI  6.0\Host AI 6.0\DATOS\db\menus.json
+[OK] IMPORT:CORE.host_ai_core: OK
+[OK] IMPORT:APP.consola: OK
+[OK] IMPORT:SERVICIOS.host_ai_launcher: OK
+[OK] IMPORT:SERVICIOS.configuracion_central_4414: OK
+[OK] IMPORT:SERVICIOS.auditor_integridad_postimportacion_i1344: OK
+[OK] IMPORT:SERVICIOS.motor_escritura_segura_i1342: OK

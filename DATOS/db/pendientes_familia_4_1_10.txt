@@ -1,0 +1,77 @@
+HOST AI 4.1.10 - ARTÍCULOS PENDIENTES DE FAMILIA
+====================================================================
+Total artículos: 358
+Pendientes sin familia: 41
+Estado: revisar
+
+PENDIENTES POR PROVEEDOR
+--------------------------------------------------------------------
+SARDA: 11
+MAKRO: 6
+M.P: 6
+SIN_PROVEEDOR: 4
+ASSOLIN: 3
+VERMOUTH PADRO.: 2
+Ferran: 2
+bodega: 1
+PESCADO JOPEP: 1
+ALVILARDAN: 1
+MAKRO.SARDA: 1
+M.P APERITIVOS.: 1
+Makro: 1
+PRUEBA: 1
+
+PENDIENTES POR ORIGEN
+--------------------------------------------------------------------
+excel: 41
+
+LISTADO DE ARTÍCULOS SIN FAMILIA
+--------------------------------------------------------------------
+ART000001 | A.AAAAA | Proveedor: - | Precio: None
+ART000055 | Alfiler | Proveedor: SARDA | Precio: 19.9
+ART000057 | Almodi petit blanc. | Proveedor: bodega | Precio: 85.55
+ART000058 | Ameja gallega G | Proveedor: PESCADO JOPEP | Precio: 55.87
+ART000068 | Aros metalicos 6 moldes. | Proveedor: MAKRO | Precio: 21.9
+ART000073 | AZUCAR | Proveedor: SARDA | Precio: 0.82
+ART000075 | Barra 5 semillas. Masa madre 300 gr. | Proveedor: ALVILARDAN | Precio: 3.75
+ART000077 | Bayas enebro | Proveedor: - | Precio: 1.56
+ART000079 | Biberon 3 unid. (4,69€. 15cl. 3 unid). | Proveedor: MAKRO | Precio: 0.9
+ART000094 | Calabaza cacahuete. makro | Proveedor: MAKRO.SARDA | Precio: 1.05
+ART000109 | Cayena entera. | Proveedor: SARDA | Precio: 1.55
+ART000128 | CLOS PINELL  TERRA TINTO ALTA | Proveedor: SARDA | Precio: 0.9
+ART000129 | CLOS PINELL BLANC TERRA ALTA | Proveedor: SARDA | Precio: 12.0
+ART000135 | Coctel Guacamole con totopos. | Proveedor: M.P APERITIVOS. | Precio: 0.87
+ART000141 | Coulant de chocolate | Proveedor: ASSOLIN | Precio: 7.43
+ART000150 | Curcuma. en povo. MAKRO. | Proveedor: SARDA | Precio: 11.29
+ART000164 | Foie mi cuit 250g | Proveedor: Makro | Precio: 0.38
+ART000194 | Macarrones Penne rigatoni. makro. 1 kg | Proveedor: SARDA | Precio: 5.5
+ART000196 | MAIZENA 700 GR. | Proveedor: SARDA | Precio: 3.67
+ART000209 | Miel del perello | Proveedor: SARDA | Precio: 3.98
+ART000210 | Mirrah blanco. botella de 1 lt | Proveedor: VERMOUTH PADRO. | Precio: 2.39
+ART000211 | Mirrah. rojo 15% 5 l. 15,01€ precio backin box | Proveedor: VERMOUTH PADRO. | Precio: 5.62
+ART000215 | Nachos 750g | Proveedor: MAKRO | Precio: 0.82
+ART000236 | Papel Sigma A3 80 GR. 500 H . | Proveedor: M.P | Precio: 4.45
+ART000237 | Parrillada de verduras. Precio Pax. | Proveedor: M.P | Precio: 2.33
+ART000243 | Picatiostes | Proveedor: MAKRO | Precio: 17.29
+ART000245 | Pierna Cordero. | Proveedor: - | Precio: 6.95
+ART000246 | Pierna de cordero. c. palau. | Proveedor: - | Precio: 16.95
+ART000259 | PRUEBA FERRAN | Proveedor: PRUEBA | Precio: 9.5
+ART000267 | Reposteri Dulce Surtido. 3 kg. 154 unid. 0,35€/ 55,32€ | Proveedor: ASSOLIN | Precio: 31.95
+ART000291 | Sneeken pasa y nueces. fementado. 125 gr. unid | Proveedor: ASSOLIN | Precio: 0.36
+ART000308 | Tortillas maiz | Proveedor: MAKRO | Precio: 1.2
+ART000310 | Vinagre de jerez | Proveedor: SARDA | Precio: 4.5
+ART000311 | Vinagre de modena garrafa de 5 lt. | Proveedor: SARDA | Precio: 1.0
+ART000312 | Vinagreta clasica. | Proveedor: M.P | Precio: 18.25
+ART000326 | Pico de gallo | Proveedor: M.P | Precio: 6.75
+ART000329 | Guacamole y totopos | Proveedor: M.P | Precio: None
+ART000336 | Flor de hibiscus | Proveedor: MAKRO | Precio: 13.2
+ART000343 | M.P Menú infantil Boloñesa | Proveedor: Ferran | Precio: 2.0
+ART000348 | Gilda MasBoronat | Proveedor: Ferran | Precio: 1.0
+ART000354 | Parrillada bbq fin de semana | Proveedor: M.P | Precio: None
+
+RECOMENDACIÓN
+--------------------------------------------------------------------
+Revisar este listado y decidir si conviene:
+- Añadir nuevas reglas automáticas.
+- Corregir manualmente familias concretas.
+- Crear una familia nueva.

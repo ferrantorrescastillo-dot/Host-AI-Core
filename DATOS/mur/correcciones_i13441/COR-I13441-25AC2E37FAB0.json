@@ -1,0 +1,81 @@
+{
+  "version": "I1.3.4.4.1",
+  "sesion_id": "COR-I13441-25AC2E37FAB0",
+  "actualizado_en": "2026-07-13T09:35:10.253285+00:00",
+  "resumen": {
+    "sesion_id": "COR-I13441-25AC2E37FAB0",
+    "estado": "CERTIFICADA",
+    "errores": 0,
+    "avisos": 0,
+    "total": 0,
+    "acciones": 5
+  },
+  "historial": [
+    {
+      "fecha": "2026-07-13T09:35:10.082848+00:00",
+      "accion": "VINCULAR_RECETA",
+      "indice": 2,
+      "receta_id": "R1",
+      "receta": "Receta demo"
+    },
+    {
+      "fecha": "2026-07-13T09:35:10.119555+00:00",
+      "accion": "CAMBIAR_SECCION",
+      "indices": [
+        1
+      ],
+      "nueva_seccion": "Principal",
+      "cambios": 1
+    },
+    {
+      "fecha": "2026-07-13T09:35:10.148857+00:00",
+      "accion": "VINCULAR_ARTICULO",
+      "indice": 1,
+      "articulo_id": "A1",
+      "articulo": "Pan"
+    },
+    {
+      "fecha": "2026-07-13T09:35:10.177871+00:00",
+      "accion": "RECALCULAR_ECONOMIA",
+      "indices": "TODOS",
+      "cambios": 1
+    },
+    {
+      "fecha": "2026-07-13T09:35:10.243410+00:00",
+      "accion": "COMMIT",
+      "transaccion_id": "TX-7E61EFBE36ED",
+      "backup": "C:\\PROYECTO HOST IA\\Proyecto Host AI  6.0\\Host AI 6.0\\DATOS\\backups\\i1342\\TX-7E61EFBE36ED"
+    }
+  ],
+  "auditoria_actual": {
+    "version": "I1.3.4.4",
+    "auditoria_id": "AUD-I1344-5757F2F9F494",
+    "generado_en": "2026-07-13T09:35:10.248155+00:00",
+    "estado": "CERTIFICADA",
+    "integridad": "OK",
+    "estadisticas": {
+      "menus": 1,
+      "secciones": 1,
+      "platos": 1,
+      "articulos_directos": 1,
+      "bebidas": 0,
+      "complementos": 0,
+      "servicios": 0,
+      "componentes": 1
+    },
+    "incidencias": [],
+    "resumen": {
+      "errores": 0,
+      "avisos": 0,
+      "informativos": 0,
+      "total": 0
+    },
+    "fuentes": {
+      "menus": "DATOS/mur/diagnostico_i13441/menus.json",
+      "recetas": "DATOS/mur/diagnostico_i13441/recetas.json",
+      "articulos": "DATOS/mur/diagnostico_i13441/articulos.json"
+    },
+    "informe_json": "C:\\PROYECTO HOST IA\\Proyecto Host AI  6.0\\Host AI 6.0\\DATOS\\auditorias\\i13441\\AUD-I1344-5757F2F9F494.json",
+    "informe_txt": "C:\\PROYECTO HOST IA\\Proyecto Host AI  6.0\\Host AI 6.0\\DATOS\\auditorias\\i13441\\AUD-I1344-5757F2F9F494.txt"
+  }
+}
