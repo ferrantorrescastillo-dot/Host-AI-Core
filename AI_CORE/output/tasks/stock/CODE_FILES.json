@@ -1,0 +1,366 @@
+{
+  "domain": "stock",
+  "files": [
+    {
+      "domain_relation": "stock",
+      "path": "APP/historial_movimientos_stock_4310.py",
+      "priority": 62,
+      "reason": "match_keyword:stock,match_keyword:movimiento"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "APP/movimiento_stock_437.py",
+      "priority": 62,
+      "reason": "match_keyword:stock,match_keyword:movimiento"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "MODELOS/control_movimientos_stock_305.py",
+      "priority": 62,
+      "reason": "match_keyword:stock,match_keyword:movimiento"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "PIPELINES/pipeline_control_inteligente_movimientos_stock.py",
+      "priority": 62,
+      "reason": "match_keyword:stock,match_keyword:movimiento"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "SERVICIOS/control_inteligente_movimientos_stock.py",
+      "priority": 62,
+      "reason": "match_keyword:stock,match_keyword:movimiento"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "SERVICIOS/historial_movimientos_stock_4310.py",
+      "priority": 62,
+      "reason": "match_keyword:stock,match_keyword:movimiento"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "SERVICIOS/motor_movimientos_stock_437.py",
+      "priority": 62,
+      "reason": "match_keyword:stock,match_keyword:movimiento"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "TESTS/test_4310_historial_movimientos_stock.py",
+      "priority": 58,
+      "reason": "match_keyword:stock,match_keyword:movimiento"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "TESTS/test_437_motor_movimientos_stock.py",
+      "priority": 58,
+      "reason": "match_keyword:stock,match_keyword:movimiento"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "TESTS/test_control_inteligente_movimientos_stock.py",
+      "priority": 58,
+      "reason": "match_keyword:stock,match_keyword:movimiento"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "APP/alertas_stock_bajo_434.py",
+      "priority": 47,
+      "reason": "match_keyword:stock"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "APP/aplicar_ajustes_inventario_43114.py",
+      "priority": 47,
+      "reason": "match_keyword:inventario"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "APP/cierre_modulo_stock_4312.py",
+      "priority": 47,
+      "reason": "match_keyword:stock"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "APP/comparar_inventario_43113.py",
+      "priority": 47,
+      "reason": "match_keyword:inventario"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "APP/conector_stock_real_553.py",
+      "priority": 47,
+      "reason": "match_keyword:stock"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "APP/entrada_stock_desde_pedido_438.py",
+      "priority": 47,
+      "reason": "match_keyword:stock"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "APP/generar_plantilla_inventario_43111.py",
+      "priority": 47,
+      "reason": "match_keyword:inventario"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "APP/generar_plantilla_stock_431.py",
+      "priority": 47,
+      "reason": "match_keyword:stock"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "APP/gestionar_inventario_inicial_556cd2.py",
+      "priority": 47,
+      "reason": "match_keyword:inventario"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "APP/importar_inventario_43112.py",
+      "priority": 47,
+      "reason": "match_keyword:inventario"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "APP/importar_stock_inicial_432.py",
+      "priority": 47,
+      "reason": "match_keyword:stock"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "APP/informe_final_inventario_43115.py",
+      "priority": 47,
+      "reason": "match_keyword:inventario"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "APP/informe_stock_inicial_433.py",
+      "priority": 47,
+      "reason": "match_keyword:stock"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "APP/pedido_sugerido_stock_bajo_435.py",
+      "priority": 47,
+      "reason": "match_keyword:stock"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "APP/probar_cruce_stock_plan_556cd.py",
+      "priority": 47,
+      "reason": "match_keyword:stock"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "APP/salida_stock_439.py",
+      "priority": 47,
+      "reason": "match_keyword:stock"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "MODELOS/actualizacion_stock_factura.py",
+      "priority": 47,
+      "reason": "match_keyword:stock"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "MODELOS/alertas_inteligentes_stock_305.py",
+      "priority": 47,
+      "reason": "match_keyword:stock"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "MODELOS/alertas_stock.py",
+      "priority": 47,
+      "reason": "match_keyword:stock"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "MODELOS/analisis_inteligente_stock.py",
+      "priority": 47,
+      "reason": "match_keyword:stock"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "MODELOS/cierre_gestion_stock.py",
+      "priority": 47,
+      "reason": "match_keyword:stock"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "MODELOS/historico_stock.py",
+      "priority": 47,
+      "reason": "match_keyword:stock"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "MODELOS/importacion_inventario_excel.py",
+      "priority": 47,
+      "reason": "match_keyword:inventario"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "MODELOS/optimizacion_stock.py",
+      "priority": 47,
+      "reason": "match_keyword:stock"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "MODELOS/prediccion_necesidades_stock.py",
+      "priority": 47,
+      "reason": "match_keyword:stock"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "MODELOS/reconciliacion_stock_305.py",
+      "priority": 47,
+      "reason": "match_keyword:stock"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "MODELOS/reconciliacion_stock_factura.py",
+      "priority": 47,
+      "reason": "match_keyword:stock"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "MODELOS/roturas_stock.py",
+      "priority": 47,
+      "reason": "match_keyword:stock"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "MODELOS/stock.py",
+      "priority": 47,
+      "reason": "match_keyword:stock"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "MODELOS/stock_ubicaciones.py",
+      "priority": 47,
+      "reason": "match_keyword:stock"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "MOTORES/motor_stock.py",
+      "priority": 47,
+      "reason": "match_keyword:stock"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "PIPELINES/pipeline_actualizador_inteligente_stock_factura.py",
+      "priority": 47,
+      "reason": "match_keyword:stock"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "PIPELINES/pipeline_alertas_inteligentes_stock.py",
+      "priority": 47,
+      "reason": "match_keyword:stock"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "PIPELINES/pipeline_analizador_inteligente_stock.py",
+      "priority": 47,
+      "reason": "match_keyword:stock"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "PIPELINES/pipeline_base_actualizacion_stock_factura.py",
+      "priority": 47,
+      "reason": "match_keyword:stock"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "PIPELINES/pipeline_cierre_gestion_inteligente_stock.py",
+      "priority": 47,
+      "reason": "match_keyword:stock"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "PIPELINES/pipeline_historico_inteligente_stock.py",
+      "priority": 47,
+      "reason": "match_keyword:stock"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "PIPELINES/pipeline_importador_inventario_excel.py",
+      "priority": 47,
+      "reason": "match_keyword:inventario"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "PIPELINES/pipeline_motor_alertas_stock.py",
+      "priority": 47,
+      "reason": "match_keyword:stock"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "PIPELINES/pipeline_optimizador_stock.py",
+      "priority": 47,
+      "reason": "match_keyword:stock"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "PIPELINES/pipeline_prediccion_necesidades_stock.py",
+      "priority": 47,
+      "reason": "match_keyword:stock"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "PIPELINES/pipeline_prediccion_roturas_stock.py",
+      "priority": 47,
+      "reason": "match_keyword:stock"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "PIPELINES/pipeline_reconciliador_inteligente_stock.py",
+      "priority": 47,
+      "reason": "match_keyword:stock"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "PIPELINES/pipeline_reconciliador_stock_factura.py",
+      "priority": 47,
+      "reason": "match_keyword:stock"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "PIPELINES/pipeline_stock.py",
+      "priority": 47,
+      "reason": "match_keyword:stock"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "PIPELINES/pipeline_stock_por_ubicaciones.py",
+      "priority": 47,
+      "reason": "match_keyword:stock"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "SERVICIOS/actualizador_inteligente_stock_factura.py",
+      "priority": 47,
+      "reason": "match_keyword:stock"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "SERVICIOS/alertas_inteligentes_stock.py",
+      "priority": 47,
+      "reason": "match_keyword:stock"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "SERVICIOS/alertas_stock_bajo_434.py",
+      "priority": 47,
+      "reason": "match_keyword:stock"
+    },
+    {
+      "domain_relation": "stock",
+      "path": "SERVICIOS/analizador_inteligente_stock.py",
+      "priority": 47,
+      "reason": "match_keyword:stock"
+    }
+  ],
+  "task": "Stock"
+}

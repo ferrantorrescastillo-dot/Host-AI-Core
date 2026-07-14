@@ -1,0 +1,366 @@
+{
+  "domain": "produccion",
+  "files": [
+    {
+      "domain_relation": "produccion",
+      "path": "APP/checklist_final_produccion_467.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "APP/conector_produccion_real_556.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "APP/consola_produccion_guiada_piloto_13.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "APP/gestionar_ficha_produccion_556e31.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "APP/informe_diario_produccion_468.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "APP/planificador_diario_produccion_461.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "APP/probar_recursos_produccion_556e2.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "APP/probar_tiempos_produccion_556e1.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "APP/produccion_evento_473.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "MODELOS/alertas_produccion_306.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "MODELOS/analisis_produccion_306.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "MODELOS/ejecucion_produccion_306.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "MODELOS/optimizacion_produccion_306.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "MODELOS/planificacion_produccion_306.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "MODELOS/produccion_completa.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "MODELOS/produccion_real.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "MOTORES/motor_produccion_completa.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "MOTORES/motor_produccion_real.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "MOTORES/motor_simulador_produccion_evento.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "PIPELINES/pipeline_analizador_inteligente_produccion.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "PIPELINES/pipeline_asignador_recursos_produccion.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "PIPELINES/pipeline_cierre_inteligente_produccion.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "PIPELINES/pipeline_control_ejecucion_produccion.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "PIPELINES/pipeline_motor_alertas_produccion.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "PIPELINES/pipeline_optimizador_inteligente_produccion.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "PIPELINES/pipeline_planificador_inteligente_produccion.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "PIPELINES/pipeline_produccion_completa.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "PIPELINES/pipeline_produccion_real.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "PIPELINES/pipeline_replanificador_inteligente_produccion.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "SERVICIOS/analizador_inteligente_produccion.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "SERVICIOS/asignador_recursos_produccion.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "SERVICIOS/checklist_final_produccion_467.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "SERVICIOS/cierre_inteligente_produccion.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "SERVICIOS/conector_produccion_real_556.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "SERVICIOS/control_ejecucion_produccion.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "SERVICIOS/cruce_stock_produccion_556c.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "SERVICIOS/fichas_produccion_reales_556e31.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "SERVICIOS/informe_diario_produccion_468.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "SERVICIOS/integrador_produccion_escandallos_555a.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "SERVICIOS/motor_alertas_produccion.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "SERVICIOS/motor_paralelizacion_produccion_556e4.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "SERVICIOS/motor_recursos_produccion_556e2.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "SERVICIOS/motor_tiempos_produccion_556e1.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "SERVICIOS/optimizador_inteligente_produccion.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "SERVICIOS/planificador_diario_produccion_461.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "SERVICIOS/planificador_inteligente_produccion.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "SERVICIOS/planificador_produccion_556d.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "SERVICIOS/produccion_evento_473.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "SERVICIOS/produccion_guiada_piloto_13.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "SERVICIOS/produccion_stock_piloto_14.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "SERVICIOS/replanificador_inteligente_produccion.py",
+      "priority": 62,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "TESTS/test_461_planificador_diario_produccion.py",
+      "priority": 58,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "TESTS/test_467_checklist_final_produccion.py",
+      "priority": 58,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "TESTS/test_468_informe_diario_produccion.py",
+      "priority": 58,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "TESTS/test_473_produccion_evento.py",
+      "priority": 58,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "TESTS/test_556_conector_produccion_real.py",
+      "priority": 58,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "TESTS/test_analizador_inteligente_produccion.py",
+      "priority": 58,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "TESTS/test_asignador_recursos_produccion.py",
+      "priority": 58,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "TESTS/test_cierre_inteligente_produccion.py",
+      "priority": 58,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    },
+    {
+      "domain_relation": "produccion",
+      "path": "TESTS/test_control_ejecucion_produccion.py",
+      "priority": 58,
+      "reason": "match_keyword:produccion,match_keyword:prod"
+    }
+  ],
+  "task": "Producción"
+}

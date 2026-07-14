@@ -1,0 +1,366 @@
+{
+  "domain": "compras",
+  "files": [
+    {
+      "domain_relation": "compras",
+      "path": "APP/compras_evento_474.py",
+      "priority": 62,
+      "reason": "match_keyword:compra,match_keyword:compras"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "MODELOS/analisis_compras.py",
+      "priority": 62,
+      "reason": "match_keyword:compra,match_keyword:compras"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "MODELOS/anomalias_compras.py",
+      "priority": 62,
+      "reason": "match_keyword:compra,match_keyword:compras"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "MODELOS/cierre_inteligencia_compras.py",
+      "priority": 62,
+      "reason": "match_keyword:compra,match_keyword:compras"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "MODELOS/compras.py",
+      "priority": 62,
+      "reason": "match_keyword:compra,match_keyword:compras"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "MODELOS/recomendaciones_compras.py",
+      "priority": 62,
+      "reason": "match_keyword:compra,match_keyword:compras"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "MOTORES/motor_compras.py",
+      "priority": 62,
+      "reason": "match_keyword:compra,match_keyword:compras"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "PIPELINES/pipeline_analizador_inteligente_compras.py",
+      "priority": 62,
+      "reason": "match_keyword:compra,match_keyword:compras"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "PIPELINES/pipeline_cierre_inteligencia_compras.py",
+      "priority": 62,
+      "reason": "match_keyword:compra,match_keyword:compras"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "PIPELINES/pipeline_compras.py",
+      "priority": 62,
+      "reason": "match_keyword:compra,match_keyword:compras"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "PIPELINES/pipeline_detector_anomalias_compras.py",
+      "priority": 62,
+      "reason": "match_keyword:compra,match_keyword:compras"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "PIPELINES/pipeline_motor_recomendaciones_compras.py",
+      "priority": 62,
+      "reason": "match_keyword:compra,match_keyword:compras"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "SERVICIOS/analizador_inteligente_compras.py",
+      "priority": 62,
+      "reason": "match_keyword:compra,match_keyword:compras"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "SERVICIOS/cierre_inteligencia_compras.py",
+      "priority": 62,
+      "reason": "match_keyword:compra,match_keyword:compras"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "SERVICIOS/compras_evento_474.py",
+      "priority": 62,
+      "reason": "match_keyword:compra,match_keyword:compras"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "SERVICIOS/detector_anomalias_compras.py",
+      "priority": 62,
+      "reason": "match_keyword:compra,match_keyword:compras"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "SERVICIOS/integrador_compras_escandallos_555a.py",
+      "priority": 62,
+      "reason": "match_keyword:compra,match_keyword:compras"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "SERVICIOS/motor_recomendaciones_compras.py",
+      "priority": 62,
+      "reason": "match_keyword:compra,match_keyword:compras"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "TESTS/test_474_compras_evento.py",
+      "priority": 58,
+      "reason": "match_keyword:compra,match_keyword:compras"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "TESTS/test_508_afinador_compras_rentabilidad.py",
+      "priority": 58,
+      "reason": "match_keyword:compra,match_keyword:compras"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "TESTS/test_604_c1_gestion_compras.py",
+      "priority": 58,
+      "reason": "match_keyword:compra,match_keyword:compras"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "TESTS/test_analizador_inteligente_compras.py",
+      "priority": 58,
+      "reason": "match_keyword:compra,match_keyword:compras"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "TESTS/test_cierre_inteligencia_compras.py",
+      "priority": 58,
+      "reason": "match_keyword:compra,match_keyword:compras"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "TESTS/test_detector_anomalias_compras.py",
+      "priority": 58,
+      "reason": "match_keyword:compra,match_keyword:compras"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "TESTS/test_inteligencia_compras_3041_3042_3043_3044.py",
+      "priority": 58,
+      "reason": "match_keyword:compra,match_keyword:compras"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "TESTS/test_inteligencia_compras_3041_3042_3043_3044_3045_3046.py",
+      "priority": 58,
+      "reason": "match_keyword:compra,match_keyword:compras"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "TESTS/test_inteligencia_compras_3041_3042_3043_3044_3045_3046_3047_3048.py",
+      "priority": 58,
+      "reason": "match_keyword:compra,match_keyword:compras"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "TESTS/test_motor_recomendaciones_compras.py",
+      "priority": 58,
+      "reason": "match_keyword:compra,match_keyword:compras"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "TESTS/test_pipeline_compras.py",
+      "priority": 58,
+      "reason": "match_keyword:compra,match_keyword:compras"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "TESTS/test_rr161b_compras_recepcion.py",
+      "priority": 58,
+      "reason": "match_keyword:compra,match_keyword:compras"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "priority": 50,
+      "reason": "match_keyword:compra,match_keyword:compras"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/MOTORES/motor_compras.py",
+      "priority": 50,
+      "reason": "match_keyword:compra,match_keyword:compras"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/TESTS/test_rr13_pulido_stock_compras.py",
+      "priority": 50,
+      "reason": "match_keyword:compra,match_keyword:compras"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "APP/clasificar_familias_proveedor_4112.py",
+      "priority": 47,
+      "reason": "match_keyword:proveedor"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "APP/comparador_economico_proveedores_486.py",
+      "priority": 47,
+      "reason": "match_keyword:proveedor"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "APP/conector_proveedores_real_554.py",
+      "priority": 47,
+      "reason": "match_keyword:proveedor"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "APP/confirmar_pedido_sugerido_436.py",
+      "priority": 47,
+      "reason": "match_keyword:pedido"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "APP/editar_proveedor_422.py",
+      "priority": 47,
+      "reason": "match_keyword:proveedor"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "APP/entrada_stock_desde_pedido_438.py",
+      "priority": 47,
+      "reason": "match_keyword:pedido"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "APP/extraer_proveedores_421.py",
+      "priority": 47,
+      "reason": "match_keyword:proveedor"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "APP/informe_proveedores_423.py",
+      "priority": 47,
+      "reason": "match_keyword:proveedor"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "APP/pedido_sugerido_stock_bajo_435.py",
+      "priority": 47,
+      "reason": "match_keyword:pedido"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "MODELOS/comparador_proveedores_inteligente.py",
+      "priority": 47,
+      "reason": "match_keyword:proveedor"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "MODELOS/motor_pedidos_inteligente.py",
+      "priority": 47,
+      "reason": "match_keyword:pedido"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "MODELOS/proveedores_pdf.py",
+      "priority": 47,
+      "reason": "match_keyword:proveedor"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "PIPELINES/pipeline_aprendizaje_relacion_proveedor.py",
+      "priority": 47,
+      "reason": "match_keyword:proveedor"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "PIPELINES/pipeline_comparador_inteligente_proveedores.py",
+      "priority": 47,
+      "reason": "match_keyword:proveedor"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "PIPELINES/pipeline_comparador_proveedores_precios.py",
+      "priority": 47,
+      "reason": "match_keyword:proveedor"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "PIPELINES/pipeline_motor_inteligente_pedidos.py",
+      "priority": 47,
+      "reason": "match_keyword:pedido"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "PIPELINES/pipeline_proveedores_pdf.py",
+      "priority": 47,
+      "reason": "match_keyword:proveedor"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "SERVICIOS/aprendizaje_relacion_proveedor.py",
+      "priority": 47,
+      "reason": "match_keyword:proveedor"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "SERVICIOS/clasificador_familias_proveedor_4112.py",
+      "priority": 47,
+      "reason": "match_keyword:proveedor"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "SERVICIOS/comparador_economico_proveedores_486.py",
+      "priority": 47,
+      "reason": "match_keyword:proveedor"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "SERVICIOS/comparador_inteligente_proveedores.py",
+      "priority": 47,
+      "reason": "match_keyword:proveedor"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "SERVICIOS/comparador_proveedores_precios.py",
+      "priority": 47,
+      "reason": "match_keyword:proveedor"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "SERVICIOS/conector_proveedores_real_554.py",
+      "priority": 47,
+      "reason": "match_keyword:proveedor"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "SERVICIOS/confirmador_pedido_sugerido_436.py",
+      "priority": 47,
+      "reason": "match_keyword:pedido"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "SERVICIOS/detector_proveedores_pdf.py",
+      "priority": 47,
+      "reason": "match_keyword:proveedor"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "SERVICIOS/editor_proveedores_422.py",
+      "priority": 47,
+      "reason": "match_keyword:proveedor"
+    },
+    {
+      "domain_relation": "compras",
+      "path": "SERVICIOS/entrada_stock_desde_pedido_438.py",
+      "priority": 47,
+      "reason": "match_keyword:pedido"
+    }
+  ],
+  "task": "Compras"
+}

@@ -1,0 +1,186 @@
+{
+  "coverage_known": {
+    "code_files_considered": 60,
+    "tests_found": 44
+  },
+  "domain": "stock",
+  "task": "Stock",
+  "tests": [
+    {
+      "path": "TESTS/test_4310_historial_movimientos_stock.py",
+      "reason": "match_stem:test_4310_historial_movimientos_stock"
+    },
+    {
+      "path": "TESTS/test_43111_plantilla_inventario.py",
+      "reason": "match_keyword:inventario"
+    },
+    {
+      "path": "TESTS/test_43112_importador_inventario.py",
+      "reason": "match_keyword:inventario"
+    },
+    {
+      "path": "TESTS/test_43113_comparador_inventario.py",
+      "reason": "match_keyword:inventario"
+    },
+    {
+      "path": "TESTS/test_43114_aplicador_ajustes_inventario.py",
+      "reason": "match_keyword:inventario"
+    },
+    {
+      "path": "TESTS/test_43115_informe_final_inventario.py",
+      "reason": "match_keyword:inventario"
+    },
+    {
+      "path": "TESTS/test_4312_cierre_modulo_stock.py",
+      "reason": "match_stem:stock"
+    },
+    {
+      "path": "TESTS/test_431_plantilla_stock_inicial.py",
+      "reason": "match_stem:stock"
+    },
+    {
+      "path": "TESTS/test_432_importador_stock_inicial.py",
+      "reason": "match_stem:stock"
+    },
+    {
+      "path": "TESTS/test_433_informe_stock_inicial.py",
+      "reason": "match_stem:stock"
+    },
+    {
+      "path": "TESTS/test_434_alertas_stock_bajo.py",
+      "reason": "match_stem:stock"
+    },
+    {
+      "path": "TESTS/test_435_pedido_sugerido_stock_bajo.py",
+      "reason": "match_stem:stock"
+    },
+    {
+      "path": "TESTS/test_437_motor_movimientos_stock.py",
+      "reason": "match_stem:test_437_motor_movimientos_stock"
+    },
+    {
+      "path": "TESTS/test_438_entrada_stock_desde_pedido.py",
+      "reason": "match_stem:stock"
+    },
+    {
+      "path": "TESTS/test_439_salidas_stock.py",
+      "reason": "match_stem:stock"
+    },
+    {
+      "path": "TESTS/test_553_conector_stock_real.py",
+      "reason": "match_stem:stock"
+    },
+    {
+      "path": "TESTS/test_556cd1_enlace_canonico_stock.py",
+      "reason": "match_stem:stock"
+    },
+    {
+      "path": "TESTS/test_556cd2_inventario_inicial_seguro.py",
+      "reason": "match_keyword:inventario"
+    },
+    {
+      "path": "TESTS/test_556cd_stock_plan.py",
+      "reason": "match_stem:stock"
+    },
+    {
+      "path": "TESTS/test_actualizador_inteligente_stock_factura.py",
+      "reason": "match_stem:stock"
+    },
+    {
+      "path": "TESTS/test_alertas_inteligentes_stock.py",
+      "reason": "match_stem:stock"
+    },
+    {
+      "path": "TESTS/test_analizador_inteligente_stock.py",
+      "reason": "match_stem:analizador_inteligente_stock"
+    },
+    {
+      "path": "TESTS/test_base_actualizacion_stock_factura.py",
+      "reason": "match_stem:stock"
+    },
+    {
+      "path": "TESTS/test_cierre_gestion_inteligente_stock.py",
+      "reason": "match_stem:stock"
+    },
+    {
+      "path": "TESTS/test_control_inteligente_movimientos_stock.py",
+      "reason": "match_stem:stock"
+    },
+    {
+      "path": "TESTS/test_gestion_inteligente_stock_3051_3052.py",
+      "reason": "match_stem:stock"
+    },
+    {
+      "path": "TESTS/test_gestion_inteligente_stock_3051_3052_3053_3054.py",
+      "reason": "match_stem:stock"
+    },
+    {
+      "path": "TESTS/test_gestion_inteligente_stock_3051_3052_3053_3054_3055_3056.py",
+      "reason": "match_stem:stock"
+    },
+    {
+      "path": "TESTS/test_gestion_inteligente_stock_3051_3052_3053_3054_3055_3056_3057_3058.py",
+      "reason": "match_stem:stock"
+    },
+    {
+      "path": "TESTS/test_historico_inteligente_stock.py",
+      "reason": "match_stem:stock"
+    },
+    {
+      "path": "TESTS/test_importador_inventario_excel.py",
+      "reason": "match_keyword:inventario"
+    },
+    {
+      "path": "TESTS/test_motor_alertas_stock.py",
+      "reason": "match_stem:stock"
+    },
+    {
+      "path": "TESTS/test_optimizador_stock.py",
+      "reason": "match_stem:stock"
+    },
+    {
+      "path": "TESTS/test_piloto_14_produccion_stock.py",
+      "reason": "match_stem:stock"
+    },
+    {
+      "path": "TESTS/test_pipeline_stock.py",
+      "reason": "match_stem:stock"
+    },
+    {
+      "path": "TESTS/test_prediccion_necesidades_stock.py",
+      "reason": "match_stem:stock"
+    },
+    {
+      "path": "TESTS/test_prediccion_roturas_stock.py",
+      "reason": "match_stem:stock"
+    },
+    {
+      "path": "TESTS/test_reconciliador_inteligente_stock.py",
+      "reason": "match_stem:stock"
+    },
+    {
+      "path": "TESTS/test_reconciliador_stock_factura.py",
+      "reason": "match_stem:stock"
+    },
+    {
+      "path": "TESTS/test_rr161c_stock_busqueda.py",
+      "reason": "match_stem:stock"
+    },
+    {
+      "path": "TESTS/test_s002_cierres_stock_escandallos.py",
+      "reason": "match_stem:stock"
+    },
+    {
+      "path": "TESTS/test_s1_gestion_stock.py",
+      "reason": "match_stem:stock"
+    },
+    {
+      "path": "TESTS/test_s2_stock_operativo.py",
+      "reason": "match_stem:stock"
+    },
+    {
+      "path": "TESTS/test_stock_por_ubicaciones.py",
+      "reason": "match_stem:stock"
+    }
+  ]
+}

@@ -1,0 +1,1953 @@
+{
+  "classes": [
+    {
+      "end_line": 72,
+      "id": "class:MODELOS.actualizacion_stock_factura.InformeActualizacionStockFactura",
+      "path": "MODELOS/actualizacion_stock_factura.py",
+      "qualified_name": "InformeActualizacionStockFactura",
+      "start_line": 42
+    },
+    {
+      "end_line": 39,
+      "id": "class:MODELOS.actualizacion_stock_factura.MovimientoStockFactura",
+      "path": "MODELOS/actualizacion_stock_factura.py",
+      "qualified_name": "MovimientoStockFactura",
+      "start_line": 11
+    },
+    {
+      "end_line": 28,
+      "id": "class:MODELOS.alertas_inteligentes_stock_305.AlertaGestionStock",
+      "path": "MODELOS/alertas_inteligentes_stock_305.py",
+      "qualified_name": "AlertaGestionStock",
+      "start_line": 11
+    },
+    {
+      "end_line": 39,
+      "id": "class:MODELOS.alertas_inteligentes_stock_305.InformeAlertasGestionStock",
+      "path": "MODELOS/alertas_inteligentes_stock_305.py",
+      "qualified_name": "InformeAlertasGestionStock",
+      "start_line": 31
+    },
+    {
+      "end_line": 32,
+      "id": "class:MODELOS.alertas_stock.AlertaStock",
+      "path": "MODELOS/alertas_stock.py",
+      "qualified_name": "AlertaStock",
+      "start_line": 11
+    },
+    {
+      "end_line": 48,
+      "id": "class:MODELOS.analisis_inteligente_stock.InformeAnalisisInteligenteStock",
+      "path": "MODELOS/analisis_inteligente_stock.py",
+      "qualified_name": "InformeAnalisisInteligenteStock",
+      "start_line": 35
+    },
+    {
+      "end_line": 32,
+      "id": "class:MODELOS.analisis_inteligente_stock.ItemAnalisisStock",
+      "path": "MODELOS/analisis_inteligente_stock.py",
+      "qualified_name": "ItemAnalisisStock",
+      "start_line": 11
+    },
+    {
+      "end_line": 15,
+      "id": "class:MODELOS.cierre_gestion_stock.InformeCierreGestionStock",
+      "path": "MODELOS/cierre_gestion_stock.py",
+      "qualified_name": "InformeCierreGestionStock",
+      "start_line": 6
+    },
+    {
+      "end_line": 43,
+      "id": "class:MODELOS.control_movimientos_stock_305.InformeControlMovimientosStock",
+      "path": "MODELOS/control_movimientos_stock_305.py",
+      "qualified_name": "InformeControlMovimientosStock",
+      "start_line": 30
+    },
+    {
+      "end_line": 27,
+      "id": "class:MODELOS.control_movimientos_stock_305.LineaControlMovimientoStock",
+      "path": "MODELOS/control_movimientos_stock_305.py",
+      "qualified_name": "LineaControlMovimientoStock",
+      "start_line": 11
+    },
+    {
+      "end_line": 49,
+      "id": "class:MODELOS.historico_stock.AnalisisHistoricoStock",
+      "path": "MODELOS/historico_stock.py",
+      "qualified_name": "AnalisisHistoricoStock",
+      "start_line": 37
+    },
+    {
+      "end_line": 34,
+      "id": "class:MODELOS.historico_stock.RegistroHistoricoStock",
+      "path": "MODELOS/historico_stock.py",
+      "qualified_name": "RegistroHistoricoStock",
+      "start_line": 11
+    },
+    {
+      "end_line": 46,
+      "id": "class:MODELOS.importacion_inventario_excel.CambioInventarioExcel",
+      "path": "MODELOS/importacion_inventario_excel.py",
+      "qualified_name": "CambioInventarioExcel",
+      "start_line": 36
+    },
+    {
+      "end_line": 57,
+      "id": "class:MODELOS.importacion_inventario_excel.ErrorImportacionInventario",
+      "path": "MODELOS/importacion_inventario_excel.py",
+      "qualified_name": "ErrorImportacionInventario",
+      "start_line": 49
+    },
+    {
+      "end_line": 33,
+      "id": "class:MODELOS.importacion_inventario_excel.LineaInventarioExcel",
+      "path": "MODELOS/importacion_inventario_excel.py",
+      "qualified_name": "LineaInventarioExcel",
+      "start_line": 11
+    },
+    {
+      "end_line": 84,
+      "id": "class:MODELOS.importacion_inventario_excel.ResultadoImportacionInventario",
+      "path": "MODELOS/importacion_inventario_excel.py",
+      "qualified_name": "ResultadoImportacionInventario",
+      "start_line": 60
+    },
+    {
+      "end_line": 29,
+      "id": "class:MODELOS.optimizacion_stock.InformeOptimizacionStock",
+      "path": "MODELOS/optimizacion_stock.py",
+      "qualified_name": "InformeOptimizacionStock",
+      "start_line": 21
+    },
+    {
+      "end_line": 18,
+      "id": "class:MODELOS.optimizacion_stock.RecomendacionOptimizacionStock",
+      "path": "MODELOS/optimizacion_stock.py",
+      "qualified_name": "RecomendacionOptimizacionStock",
+      "start_line": 6
+    },
+    {
+      "end_line": 34,
+      "id": "class:MODELOS.prediccion_necesidades_stock.InformePrediccionNecesidadesStock",
+      "path": "MODELOS/prediccion_necesidades_stock.py",
+      "qualified_name": "InformePrediccionNecesidadesStock",
+      "start_line": 24
+    },
+    {
+      "end_line": 21,
+      "id": "class:MODELOS.prediccion_necesidades_stock.NecesidadStockPredicha",
+      "path": "MODELOS/prediccion_necesidades_stock.py",
+      "qualified_name": "NecesidadStockPredicha",
+      "start_line": 6
+    },
+    {
+      "end_line": 29,
+      "id": "class:MODELOS.reconciliacion_stock_305.DiferenciaReconciliacionStock",
+      "path": "MODELOS/reconciliacion_stock_305.py",
+      "qualified_name": "DiferenciaReconciliacionStock",
+      "start_line": 11
+    },
+    {
+      "end_line": 42,
+      "id": "class:MODELOS.reconciliacion_stock_305.InformeReconciliacionStock",
+      "path": "MODELOS/reconciliacion_stock_305.py",
+      "qualified_name": "InformeReconciliacionStock",
+      "start_line": 32
+    },
+    {
+      "end_line": 64,
+      "id": "class:MODELOS.reconciliacion_stock_factura.InformeReconciliacionStock",
+      "path": "MODELOS/reconciliacion_stock_factura.py",
+      "qualified_name": "InformeReconciliacionStock",
+      "start_line": 34
+    },
+    {
+      "end_line": 31,
+      "id": "class:MODELOS.reconciliacion_stock_factura.ResultadoReconciliacionStock",
+      "path": "MODELOS/reconciliacion_stock_factura.py",
+      "qualified_name": "ResultadoReconciliacionStock",
+      "start_line": 11
+    },
+    {
+      "end_line": 39,
+      "id": "class:MODELOS.roturas_stock.InformeRoturasStock",
+      "path": "MODELOS/roturas_stock.py",
+      "qualified_name": "InformeRoturasStock",
+      "start_line": 32
+    },
+    {
+      "end_line": 29,
+      "id": "class:MODELOS.roturas_stock.PrediccionRoturaStock",
+      "path": "MODELOS/roturas_stock.py",
+      "qualified_name": "PrediccionRoturaStock",
+      "start_line": 11
+    },
+    {
+      "end_line": 32,
+      "id": "class:MODELOS.stock.LoteStock",
+      "path": "MODELOS/stock.py",
+      "qualified_name": "LoteStock",
+      "start_line": 11
+    },
+    {
+      "end_line": 51,
+      "id": "class:MODELOS.stock.MovimientoStock",
+      "path": "MODELOS/stock.py",
+      "qualified_name": "MovimientoStock",
+      "start_line": 35
+    },
+    {
+      "end_line": 41,
+      "id": "class:MODELOS.stock_ubicaciones.InformeStockUbicaciones",
+      "path": "MODELOS/stock_ubicaciones.py",
+      "qualified_name": "InformeStockUbicaciones",
+      "start_line": 31
+    },
+    {
+      "end_line": 28,
+      "id": "class:MODELOS.stock_ubicaciones.MovimientoUbicacionStock",
+      "path": "MODELOS/stock_ubicaciones.py",
+      "qualified_name": "MovimientoUbicacionStock",
+      "start_line": 17
+    },
+    {
+      "end_line": 14,
+      "id": "class:MODELOS.stock_ubicaciones.ResumenUbicacionStock",
+      "path": "MODELOS/stock_ubicaciones.py",
+      "qualified_name": "ResumenUbicacionStock",
+      "start_line": 6
+    },
+    {
+      "end_line": 284,
+      "id": "class:MOTORES.motor_stock.MotorStock",
+      "path": "MOTORES/motor_stock.py",
+      "qualified_name": "MotorStock",
+      "start_line": 8
+    },
+    {
+      "end_line": 30,
+      "id": "class:PIPELINES.pipeline_actualizador_inteligente_stock_factura.PipelineActualizadorInteligenteStockFactura",
+      "path": "PIPELINES/pipeline_actualizador_inteligente_stock_factura.py",
+      "qualified_name": "PipelineActualizadorInteligenteStockFactura",
+      "start_line": 5
+    },
+    {
+      "end_line": 31,
+      "id": "class:PIPELINES.pipeline_alertas_inteligentes_stock.PipelineAlertasInteligentesStock",
+      "path": "PIPELINES/pipeline_alertas_inteligentes_stock.py",
+      "qualified_name": "PipelineAlertasInteligentesStock",
+      "start_line": 5
+    },
+    {
+      "end_line": 21,
+      "id": "class:PIPELINES.pipeline_analizador_inteligente_stock.PipelineAnalizadorInteligenteStock",
+      "path": "PIPELINES/pipeline_analizador_inteligente_stock.py",
+      "qualified_name": "PipelineAnalizadorInteligenteStock",
+      "start_line": 9
+    },
+    {
+      "end_line": 21,
+      "id": "class:PIPELINES.pipeline_base_actualizacion_stock_factura.PipelineBaseActualizacionStockFactura",
+      "path": "PIPELINES/pipeline_base_actualizacion_stock_factura.py",
+      "qualified_name": "PipelineBaseActualizacionStockFactura",
+      "start_line": 5
+    },
+    {
+      "end_line": 17,
+      "id": "class:PIPELINES.pipeline_cierre_gestion_inteligente_stock.PipelineCierreGestionInteligenteStock",
+      "path": "PIPELINES/pipeline_cierre_gestion_inteligente_stock.py",
+      "qualified_name": "PipelineCierreGestionInteligenteStock",
+      "start_line": 5
+    },
+    {
+      "end_line": 17,
+      "id": "class:PIPELINES.pipeline_control_inteligente_movimientos_stock.PipelineControlInteligenteMovimientosStock",
+      "path": "PIPELINES/pipeline_control_inteligente_movimientos_stock.py",
+      "qualified_name": "PipelineControlInteligenteMovimientosStock",
+      "start_line": 5
+    },
+    {
+      "end_line": 27,
+      "id": "class:PIPELINES.pipeline_historico_inteligente_stock.PipelineHistoricoInteligenteStock",
+      "path": "PIPELINES/pipeline_historico_inteligente_stock.py",
+      "qualified_name": "PipelineHistoricoInteligenteStock",
+      "start_line": 5
+    },
+    {
+      "end_line": 60,
+      "id": "class:PIPELINES.pipeline_importador_inventario_excel.PipelineImportadorInventarioExcel",
+      "path": "PIPELINES/pipeline_importador_inventario_excel.py",
+      "qualified_name": "PipelineImportadorInventarioExcel",
+      "start_line": 5
+    },
+    {
+      "end_line": 17,
+      "id": "class:PIPELINES.pipeline_motor_alertas_stock.PipelineMotorAlertasStock",
+      "path": "PIPELINES/pipeline_motor_alertas_stock.py",
+      "qualified_name": "PipelineMotorAlertasStock",
+      "start_line": 5
+    },
+    {
+      "end_line": 17,
+      "id": "class:PIPELINES.pipeline_optimizador_stock.PipelineOptimizadorStock",
+      "path": "PIPELINES/pipeline_optimizador_stock.py",
+      "qualified_name": "PipelineOptimizadorStock",
+      "start_line": 5
+    },
+    {
+      "end_line": 17,
+      "id": "class:PIPELINES.pipeline_prediccion_necesidades_stock.PipelinePrediccionNecesidadesStock",
+      "path": "PIPELINES/pipeline_prediccion_necesidades_stock.py",
+      "qualified_name": "PipelinePrediccionNecesidadesStock",
+      "start_line": 5
+    },
+    {
+      "end_line": 20,
+      "id": "class:PIPELINES.pipeline_prediccion_roturas_stock.PipelinePrediccionRoturasStock",
+      "path": "PIPELINES/pipeline_prediccion_roturas_stock.py",
+      "qualified_name": "PipelinePrediccionRoturasStock",
+      "start_line": 5
+    },
+    {
+      "end_line": 17,
+      "id": "class:PIPELINES.pipeline_reconciliador_inteligente_stock.PipelineReconciliadorInteligenteStock",
+      "path": "PIPELINES/pipeline_reconciliador_inteligente_stock.py",
+      "qualified_name": "PipelineReconciliadorInteligenteStock",
+      "start_line": 5
+    },
+    {
+      "end_line": 21,
+      "id": "class:PIPELINES.pipeline_reconciliador_stock_factura.PipelineReconciliadorStockFactura",
+      "path": "PIPELINES/pipeline_reconciliador_stock_factura.py",
+      "qualified_name": "PipelineReconciliadorStockFactura",
+      "start_line": 5
+    },
+    {
+      "end_line": 33,
+      "id": "class:PIPELINES.pipeline_stock.PipelineStock",
+      "path": "PIPELINES/pipeline_stock.py",
+      "qualified_name": "PipelineStock",
+      "start_line": 5
+    },
+    {
+      "end_line": 20,
+      "id": "class:PIPELINES.pipeline_stock_por_ubicaciones.PipelineStockPorUbicaciones",
+      "path": "PIPELINES/pipeline_stock_por_ubicaciones.py",
+      "qualified_name": "PipelineStockPorUbicaciones",
+      "start_line": 5
+    },
+    {
+      "end_line": 189,
+      "id": "class:SERVICIOS.actualizador_inteligente_stock_factura.ActualizadorInteligenteStockFactura",
+      "path": "SERVICIOS/actualizador_inteligente_stock_factura.py",
+      "qualified_name": "ActualizadorInteligenteStockFactura",
+      "start_line": 9
+    },
+    {
+      "end_line": 165,
+      "id": "class:SERVICIOS.alertas_inteligentes_stock.AlertasInteligentesStock",
+      "path": "SERVICIOS/alertas_inteligentes_stock.py",
+      "qualified_name": "AlertasInteligentesStock",
+      "start_line": 10
+    },
+    {
+      "end_line": 161,
+      "id": "class:SERVICIOS.alertas_stock_bajo_434.AlertasStockBajo434",
+      "path": "SERVICIOS/alertas_stock_bajo_434.py",
+      "qualified_name": "AlertasStockBajo434",
+      "start_line": 35
+    },
+    {
+      "end_line": 21,
+      "id": "class:SERVICIOS.alertas_stock_bajo_434.AlertaStockBajo",
+      "path": "SERVICIOS/alertas_stock_bajo_434.py",
+      "qualified_name": "AlertaStockBajo",
+      "start_line": 10
+    },
+    {
+      "end_line": 32,
+      "id": "class:SERVICIOS.alertas_stock_bajo_434.InformeAlertasStockBajo",
+      "path": "SERVICIOS/alertas_stock_bajo_434.py",
+      "qualified_name": "InformeAlertasStockBajo",
+      "start_line": 25
+    },
+    {
+      "end_line": 229,
+      "id": "class:SERVICIOS.analizador_inteligente_stock.AnalizadorInteligenteStock",
+      "path": "SERVICIOS/analizador_inteligente_stock.py",
+      "qualified_name": "AnalizadorInteligenteStock",
+      "start_line": 22
+    },
+    {
+      "end_line": 73,
+      "id": "class:SERVICIOS.control_inteligente_movimientos_stock.ControlInteligenteMovimientosStock",
+      "path": "SERVICIOS/control_inteligente_movimientos_stock.py",
+      "qualified_name": "ControlInteligenteMovimientosStock",
+      "start_line": 8
+    },
+    {
+      "end_line": 159,
+      "id": "class:SERVICIOS.historial_movimientos_stock_4310.HistorialMovimientosStock4310",
+      "path": "SERVICIOS/historial_movimientos_stock_4310.py",
+      "qualified_name": "HistorialMovimientosStock4310",
+      "start_line": 35
+    },
+    {
+      "end_line": 32,
+      "id": "class:SERVICIOS.historial_movimientos_stock_4310.InformeHistorialStock",
+      "path": "SERVICIOS/historial_movimientos_stock_4310.py",
+      "qualified_name": "InformeHistorialStock",
+      "start_line": 26
+    },
+    {
+      "end_line": 22,
+      "id": "class:SERVICIOS.historial_movimientos_stock_4310.MovimientoStockResumen",
+      "path": "SERVICIOS/historial_movimientos_stock_4310.py",
+      "qualified_name": "MovimientoStockResumen",
+      "start_line": 10
+    },
+    {
+      "end_line": 199,
+      "id": "class:SERVICIOS.motor_movimientos_stock_437.MotorMovimientosStock437",
+      "path": "SERVICIOS/motor_movimientos_stock_437.py",
+      "qualified_name": "MotorMovimientosStock437",
+      "start_line": 39
+    },
+    {
+      "end_line": 23,
+      "id": "class:SERVICIOS.motor_movimientos_stock_437.MovimientoStock",
+      "path": "SERVICIOS/motor_movimientos_stock_437.py",
+      "qualified_name": "MovimientoStock",
+      "start_line": 11
+    },
+    {
+      "end_line": 36,
+      "id": "class:SERVICIOS.motor_movimientos_stock_437.ResultadoMovimientoStock",
+      "path": "SERVICIOS/motor_movimientos_stock_437.py",
+      "qualified_name": "ResultadoMovimientoStock",
+      "start_line": 27
+    }
+  ],
+  "domain": "stock",
+  "functions": [
+    {
+      "end_line": 31,
+      "function_type": "function",
+      "id": "function:APP.alertas_stock_bajo_434.main",
+      "path": "APP/alertas_stock_bajo_434.py",
+      "qualified_name": "main",
+      "start_line": 13
+    },
+    {
+      "end_line": 32,
+      "function_type": "function",
+      "id": "function:APP.aplicar_ajustes_inventario_43114.main",
+      "path": "APP/aplicar_ajustes_inventario_43114.py",
+      "qualified_name": "main",
+      "start_line": 13
+    },
+    {
+      "end_line": 32,
+      "function_type": "function",
+      "id": "function:APP.cierre_modulo_stock_4312.main",
+      "path": "APP/cierre_modulo_stock_4312.py",
+      "qualified_name": "main",
+      "start_line": 13
+    },
+    {
+      "end_line": 29,
+      "function_type": "function",
+      "id": "function:APP.comparar_inventario_43113.main",
+      "path": "APP/comparar_inventario_43113.py",
+      "qualified_name": "main",
+      "start_line": 13
+    },
+    {
+      "end_line": 28,
+      "function_type": "function",
+      "id": "function:APP.entrada_stock_desde_pedido_438.main",
+      "path": "APP/entrada_stock_desde_pedido_438.py",
+      "qualified_name": "main",
+      "start_line": 13
+    },
+    {
+      "end_line": 24,
+      "function_type": "function",
+      "id": "function:APP.generar_plantilla_inventario_43111.main",
+      "path": "APP/generar_plantilla_inventario_43111.py",
+      "qualified_name": "main",
+      "start_line": 13
+    },
+    {
+      "end_line": 24,
+      "function_type": "function",
+      "id": "function:APP.generar_plantilla_stock_431.main",
+      "path": "APP/generar_plantilla_stock_431.py",
+      "qualified_name": "main",
+      "start_line": 13
+    },
+    {
+      "end_line": 57,
+      "function_type": "function",
+      "id": "function:APP.gestionar_inventario_inicial_556cd2.main",
+      "path": "APP/gestionar_inventario_inicial_556cd2.py",
+      "qualified_name": "main",
+      "start_line": 32
+    },
+    {
+      "end_line": 29,
+      "function_type": "function",
+      "id": "function:APP.gestionar_inventario_inicial_556cd2.parser",
+      "path": "APP/gestionar_inventario_inicial_556cd2.py",
+      "qualified_name": "parser",
+      "start_line": 19
+    },
+    {
+      "end_line": 38,
+      "function_type": "function",
+      "id": "function:APP.historial_movimientos_stock_4310.main",
+      "path": "APP/historial_movimientos_stock_4310.py",
+      "qualified_name": "main",
+      "start_line": 13
+    },
+    {
+      "end_line": 32,
+      "function_type": "function",
+      "id": "function:APP.importar_inventario_43112.main",
+      "path": "APP/importar_inventario_43112.py",
+      "qualified_name": "main",
+      "start_line": 13
+    },
+    {
+      "end_line": 33,
+      "function_type": "function",
+      "id": "function:APP.importar_stock_inicial_432.main",
+      "path": "APP/importar_stock_inicial_432.py",
+      "qualified_name": "main",
+      "start_line": 13
+    },
+    {
+      "end_line": 33,
+      "function_type": "function",
+      "id": "function:APP.informe_final_inventario_43115.main",
+      "path": "APP/informe_final_inventario_43115.py",
+      "qualified_name": "main",
+      "start_line": 13
+    },
+    {
+      "end_line": 29,
+      "function_type": "function",
+      "id": "function:APP.informe_stock_inicial_433.main",
+      "path": "APP/informe_stock_inicial_433.py",
+      "qualified_name": "main",
+      "start_line": 13
+    },
+    {
+      "end_line": 47,
+      "function_type": "function",
+      "id": "function:APP.movimiento_stock_437.main",
+      "path": "APP/movimiento_stock_437.py",
+      "qualified_name": "main",
+      "start_line": 13
+    },
+    {
+      "end_line": 32,
+      "function_type": "function",
+      "id": "function:APP.pedido_sugerido_stock_bajo_435.main",
+      "path": "APP/pedido_sugerido_stock_bajo_435.py",
+      "qualified_name": "main",
+      "start_line": 13
+    },
+    {
+      "end_line": 20,
+      "function_type": "function",
+      "id": "function:APP.probar_cruce_stock_plan_556cd.main",
+      "path": "APP/probar_cruce_stock_plan_556cd.py",
+      "qualified_name": "main",
+      "start_line": 9
+    },
+    {
+      "end_line": 47,
+      "function_type": "function",
+      "id": "function:APP.salida_stock_439.main",
+      "path": "APP/salida_stock_439.py",
+      "qualified_name": "main",
+      "start_line": 13
+    },
+    {
+      "end_line": 8,
+      "function_type": "function",
+      "id": "function:MODELOS.actualizacion_stock_factura.nuevo_id",
+      "path": "MODELOS/actualizacion_stock_factura.py",
+      "qualified_name": "nuevo_id",
+      "start_line": 7
+    },
+    {
+      "end_line": 8,
+      "function_type": "function",
+      "id": "function:MODELOS.alertas_inteligentes_stock_305.nuevo_id",
+      "path": "MODELOS/alertas_inteligentes_stock_305.py",
+      "qualified_name": "nuevo_id",
+      "start_line": 7
+    },
+    {
+      "end_line": 8,
+      "function_type": "function",
+      "id": "function:MODELOS.alertas_stock.nuevo_id",
+      "path": "MODELOS/alertas_stock.py",
+      "qualified_name": "nuevo_id",
+      "start_line": 7
+    },
+    {
+      "end_line": 8,
+      "function_type": "function",
+      "id": "function:MODELOS.analisis_inteligente_stock.nuevo_id",
+      "path": "MODELOS/analisis_inteligente_stock.py",
+      "qualified_name": "nuevo_id",
+      "start_line": 7
+    },
+    {
+      "end_line": 8,
+      "function_type": "function",
+      "id": "function:MODELOS.control_movimientos_stock_305.nuevo_id",
+      "path": "MODELOS/control_movimientos_stock_305.py",
+      "qualified_name": "nuevo_id",
+      "start_line": 7
+    },
+    {
+      "end_line": 8,
+      "function_type": "function",
+      "id": "function:MODELOS.historico_stock.nuevo_id",
+      "path": "MODELOS/historico_stock.py",
+      "qualified_name": "nuevo_id",
+      "start_line": 7
+    },
+    {
+      "end_line": 8,
+      "function_type": "function",
+      "id": "function:MODELOS.importacion_inventario_excel.nuevo_id",
+      "path": "MODELOS/importacion_inventario_excel.py",
+      "qualified_name": "nuevo_id",
+      "start_line": 7
+    },
+    {
+      "end_line": 8,
+      "function_type": "function",
+      "id": "function:MODELOS.reconciliacion_stock_305.nuevo_id",
+      "path": "MODELOS/reconciliacion_stock_305.py",
+      "qualified_name": "nuevo_id",
+      "start_line": 7
+    },
+    {
+      "end_line": 8,
+      "function_type": "function",
+      "id": "function:MODELOS.reconciliacion_stock_factura.nuevo_id",
+      "path": "MODELOS/reconciliacion_stock_factura.py",
+      "qualified_name": "nuevo_id",
+      "start_line": 7
+    },
+    {
+      "end_line": 8,
+      "function_type": "function",
+      "id": "function:MODELOS.roturas_stock.nuevo_id",
+      "path": "MODELOS/roturas_stock.py",
+      "qualified_name": "nuevo_id",
+      "start_line": 7
+    },
+    {
+      "end_line": 8,
+      "function_type": "function",
+      "id": "function:MODELOS.stock.nuevo_id",
+      "path": "MODELOS/stock.py",
+      "qualified_name": "nuevo_id",
+      "start_line": 7
+    },
+    {
+      "end_line": 81,
+      "function_type": "function",
+      "id": "function:TESTS.test_4310_historial_movimientos_stock.main",
+      "path": "TESTS/test_4310_historial_movimientos_stock.py",
+      "qualified_name": "main",
+      "start_line": 13
+    },
+    {
+      "end_line": 60,
+      "function_type": "function",
+      "id": "function:TESTS.test_437_motor_movimientos_stock.main",
+      "path": "TESTS/test_437_motor_movimientos_stock.py",
+      "qualified_name": "main",
+      "start_line": 13
+    },
+    {
+      "end_line": 22,
+      "function_type": "function",
+      "id": "function:TESTS.test_control_inteligente_movimientos_stock.ejecutar_prueba",
+      "path": "TESTS/test_control_inteligente_movimientos_stock.py",
+      "qualified_name": "ejecutar_prueba",
+      "start_line": 8
+    }
+  ],
+  "methods": [
+    {
+      "end_line": 58,
+      "function_type": "method",
+      "id": "function:MODELOS.actualizacion_stock_factura.InformeActualizacionStockFactura.__post_init__",
+      "method_kind": "method",
+      "path": "MODELOS/actualizacion_stock_factura.py",
+      "qualified_name": "InformeActualizacionStockFactura.__post_init__",
+      "start_line": 53
+    },
+    {
+      "end_line": 65,
+      "function_type": "method",
+      "id": "function:MODELOS.actualizacion_stock_factura.InformeActualizacionStockFactura.recalcular",
+      "method_kind": "method",
+      "path": "MODELOS/actualizacion_stock_factura.py",
+      "qualified_name": "InformeActualizacionStockFactura.recalcular",
+      "start_line": 60
+    },
+    {
+      "end_line": 72,
+      "function_type": "method",
+      "id": "function:MODELOS.actualizacion_stock_factura.InformeActualizacionStockFactura.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/actualizacion_stock_factura.py",
+      "qualified_name": "InformeActualizacionStockFactura.to_dict",
+      "start_line": 67
+    },
+    {
+      "end_line": 36,
+      "function_type": "method",
+      "id": "function:MODELOS.actualizacion_stock_factura.MovimientoStockFactura.__post_init__",
+      "method_kind": "method",
+      "path": "MODELOS/actualizacion_stock_factura.py",
+      "qualified_name": "MovimientoStockFactura.__post_init__",
+      "start_line": 32
+    },
+    {
+      "end_line": 39,
+      "function_type": "method",
+      "id": "function:MODELOS.actualizacion_stock_factura.MovimientoStockFactura.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/actualizacion_stock_factura.py",
+      "qualified_name": "MovimientoStockFactura.to_dict",
+      "start_line": 38
+    },
+    {
+      "end_line": 27,
+      "function_type": "method",
+      "id": "function:MODELOS.alertas_inteligentes_stock_305.AlertaGestionStock.__post_init__",
+      "method_kind": "method",
+      "path": "MODELOS/alertas_inteligentes_stock_305.py",
+      "qualified_name": "AlertaGestionStock.__post_init__",
+      "start_line": 25
+    },
+    {
+      "end_line": 28,
+      "function_type": "method",
+      "id": "function:MODELOS.alertas_inteligentes_stock_305.AlertaGestionStock.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/alertas_inteligentes_stock_305.py",
+      "qualified_name": "AlertaGestionStock.to_dict",
+      "start_line": 28
+    },
+    {
+      "end_line": 39,
+      "function_type": "method",
+      "id": "function:MODELOS.alertas_inteligentes_stock_305.InformeAlertasGestionStock.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/alertas_inteligentes_stock_305.py",
+      "qualified_name": "InformeAlertasGestionStock.to_dict",
+      "start_line": 39
+    },
+    {
+      "end_line": 29,
+      "function_type": "method",
+      "id": "function:MODELOS.alertas_stock.AlertaStock.__post_init__",
+      "method_kind": "method",
+      "path": "MODELOS/alertas_stock.py",
+      "qualified_name": "AlertaStock.__post_init__",
+      "start_line": 25
+    },
+    {
+      "end_line": 32,
+      "function_type": "method",
+      "id": "function:MODELOS.alertas_stock.AlertaStock.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/alertas_stock.py",
+      "qualified_name": "AlertaStock.to_dict",
+      "start_line": 31
+    },
+    {
+      "end_line": 48,
+      "function_type": "method",
+      "id": "function:MODELOS.analisis_inteligente_stock.InformeAnalisisInteligenteStock.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/analisis_inteligente_stock.py",
+      "qualified_name": "InformeAnalisisInteligenteStock.to_dict",
+      "start_line": 48
+    },
+    {
+      "end_line": 31,
+      "function_type": "method",
+      "id": "function:MODELOS.analisis_inteligente_stock.ItemAnalisisStock.__post_init__",
+      "method_kind": "method",
+      "path": "MODELOS/analisis_inteligente_stock.py",
+      "qualified_name": "ItemAnalisisStock.__post_init__",
+      "start_line": 29
+    },
+    {
+      "end_line": 32,
+      "function_type": "method",
+      "id": "function:MODELOS.analisis_inteligente_stock.ItemAnalisisStock.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/analisis_inteligente_stock.py",
+      "qualified_name": "ItemAnalisisStock.to_dict",
+      "start_line": 32
+    },
+    {
+      "end_line": 15,
+      "function_type": "method",
+      "id": "function:MODELOS.cierre_gestion_stock.InformeCierreGestionStock.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/cierre_gestion_stock.py",
+      "qualified_name": "InformeCierreGestionStock.to_dict",
+      "start_line": 15
+    },
+    {
+      "end_line": 43,
+      "function_type": "method",
+      "id": "function:MODELOS.control_movimientos_stock_305.InformeControlMovimientosStock.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/control_movimientos_stock_305.py",
+      "qualified_name": "InformeControlMovimientosStock.to_dict",
+      "start_line": 43
+    },
+    {
+      "end_line": 26,
+      "function_type": "method",
+      "id": "function:MODELOS.control_movimientos_stock_305.LineaControlMovimientoStock.__post_init__",
+      "method_kind": "method",
+      "path": "MODELOS/control_movimientos_stock_305.py",
+      "qualified_name": "LineaControlMovimientoStock.__post_init__",
+      "start_line": 24
+    },
+    {
+      "end_line": 27,
+      "function_type": "method",
+      "id": "function:MODELOS.control_movimientos_stock_305.LineaControlMovimientoStock.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/control_movimientos_stock_305.py",
+      "qualified_name": "LineaControlMovimientoStock.to_dict",
+      "start_line": 27
+    },
+    {
+      "end_line": 49,
+      "function_type": "method",
+      "id": "function:MODELOS.historico_stock.AnalisisHistoricoStock.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/historico_stock.py",
+      "qualified_name": "AnalisisHistoricoStock.to_dict",
+      "start_line": 48
+    },
+    {
+      "end_line": 31,
+      "function_type": "method",
+      "id": "function:MODELOS.historico_stock.RegistroHistoricoStock.__post_init__",
+      "method_kind": "method",
+      "path": "MODELOS/historico_stock.py",
+      "qualified_name": "RegistroHistoricoStock.__post_init__",
+      "start_line": 27
+    },
+    {
+      "end_line": 34,
+      "function_type": "method",
+      "id": "function:MODELOS.historico_stock.RegistroHistoricoStock.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/historico_stock.py",
+      "qualified_name": "RegistroHistoricoStock.to_dict",
+      "start_line": 33
+    },
+    {
+      "end_line": 46,
+      "function_type": "method",
+      "id": "function:MODELOS.importacion_inventario_excel.CambioInventarioExcel.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/importacion_inventario_excel.py",
+      "qualified_name": "CambioInventarioExcel.to_dict",
+      "start_line": 45
+    },
+    {
+      "end_line": 57,
+      "function_type": "method",
+      "id": "function:MODELOS.importacion_inventario_excel.ErrorImportacionInventario.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/importacion_inventario_excel.py",
+      "qualified_name": "ErrorImportacionInventario.to_dict",
+      "start_line": 56
+    },
+    {
+      "end_line": 30,
+      "function_type": "method",
+      "id": "function:MODELOS.importacion_inventario_excel.LineaInventarioExcel.__post_init__",
+      "method_kind": "method",
+      "path": "MODELOS/importacion_inventario_excel.py",
+      "qualified_name": "LineaInventarioExcel.__post_init__",
+      "start_line": 26
+    },
+    {
+      "end_line": 33,
+      "function_type": "method",
+      "id": "function:MODELOS.importacion_inventario_excel.LineaInventarioExcel.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/importacion_inventario_excel.py",
+      "qualified_name": "LineaInventarioExcel.to_dict",
+      "start_line": 32
+    },
+    {
+      "end_line": 77,
+      "function_type": "method",
+      "id": "function:MODELOS.importacion_inventario_excel.ResultadoImportacionInventario.__post_init__",
+      "method_kind": "method",
+      "path": "MODELOS/importacion_inventario_excel.py",
+      "qualified_name": "ResultadoImportacionInventario.__post_init__",
+      "start_line": 73
+    },
+    {
+      "end_line": 84,
+      "function_type": "method",
+      "id": "function:MODELOS.importacion_inventario_excel.ResultadoImportacionInventario.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/importacion_inventario_excel.py",
+      "qualified_name": "ResultadoImportacionInventario.to_dict",
+      "start_line": 79
+    },
+    {
+      "end_line": 29,
+      "function_type": "method",
+      "id": "function:MODELOS.optimizacion_stock.InformeOptimizacionStock.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/optimizacion_stock.py",
+      "qualified_name": "InformeOptimizacionStock.to_dict",
+      "start_line": 29
+    },
+    {
+      "end_line": 18,
+      "function_type": "method",
+      "id": "function:MODELOS.optimizacion_stock.RecomendacionOptimizacionStock.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/optimizacion_stock.py",
+      "qualified_name": "RecomendacionOptimizacionStock.to_dict",
+      "start_line": 18
+    },
+    {
+      "end_line": 34,
+      "function_type": "method",
+      "id": "function:MODELOS.prediccion_necesidades_stock.InformePrediccionNecesidadesStock.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/prediccion_necesidades_stock.py",
+      "qualified_name": "InformePrediccionNecesidadesStock.to_dict",
+      "start_line": 34
+    },
+    {
+      "end_line": 21,
+      "function_type": "method",
+      "id": "function:MODELOS.prediccion_necesidades_stock.NecesidadStockPredicha.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/prediccion_necesidades_stock.py",
+      "qualified_name": "NecesidadStockPredicha.to_dict",
+      "start_line": 21
+    },
+    {
+      "end_line": 28,
+      "function_type": "method",
+      "id": "function:MODELOS.reconciliacion_stock_305.DiferenciaReconciliacionStock.__post_init__",
+      "method_kind": "method",
+      "path": "MODELOS/reconciliacion_stock_305.py",
+      "qualified_name": "DiferenciaReconciliacionStock.__post_init__",
+      "start_line": 26
+    },
+    {
+      "end_line": 29,
+      "function_type": "method",
+      "id": "function:MODELOS.reconciliacion_stock_305.DiferenciaReconciliacionStock.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/reconciliacion_stock_305.py",
+      "qualified_name": "DiferenciaReconciliacionStock.to_dict",
+      "start_line": 29
+    },
+    {
+      "end_line": 42,
+      "function_type": "method",
+      "id": "function:MODELOS.reconciliacion_stock_305.InformeReconciliacionStock.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/reconciliacion_stock_305.py",
+      "qualified_name": "InformeReconciliacionStock.to_dict",
+      "start_line": 42
+    },
+    {
+      "end_line": 50,
+      "function_type": "method",
+      "id": "function:MODELOS.reconciliacion_stock_factura.InformeReconciliacionStock.__post_init__",
+      "method_kind": "method",
+      "path": "MODELOS/reconciliacion_stock_factura.py",
+      "qualified_name": "InformeReconciliacionStock.__post_init__",
+      "start_line": 45
+    },
+    {
+      "end_line": 57,
+      "function_type": "method",
+      "id": "function:MODELOS.reconciliacion_stock_factura.InformeReconciliacionStock.recalcular",
+      "method_kind": "method",
+      "path": "MODELOS/reconciliacion_stock_factura.py",
+      "qualified_name": "InformeReconciliacionStock.recalcular",
+      "start_line": 52
+    },
+    {
+      "end_line": 64,
+      "function_type": "method",
+      "id": "function:MODELOS.reconciliacion_stock_factura.InformeReconciliacionStock.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/reconciliacion_stock_factura.py",
+      "qualified_name": "InformeReconciliacionStock.to_dict",
+      "start_line": 59
+    },
+    {
+      "end_line": 28,
+      "function_type": "method",
+      "id": "function:MODELOS.reconciliacion_stock_factura.ResultadoReconciliacionStock.__post_init__",
+      "method_kind": "method",
+      "path": "MODELOS/reconciliacion_stock_factura.py",
+      "qualified_name": "ResultadoReconciliacionStock.__post_init__",
+      "start_line": 24
+    },
+    {
+      "end_line": 31,
+      "function_type": "method",
+      "id": "function:MODELOS.reconciliacion_stock_factura.ResultadoReconciliacionStock.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/reconciliacion_stock_factura.py",
+      "qualified_name": "ResultadoReconciliacionStock.to_dict",
+      "start_line": 30
+    },
+    {
+      "end_line": 39,
+      "function_type": "method",
+      "id": "function:MODELOS.roturas_stock.InformeRoturasStock.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/roturas_stock.py",
+      "qualified_name": "InformeRoturasStock.to_dict",
+      "start_line": 39
+    },
+    {
+      "end_line": 28,
+      "function_type": "method",
+      "id": "function:MODELOS.roturas_stock.PrediccionRoturaStock.__post_init__",
+      "method_kind": "method",
+      "path": "MODELOS/roturas_stock.py",
+      "qualified_name": "PrediccionRoturaStock.__post_init__",
+      "start_line": 26
+    },
+    {
+      "end_line": 29,
+      "function_type": "method",
+      "id": "function:MODELOS.roturas_stock.PrediccionRoturaStock.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/roturas_stock.py",
+      "qualified_name": "PrediccionRoturaStock.to_dict",
+      "start_line": 29
+    },
+    {
+      "end_line": 30,
+      "function_type": "method",
+      "id": "function:MODELOS.stock.LoteStock.__post_init__",
+      "method_kind": "method",
+      "path": "MODELOS/stock.py",
+      "qualified_name": "LoteStock.__post_init__",
+      "start_line": 24
+    },
+    {
+      "end_line": 32,
+      "function_type": "method",
+      "id": "function:MODELOS.stock.LoteStock.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/stock.py",
+      "qualified_name": "LoteStock.to_dict",
+      "start_line": 31
+    },
+    {
+      "end_line": 49,
+      "function_type": "method",
+      "id": "function:MODELOS.stock.MovimientoStock.__post_init__",
+      "method_kind": "method",
+      "path": "MODELOS/stock.py",
+      "qualified_name": "MovimientoStock.__post_init__",
+      "start_line": 45
+    },
+    {
+      "end_line": 51,
+      "function_type": "method",
+      "id": "function:MODELOS.stock.MovimientoStock.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/stock.py",
+      "qualified_name": "MovimientoStock.to_dict",
+      "start_line": 50
+    },
+    {
+      "end_line": 41,
+      "function_type": "method",
+      "id": "function:MODELOS.stock_ubicaciones.InformeStockUbicaciones.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/stock_ubicaciones.py",
+      "qualified_name": "InformeStockUbicaciones.to_dict",
+      "start_line": 41
+    },
+    {
+      "end_line": 28,
+      "function_type": "method",
+      "id": "function:MODELOS.stock_ubicaciones.MovimientoUbicacionStock.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/stock_ubicaciones.py",
+      "qualified_name": "MovimientoUbicacionStock.to_dict",
+      "start_line": 28
+    },
+    {
+      "end_line": 14,
+      "function_type": "method",
+      "id": "function:MODELOS.stock_ubicaciones.ResumenUbicacionStock.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/stock_ubicaciones.py",
+      "qualified_name": "ResumenUbicacionStock.to_dict",
+      "start_line": 14
+    },
+    {
+      "end_line": 14,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_stock.MotorStock.__init__",
+      "method_kind": "method",
+      "path": "MOTORES/motor_stock.py",
+      "qualified_name": "MotorStock.__init__",
+      "start_line": 9
+    },
+    {
+      "end_line": 281,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_stock.MotorStock._cantidad_disponible",
+      "method_kind": "method",
+      "path": "MOTORES/motor_stock.py",
+      "qualified_name": "MotorStock._cantidad_disponible",
+      "start_line": 280
+    },
+    {
+      "end_line": 30,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_stock.MotorStock._cargar_desde_db",
+      "method_kind": "method",
+      "path": "MOTORES/motor_stock.py",
+      "qualified_name": "MotorStock._cargar_desde_db",
+      "start_line": 16
+    },
+    {
+      "end_line": 269,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_stock.MotorStock._descontar_stock",
+      "method_kind": "method",
+      "path": "MOTORES/motor_stock.py",
+      "qualified_name": "MotorStock._descontar_stock",
+      "start_line": 253
+    },
+    {
+      "end_line": 284,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_stock.MotorStock._fecha_sort",
+      "method_kind": "method",
+      "path": "MOTORES/motor_stock.py",
+      "qualified_name": "MotorStock._fecha_sort",
+      "start_line": 283
+    },
+    {
+      "end_line": 36,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_stock.MotorStock._guardar_automatico",
+      "method_kind": "method",
+      "path": "MOTORES/motor_stock.py",
+      "qualified_name": "MotorStock._guardar_automatico",
+      "start_line": 32
+    },
+    {
+      "end_line": 278,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_stock.MotorStock._lotes_compatibles",
+      "method_kind": "method",
+      "path": "MOTORES/motor_stock.py",
+      "qualified_name": "MotorStock._lotes_compatibles",
+      "start_line": 271
+    },
+    {
+      "end_line": 77,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_stock.MotorStock.actualizar_lote",
+      "method_kind": "method",
+      "path": "MOTORES/motor_stock.py",
+      "qualified_name": "MotorStock.actualizar_lote",
+      "start_line": 67
+    },
+    {
+      "end_line": 65,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_stock.MotorStock.ajustar_inventario",
+      "method_kind": "method",
+      "path": "MOTORES/motor_stock.py",
+      "qualified_name": "MotorStock.ajustar_inventario",
+      "start_line": 52
+    },
+    {
+      "end_line": 82,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_stock.MotorStock.ajustar_minimo",
+      "method_kind": "method",
+      "path": "MOTORES/motor_stock.py",
+      "qualified_name": "MotorStock.ajustar_minimo",
+      "start_line": 79
+    },
+    {
+      "end_line": 47,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_stock.MotorStock.consumir",
+      "method_kind": "method",
+      "path": "MOTORES/motor_stock.py",
+      "qualified_name": "MotorStock.consumir",
+      "start_line": 46
+    },
+    {
+      "end_line": 240,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_stock.MotorStock.corregir_ultima_entrada",
+      "method_kind": "method",
+      "path": "MOTORES/motor_stock.py",
+      "qualified_name": "MotorStock.corregir_ultima_entrada",
+      "start_line": 229
+    },
+    {
+      "end_line": 146,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_stock.MotorStock.diagnosticar_stock",
+      "method_kind": "method",
+      "path": "MOTORES/motor_stock.py",
+      "qualified_name": "MotorStock.diagnosticar_stock",
+      "start_line": 123
+    },
+    {
+      "end_line": 111,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_stock.MotorStock.lotes_listado",
+      "method_kind": "method",
+      "path": "MOTORES/motor_stock.py",
+      "qualified_name": "MotorStock.lotes_listado",
+      "start_line": 94
+    },
+    {
+      "end_line": 121,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_stock.MotorStock.movimientos_articulo",
+      "method_kind": "method",
+      "path": "MOTORES/motor_stock.py",
+      "qualified_name": "MotorStock.movimientos_articulo",
+      "start_line": 113
+    },
+    {
+      "end_line": 251,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_stock.MotorStock.movimientos_listado",
+      "method_kind": "method",
+      "path": "MOTORES/motor_stock.py",
+      "qualified_name": "MotorStock.movimientos_listado",
+      "start_line": 250
+    },
+    {
+      "end_line": 227,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_stock.MotorStock.predecir_necesidad",
+      "method_kind": "method",
+      "path": "MOTORES/motor_stock.py",
+      "qualified_name": "MotorStock.predecir_necesidad",
+      "start_line": 224
+    },
+    {
+      "end_line": 44,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_stock.MotorStock.registrar_entrada",
+      "method_kind": "method",
+      "path": "MOTORES/motor_stock.py",
+      "qualified_name": "MotorStock.registrar_entrada",
+      "start_line": 38
+    },
+    {
+      "end_line": 50,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_stock.MotorStock.registrar_merma",
+      "method_kind": "method",
+      "path": "MOTORES/motor_stock.py",
+      "qualified_name": "MotorStock.registrar_merma",
+      "start_line": 49
+    },
+    {
+      "end_line": 195,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_stock.MotorStock.resumen_operativo",
+      "method_kind": "method",
+      "path": "MOTORES/motor_stock.py",
+      "qualified_name": "MotorStock.resumen_operativo",
+      "start_line": 148
+    },
+    {
+      "end_line": 92,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_stock.MotorStock.stock_actual",
+      "method_kind": "method",
+      "path": "MOTORES/motor_stock.py",
+      "qualified_name": "MotorStock.stock_actual",
+      "start_line": 84
+    },
+    {
+      "end_line": 248,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_stock.MotorStock.ultima_entrada",
+      "method_kind": "method",
+      "path": "MOTORES/motor_stock.py",
+      "qualified_name": "MotorStock.ultima_entrada",
+      "start_line": 242
+    },
+    {
+      "end_line": 222,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_stock.MotorStock.ultimo_coste_conocido",
+      "method_kind": "method",
+      "path": "MOTORES/motor_stock.py",
+      "qualified_name": "MotorStock.ultimo_coste_conocido",
+      "start_line": 198
+    },
+    {
+      "end_line": 30,
+      "function_type": "method",
+      "id": "function:PIPELINES.pipeline_actualizador_inteligente_stock_factura.PipelineActualizadorInteligenteStockFactura._ejecutar",
+      "method_kind": "method",
+      "path": "PIPELINES/pipeline_actualizador_inteligente_stock_factura.py",
+      "qualified_name": "PipelineActualizadorInteligenteStockFactura._ejecutar",
+      "start_line": 10
+    },
+    {
+      "end_line": 31,
+      "function_type": "method",
+      "id": "function:PIPELINES.pipeline_alertas_inteligentes_stock.PipelineAlertasInteligentesStock._ejecutar",
+      "method_kind": "method",
+      "path": "PIPELINES/pipeline_alertas_inteligentes_stock.py",
+      "qualified_name": "PipelineAlertasInteligentesStock._ejecutar",
+      "start_line": 10
+    },
+    {
+      "end_line": 21,
+      "function_type": "method",
+      "id": "function:PIPELINES.pipeline_analizador_inteligente_stock.PipelineAnalizadorInteligenteStock._ejecutar",
+      "method_kind": "method",
+      "path": "PIPELINES/pipeline_analizador_inteligente_stock.py",
+      "qualified_name": "PipelineAnalizadorInteligenteStock._ejecutar",
+      "start_line": 13
+    },
+    {
+      "end_line": 21,
+      "function_type": "method",
+      "id": "function:PIPELINES.pipeline_base_actualizacion_stock_factura.PipelineBaseActualizacionStockFactura._ejecutar",
+      "method_kind": "method",
+      "path": "PIPELINES/pipeline_base_actualizacion_stock_factura.py",
+      "qualified_name": "PipelineBaseActualizacionStockFactura._ejecutar",
+      "start_line": 10
+    },
+    {
+      "end_line": 17,
+      "function_type": "method",
+      "id": "function:PIPELINES.pipeline_cierre_gestion_inteligente_stock.PipelineCierreGestionInteligenteStock._ejecutar",
+      "method_kind": "method",
+      "path": "PIPELINES/pipeline_cierre_gestion_inteligente_stock.py",
+      "qualified_name": "PipelineCierreGestionInteligenteStock._ejecutar",
+      "start_line": 9
+    },
+    {
+      "end_line": 17,
+      "function_type": "method",
+      "id": "function:PIPELINES.pipeline_control_inteligente_movimientos_stock.PipelineControlInteligenteMovimientosStock._ejecutar",
+      "method_kind": "method",
+      "path": "PIPELINES/pipeline_control_inteligente_movimientos_stock.py",
+      "qualified_name": "PipelineControlInteligenteMovimientosStock._ejecutar",
+      "start_line": 9
+    },
+    {
+      "end_line": 27,
+      "function_type": "method",
+      "id": "function:PIPELINES.pipeline_historico_inteligente_stock.PipelineHistoricoInteligenteStock._ejecutar",
+      "method_kind": "method",
+      "path": "PIPELINES/pipeline_historico_inteligente_stock.py",
+      "qualified_name": "PipelineHistoricoInteligenteStock._ejecutar",
+      "start_line": 10
+    },
+    {
+      "end_line": 60,
+      "function_type": "method",
+      "id": "function:PIPELINES.pipeline_importador_inventario_excel.PipelineImportadorInventarioExcel._ejecutar",
+      "method_kind": "method",
+      "path": "PIPELINES/pipeline_importador_inventario_excel.py",
+      "qualified_name": "PipelineImportadorInventarioExcel._ejecutar",
+      "start_line": 10
+    },
+    {
+      "end_line": 17,
+      "function_type": "method",
+      "id": "function:PIPELINES.pipeline_motor_alertas_stock.PipelineMotorAlertasStock._ejecutar",
+      "method_kind": "method",
+      "path": "PIPELINES/pipeline_motor_alertas_stock.py",
+      "qualified_name": "PipelineMotorAlertasStock._ejecutar",
+      "start_line": 9
+    },
+    {
+      "end_line": 17,
+      "function_type": "method",
+      "id": "function:PIPELINES.pipeline_optimizador_stock.PipelineOptimizadorStock._ejecutar",
+      "method_kind": "method",
+      "path": "PIPELINES/pipeline_optimizador_stock.py",
+      "qualified_name": "PipelineOptimizadorStock._ejecutar",
+      "start_line": 9
+    },
+    {
+      "end_line": 17,
+      "function_type": "method",
+      "id": "function:PIPELINES.pipeline_prediccion_necesidades_stock.PipelinePrediccionNecesidadesStock._ejecutar",
+      "method_kind": "method",
+      "path": "PIPELINES/pipeline_prediccion_necesidades_stock.py",
+      "qualified_name": "PipelinePrediccionNecesidadesStock._ejecutar",
+      "start_line": 9
+    },
+    {
+      "end_line": 20,
+      "function_type": "method",
+      "id": "function:PIPELINES.pipeline_prediccion_roturas_stock.PipelinePrediccionRoturasStock._ejecutar",
+      "method_kind": "method",
+      "path": "PIPELINES/pipeline_prediccion_roturas_stock.py",
+      "qualified_name": "PipelinePrediccionRoturasStock._ejecutar",
+      "start_line": 9
+    },
+    {
+      "end_line": 17,
+      "function_type": "method",
+      "id": "function:PIPELINES.pipeline_reconciliador_inteligente_stock.PipelineReconciliadorInteligenteStock._ejecutar",
+      "method_kind": "method",
+      "path": "PIPELINES/pipeline_reconciliador_inteligente_stock.py",
+      "qualified_name": "PipelineReconciliadorInteligenteStock._ejecutar",
+      "start_line": 9
+    },
+    {
+      "end_line": 21,
+      "function_type": "method",
+      "id": "function:PIPELINES.pipeline_reconciliador_stock_factura.PipelineReconciliadorStockFactura._ejecutar",
+      "method_kind": "method",
+      "path": "PIPELINES/pipeline_reconciliador_stock_factura.py",
+      "qualified_name": "PipelineReconciliadorStockFactura._ejecutar",
+      "start_line": 10
+    },
+    {
+      "end_line": 33,
+      "function_type": "method",
+      "id": "function:PIPELINES.pipeline_stock.PipelineStock._ejecutar",
+      "method_kind": "method",
+      "path": "PIPELINES/pipeline_stock.py",
+      "qualified_name": "PipelineStock._ejecutar",
+      "start_line": 10
+    },
+    {
+      "end_line": 20,
+      "function_type": "method",
+      "id": "function:PIPELINES.pipeline_stock_por_ubicaciones.PipelineStockPorUbicaciones._ejecutar",
+      "method_kind": "method",
+      "path": "PIPELINES/pipeline_stock_por_ubicaciones.py",
+      "qualified_name": "PipelineStockPorUbicaciones._ejecutar",
+      "start_line": 9
+    },
+    {
+      "end_line": 26,
+      "function_type": "method",
+      "id": "function:SERVICIOS.actualizador_inteligente_stock_factura.ActualizadorInteligenteStockFactura.__init__",
+      "method_kind": "method",
+      "path": "SERVICIOS/actualizador_inteligente_stock_factura.py",
+      "qualified_name": "ActualizadorInteligenteStockFactura.__init__",
+      "start_line": 20
+    },
+    {
+      "end_line": 186,
+      "function_type": "method",
+      "id": "function:SERVICIOS.actualizador_inteligente_stock_factura.ActualizadorInteligenteStockFactura._cargar_log",
+      "method_kind": "method",
+      "path": "SERVICIOS/actualizador_inteligente_stock_factura.py",
+      "qualified_name": "ActualizadorInteligenteStockFactura._cargar_log",
+      "start_line": 180
+    },
+    {
+      "end_line": 189,
+      "function_type": "method",
+      "id": "function:SERVICIOS.actualizador_inteligente_stock_factura.ActualizadorInteligenteStockFactura._guardar_log",
+      "method_kind": "method",
+      "path": "SERVICIOS/actualizador_inteligente_stock_factura.py",
+      "qualified_name": "ActualizadorInteligenteStockFactura._guardar_log",
+      "start_line": 188
+    },
+    {
+      "end_line": 178,
+      "function_type": "method",
+      "id": "function:SERVICIOS.actualizador_inteligente_stock_factura.ActualizadorInteligenteStockFactura._registrar_log",
+      "method_kind": "method",
+      "path": "SERVICIOS/actualizador_inteligente_stock_factura.py",
+      "qualified_name": "ActualizadorInteligenteStockFactura._registrar_log",
+      "start_line": 176
+    },
+    {
+      "end_line": 131,
+      "function_type": "method",
+      "id": "function:SERVICIOS.actualizador_inteligente_stock_factura.ActualizadorInteligenteStockFactura.aplicar_informe",
+      "method_kind": "method",
+      "path": "SERVICIOS/actualizador_inteligente_stock_factura.py",
+      "qualified_name": "ActualizadorInteligenteStockFactura.aplicar_informe",
+      "start_line": 118
+    },
+    {
+      "end_line": 116,
+      "function_type": "method",
+      "id": "function:SERVICIOS.actualizador_inteligente_stock_factura.ActualizadorInteligenteStockFactura.aplicar_movimiento",
+      "method_kind": "method",
+      "path": "SERVICIOS/actualizador_inteligente_stock_factura.py",
+      "qualified_name": "ActualizadorInteligenteStockFactura.aplicar_movimiento",
+      "start_line": 28
+    },
+    {
+      "end_line": 174,
+      "function_type": "method",
+      "id": "function:SERVICIOS.actualizador_inteligente_stock_factura.ActualizadorInteligenteStockFactura.exportar_log",
+      "method_kind": "method",
+      "path": "SERVICIOS/actualizador_inteligente_stock_factura.py",
+      "qualified_name": "ActualizadorInteligenteStockFactura.exportar_log",
+      "start_line": 169
+    },
+    {
+      "end_line": 167,
+      "function_type": "method",
+      "id": "function:SERVICIOS.actualizador_inteligente_stock_factura.ActualizadorInteligenteStockFactura.listar_log",
+      "method_kind": "method",
+      "path": "SERVICIOS/actualizador_inteligente_stock_factura.py",
+      "qualified_name": "ActualizadorInteligenteStockFactura.listar_log",
+      "start_line": 162
+    },
+    {
+      "end_line": 137,
+      "function_type": "method",
+      "id": "function:SERVICIOS.actualizador_inteligente_stock_factura.ActualizadorInteligenteStockFactura.preparar_y_aplicar",
+      "method_kind": "method",
+      "path": "SERVICIOS/actualizador_inteligente_stock_factura.py",
+      "qualified_name": "ActualizadorInteligenteStockFactura.preparar_y_aplicar",
+      "start_line": 133
+    },
+    {
+      "end_line": 160,
+      "function_type": "method",
+      "id": "function:SERVICIOS.actualizador_inteligente_stock_factura.ActualizadorInteligenteStockFactura.stock_actual_articulo",
+      "method_kind": "method",
+      "path": "SERVICIOS/actualizador_inteligente_stock_factura.py",
+      "qualified_name": "ActualizadorInteligenteStockFactura.stock_actual_articulo",
+      "start_line": 139
+    },
+    {
+      "end_line": 30,
+      "function_type": "method",
+      "id": "function:SERVICIOS.alertas_inteligentes_stock.AlertasInteligentesStock.__init__",
+      "method_kind": "method",
+      "path": "SERVICIOS/alertas_inteligentes_stock.py",
+      "qualified_name": "AlertasInteligentesStock.__init__",
+      "start_line": 24
+    },
+    {
+      "end_line": 162,
+      "function_type": "method",
+      "id": "function:SERVICIOS.alertas_inteligentes_stock.AlertasInteligentesStock._cargar",
+      "method_kind": "method",
+      "path": "SERVICIOS/alertas_inteligentes_stock.py",
+      "qualified_name": "AlertasInteligentesStock._cargar",
+      "start_line": 156
+    },
+    {
+      "end_line": 165,
+      "function_type": "method",
+      "id": "function:SERVICIOS.alertas_inteligentes_stock.AlertasInteligentesStock._guardar",
+      "method_kind": "method",
+      "path": "SERVICIOS/alertas_inteligentes_stock.py",
+      "qualified_name": "AlertasInteligentesStock._guardar",
+      "start_line": 164
+    },
+    {
+      "end_line": 154,
+      "function_type": "method",
+      "id": "function:SERVICIOS.alertas_inteligentes_stock.AlertasInteligentesStock._salida",
+      "method_kind": "method",
+      "path": "SERVICIOS/alertas_inteligentes_stock.py",
+      "qualified_name": "AlertasInteligentesStock._salida",
+      "start_line": 146
+    },
+    {
+      "end_line": 144,
+      "function_type": "method",
+      "id": "function:SERVICIOS.alertas_inteligentes_stock.AlertasInteligentesStock.exportar_alertas",
+      "method_kind": "method",
+      "path": "SERVICIOS/alertas_inteligentes_stock.py",
+      "qualified_name": "AlertasInteligentesStock.exportar_alertas",
+      "start_line": 142
+    },
+    {
+      "end_line": 114,
+      "function_type": "method",
+      "id": "function:SERVICIOS.alertas_inteligentes_stock.AlertasInteligentesStock.generar_alertas_articulo",
+      "method_kind": "method",
+      "path": "SERVICIOS/alertas_inteligentes_stock.py",
+      "qualified_name": "AlertasInteligentesStock.generar_alertas_articulo",
+      "start_line": 32
+    },
+    {
+      "end_line": 133,
+      "function_type": "method",
+      "id": "function:SERVICIOS.alertas_inteligentes_stock.AlertasInteligentesStock.generar_alertas_todos",
+      "method_kind": "method",
+      "path": "SERVICIOS/alertas_inteligentes_stock.py",
+      "qualified_name": "AlertasInteligentesStock.generar_alertas_todos",
+      "start_line": 116
+    },
+    {
+      "end_line": 140,
+      "function_type": "method",
+      "id": "function:SERVICIOS.alertas_inteligentes_stock.AlertasInteligentesStock.listar_alertas",
+      "method_kind": "method",
+      "path": "SERVICIOS/alertas_inteligentes_stock.py",
+      "qualified_name": "AlertasInteligentesStock.listar_alertas",
+      "start_line": 135
+    },
+    {
+      "end_line": 41,
+      "function_type": "method",
+      "id": "function:SERVICIOS.alertas_stock_bajo_434.AlertasStockBajo434.__init__",
+      "method_kind": "method",
+      "path": "SERVICIOS/alertas_stock_bajo_434.py",
+      "qualified_name": "AlertasStockBajo434.__init__",
+      "start_line": 40
+    },
+    {
+      "end_line": 144,
+      "function_type": "method",
+      "id": "function:SERVICIOS.alertas_stock_bajo_434.AlertasStockBajo434._leer_json_lista",
+      "method_kind": "method",
+      "path": "SERVICIOS/alertas_stock_bajo_434.py",
+      "qualified_name": "AlertasStockBajo434._leer_json_lista",
+      "start_line": 137
+    },
+    {
+      "end_line": 161,
+      "function_type": "method",
+      "id": "function:SERVICIOS.alertas_stock_bajo_434.AlertasStockBajo434._numero",
+      "method_kind": "method",
+      "path": "SERVICIOS/alertas_stock_bajo_434.py",
+      "qualified_name": "AlertasStockBajo434._numero",
+      "start_line": 152
+    },
+    {
+      "end_line": 135,
+      "function_type": "method",
+      "id": "function:SERVICIOS.alertas_stock_bajo_434.AlertasStockBajo434._prioridad",
+      "method_kind": "method",
+      "path": "SERVICIOS/alertas_stock_bajo_434.py",
+      "qualified_name": "AlertasStockBajo434._prioridad",
+      "start_line": 125
+    },
+    {
+      "end_line": 150,
+      "function_type": "method",
+      "id": "function:SERVICIOS.alertas_stock_bajo_434.AlertasStockBajo434._texto",
+      "method_kind": "method",
+      "path": "SERVICIOS/alertas_stock_bajo_434.py",
+      "qualified_name": "AlertasStockBajo434._texto",
+      "start_line": 146
+    },
+    {
+      "end_line": 123,
+      "function_type": "method",
+      "id": "function:SERVICIOS.alertas_stock_bajo_434.AlertasStockBajo434.exportar_txt",
+      "method_kind": "method",
+      "path": "SERVICIOS/alertas_stock_bajo_434.py",
+      "qualified_name": "AlertasStockBajo434.exportar_txt",
+      "start_line": 92
+    },
+    {
+      "end_line": 90,
+      "function_type": "method",
+      "id": "function:SERVICIOS.alertas_stock_bajo_434.AlertasStockBajo434.generar",
+      "method_kind": "method",
+      "path": "SERVICIOS/alertas_stock_bajo_434.py",
+      "qualified_name": "AlertasStockBajo434.generar",
+      "start_line": 43
+    },
+    {
+      "end_line": 29,
+      "function_type": "method",
+      "id": "function:SERVICIOS.analizador_inteligente_stock.AnalizadorInteligenteStock.__init__",
+      "method_kind": "method",
+      "path": "SERVICIOS/analizador_inteligente_stock.py",
+      "qualified_name": "AnalizadorInteligenteStock.__init__",
+      "start_line": 25
+    },
+    {
+      "end_line": 177,
+      "function_type": "method",
+      "id": "function:SERVICIOS.analizador_inteligente_stock.AnalizadorInteligenteStock._agrupar_movimientos",
+      "method_kind": "method",
+      "path": "SERVICIOS/analizador_inteligente_stock.py",
+      "qualified_name": "AnalizadorInteligenteStock._agrupar_movimientos",
+      "start_line": 172
+    },
+    {
+      "end_line": 127,
+      "function_type": "method",
+      "id": "function:SERVICIOS.analizador_inteligente_stock.AnalizadorInteligenteStock._analizar_item",
+      "method_kind": "method",
+      "path": "SERVICIOS/analizador_inteligente_stock.py",
+      "qualified_name": "AnalizadorInteligenteStock._analizar_item",
+      "start_line": 82
+    },
+    {
+      "end_line": 197,
+      "function_type": "method",
+      "id": "function:SERVICIOS.analizador_inteligente_stock.AnalizadorInteligenteStock._calcular_maximo",
+      "method_kind": "method",
+      "path": "SERVICIOS/analizador_inteligente_stock.py",
+      "qualified_name": "AnalizadorInteligenteStock._calcular_maximo",
+      "start_line": 192
+    },
+    {
+      "end_line": 190,
+      "function_type": "method",
+      "id": "function:SERVICIOS.analizador_inteligente_stock.AnalizadorInteligenteStock._crear_contadores",
+      "method_kind": "method",
+      "path": "SERVICIOS/analizador_inteligente_stock.py",
+      "qualified_name": "AnalizadorInteligenteStock._crear_contadores",
+      "start_line": 182
+    },
+    {
+      "end_line": 219,
+      "function_type": "method",
+      "id": "function:SERVICIOS.analizador_inteligente_stock.AnalizadorInteligenteStock._dias_desde_ultimo_movimiento",
+      "method_kind": "method",
+      "path": "SERVICIOS/analizador_inteligente_stock.py",
+      "qualified_name": "AnalizadorInteligenteStock._dias_desde_ultimo_movimiento",
+      "start_line": 205
+    },
+    {
+      "end_line": 170,
+      "function_type": "method",
+      "id": "function:SERVICIOS.analizador_inteligente_stock.AnalizadorInteligenteStock._evaluar_estado_item",
+      "method_kind": "method",
+      "path": "SERVICIOS/analizador_inteligente_stock.py",
+      "qualified_name": "AnalizadorInteligenteStock._evaluar_estado_item",
+      "start_line": 129
+    },
+    {
+      "end_line": 180,
+      "function_type": "method",
+      "id": "function:SERVICIOS.analizador_inteligente_stock.AnalizadorInteligenteStock._extraer_ubicaciones",
+      "method_kind": "method",
+      "path": "SERVICIOS/analizador_inteligente_stock.py",
+      "qualified_name": "AnalizadorInteligenteStock._extraer_ubicaciones",
+      "start_line": 179
+    },
+    {
+      "end_line": 229,
+      "function_type": "method",
+      "id": "function:SERVICIOS.analizador_inteligente_stock.AnalizadorInteligenteStock._prioridad_estado",
+      "method_kind": "method",
+      "path": "SERVICIOS/analizador_inteligente_stock.py",
+      "qualified_name": "AnalizadorInteligenteStock._prioridad_estado",
+      "start_line": 221
+    },
+    {
+      "end_line": 203,
+      "function_type": "method",
+      "id": "function:SERVICIOS.analizador_inteligente_stock.AnalizadorInteligenteStock._valorar_lotes",
+      "method_kind": "method",
+      "path": "SERVICIOS/analizador_inteligente_stock.py",
+      "qualified_name": "AnalizadorInteligenteStock._valorar_lotes",
+      "start_line": 199
+    },
+    {
+      "end_line": 72,
+      "function_type": "method",
+      "id": "function:SERVICIOS.analizador_inteligente_stock.AnalizadorInteligenteStock.analizar_stock",
+      "method_kind": "method",
+      "path": "SERVICIOS/analizador_inteligente_stock.py",
+      "qualified_name": "AnalizadorInteligenteStock.analizar_stock",
+      "start_line": 31
+    },
+    {
+      "end_line": 80,
+      "function_type": "method",
+      "id": "function:SERVICIOS.analizador_inteligente_stock.AnalizadorInteligenteStock.exportar_analisis",
+      "method_kind": "method",
+      "path": "SERVICIOS/analizador_inteligente_stock.py",
+      "qualified_name": "AnalizadorInteligenteStock.exportar_analisis",
+      "start_line": 74
+    },
+    {
+      "end_line": 14,
+      "function_type": "method",
+      "id": "function:SERVICIOS.control_inteligente_movimientos_stock.ControlInteligenteMovimientosStock.__init__",
+      "method_kind": "method",
+      "path": "SERVICIOS/control_inteligente_movimientos_stock.py",
+      "qualified_name": "ControlInteligenteMovimientosStock.__init__",
+      "start_line": 10
+    },
+    {
+      "end_line": 68,
+      "function_type": "method",
+      "id": "function:SERVICIOS.control_inteligente_movimientos_stock.ControlInteligenteMovimientosStock.analizar_movimientos",
+      "method_kind": "method",
+      "path": "SERVICIOS/control_inteligente_movimientos_stock.py",
+      "qualified_name": "ControlInteligenteMovimientosStock.analizar_movimientos",
+      "start_line": 16
+    },
+    {
+      "end_line": 73,
+      "function_type": "method",
+      "id": "function:SERVICIOS.control_inteligente_movimientos_stock.ControlInteligenteMovimientosStock.exportar_movimientos",
+      "method_kind": "method",
+      "path": "SERVICIOS/control_inteligente_movimientos_stock.py",
+      "qualified_name": "ControlInteligenteMovimientosStock.exportar_movimientos",
+      "start_line": 70
+    },
+    {
+      "end_line": 44,
+      "function_type": "method",
+      "id": "function:SERVICIOS.historial_movimientos_stock_4310.HistorialMovimientosStock4310.__init__",
+      "method_kind": "method",
+      "path": "SERVICIOS/historial_movimientos_stock_4310.py",
+      "qualified_name": "HistorialMovimientosStock4310.__init__",
+      "start_line": 43
+    },
+    {
+      "end_line": 143,
+      "function_type": "method",
+      "id": "function:SERVICIOS.historial_movimientos_stock_4310.HistorialMovimientosStock4310._leer_json_lista",
+      "method_kind": "method",
+      "path": "SERVICIOS/historial_movimientos_stock_4310.py",
+      "qualified_name": "HistorialMovimientosStock4310._leer_json_lista",
+      "start_line": 136
+    },
+    {
+      "end_line": 159,
+      "function_type": "method",
+      "id": "function:SERVICIOS.historial_movimientos_stock_4310.HistorialMovimientosStock4310._numero",
+      "method_kind": "method",
+      "path": "SERVICIOS/historial_movimientos_stock_4310.py",
+      "qualified_name": "HistorialMovimientosStock4310._numero",
+      "start_line": 151
+    },
+    {
+      "end_line": 149,
+      "function_type": "method",
+      "id": "function:SERVICIOS.historial_movimientos_stock_4310.HistorialMovimientosStock4310._texto",
+      "method_kind": "method",
+      "path": "SERVICIOS/historial_movimientos_stock_4310.py",
+      "qualified_name": "HistorialMovimientosStock4310._texto",
+      "start_line": 145
+    },
+    {
+      "end_line": 96,
+      "function_type": "method",
+      "id": "function:SERVICIOS.historial_movimientos_stock_4310.HistorialMovimientosStock4310.consultar",
+      "method_kind": "method",
+      "path": "SERVICIOS/historial_movimientos_stock_4310.py",
+      "qualified_name": "HistorialMovimientosStock4310.consultar",
+      "start_line": 46
+    },
+    {
+      "end_line": 134,
+      "function_type": "method",
+      "id": "function:SERVICIOS.historial_movimientos_stock_4310.HistorialMovimientosStock4310.exportar_txt",
+      "method_kind": "method",
+      "path": "SERVICIOS/historial_movimientos_stock_4310.py",
+      "qualified_name": "HistorialMovimientosStock4310.exportar_txt",
+      "start_line": 98
+    },
+    {
+      "end_line": 63,
+      "function_type": "method",
+      "id": "function:SERVICIOS.motor_movimientos_stock_437.MotorMovimientosStock437.__init__",
+      "method_kind": "method",
+      "path": "SERVICIOS/motor_movimientos_stock_437.py",
+      "qualified_name": "MotorMovimientosStock437.__init__",
+      "start_line": 57
+    },
+    {
+      "end_line": 169,
+      "function_type": "method",
+      "id": "function:SERVICIOS.motor_movimientos_stock_437.MotorMovimientosStock437._buscar_articulo_stock",
+      "method_kind": "method",
+      "path": "SERVICIOS/motor_movimientos_stock_437.py",
+      "qualified_name": "MotorMovimientosStock437._buscar_articulo_stock",
+      "start_line": 165
+    },
+    {
+      "end_line": 182,
+      "function_type": "method",
+      "id": "function:SERVICIOS.motor_movimientos_stock_437.MotorMovimientosStock437._guardar_json_lista",
+      "method_kind": "method",
+      "path": "SERVICIOS/motor_movimientos_stock_437.py",
+      "qualified_name": "MotorMovimientosStock437._guardar_json_lista",
+      "start_line": 180
+    },
+    {
+      "end_line": 178,
+      "function_type": "method",
+      "id": "function:SERVICIOS.motor_movimientos_stock_437.MotorMovimientosStock437._leer_json_lista",
+      "method_kind": "method",
+      "path": "SERVICIOS/motor_movimientos_stock_437.py",
+      "qualified_name": "MotorMovimientosStock437._leer_json_lista",
+      "start_line": 171
+    },
+    {
+      "end_line": 199,
+      "function_type": "method",
+      "id": "function:SERVICIOS.motor_movimientos_stock_437.MotorMovimientosStock437._numero",
+      "method_kind": "method",
+      "path": "SERVICIOS/motor_movimientos_stock_437.py",
+      "qualified_name": "MotorMovimientosStock437._numero",
+      "start_line": 190
+    },
+    {
+      "end_line": 188,
+      "function_type": "method",
+      "id": "function:SERVICIOS.motor_movimientos_stock_437.MotorMovimientosStock437._texto",
+      "method_kind": "method",
+      "path": "SERVICIOS/motor_movimientos_stock_437.py",
+      "qualified_name": "MotorMovimientosStock437._texto",
+      "start_line": 184
+    },
+    {
+      "end_line": 163,
+      "function_type": "method",
+      "id": "function:SERVICIOS.motor_movimientos_stock_437.MotorMovimientosStock437.registrar_movimiento",
+      "method_kind": "method",
+      "path": "SERVICIOS/motor_movimientos_stock_437.py",
+      "qualified_name": "MotorMovimientosStock437.registrar_movimiento",
+      "start_line": 65
+    }
+  ],
+  "task": "Stock"
+}

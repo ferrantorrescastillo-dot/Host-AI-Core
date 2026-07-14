@@ -1,0 +1,3018 @@
+{
+  "classes": [
+    {
+      "end_line": 140,
+      "id": "class:APP.consola_produccion_guiada_piloto_13.ConsolaProduccionGuiadaPiloto13",
+      "path": "APP/consola_produccion_guiada_piloto_13.py",
+      "qualified_name": "ConsolaProduccionGuiadaPiloto13",
+      "start_line": 9
+    },
+    {
+      "end_line": 13,
+      "id": "class:MODELOS.alertas_produccion_306.AlertaProduccion",
+      "path": "MODELOS/alertas_produccion_306.py",
+      "qualified_name": "AlertaProduccion",
+      "start_line": 6
+    },
+    {
+      "end_line": 25,
+      "id": "class:MODELOS.alertas_produccion_306.InformeAlertasProduccion",
+      "path": "MODELOS/alertas_produccion_306.py",
+      "qualified_name": "InformeAlertasProduccion",
+      "start_line": 16
+    },
+    {
+      "end_line": 37,
+      "id": "class:MODELOS.analisis_produccion_306.InformeAnalisisProduccion",
+      "path": "MODELOS/analisis_produccion_306.py",
+      "qualified_name": "InformeAnalisisProduccion",
+      "start_line": 25
+    },
+    {
+      "end_line": 22,
+      "id": "class:MODELOS.analisis_produccion_306.ItemAnalisisProduccion",
+      "path": "MODELOS/analisis_produccion_306.py",
+      "qualified_name": "ItemAnalisisProduccion",
+      "start_line": 6
+    },
+    {
+      "end_line": 49,
+      "id": "class:MODELOS.ejecucion_produccion_306.AccionReplanificacionProduccion",
+      "path": "MODELOS/ejecucion_produccion_306.py",
+      "qualified_name": "AccionReplanificacionProduccion",
+      "start_line": 38
+    },
+    {
+      "end_line": 18,
+      "id": "class:MODELOS.ejecucion_produccion_306.EstadoTareaProduccion",
+      "path": "MODELOS/ejecucion_produccion_306.py",
+      "qualified_name": "EstadoTareaProduccion",
+      "start_line": 6
+    },
+    {
+      "end_line": 35,
+      "id": "class:MODELOS.ejecucion_produccion_306.InformeControlEjecucionProduccion",
+      "path": "MODELOS/ejecucion_produccion_306.py",
+      "qualified_name": "InformeControlEjecucionProduccion",
+      "start_line": 21
+    },
+    {
+      "end_line": 63,
+      "id": "class:MODELOS.ejecucion_produccion_306.InformeReplanificacionProduccion",
+      "path": "MODELOS/ejecucion_produccion_306.py",
+      "qualified_name": "InformeReplanificacionProduccion",
+      "start_line": 52
+    },
+    {
+      "end_line": 44,
+      "id": "class:MODELOS.optimizacion_produccion_306.ComprobacionCierreProduccion",
+      "path": "MODELOS/optimizacion_produccion_306.py",
+      "qualified_name": "ComprobacionCierreProduccion",
+      "start_line": 36
+    },
+    {
+      "end_line": 60,
+      "id": "class:MODELOS.optimizacion_produccion_306.InformeCierreProduccion",
+      "path": "MODELOS/optimizacion_produccion_306.py",
+      "qualified_name": "InformeCierreProduccion",
+      "start_line": 47
+    },
+    {
+      "end_line": 33,
+      "id": "class:MODELOS.optimizacion_produccion_306.InformeOptimizacionProduccion",
+      "path": "MODELOS/optimizacion_produccion_306.py",
+      "qualified_name": "InformeOptimizacionProduccion",
+      "start_line": 21
+    },
+    {
+      "end_line": 18,
+      "id": "class:MODELOS.optimizacion_produccion_306.OportunidadOptimizacionProduccion",
+      "path": "MODELOS/optimizacion_produccion_306.py",
+      "qualified_name": "OportunidadOptimizacionProduccion",
+      "start_line": 6
+    },
+    {
+      "end_line": 52,
+      "id": "class:MODELOS.planificacion_produccion_306.AsignacionCocineroProduccion",
+      "path": "MODELOS/planificacion_produccion_306.py",
+      "qualified_name": "AsignacionCocineroProduccion",
+      "start_line": 38
+    },
+    {
+      "end_line": 19,
+      "id": "class:MODELOS.planificacion_produccion_306.BloquePlanProduccion",
+      "path": "MODELOS/planificacion_produccion_306.py",
+      "qualified_name": "BloquePlanProduccion",
+      "start_line": 6
+    },
+    {
+      "end_line": 67,
+      "id": "class:MODELOS.planificacion_produccion_306.InformeAsignacionProduccion",
+      "path": "MODELOS/planificacion_produccion_306.py",
+      "qualified_name": "InformeAsignacionProduccion",
+      "start_line": 55
+    },
+    {
+      "end_line": 35,
+      "id": "class:MODELOS.planificacion_produccion_306.InformePlanificacionProduccion",
+      "path": "MODELOS/planificacion_produccion_306.py",
+      "qualified_name": "InformePlanificacionProduccion",
+      "start_line": 22
+    },
+    {
+      "end_line": 47,
+      "id": "class:MODELOS.produccion_completa.InformeProduccionCompleta",
+      "path": "MODELOS/produccion_completa.py",
+      "qualified_name": "InformeProduccionCompleta",
+      "start_line": 30
+    },
+    {
+      "end_line": 27,
+      "id": "class:MODELOS.produccion_completa.NecesidadProduccion",
+      "path": "MODELOS/produccion_completa.py",
+      "qualified_name": "NecesidadProduccion",
+      "start_line": 11
+    },
+    {
+      "end_line": 77,
+      "id": "class:MODELOS.produccion_real.BloqueProduccionReal",
+      "path": "MODELOS/produccion_real.py",
+      "qualified_name": "BloqueProduccionReal",
+      "start_line": 60
+    },
+    {
+      "end_line": 26,
+      "id": "class:MODELOS.produccion_real.FaseProduccionReal",
+      "path": "MODELOS/produccion_real.py",
+      "qualified_name": "FaseProduccionReal",
+      "start_line": 11
+    },
+    {
+      "end_line": 113,
+      "id": "class:MODELOS.produccion_real.PlanProduccionReal",
+      "path": "MODELOS/produccion_real.py",
+      "qualified_name": "PlanProduccionReal",
+      "start_line": 80
+    },
+    {
+      "end_line": 57,
+      "id": "class:MODELOS.produccion_real.TareaProduccionReal",
+      "path": "MODELOS/produccion_real.py",
+      "qualified_name": "TareaProduccionReal",
+      "start_line": 29
+    },
+    {
+      "end_line": 124,
+      "id": "class:MOTORES.motor_produccion_completa.MotorProduccionCompleta",
+      "path": "MOTORES/motor_produccion_completa.py",
+      "qualified_name": "MotorProduccionCompleta",
+      "start_line": 17
+    },
+    {
+      "end_line": 1037,
+      "id": "class:MOTORES.motor_produccion_real.MotorProduccionReal",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal",
+      "start_line": 19
+    },
+    {
+      "end_line": 27,
+      "id": "class:MOTORES.motor_simulador_produccion_evento.MotorSimuladorProduccionEvento",
+      "path": "MOTORES/motor_simulador_produccion_evento.py",
+      "qualified_name": "MotorSimuladorProduccionEvento",
+      "start_line": 1
+    },
+    {
+      "end_line": 17,
+      "id": "class:PIPELINES.pipeline_analizador_inteligente_produccion.PipelineAnalizadorInteligenteProduccion",
+      "path": "PIPELINES/pipeline_analizador_inteligente_produccion.py",
+      "qualified_name": "PipelineAnalizadorInteligenteProduccion",
+      "start_line": 5
+    },
+    {
+      "end_line": 17,
+      "id": "class:PIPELINES.pipeline_asignador_recursos_produccion.PipelineAsignadorRecursosProduccion",
+      "path": "PIPELINES/pipeline_asignador_recursos_produccion.py",
+      "qualified_name": "PipelineAsignadorRecursosProduccion",
+      "start_line": 5
+    },
+    {
+      "end_line": 17,
+      "id": "class:PIPELINES.pipeline_cierre_inteligente_produccion.PipelineCierreInteligenteProduccion",
+      "path": "PIPELINES/pipeline_cierre_inteligente_produccion.py",
+      "qualified_name": "PipelineCierreInteligenteProduccion",
+      "start_line": 5
+    },
+    {
+      "end_line": 17,
+      "id": "class:PIPELINES.pipeline_control_ejecucion_produccion.PipelineControlEjecucionProduccion",
+      "path": "PIPELINES/pipeline_control_ejecucion_produccion.py",
+      "qualified_name": "PipelineControlEjecucionProduccion",
+      "start_line": 5
+    },
+    {
+      "end_line": 17,
+      "id": "class:PIPELINES.pipeline_motor_alertas_produccion.PipelineMotorAlertasProduccion",
+      "path": "PIPELINES/pipeline_motor_alertas_produccion.py",
+      "qualified_name": "PipelineMotorAlertasProduccion",
+      "start_line": 5
+    },
+    {
+      "end_line": 17,
+      "id": "class:PIPELINES.pipeline_optimizador_inteligente_produccion.PipelineOptimizadorInteligenteProduccion",
+      "path": "PIPELINES/pipeline_optimizador_inteligente_produccion.py",
+      "qualified_name": "PipelineOptimizadorInteligenteProduccion",
+      "start_line": 5
+    },
+    {
+      "end_line": 21,
+      "id": "class:PIPELINES.pipeline_planificador_inteligente_produccion.PipelinePlanificadorInteligenteProduccion",
+      "path": "PIPELINES/pipeline_planificador_inteligente_produccion.py",
+      "qualified_name": "PipelinePlanificadorInteligenteProduccion",
+      "start_line": 9
+    },
+    {
+      "end_line": 31,
+      "id": "class:PIPELINES.pipeline_produccion_completa.PipelineProduccionCompleta",
+      "path": "PIPELINES/pipeline_produccion_completa.py",
+      "qualified_name": "PipelineProduccionCompleta",
+      "start_line": 11
+    },
+    {
+      "end_line": 86,
+      "id": "class:PIPELINES.pipeline_produccion_real.PipelineProduccionReal",
+      "path": "PIPELINES/pipeline_produccion_real.py",
+      "qualified_name": "PipelineProduccionReal",
+      "start_line": 14
+    },
+    {
+      "end_line": 17,
+      "id": "class:PIPELINES.pipeline_replanificador_inteligente_produccion.PipelineReplanificadorInteligenteProduccion",
+      "path": "PIPELINES/pipeline_replanificador_inteligente_produccion.py",
+      "qualified_name": "PipelineReplanificadorInteligenteProduccion",
+      "start_line": 5
+    },
+    {
+      "end_line": 104,
+      "id": "class:SERVICIOS.analizador_inteligente_produccion.AnalizadorInteligenteProduccion",
+      "path": "SERVICIOS/analizador_inteligente_produccion.py",
+      "qualified_name": "AnalizadorInteligenteProduccion",
+      "start_line": 8
+    },
+    {
+      "end_line": 66,
+      "id": "class:SERVICIOS.asignador_recursos_produccion.AsignadorRecursosProduccion",
+      "path": "SERVICIOS/asignador_recursos_produccion.py",
+      "qualified_name": "AsignadorRecursosProduccion",
+      "start_line": 7
+    },
+    {
+      "end_line": 138,
+      "id": "class:SERVICIOS.cierre_inteligente_produccion.CierreInteligenteProduccion",
+      "path": "SERVICIOS/cierre_inteligente_produccion.py",
+      "qualified_name": "CierreInteligenteProduccion",
+      "start_line": 7
+    },
+    {
+      "end_line": 74,
+      "id": "class:SERVICIOS.conector_produccion_real_556.ConectorProduccionReal556",
+      "path": "SERVICIOS/conector_produccion_real_556.py",
+      "qualified_name": "ConectorProduccionReal556",
+      "start_line": 63
+    },
+    {
+      "end_line": 104,
+      "id": "class:SERVICIOS.control_ejecucion_produccion.ControlEjecucionProduccion",
+      "path": "SERVICIOS/control_ejecucion_produccion.py",
+      "qualified_name": "ControlEjecucionProduccion",
+      "start_line": 16
+    },
+    {
+      "end_line": 284,
+      "id": "class:SERVICIOS.cruce_stock_produccion_556c.CruceStockProduccion556C",
+      "path": "SERVICIOS/cruce_stock_produccion_556c.py",
+      "qualified_name": "CruceStockProduccion556C",
+      "start_line": 73
+    },
+    {
+      "end_line": 152,
+      "id": "class:SERVICIOS.fichas_produccion_reales_556e31.RepositorioFichasProduccion556E31",
+      "path": "SERVICIOS/fichas_produccion_reales_556e31.py",
+      "qualified_name": "RepositorioFichasProduccion556E31",
+      "start_line": 40
+    },
+    {
+      "end_line": 20,
+      "id": "class:SERVICIOS.integrador_produccion_escandallos_555a.LineaProduccion",
+      "path": "SERVICIOS/integrador_produccion_escandallos_555a.py",
+      "qualified_name": "LineaProduccion",
+      "start_line": 9
+    },
+    {
+      "end_line": 68,
+      "id": "class:SERVICIOS.motor_alertas_produccion.MotorAlertasProduccion",
+      "path": "SERVICIOS/motor_alertas_produccion.py",
+      "qualified_name": "MotorAlertasProduccion",
+      "start_line": 7
+    },
+    {
+      "end_line": 162,
+      "id": "class:SERVICIOS.motor_paralelizacion_produccion_556e4.MotorParalelizacionProduccion556E4",
+      "path": "SERVICIOS/motor_paralelizacion_produccion_556e4.py",
+      "qualified_name": "MotorParalelizacionProduccion556E4",
+      "start_line": 10
+    },
+    {
+      "end_line": 105,
+      "id": "class:SERVICIOS.motor_recursos_produccion_556e2.MotorRecursosProduccion556E2",
+      "path": "SERVICIOS/motor_recursos_produccion_556e2.py",
+      "qualified_name": "MotorRecursosProduccion556E2",
+      "start_line": 23
+    },
+    {
+      "end_line": 121,
+      "id": "class:SERVICIOS.motor_tiempos_produccion_556e1.MotorTiemposProduccion556E1",
+      "path": "SERVICIOS/motor_tiempos_produccion_556e1.py",
+      "qualified_name": "MotorTiemposProduccion556E1",
+      "start_line": 26
+    },
+    {
+      "end_line": 198,
+      "id": "class:SERVICIOS.optimizador_inteligente_produccion.OptimizadorInteligenteProduccion",
+      "path": "SERVICIOS/optimizador_inteligente_produccion.py",
+      "qualified_name": "OptimizadorInteligenteProduccion",
+      "start_line": 16
+    },
+    {
+      "end_line": 78,
+      "id": "class:SERVICIOS.planificador_diario_produccion_461.PlanificadorDiarioProduccion461",
+      "path": "SERVICIOS/planificador_diario_produccion_461.py",
+      "qualified_name": "PlanificadorDiarioProduccion461",
+      "start_line": 17
+    },
+    {
+      "end_line": 258,
+      "id": "class:SERVICIOS.planificador_inteligente_produccion.PlanificadorInteligenteProduccion",
+      "path": "SERVICIOS/planificador_inteligente_produccion.py",
+      "qualified_name": "PlanificadorInteligenteProduccion",
+      "start_line": 22
+    },
+    {
+      "end_line": 72,
+      "id": "class:SERVICIOS.planificador_produccion_556d.PlanificadorProduccion556D",
+      "path": "SERVICIOS/planificador_produccion_556d.py",
+      "qualified_name": "PlanificadorProduccion556D",
+      "start_line": 17
+    },
+    {
+      "end_line": 17,
+      "id": "class:SERVICIOS.produccion_guiada_piloto_13.AccionGuiada",
+      "path": "SERVICIOS/produccion_guiada_piloto_13.py",
+      "qualified_name": "AccionGuiada",
+      "start_line": 13
+    },
+    {
+      "end_line": 168,
+      "id": "class:SERVICIOS.produccion_guiada_piloto_13.ProduccionGuiadaPiloto13",
+      "path": "SERVICIOS/produccion_guiada_piloto_13.py",
+      "qualified_name": "ProduccionGuiadaPiloto13",
+      "start_line": 20
+    },
+    {
+      "end_line": 154,
+      "id": "class:SERVICIOS.produccion_stock_piloto_14.ProduccionStockPiloto14",
+      "path": "SERVICIOS/produccion_stock_piloto_14.py",
+      "qualified_name": "ProduccionStockPiloto14",
+      "start_line": 10
+    },
+    {
+      "end_line": 88,
+      "id": "class:SERVICIOS.replanificador_inteligente_produccion.ReplanificadorInteligenteProduccion",
+      "path": "SERVICIOS/replanificador_inteligente_produccion.py",
+      "qualified_name": "ReplanificadorInteligenteProduccion",
+      "start_line": 7
+    }
+  ],
+  "domain": "produccion",
+  "functions": [
+    {
+      "end_line": 7,
+      "function_type": "function",
+      "id": "function:APP.checklist_final_produccion_467.main",
+      "path": "APP/checklist_final_produccion_467.py",
+      "qualified_name": "main",
+      "start_line": 4
+    },
+    {
+      "end_line": 54,
+      "function_type": "function",
+      "id": "function:APP.gestionar_ficha_produccion_556e31.main",
+      "path": "APP/gestionar_ficha_produccion_556e31.py",
+      "qualified_name": "main",
+      "start_line": 28
+    },
+    {
+      "end_line": 25,
+      "function_type": "function",
+      "id": "function:APP.gestionar_ficha_produccion_556e31.plantilla",
+      "path": "APP/gestionar_ficha_produccion_556e31.py",
+      "qualified_name": "plantilla",
+      "start_line": 15
+    },
+    {
+      "end_line": 10,
+      "function_type": "function",
+      "id": "function:APP.informe_diario_produccion_468.main",
+      "path": "APP/informe_diario_produccion_468.py",
+      "qualified_name": "main",
+      "start_line": 4
+    },
+    {
+      "end_line": 11,
+      "function_type": "function",
+      "id": "function:APP.probar_recursos_produccion_556e2.main",
+      "path": "APP/probar_recursos_produccion_556e2.py",
+      "qualified_name": "main",
+      "start_line": 8
+    },
+    {
+      "end_line": 15,
+      "function_type": "function",
+      "id": "function:APP.probar_tiempos_produccion_556e1.main",
+      "path": "APP/probar_tiempos_produccion_556e1.py",
+      "qualified_name": "main",
+      "start_line": 8
+    },
+    {
+      "end_line": 19,
+      "function_type": "function",
+      "id": "function:APP.produccion_evento_473.main",
+      "path": "APP/produccion_evento_473.py",
+      "qualified_name": "main",
+      "start_line": 8
+    },
+    {
+      "end_line": 8,
+      "function_type": "function",
+      "id": "function:MODELOS.produccion_completa.nuevo_id",
+      "path": "MODELOS/produccion_completa.py",
+      "qualified_name": "nuevo_id",
+      "start_line": 7
+    },
+    {
+      "end_line": 8,
+      "function_type": "function",
+      "id": "function:MODELOS.produccion_real.nuevo_id",
+      "path": "MODELOS/produccion_real.py",
+      "qualified_name": "nuevo_id",
+      "start_line": 7
+    },
+    {
+      "end_line": 846,
+      "function_type": "nested_function",
+      "id": "function:MOTORES.motor_produccion_real.generar_recomendaciones_inteligentes.agregar",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "generar_recomendaciones_inteligentes.agregar",
+      "start_line": 837
+    },
+    {
+      "end_line": 56,
+      "function_type": "function",
+      "id": "function:SERVICIOS.checklist_final_produccion_467.generar_checklist_final",
+      "path": "SERVICIOS/checklist_final_produccion_467.py",
+      "qualified_name": "generar_checklist_final",
+      "start_line": 4
+    },
+    {
+      "end_line": 64,
+      "function_type": "function",
+      "id": "function:SERVICIOS.checklist_final_produccion_467.imprimir_checklist",
+      "path": "SERVICIOS/checklist_final_produccion_467.py",
+      "qualified_name": "imprimir_checklist",
+      "start_line": 59
+    },
+    {
+      "end_line": 21,
+      "function_type": "function",
+      "id": "function:SERVICIOS.conector_produccion_real_556._norm",
+      "path": "SERVICIOS/conector_produccion_real_556.py",
+      "qualified_name": "_norm",
+      "start_line": 18
+    },
+    {
+      "end_line": 30,
+      "function_type": "function",
+      "id": "function:SERVICIOS.conector_produccion_real_556.es_consulta_produccion_real_556",
+      "path": "SERVICIOS/conector_produccion_real_556.py",
+      "qualified_name": "es_consulta_produccion_real_556",
+      "start_line": 24
+    },
+    {
+      "end_line": 60,
+      "function_type": "function",
+      "id": "function:SERVICIOS.conector_produccion_real_556.procesar_consulta_produccion_real_556",
+      "path": "SERVICIOS/conector_produccion_real_556.py",
+      "qualified_name": "procesar_consulta_produccion_real_556",
+      "start_line": 33
+    },
+    {
+      "end_line": 50,
+      "function_type": "function",
+      "id": "function:SERVICIOS.cruce_stock_produccion_556c._canon_unidad",
+      "path": "SERVICIOS/cruce_stock_produccion_556c.py",
+      "qualified_name": "_canon_unidad",
+      "start_line": 41
+    },
+    {
+      "end_line": 66,
+      "function_type": "function",
+      "id": "function:SERVICIOS.cruce_stock_produccion_556c._codigo",
+      "path": "SERVICIOS/cruce_stock_produccion_556c.py",
+      "qualified_name": "_codigo",
+      "start_line": 65
+    },
+    {
+      "end_line": 62,
+      "function_type": "function",
+      "id": "function:SERVICIOS.cruce_stock_produccion_556c._convertir",
+      "path": "SERVICIOS/cruce_stock_produccion_556c.py",
+      "qualified_name": "_convertir",
+      "start_line": 53
+    },
+    {
+      "end_line": 24,
+      "function_type": "function",
+      "id": "function:SERVICIOS.cruce_stock_produccion_556c._float",
+      "path": "SERVICIOS/cruce_stock_produccion_556c.py",
+      "qualified_name": "_float",
+      "start_line": 20
+    },
+    {
+      "end_line": 38,
+      "function_type": "function",
+      "id": "function:SERVICIOS.cruce_stock_produccion_556c._load_list",
+      "path": "SERVICIOS/cruce_stock_produccion_556c.py",
+      "qualified_name": "_load_list",
+      "start_line": 27
+    },
+    {
+      "end_line": 70,
+      "function_type": "function",
+      "id": "function:SERVICIOS.cruce_stock_produccion_556c._nombre",
+      "path": "SERVICIOS/cruce_stock_produccion_556c.py",
+      "qualified_name": "_nombre",
+      "start_line": 69
+    },
+    {
+      "end_line": 17,
+      "function_type": "function",
+      "id": "function:SERVICIOS.cruce_stock_produccion_556c._norm",
+      "path": "SERVICIOS/cruce_stock_produccion_556c.py",
+      "qualified_name": "_norm",
+      "start_line": 13
+    },
+    {
+      "end_line": 314,
+      "function_type": "function",
+      "id": "function:SERVICIOS.cruce_stock_produccion_556c.formatear_cruce_stock_556c",
+      "path": "SERVICIOS/cruce_stock_produccion_556c.py",
+      "qualified_name": "formatear_cruce_stock_556c",
+      "start_line": 287
+    },
+    {
+      "end_line": 37,
+      "function_type": "function",
+      "id": "function:SERVICIOS.fichas_produccion_reales_556e31._atomic_write",
+      "path": "SERVICIOS/fichas_produccion_reales_556e31.py",
+      "qualified_name": "_atomic_write",
+      "start_line": 26
+    },
+    {
+      "end_line": 23,
+      "function_type": "function",
+      "id": "function:SERVICIOS.fichas_produccion_reales_556e31._load",
+      "path": "SERVICIOS/fichas_produccion_reales_556e31.py",
+      "qualified_name": "_load",
+      "start_line": 19
+    },
+    {
+      "end_line": 16,
+      "function_type": "function",
+      "id": "function:SERVICIOS.fichas_produccion_reales_556e31._norm",
+      "path": "SERVICIOS/fichas_produccion_reales_556e31.py",
+      "qualified_name": "_norm",
+      "start_line": 13
+    },
+    {
+      "end_line": 169,
+      "function_type": "function",
+      "id": "function:SERVICIOS.fichas_produccion_reales_556e31.mensaje_falta_ficha_556e31",
+      "path": "SERVICIOS/fichas_produccion_reales_556e31.py",
+      "qualified_name": "mensaje_falta_ficha_556e31",
+      "start_line": 155
+    },
+    {
+      "end_line": 64,
+      "function_type": "function",
+      "id": "function:SERVICIOS.informe_diario_produccion_468.formatear_informe",
+      "path": "SERVICIOS/informe_diario_produccion_468.py",
+      "qualified_name": "formatear_informe",
+      "start_line": 48
+    },
+    {
+      "end_line": 45,
+      "function_type": "function",
+      "id": "function:SERVICIOS.informe_diario_produccion_468.generar_informe_diario_produccion",
+      "path": "SERVICIOS/informe_diario_produccion_468.py",
+      "qualified_name": "generar_informe_diario_produccion",
+      "start_line": 11
+    },
+    {
+      "end_line": 52,
+      "function_type": "function",
+      "id": "function:SERVICIOS.integrador_produccion_escandallos_555a.preparar_plan_produccion",
+      "path": "SERVICIOS/integrador_produccion_escandallos_555a.py",
+      "qualified_name": "preparar_plan_produccion",
+      "start_line": 23
+    },
+    {
+      "end_line": 191,
+      "function_type": "function",
+      "id": "function:SERVICIOS.motor_paralelizacion_produccion_556e4.formatear_paralelizacion_556e4",
+      "path": "SERVICIOS/motor_paralelizacion_produccion_556e4.py",
+      "qualified_name": "formatear_paralelizacion_556e4",
+      "start_line": 165
+    },
+    {
+      "end_line": 20,
+      "function_type": "function",
+      "id": "function:SERVICIOS.motor_recursos_produccion_556e2._load",
+      "path": "SERVICIOS/motor_recursos_produccion_556e2.py",
+      "qualified_name": "_load",
+      "start_line": 18
+    },
+    {
+      "end_line": 15,
+      "function_type": "function",
+      "id": "function:SERVICIOS.motor_recursos_produccion_556e2._norm",
+      "path": "SERVICIOS/motor_recursos_produccion_556e2.py",
+      "qualified_name": "_norm",
+      "start_line": 12
+    },
+    {
+      "end_line": 117,
+      "function_type": "function",
+      "id": "function:SERVICIOS.motor_recursos_produccion_556e2.formatear_recursos_556e2",
+      "path": "SERVICIOS/motor_recursos_produccion_556e2.py",
+      "qualified_name": "formatear_recursos_556e2",
+      "start_line": 108
+    },
+    {
+      "end_line": 23,
+      "function_type": "function",
+      "id": "function:SERVICIOS.motor_tiempos_produccion_556e1._load_json",
+      "path": "SERVICIOS/motor_tiempos_produccion_556e1.py",
+      "qualified_name": "_load_json",
+      "start_line": 19
+    },
+    {
+      "end_line": 16,
+      "function_type": "function",
+      "id": "function:SERVICIOS.motor_tiempos_produccion_556e1._norm",
+      "path": "SERVICIOS/motor_tiempos_produccion_556e1.py",
+      "qualified_name": "_norm",
+      "start_line": 13
+    },
+    {
+      "end_line": 148,
+      "function_type": "function",
+      "id": "function:SERVICIOS.motor_tiempos_produccion_556e1.formatear_tiempos_556e1",
+      "path": "SERVICIOS/motor_tiempos_produccion_556e1.py",
+      "qualified_name": "formatear_tiempos_556e1",
+      "start_line": 124
+    },
+    {
+      "end_line": 174,
+      "function_type": "nested_function",
+      "id": "function:SERVICIOS.optimizador_inteligente_produccion._crear_plan_optimizado.score",
+      "path": "SERVICIOS/optimizador_inteligente_produccion.py",
+      "qualified_name": "_crear_plan_optimizado.score",
+      "start_line": 169
+    },
+    {
+      "end_line": 180,
+      "function_type": "nested_function",
+      "id": "function:SERVICIOS.planificador_inteligente_produccion._ordenar_por_dependencias_y_prioridad.score",
+      "path": "SERVICIOS/planificador_inteligente_produccion.py",
+      "qualified_name": "_ordenar_por_dependencias_y_prioridad.score",
+      "start_line": 174
+    },
+    {
+      "end_line": 96,
+      "function_type": "function",
+      "id": "function:SERVICIOS.planificador_produccion_556d.formatear_plan_556d",
+      "path": "SERVICIOS/planificador_produccion_556d.py",
+      "qualified_name": "formatear_plan_556d",
+      "start_line": 75
+    },
+    {
+      "end_line": 19,
+      "function_type": "function",
+      "id": "function:SERVICIOS.produccion_evento_473._parse_fecha_hora",
+      "path": "SERVICIOS/produccion_evento_473.py",
+      "qualified_name": "_parse_fecha_hora",
+      "start_line": 12
+    },
+    {
+      "end_line": 54,
+      "function_type": "function",
+      "id": "function:SERVICIOS.produccion_evento_473.generar_produccion_evento",
+      "path": "SERVICIOS/produccion_evento_473.py",
+      "qualified_name": "generar_produccion_evento",
+      "start_line": 22
+    },
+    {
+      "end_line": 61,
+      "function_type": "function",
+      "id": "function:SERVICIOS.produccion_evento_473.integrar_produccion_evento",
+      "path": "SERVICIOS/produccion_evento_473.py",
+      "qualified_name": "integrar_produccion_evento",
+      "start_line": 57
+    },
+    {
+      "end_line": 72,
+      "function_type": "function",
+      "id": "function:SERVICIOS.produccion_evento_473.resumen_produccion_evento",
+      "path": "SERVICIOS/produccion_evento_473.py",
+      "qualified_name": "resumen_produccion_evento",
+      "start_line": 64
+    },
+    {
+      "end_line": 179,
+      "function_type": "function",
+      "id": "function:SERVICIOS.produccion_guiada_piloto_13.formatear_diagnostico_piloto13",
+      "path": "SERVICIOS/produccion_guiada_piloto_13.py",
+      "qualified_name": "formatear_diagnostico_piloto13",
+      "start_line": 171
+    },
+    {
+      "end_line": 164,
+      "function_type": "function",
+      "id": "function:SERVICIOS.produccion_stock_piloto_14.formatear_diagnostico_piloto14",
+      "path": "SERVICIOS/produccion_stock_piloto_14.py",
+      "qualified_name": "formatear_diagnostico_piloto14",
+      "start_line": 157
+    },
+    {
+      "end_line": 81,
+      "function_type": "nested_function",
+      "id": "function:SERVICIOS.replanificador_inteligente_produccion._generar_nuevo_orden.score",
+      "path": "SERVICIOS/replanificador_inteligente_produccion.py",
+      "qualified_name": "_generar_nuevo_orden.score",
+      "start_line": 76
+    },
+    {
+      "end_line": 22,
+      "function_type": "function",
+      "id": "function:TESTS.test_461_planificador_diario_produccion.main",
+      "path": "TESTS/test_461_planificador_diario_produccion.py",
+      "qualified_name": "main",
+      "start_line": 13
+    },
+    {
+      "end_line": 15,
+      "function_type": "function",
+      "id": "function:TESTS.test_467_checklist_final_produccion.main",
+      "path": "TESTS/test_467_checklist_final_produccion.py",
+      "qualified_name": "main",
+      "start_line": 4
+    },
+    {
+      "end_line": 15,
+      "function_type": "function",
+      "id": "function:TESTS.test_468_informe_diario_produccion.main",
+      "path": "TESTS/test_468_informe_diario_produccion.py",
+      "qualified_name": "main",
+      "start_line": 4
+    },
+    {
+      "end_line": 24,
+      "function_type": "function",
+      "id": "function:TESTS.test_473_produccion_evento.main",
+      "path": "TESTS/test_473_produccion_evento.py",
+      "qualified_name": "main",
+      "start_line": 11
+    },
+    {
+      "end_line": 44,
+      "function_type": "function",
+      "id": "function:TESTS.test_556_conector_produccion_real.main",
+      "path": "TESTS/test_556_conector_produccion_real.py",
+      "qualified_name": "main",
+      "start_line": 30
+    },
+    {
+      "end_line": 27,
+      "function_type": "function",
+      "id": "function:TESTS.test_556_conector_produccion_real.preparar_base",
+      "path": "TESTS/test_556_conector_produccion_real.py",
+      "qualified_name": "preparar_base",
+      "start_line": 14
+    },
+    {
+      "end_line": 24,
+      "function_type": "function",
+      "id": "function:TESTS.test_analizador_inteligente_produccion.ejecutar_prueba",
+      "path": "TESTS/test_analizador_inteligente_produccion.py",
+      "qualified_name": "ejecutar_prueba",
+      "start_line": 15
+    },
+    {
+      "end_line": 23,
+      "function_type": "function",
+      "id": "function:TESTS.test_asignador_recursos_produccion.ejecutar_prueba",
+      "path": "TESTS/test_asignador_recursos_produccion.py",
+      "qualified_name": "ejecutar_prueba",
+      "start_line": 14
+    },
+    {
+      "end_line": 24,
+      "function_type": "function",
+      "id": "function:TESTS.test_cierre_inteligente_produccion.ejecutar_prueba",
+      "path": "TESTS/test_cierre_inteligente_produccion.py",
+      "qualified_name": "ejecutar_prueba",
+      "start_line": 14
+    },
+    {
+      "end_line": 29,
+      "function_type": "function",
+      "id": "function:TESTS.test_control_ejecucion_produccion.ejecutar_prueba",
+      "path": "TESTS/test_control_ejecucion_produccion.py",
+      "qualified_name": "ejecutar_prueba",
+      "start_line": 14
+    }
+  ],
+  "methods": [
+    {
+      "end_line": 14,
+      "function_type": "method",
+      "id": "function:APP.consola_produccion_guiada_piloto_13.ConsolaProduccionGuiadaPiloto13.__init__",
+      "method_kind": "method",
+      "path": "APP/consola_produccion_guiada_piloto_13.py",
+      "qualified_name": "ConsolaProduccionGuiadaPiloto13.__init__",
+      "start_line": 10
+    },
+    {
+      "end_line": 132,
+      "function_type": "method",
+      "id": "function:APP.consola_produccion_guiada_piloto_13.ConsolaProduccionGuiadaPiloto13._mostrar_panel",
+      "method_kind": "staticmethod",
+      "path": "APP/consola_produccion_guiada_piloto_13.py",
+      "qualified_name": "ConsolaProduccionGuiadaPiloto13._mostrar_panel",
+      "start_line": 118
+    },
+    {
+      "end_line": 140,
+      "function_type": "method",
+      "id": "function:APP.consola_produccion_guiada_piloto_13.ConsolaProduccionGuiadaPiloto13._seleccionar_tarea",
+      "method_kind": "staticmethod",
+      "path": "APP/consola_produccion_guiada_piloto_13.py",
+      "qualified_name": "ConsolaProduccionGuiadaPiloto13._seleccionar_tarea",
+      "start_line": 135
+    },
+    {
+      "end_line": 115,
+      "function_type": "method",
+      "id": "function:APP.consola_produccion_guiada_piloto_13.ConsolaProduccionGuiadaPiloto13._trabajar_plan",
+      "method_kind": "method",
+      "path": "APP/consola_produccion_guiada_piloto_13.py",
+      "qualified_name": "ConsolaProduccionGuiadaPiloto13._trabajar_plan",
+      "start_line": 44
+    },
+    {
+      "end_line": 42,
+      "function_type": "method",
+      "id": "function:APP.consola_produccion_guiada_piloto_13.ConsolaProduccionGuiadaPiloto13.ejecutar",
+      "method_kind": "method",
+      "path": "APP/consola_produccion_guiada_piloto_13.py",
+      "qualified_name": "ConsolaProduccionGuiadaPiloto13.ejecutar",
+      "start_line": 16
+    },
+    {
+      "end_line": 13,
+      "function_type": "method",
+      "id": "function:MODELOS.alertas_produccion_306.AlertaProduccion.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/alertas_produccion_306.py",
+      "qualified_name": "AlertaProduccion.to_dict",
+      "start_line": 13
+    },
+    {
+      "end_line": 25,
+      "function_type": "method",
+      "id": "function:MODELOS.alertas_produccion_306.InformeAlertasProduccion.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/alertas_produccion_306.py",
+      "qualified_name": "InformeAlertasProduccion.to_dict",
+      "start_line": 25
+    },
+    {
+      "end_line": 37,
+      "function_type": "method",
+      "id": "function:MODELOS.analisis_produccion_306.InformeAnalisisProduccion.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/analisis_produccion_306.py",
+      "qualified_name": "InformeAnalisisProduccion.to_dict",
+      "start_line": 37
+    },
+    {
+      "end_line": 22,
+      "function_type": "method",
+      "id": "function:MODELOS.analisis_produccion_306.ItemAnalisisProduccion.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/analisis_produccion_306.py",
+      "qualified_name": "ItemAnalisisProduccion.to_dict",
+      "start_line": 22
+    },
+    {
+      "end_line": 49,
+      "function_type": "method",
+      "id": "function:MODELOS.ejecucion_produccion_306.AccionReplanificacionProduccion.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/ejecucion_produccion_306.py",
+      "qualified_name": "AccionReplanificacionProduccion.to_dict",
+      "start_line": 48
+    },
+    {
+      "end_line": 18,
+      "function_type": "method",
+      "id": "function:MODELOS.ejecucion_produccion_306.EstadoTareaProduccion.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/ejecucion_produccion_306.py",
+      "qualified_name": "EstadoTareaProduccion.to_dict",
+      "start_line": 17
+    },
+    {
+      "end_line": 35,
+      "function_type": "method",
+      "id": "function:MODELOS.ejecucion_produccion_306.InformeControlEjecucionProduccion.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/ejecucion_produccion_306.py",
+      "qualified_name": "InformeControlEjecucionProduccion.to_dict",
+      "start_line": 34
+    },
+    {
+      "end_line": 63,
+      "function_type": "method",
+      "id": "function:MODELOS.ejecucion_produccion_306.InformeReplanificacionProduccion.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/ejecucion_produccion_306.py",
+      "qualified_name": "InformeReplanificacionProduccion.to_dict",
+      "start_line": 62
+    },
+    {
+      "end_line": 44,
+      "function_type": "method",
+      "id": "function:MODELOS.optimizacion_produccion_306.ComprobacionCierreProduccion.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/optimizacion_produccion_306.py",
+      "qualified_name": "ComprobacionCierreProduccion.to_dict",
+      "start_line": 43
+    },
+    {
+      "end_line": 60,
+      "function_type": "method",
+      "id": "function:MODELOS.optimizacion_produccion_306.InformeCierreProduccion.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/optimizacion_produccion_306.py",
+      "qualified_name": "InformeCierreProduccion.to_dict",
+      "start_line": 59
+    },
+    {
+      "end_line": 33,
+      "function_type": "method",
+      "id": "function:MODELOS.optimizacion_produccion_306.InformeOptimizacionProduccion.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/optimizacion_produccion_306.py",
+      "qualified_name": "InformeOptimizacionProduccion.to_dict",
+      "start_line": 32
+    },
+    {
+      "end_line": 18,
+      "function_type": "method",
+      "id": "function:MODELOS.optimizacion_produccion_306.OportunidadOptimizacionProduccion.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/optimizacion_produccion_306.py",
+      "qualified_name": "OportunidadOptimizacionProduccion.to_dict",
+      "start_line": 17
+    },
+    {
+      "end_line": 52,
+      "function_type": "method",
+      "id": "function:MODELOS.planificacion_produccion_306.AsignacionCocineroProduccion.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/planificacion_produccion_306.py",
+      "qualified_name": "AsignacionCocineroProduccion.to_dict",
+      "start_line": 51
+    },
+    {
+      "end_line": 19,
+      "function_type": "method",
+      "id": "function:MODELOS.planificacion_produccion_306.BloquePlanProduccion.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/planificacion_produccion_306.py",
+      "qualified_name": "BloquePlanProduccion.to_dict",
+      "start_line": 18
+    },
+    {
+      "end_line": 67,
+      "function_type": "method",
+      "id": "function:MODELOS.planificacion_produccion_306.InformeAsignacionProduccion.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/planificacion_produccion_306.py",
+      "qualified_name": "InformeAsignacionProduccion.to_dict",
+      "start_line": 66
+    },
+    {
+      "end_line": 35,
+      "function_type": "method",
+      "id": "function:MODELOS.planificacion_produccion_306.InformePlanificacionProduccion.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/planificacion_produccion_306.py",
+      "qualified_name": "InformePlanificacionProduccion.to_dict",
+      "start_line": 34
+    },
+    {
+      "end_line": 45,
+      "function_type": "method",
+      "id": "function:MODELOS.produccion_completa.InformeProduccionCompleta.__post_init__",
+      "method_kind": "method",
+      "path": "MODELOS/produccion_completa.py",
+      "qualified_name": "InformeProduccionCompleta.__post_init__",
+      "start_line": 41
+    },
+    {
+      "end_line": 47,
+      "function_type": "method",
+      "id": "function:MODELOS.produccion_completa.InformeProduccionCompleta.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/produccion_completa.py",
+      "qualified_name": "InformeProduccionCompleta.to_dict",
+      "start_line": 46
+    },
+    {
+      "end_line": 25,
+      "function_type": "method",
+      "id": "function:MODELOS.produccion_completa.NecesidadProduccion.__post_init__",
+      "method_kind": "method",
+      "path": "MODELOS/produccion_completa.py",
+      "qualified_name": "NecesidadProduccion.__post_init__",
+      "start_line": 21
+    },
+    {
+      "end_line": 27,
+      "function_type": "method",
+      "id": "function:MODELOS.produccion_completa.NecesidadProduccion.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/produccion_completa.py",
+      "qualified_name": "NecesidadProduccion.to_dict",
+      "start_line": 26
+    },
+    {
+      "end_line": 73,
+      "function_type": "method",
+      "id": "function:MODELOS.produccion_real.BloqueProduccionReal.__post_init__",
+      "method_kind": "method",
+      "path": "MODELOS/produccion_real.py",
+      "qualified_name": "BloqueProduccionReal.__post_init__",
+      "start_line": 72
+    },
+    {
+      "end_line": 77,
+      "function_type": "method",
+      "id": "function:MODELOS.produccion_real.BloqueProduccionReal.from_dict",
+      "method_kind": "classmethod",
+      "path": "MODELOS/produccion_real.py",
+      "qualified_name": "BloqueProduccionReal.from_dict",
+      "start_line": 76
+    },
+    {
+      "end_line": 74,
+      "function_type": "method",
+      "id": "function:MODELOS.produccion_real.BloqueProduccionReal.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/produccion_real.py",
+      "qualified_name": "BloqueProduccionReal.to_dict",
+      "start_line": 74
+    },
+    {
+      "end_line": 22,
+      "function_type": "method",
+      "id": "function:MODELOS.produccion_real.FaseProduccionReal.__post_init__",
+      "method_kind": "method",
+      "path": "MODELOS/produccion_real.py",
+      "qualified_name": "FaseProduccionReal.__post_init__",
+      "start_line": 21
+    },
+    {
+      "end_line": 26,
+      "function_type": "method",
+      "id": "function:MODELOS.produccion_real.FaseProduccionReal.from_dict",
+      "method_kind": "classmethod",
+      "path": "MODELOS/produccion_real.py",
+      "qualified_name": "FaseProduccionReal.from_dict",
+      "start_line": 25
+    },
+    {
+      "end_line": 23,
+      "function_type": "method",
+      "id": "function:MODELOS.produccion_real.FaseProduccionReal.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/produccion_real.py",
+      "qualified_name": "FaseProduccionReal.to_dict",
+      "start_line": 23
+    },
+    {
+      "end_line": 108,
+      "function_type": "method",
+      "id": "function:MODELOS.produccion_real.PlanProduccionReal.__post_init__",
+      "method_kind": "method",
+      "path": "MODELOS/produccion_real.py",
+      "qualified_name": "PlanProduccionReal.__post_init__",
+      "start_line": 104
+    },
+    {
+      "end_line": 109,
+      "function_type": "method",
+      "id": "function:MODELOS.produccion_real.PlanProduccionReal.duracion_total_min",
+      "method_kind": "method",
+      "path": "MODELOS/produccion_real.py",
+      "qualified_name": "PlanProduccionReal.duracion_total_min",
+      "start_line": 109
+    },
+    {
+      "end_line": 113,
+      "function_type": "method",
+      "id": "function:MODELOS.produccion_real.PlanProduccionReal.from_dict",
+      "method_kind": "classmethod",
+      "path": "MODELOS/produccion_real.py",
+      "qualified_name": "PlanProduccionReal.from_dict",
+      "start_line": 112
+    },
+    {
+      "end_line": 110,
+      "function_type": "method",
+      "id": "function:MODELOS.produccion_real.PlanProduccionReal.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/produccion_real.py",
+      "qualified_name": "PlanProduccionReal.to_dict",
+      "start_line": 110
+    },
+    {
+      "end_line": 52,
+      "function_type": "method",
+      "id": "function:MODELOS.produccion_real.TareaProduccionReal.__post_init__",
+      "method_kind": "method",
+      "path": "MODELOS/produccion_real.py",
+      "qualified_name": "TareaProduccionReal.__post_init__",
+      "start_line": 51
+    },
+    {
+      "end_line": 53,
+      "function_type": "method",
+      "id": "function:MODELOS.produccion_real.TareaProduccionReal.duracion_total_min",
+      "method_kind": "method",
+      "path": "MODELOS/produccion_real.py",
+      "qualified_name": "TareaProduccionReal.duracion_total_min",
+      "start_line": 53
+    },
+    {
+      "end_line": 57,
+      "function_type": "method",
+      "id": "function:MODELOS.produccion_real.TareaProduccionReal.from_dict",
+      "method_kind": "classmethod",
+      "path": "MODELOS/produccion_real.py",
+      "qualified_name": "TareaProduccionReal.from_dict",
+      "start_line": 56
+    },
+    {
+      "end_line": 54,
+      "function_type": "method",
+      "id": "function:MODELOS.produccion_real.TareaProduccionReal.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/produccion_real.py",
+      "qualified_name": "TareaProduccionReal.to_dict",
+      "start_line": 54
+    },
+    {
+      "end_line": 20,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_completa.MotorProduccionCompleta.__init__",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_completa.py",
+      "qualified_name": "MotorProduccionCompleta.__init__",
+      "start_line": 18
+    },
+    {
+      "end_line": 115,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_completa.MotorProduccionCompleta._extraer_necesidades_evento",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_completa.py",
+      "qualified_name": "MotorProduccionCompleta._extraer_necesidades_evento",
+      "start_line": 77
+    },
+    {
+      "end_line": 124,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_completa.MotorProduccionCompleta._lectura",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_completa.py",
+      "qualified_name": "MotorProduccionCompleta._lectura",
+      "start_line": 121
+    },
+    {
+      "end_line": 119,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_completa.MotorProduccionCompleta._nombre_desde_receta_id",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_completa.py",
+      "qualified_name": "MotorProduccionCompleta._nombre_desde_receta_id",
+      "start_line": 117
+    },
+    {
+      "end_line": 67,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_completa.MotorProduccionCompleta.analizar_evento",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_completa.py",
+      "qualified_name": "MotorProduccionCompleta.analizar_evento",
+      "start_line": 22
+    },
+    {
+      "end_line": 72,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_completa.MotorProduccionCompleta.generar_pedidos_desde_evento",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_completa.py",
+      "qualified_name": "MotorProduccionCompleta.generar_pedidos_desde_evento",
+      "start_line": 69
+    },
+    {
+      "end_line": 75,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_completa.MotorProduccionCompleta.listar_informes",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_completa.py",
+      "qualified_name": "MotorProduccionCompleta.listar_informes",
+      "start_line": 74
+    },
+    {
+      "end_line": 37,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal.__init__",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal.__init__",
+      "start_line": 34
+    },
+    {
+      "end_line": 228,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal._ahora",
+      "method_kind": "staticmethod",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal._ahora",
+      "start_line": 227
+    },
+    {
+      "end_line": 708,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal._analizar_ocupacion_recursos",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal._analizar_ocupacion_recursos",
+      "start_line": 683
+    },
+    {
+      "end_line": 45,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal._cargar_desde_db",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal._cargar_desde_db",
+      "start_line": 39
+    },
+    {
+      "end_line": 1015,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal._construir_cronograma",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal._construir_cronograma",
+      "start_line": 991
+    },
+    {
+      "end_line": 638,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal._crear_planificacion_optimizada",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal._crear_planificacion_optimizada",
+      "start_line": 614
+    },
+    {
+      "end_line": 797,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal._crear_tareas_desde_evento",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal._crear_tareas_desde_evento",
+      "start_line": 769
+    },
+    {
+      "end_line": 1027,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal._diagnosticar_tareas",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal._diagnosticar_tareas",
+      "start_line": 1017
+    },
+    {
+      "end_line": 612,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal._duracion_planificacion_min",
+      "method_kind": "staticmethod",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal._duracion_planificacion_min",
+      "start_line": 609
+    },
+    {
+      "end_line": 606,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal._elaboraciones_desde_plan",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal._elaboraciones_desde_plan",
+      "start_line": 594
+    },
+    {
+      "end_line": 964,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal._fases_genericas",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal._fases_genericas",
+      "start_line": 959
+    },
+    {
+      "end_line": 957,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal._fases_por_tipo",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal._fases_por_tipo",
+      "start_line": 937
+    },
+    {
+      "end_line": 1037,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal._lectura",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal._lectura",
+      "start_line": 1034
+    },
+    {
+      "end_line": 830,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal._nivel_recomendacion",
+      "method_kind": "staticmethod",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal._nivel_recomendacion",
+      "start_line": 823
+    },
+    {
+      "end_line": 224,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal._obtener_tarea",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal._obtener_tarea",
+      "start_line": 219
+    },
+    {
+      "end_line": 743,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal._optimizar_plan_por_recursos",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal._optimizar_plan_por_recursos",
+      "start_line": 710
+    },
+    {
+      "end_line": 48,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal._persistir",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal._persistir",
+      "start_line": 47
+    },
+    {
+      "end_line": 237,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal._segundos_desde",
+      "method_kind": "staticmethod",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal._segundos_desde",
+      "start_line": 231
+    },
+    {
+      "end_line": 681,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal._solapa_intervalos",
+      "method_kind": "staticmethod",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal._solapa_intervalos",
+      "start_line": 680
+    },
+    {
+      "end_line": 1032,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal._sumar_minutos",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal._sumar_minutos",
+      "start_line": 1029
+    },
+    {
+      "end_line": 989,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal._tarea_cierre",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal._tarea_cierre",
+      "start_line": 979
+    },
+    {
+      "end_line": 817,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal._tarea_desde_necesidad",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal._tarea_desde_necesidad",
+      "start_line": 799
+    },
+    {
+      "end_line": 977,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal._tarea_logistica",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal._tarea_logistica",
+      "start_line": 966
+    },
+    {
+      "end_line": 396,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal.actualizar_observaciones_ejecucion",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal.actualizar_observaciones_ejecucion",
+      "start_line": 391
+    },
+    {
+      "end_line": 358,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal.actualizar_progreso_tarea",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal.actualizar_progreso_tarea",
+      "start_line": 350
+    },
+    {
+      "end_line": 460,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal.alertas_ejecucion",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal.alertas_ejecucion",
+      "start_line": 448
+    },
+    {
+      "end_line": 189,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal.anadir_fase_manual",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal.anadir_fase_manual",
+      "start_line": 185
+    },
+    {
+      "end_line": 412,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal.anadir_item_checklist",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal.anadir_item_checklist",
+      "start_line": 398
+    },
+    {
+      "end_line": 183,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal.anadir_tarea_manual",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal.anadir_tarea_manual",
+      "start_line": 180
+    },
+    {
+      "end_line": 671,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal.aplicar_optimizacion_basica",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal.aplicar_optimizacion_basica",
+      "start_line": 665
+    },
+    {
+      "end_line": 761,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal.aplicar_optimizacion_recursos",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal.aplicar_optimizacion_recursos",
+      "start_line": 757
+    },
+    {
+      "end_line": 919,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal.aplicar_recomendaciones",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal.aplicar_recomendaciones",
+      "start_line": 899
+    },
+    {
+      "end_line": 68,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal.buscar_planes",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal.buscar_planes",
+      "start_line": 64
+    },
+    {
+      "end_line": 62,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal.crear_plan_manual",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal.crear_plan_manual",
+      "start_line": 55
+    },
+    {
+      "end_line": 924,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal.descartar_recomendaciones",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal.descartar_recomendaciones",
+      "start_line": 921
+    },
+    {
+      "end_line": 677,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal.deshacer_ultima_optimizacion",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal.deshacer_ultima_optimizacion",
+      "start_line": 673
+    },
+    {
+      "end_line": 767,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal.deshacer_ultima_optimizacion_recursos",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal.deshacer_ultima_optimizacion_recursos",
+      "start_line": 763
+    },
+    {
+      "end_line": 935,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal.deshacer_ultimas_recomendaciones",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal.deshacer_ultimas_recomendaciones",
+      "start_line": 926
+    },
+    {
+      "end_line": 163,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal.diagnosticar_plan",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal.diagnosticar_plan",
+      "start_line": 140
+    },
+    {
+      "end_line": 98,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal.duplicar_plan",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal.duplicar_plan",
+      "start_line": 83
+    },
+    {
+      "end_line": 81,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal.editar_plan",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal.editar_plan",
+      "start_line": 70
+    },
+    {
+      "end_line": 433,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal.eliminar_item_checklist",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal.eliminar_item_checklist",
+      "start_line": 425
+    },
+    {
+      "end_line": 104,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal.eliminar_plan",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal.eliminar_plan",
+      "start_line": 100
+    },
+    {
+      "end_line": 194,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal.eliminar_tarea",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal.eliminar_tarea",
+      "start_line": 191
+    },
+    {
+      "end_line": 588,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal.estadisticas_turno",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal.estadisticas_turno",
+      "start_line": 569
+    },
+    {
+      "end_line": 327,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal.estado_tarea",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal.estado_tarea",
+      "start_line": 311
+    },
+    {
+      "end_line": 309,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal.finalizar_tarea",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal.finalizar_tarea",
+      "start_line": 289
+    },
+    {
+      "end_line": 897,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal.generar_recomendaciones_inteligentes",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal.generar_recomendaciones_inteligentes",
+      "start_line": 832
+    },
+    {
+      "end_line": 260,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal.iniciar_tarea",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal.iniciar_tarea",
+      "start_line": 245
+    },
+    {
+      "end_line": 138,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal.listar_planes",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal.listar_planes",
+      "start_line": 137
+    },
+    {
+      "end_line": 423,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal.marcar_item_checklist",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal.marcar_item_checklist",
+      "start_line": 414
+    },
+    {
+      "end_line": 53,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal.obtener_plan",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal.obtener_plan",
+      "start_line": 50
+    },
+    {
+      "end_line": 567,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal.panel_produccion",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal.panel_produccion",
+      "start_line": 462
+    },
+    {
+      "end_line": 274,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal.pausar_tarea",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal.pausar_tarea",
+      "start_line": 262
+    },
+    {
+      "end_line": 135,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal.planificar_evento",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal.planificar_evento",
+      "start_line": 106
+    },
+    {
+      "end_line": 214,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal.planificar_inteligente",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal.planificar_inteligente",
+      "start_line": 196
+    },
+    {
+      "end_line": 663,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal.proponer_optimizacion_basica",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal.proponer_optimizacion_basica",
+      "start_line": 640
+    },
+    {
+      "end_line": 755,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal.proponer_optimizacion_recursos",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal.proponer_optimizacion_recursos",
+      "start_line": 745
+    },
+    {
+      "end_line": 287,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal.reanudar_tarea",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal.reanudar_tarea",
+      "start_line": 276
+    },
+    {
+      "end_line": 379,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal.registrar_incidencia_tarea",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal.registrar_incidencia_tarea",
+      "start_line": 360
+    },
+    {
+      "end_line": 446,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal.replanificar_tarea_manual",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal.replanificar_tarea_manual",
+      "start_line": 435
+    },
+    {
+      "end_line": 389,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal.resolver_bloqueo_tarea",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal.resolver_bloqueo_tarea",
+      "start_line": 381
+    },
+    {
+      "end_line": 348,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal.resumen_ejecucion",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal.resumen_ejecucion",
+      "start_line": 329
+    },
+    {
+      "end_line": 178,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal.sugerir_trabajo_por_responsable",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal.sugerir_trabajo_por_responsable",
+      "start_line": 165
+    },
+    {
+      "end_line": 243,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_produccion_real.MotorProduccionReal.tiempo_real_tarea_segundos",
+      "method_kind": "method",
+      "path": "MOTORES/motor_produccion_real.py",
+      "qualified_name": "MotorProduccionReal.tiempo_real_tarea_segundos",
+      "start_line": 239
+    },
+    {
+      "end_line": 27,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_simulador_produccion_evento.MotorSimuladorProduccionEvento.simular_evento",
+      "method_kind": "method",
+      "path": "MOTORES/motor_simulador_produccion_evento.py",
+      "qualified_name": "MotorSimuladorProduccionEvento.simular_evento",
+      "start_line": 2
+    },
+    {
+      "end_line": 17,
+      "function_type": "method",
+      "id": "function:PIPELINES.pipeline_analizador_inteligente_produccion.PipelineAnalizadorInteligenteProduccion._ejecutar",
+      "method_kind": "method",
+      "path": "PIPELINES/pipeline_analizador_inteligente_produccion.py",
+      "qualified_name": "PipelineAnalizadorInteligenteProduccion._ejecutar",
+      "start_line": 9
+    },
+    {
+      "end_line": 17,
+      "function_type": "method",
+      "id": "function:PIPELINES.pipeline_asignador_recursos_produccion.PipelineAsignadorRecursosProduccion._ejecutar",
+      "method_kind": "method",
+      "path": "PIPELINES/pipeline_asignador_recursos_produccion.py",
+      "qualified_name": "PipelineAsignadorRecursosProduccion._ejecutar",
+      "start_line": 9
+    },
+    {
+      "end_line": 17,
+      "function_type": "method",
+      "id": "function:PIPELINES.pipeline_cierre_inteligente_produccion.PipelineCierreInteligenteProduccion._ejecutar",
+      "method_kind": "method",
+      "path": "PIPELINES/pipeline_cierre_inteligente_produccion.py",
+      "qualified_name": "PipelineCierreInteligenteProduccion._ejecutar",
+      "start_line": 9
+    },
+    {
+      "end_line": 17,
+      "function_type": "method",
+      "id": "function:PIPELINES.pipeline_control_ejecucion_produccion.PipelineControlEjecucionProduccion._ejecutar",
+      "method_kind": "method",
+      "path": "PIPELINES/pipeline_control_ejecucion_produccion.py",
+      "qualified_name": "PipelineControlEjecucionProduccion._ejecutar",
+      "start_line": 9
+    },
+    {
+      "end_line": 17,
+      "function_type": "method",
+      "id": "function:PIPELINES.pipeline_motor_alertas_produccion.PipelineMotorAlertasProduccion._ejecutar",
+      "method_kind": "method",
+      "path": "PIPELINES/pipeline_motor_alertas_produccion.py",
+      "qualified_name": "PipelineMotorAlertasProduccion._ejecutar",
+      "start_line": 9
+    },
+    {
+      "end_line": 17,
+      "function_type": "method",
+      "id": "function:PIPELINES.pipeline_optimizador_inteligente_produccion.PipelineOptimizadorInteligenteProduccion._ejecutar",
+      "method_kind": "method",
+      "path": "PIPELINES/pipeline_optimizador_inteligente_produccion.py",
+      "qualified_name": "PipelineOptimizadorInteligenteProduccion._ejecutar",
+      "start_line": 9
+    },
+    {
+      "end_line": 21,
+      "function_type": "method",
+      "id": "function:PIPELINES.pipeline_planificador_inteligente_produccion.PipelinePlanificadorInteligenteProduccion._ejecutar",
+      "method_kind": "method",
+      "path": "PIPELINES/pipeline_planificador_inteligente_produccion.py",
+      "qualified_name": "PipelinePlanificadorInteligenteProduccion._ejecutar",
+      "start_line": 13
+    },
+    {
+      "end_line": 31,
+      "function_type": "method",
+      "id": "function:PIPELINES.pipeline_produccion_completa.PipelineProduccionCompleta._ejecutar",
+      "method_kind": "method",
+      "path": "PIPELINES/pipeline_produccion_completa.py",
+      "qualified_name": "PipelineProduccionCompleta._ejecutar",
+      "start_line": 15
+    },
+    {
+      "end_line": 86,
+      "function_type": "method",
+      "id": "function:PIPELINES.pipeline_produccion_real.PipelineProduccionReal._ejecutar",
+      "method_kind": "method",
+      "path": "PIPELINES/pipeline_produccion_real.py",
+      "qualified_name": "PipelineProduccionReal._ejecutar",
+      "start_line": 24
+    },
+    {
+      "end_line": 17,
+      "function_type": "method",
+      "id": "function:PIPELINES.pipeline_replanificador_inteligente_produccion.PipelineReplanificadorInteligenteProduccion._ejecutar",
+      "method_kind": "method",
+      "path": "PIPELINES/pipeline_replanificador_inteligente_produccion.py",
+      "qualified_name": "PipelineReplanificadorInteligenteProduccion._ejecutar",
+      "start_line": 9
+    },
+    {
+      "end_line": 18,
+      "function_type": "method",
+      "id": "function:SERVICIOS.analizador_inteligente_produccion.AnalizadorInteligenteProduccion.__init__",
+      "method_kind": "method",
+      "path": "SERVICIOS/analizador_inteligente_produccion.py",
+      "qualified_name": "AnalizadorInteligenteProduccion.__init__",
+      "start_line": 14
+    },
+    {
+      "end_line": 86,
+      "function_type": "method",
+      "id": "function:SERVICIOS.analizador_inteligente_produccion.AnalizadorInteligenteProduccion._calcular_riesgo",
+      "method_kind": "method",
+      "path": "SERVICIOS/analizador_inteligente_produccion.py",
+      "qualified_name": "AnalizadorInteligenteProduccion._calcular_riesgo",
+      "start_line": 76
+    },
+    {
+      "end_line": 104,
+      "function_type": "method",
+      "id": "function:SERVICIOS.analizador_inteligente_produccion.AnalizadorInteligenteProduccion._cargar_elaboraciones_base",
+      "method_kind": "method",
+      "path": "SERVICIOS/analizador_inteligente_produccion.py",
+      "qualified_name": "AnalizadorInteligenteProduccion._cargar_elaboraciones_base",
+      "start_line": 88
+    },
+    {
+      "end_line": 74,
+      "function_type": "method",
+      "id": "function:SERVICIOS.analizador_inteligente_produccion.AnalizadorInteligenteProduccion._normalizar_item",
+      "method_kind": "method",
+      "path": "SERVICIOS/analizador_inteligente_produccion.py",
+      "qualified_name": "AnalizadorInteligenteProduccion._normalizar_item",
+      "start_line": 55
+    },
+    {
+      "end_line": 48,
+      "function_type": "method",
+      "id": "function:SERVICIOS.analizador_inteligente_produccion.AnalizadorInteligenteProduccion.analizar_produccion",
+      "method_kind": "method",
+      "path": "SERVICIOS/analizador_inteligente_produccion.py",
+      "qualified_name": "AnalizadorInteligenteProduccion.analizar_produccion",
+      "start_line": 20
+    },
+    {
+      "end_line": 53,
+      "function_type": "method",
+      "id": "function:SERVICIOS.analizador_inteligente_produccion.AnalizadorInteligenteProduccion.exportar_analisis",
+      "method_kind": "method",
+      "path": "SERVICIOS/analizador_inteligente_produccion.py",
+      "qualified_name": "AnalizadorInteligenteProduccion.exportar_analisis",
+      "start_line": 50
+    },
+    {
+      "end_line": 17,
+      "function_type": "method",
+      "id": "function:SERVICIOS.asignador_recursos_produccion.AsignadorRecursosProduccion.__init__",
+      "method_kind": "method",
+      "path": "SERVICIOS/asignador_recursos_produccion.py",
+      "qualified_name": "AsignadorRecursosProduccion.__init__",
+      "start_line": 13
+    },
+    {
+      "end_line": 66,
+      "function_type": "method",
+      "id": "function:SERVICIOS.asignador_recursos_produccion.AsignadorRecursosProduccion._calcular_riesgo_asignacion",
+      "method_kind": "method",
+      "path": "SERVICIOS/asignador_recursos_produccion.py",
+      "qualified_name": "AsignadorRecursosProduccion._calcular_riesgo_asignacion",
+      "start_line": 59
+    },
+    {
+      "end_line": 57,
+      "function_type": "method",
+      "id": "function:SERVICIOS.asignador_recursos_produccion.AsignadorRecursosProduccion._solapa",
+      "method_kind": "method",
+      "path": "SERVICIOS/asignador_recursos_produccion.py",
+      "qualified_name": "AsignadorRecursosProduccion._solapa",
+      "start_line": 56
+    },
+    {
+      "end_line": 49,
+      "function_type": "method",
+      "id": "function:SERVICIOS.asignador_recursos_produccion.AsignadorRecursosProduccion.asignar_recursos",
+      "method_kind": "method",
+      "path": "SERVICIOS/asignador_recursos_produccion.py",
+      "qualified_name": "AsignadorRecursosProduccion.asignar_recursos",
+      "start_line": 19
+    },
+    {
+      "end_line": 54,
+      "function_type": "method",
+      "id": "function:SERVICIOS.asignador_recursos_produccion.AsignadorRecursosProduccion.exportar_asignacion",
+      "method_kind": "method",
+      "path": "SERVICIOS/asignador_recursos_produccion.py",
+      "qualified_name": "AsignadorRecursosProduccion.exportar_asignacion",
+      "start_line": 51
+    },
+    {
+      "end_line": 17,
+      "function_type": "method",
+      "id": "function:SERVICIOS.cierre_inteligente_produccion.CierreInteligenteProduccion.__init__",
+      "method_kind": "method",
+      "path": "SERVICIOS/cierre_inteligente_produccion.py",
+      "qualified_name": "CierreInteligenteProduccion.__init__",
+      "start_line": 13
+    },
+    {
+      "end_line": 71,
+      "function_type": "method",
+      "id": "function:SERVICIOS.cierre_inteligente_produccion.CierreInteligenteProduccion._check",
+      "method_kind": "method",
+      "path": "SERVICIOS/cierre_inteligente_produccion.py",
+      "qualified_name": "CierreInteligenteProduccion._check",
+      "start_line": 70
+    },
+    {
+      "end_line": 54,
+      "function_type": "method",
+      "id": "function:SERVICIOS.cierre_inteligente_produccion.CierreInteligenteProduccion._elaboraciones_base",
+      "method_kind": "method",
+      "path": "SERVICIOS/cierre_inteligente_produccion.py",
+      "qualified_name": "CierreInteligenteProduccion._elaboraciones_base",
+      "start_line": 51
+    },
+    {
+      "end_line": 138,
+      "function_type": "method",
+      "id": "function:SERVICIOS.cierre_inteligente_produccion.CierreInteligenteProduccion._lectura_operativa",
+      "method_kind": "method",
+      "path": "SERVICIOS/cierre_inteligente_produccion.py",
+      "qualified_name": "CierreInteligenteProduccion._lectura_operativa",
+      "start_line": 133
+    },
+    {
+      "end_line": 131,
+      "function_type": "method",
+      "id": "function:SERVICIOS.cierre_inteligente_produccion.CierreInteligenteProduccion._metricas",
+      "method_kind": "method",
+      "path": "SERVICIOS/cierre_inteligente_produccion.py",
+      "qualified_name": "CierreInteligenteProduccion._metricas",
+      "start_line": 119
+    },
+    {
+      "end_line": 68,
+      "function_type": "method",
+      "id": "function:SERVICIOS.cierre_inteligente_produccion.CierreInteligenteProduccion._seguro",
+      "method_kind": "method",
+      "path": "SERVICIOS/cierre_inteligente_produccion.py",
+      "qualified_name": "CierreInteligenteProduccion._seguro",
+      "start_line": 56
+    },
+    {
+      "end_line": 117,
+      "function_type": "method",
+      "id": "function:SERVICIOS.cierre_inteligente_produccion.CierreInteligenteProduccion._validar_coherencia",
+      "method_kind": "method",
+      "path": "SERVICIOS/cierre_inteligente_produccion.py",
+      "qualified_name": "CierreInteligenteProduccion._validar_coherencia",
+      "start_line": 93
+    },
+    {
+      "end_line": 91,
+      "function_type": "method",
+      "id": "function:SERVICIOS.cierre_inteligente_produccion.CierreInteligenteProduccion._validar_modulos",
+      "method_kind": "method",
+      "path": "SERVICIOS/cierre_inteligente_produccion.py",
+      "qualified_name": "CierreInteligenteProduccion._validar_modulos",
+      "start_line": 73
+    },
+    {
+      "end_line": 44,
+      "function_type": "method",
+      "id": "function:SERVICIOS.cierre_inteligente_produccion.CierreInteligenteProduccion.comprobar_cierre",
+      "method_kind": "method",
+      "path": "SERVICIOS/cierre_inteligente_produccion.py",
+      "qualified_name": "CierreInteligenteProduccion.comprobar_cierre",
+      "start_line": 19
+    },
+    {
+      "end_line": 49,
+      "function_type": "method",
+      "id": "function:SERVICIOS.cierre_inteligente_produccion.CierreInteligenteProduccion.exportar_cierre",
+      "method_kind": "method",
+      "path": "SERVICIOS/cierre_inteligente_produccion.py",
+      "qualified_name": "CierreInteligenteProduccion.exportar_cierre",
+      "start_line": 46
+    },
+    {
+      "end_line": 67,
+      "function_type": "method",
+      "id": "function:SERVICIOS.conector_produccion_real_556.ConectorProduccionReal556.__init__",
+      "method_kind": "method",
+      "path": "SERVICIOS/conector_produccion_real_556.py",
+      "qualified_name": "ConectorProduccionReal556.__init__",
+      "start_line": 65
+    },
+    {
+      "end_line": 74,
+      "function_type": "method",
+      "id": "function:SERVICIOS.conector_produccion_real_556.ConectorProduccionReal556.planificar",
+      "method_kind": "method",
+      "path": "SERVICIOS/conector_produccion_real_556.py",
+      "qualified_name": "ConectorProduccionReal556.planificar",
+      "start_line": 68
+    },
+    {
+      "end_line": 26,
+      "function_type": "method",
+      "id": "function:SERVICIOS.control_ejecucion_produccion.ControlEjecucionProduccion.__init__",
+      "method_kind": "method",
+      "path": "SERVICIOS/control_ejecucion_produccion.py",
+      "qualified_name": "ControlEjecucionProduccion.__init__",
+      "start_line": 22
+    },
+    {
+      "end_line": 104,
+      "function_type": "method",
+      "id": "function:SERVICIOS.control_ejecucion_produccion.ControlEjecucionProduccion._contar",
+      "method_kind": "method",
+      "path": "SERVICIOS/control_ejecucion_produccion.py",
+      "qualified_name": "ControlEjecucionProduccion._contar",
+      "start_line": 100
+    },
+    {
+      "end_line": 98,
+      "function_type": "method",
+      "id": "function:SERVICIOS.control_ejecucion_produccion.ControlEjecucionProduccion._generar_plan_demo",
+      "method_kind": "method",
+      "path": "SERVICIOS/control_ejecucion_produccion.py",
+      "qualified_name": "ControlEjecucionProduccion._generar_plan_demo",
+      "start_line": 94
+    },
+    {
+      "end_line": 92,
+      "function_type": "method",
+      "id": "function:SERVICIOS.control_ejecucion_produccion.ControlEjecucionProduccion._inferir_estado",
+      "method_kind": "method",
+      "path": "SERVICIOS/control_ejecucion_produccion.py",
+      "qualified_name": "ControlEjecucionProduccion._inferir_estado",
+      "start_line": 86
+    },
+    {
+      "end_line": 79,
+      "function_type": "method",
+      "id": "function:SERVICIOS.control_ejecucion_produccion.ControlEjecucionProduccion.controlar_ejecucion",
+      "method_kind": "method",
+      "path": "SERVICIOS/control_ejecucion_produccion.py",
+      "qualified_name": "ControlEjecucionProduccion.controlar_ejecucion",
+      "start_line": 28
+    },
+    {
+      "end_line": 84,
+      "function_type": "method",
+      "id": "function:SERVICIOS.control_ejecucion_produccion.ControlEjecucionProduccion.exportar_control",
+      "method_kind": "method",
+      "path": "SERVICIOS/control_ejecucion_produccion.py",
+      "qualified_name": "ControlEjecucionProduccion.exportar_control",
+      "start_line": 81
+    },
+    {
+      "end_line": 98,
+      "function_type": "method",
+      "id": "function:SERVICIOS.cruce_stock_produccion_556c.CruceStockProduccion556C.__init__",
+      "method_kind": "method",
+      "path": "SERVICIOS/cruce_stock_produccion_556c.py",
+      "qualified_name": "CruceStockProduccion556C.__init__",
+      "start_line": 87
+    },
+    {
+      "end_line": 159,
+      "function_type": "method",
+      "id": "function:SERVICIOS.cruce_stock_produccion_556c.CruceStockProduccion556C._movimientos_relacionados",
+      "method_kind": "method",
+      "path": "SERVICIOS/cruce_stock_produccion_556c.py",
+      "qualified_name": "CruceStockProduccion556C._movimientos_relacionados",
+      "start_line": 149
+    },
+    {
+      "end_line": 122,
+      "function_type": "method",
+      "id": "function:SERVICIOS.cruce_stock_produccion_556c.CruceStockProduccion556C._resolver_articulo",
+      "method_kind": "method",
+      "path": "SERVICIOS/cruce_stock_produccion_556c.py",
+      "qualified_name": "CruceStockProduccion556C._resolver_articulo",
+      "start_line": 100
+    },
+    {
+      "end_line": 147,
+      "function_type": "method",
+      "id": "function:SERVICIOS.cruce_stock_produccion_556c.CruceStockProduccion556C._resolver_stock",
+      "method_kind": "method",
+      "path": "SERVICIOS/cruce_stock_produccion_556c.py",
+      "qualified_name": "CruceStockProduccion556C._resolver_stock",
+      "start_line": 124
+    },
+    {
+      "end_line": 182,
+      "function_type": "method",
+      "id": "function:SERVICIOS.cruce_stock_produccion_556c.CruceStockProduccion556C._stock_actual",
+      "method_kind": "method",
+      "path": "SERVICIOS/cruce_stock_produccion_556c.py",
+      "qualified_name": "CruceStockProduccion556C._stock_actual",
+      "start_line": 161
+    },
+    {
+      "end_line": 284,
+      "function_type": "method",
+      "id": "function:SERVICIOS.cruce_stock_produccion_556c.CruceStockProduccion556C.cruzar",
+      "method_kind": "method",
+      "path": "SERVICIOS/cruce_stock_produccion_556c.py",
+      "qualified_name": "CruceStockProduccion556C.cruzar",
+      "start_line": 184
+    },
+    {
+      "end_line": 46,
+      "function_type": "method",
+      "id": "function:SERVICIOS.fichas_produccion_reales_556e31.RepositorioFichasProduccion556E31.__init__",
+      "method_kind": "method",
+      "path": "SERVICIOS/fichas_produccion_reales_556e31.py",
+      "qualified_name": "RepositorioFichasProduccion556E31.__init__",
+      "start_line": 44
+    },
+    {
+      "end_line": 152,
+      "function_type": "method",
+      "id": "function:SERVICIOS.fichas_produccion_reales_556e31.RepositorioFichasProduccion556E31._normalizar",
+      "method_kind": "method",
+      "path": "SERVICIOS/fichas_produccion_reales_556e31.py",
+      "qualified_name": "RepositorioFichasProduccion556E31._normalizar",
+      "start_line": 121
+    },
+    {
+      "end_line": 60,
+      "function_type": "method",
+      "id": "function:SERVICIOS.fichas_produccion_reales_556e31.RepositorioFichasProduccion556E31.buscar",
+      "method_kind": "method",
+      "path": "SERVICIOS/fichas_produccion_reales_556e31.py",
+      "qualified_name": "RepositorioFichasProduccion556E31.buscar",
+      "start_line": 54
+    },
+    {
+      "end_line": 119,
+      "function_type": "method",
+      "id": "function:SERVICIOS.fichas_produccion_reales_556e31.RepositorioFichasProduccion556E31.guardar",
+      "method_kind": "method",
+      "path": "SERVICIOS/fichas_produccion_reales_556e31.py",
+      "qualified_name": "RepositorioFichasProduccion556E31.guardar",
+      "start_line": 88
+    },
+    {
+      "end_line": 52,
+      "function_type": "method",
+      "id": "function:SERVICIOS.fichas_produccion_reales_556e31.RepositorioFichasProduccion556E31.listar",
+      "method_kind": "method",
+      "path": "SERVICIOS/fichas_produccion_reales_556e31.py",
+      "qualified_name": "RepositorioFichasProduccion556E31.listar",
+      "start_line": 48
+    },
+    {
+      "end_line": 86,
+      "function_type": "method",
+      "id": "function:SERVICIOS.fichas_produccion_reales_556e31.RepositorioFichasProduccion556E31.validar",
+      "method_kind": "method",
+      "path": "SERVICIOS/fichas_produccion_reales_556e31.py",
+      "qualified_name": "RepositorioFichasProduccion556E31.validar",
+      "start_line": 62
+    },
+    {
+      "end_line": 20,
+      "function_type": "method",
+      "id": "function:SERVICIOS.integrador_produccion_escandallos_555a.LineaProduccion.a_dict",
+      "method_kind": "method",
+      "path": "SERVICIOS/integrador_produccion_escandallos_555a.py",
+      "qualified_name": "LineaProduccion.a_dict",
+      "start_line": 19
+    },
+    {
+      "end_line": 17,
+      "function_type": "method",
+      "id": "function:SERVICIOS.motor_alertas_produccion.MotorAlertasProduccion.__init__",
+      "method_kind": "method",
+      "path": "SERVICIOS/motor_alertas_produccion.py",
+      "qualified_name": "MotorAlertasProduccion.__init__",
+      "start_line": 13
+    },
+    {
+      "end_line": 67,
+      "function_type": "method",
+      "id": "function:SERVICIOS.motor_alertas_produccion.MotorAlertasProduccion._deduplicar",
+      "method_kind": "method",
+      "path": "SERVICIOS/motor_alertas_produccion.py",
+      "qualified_name": "MotorAlertasProduccion._deduplicar",
+      "start_line": 61
+    },
+    {
+      "end_line": 68,
+      "function_type": "method",
+      "id": "function:SERVICIOS.motor_alertas_produccion.MotorAlertasProduccion._orden",
+      "method_kind": "method",
+      "path": "SERVICIOS/motor_alertas_produccion.py",
+      "qualified_name": "MotorAlertasProduccion._orden",
+      "start_line": 68
+    },
+    {
+      "end_line": 59,
+      "function_type": "method",
+      "id": "function:SERVICIOS.motor_alertas_produccion.MotorAlertasProduccion.exportar_alertas",
+      "method_kind": "method",
+      "path": "SERVICIOS/motor_alertas_produccion.py",
+      "qualified_name": "MotorAlertasProduccion.exportar_alertas",
+      "start_line": 56
+    },
+    {
+      "end_line": 54,
+      "function_type": "method",
+      "id": "function:SERVICIOS.motor_alertas_produccion.MotorAlertasProduccion.generar_alertas",
+      "method_kind": "method",
+      "path": "SERVICIOS/motor_alertas_produccion.py",
+      "qualified_name": "MotorAlertasProduccion.generar_alertas",
+      "start_line": 19
+    },
+    {
+      "end_line": 23,
+      "function_type": "method",
+      "id": "function:SERVICIOS.motor_paralelizacion_produccion_556e4.MotorParalelizacionProduccion556E4.__init__",
+      "method_kind": "method",
+      "path": "SERVICIOS/motor_paralelizacion_produccion_556e4.py",
+      "qualified_name": "MotorParalelizacionProduccion556E4.__init__",
+      "start_line": 21
+    },
+    {
+      "end_line": 29,
+      "function_type": "method",
+      "id": "function:SERVICIOS.motor_paralelizacion_produccion_556e4.MotorParalelizacionProduccion556E4._capacidad_recursos",
+      "method_kind": "staticmethod",
+      "path": "SERVICIOS/motor_paralelizacion_produccion_556e4.py",
+      "qualified_name": "MotorParalelizacionProduccion556E4._capacidad_recursos",
+      "start_line": 26
+    },
+    {
+      "end_line": 51,
+      "function_type": "method",
+      "id": "function:SERVICIOS.motor_paralelizacion_produccion_556e4.MotorParalelizacionProduccion556E4._primer_hueco",
+      "method_kind": "staticmethod",
+      "path": "SERVICIOS/motor_paralelizacion_produccion_556e4.py",
+      "qualified_name": "MotorParalelizacionProduccion556E4._primer_hueco",
+      "start_line": 32
+    },
+    {
+      "end_line": 162,
+      "function_type": "method",
+      "id": "function:SERVICIOS.motor_paralelizacion_produccion_556e4.MotorParalelizacionProduccion556E4.planificar",
+      "method_kind": "method",
+      "path": "SERVICIOS/motor_paralelizacion_produccion_556e4.py",
+      "qualified_name": "MotorParalelizacionProduccion556E4.planificar",
+      "start_line": 53
+    },
+    {
+      "end_line": 46,
+      "function_type": "method",
+      "id": "function:SERVICIOS.motor_recursos_produccion_556e2.MotorRecursosProduccion556E2.__init__",
+      "method_kind": "method",
+      "path": "SERVICIOS/motor_recursos_produccion_556e2.py",
+      "qualified_name": "MotorRecursosProduccion556E2.__init__",
+      "start_line": 42
+    },
+    {
+      "end_line": 56,
+      "function_type": "method",
+      "id": "function:SERVICIOS.motor_recursos_produccion_556e2.MotorRecursosProduccion556E2._recursos_para_fase",
+      "method_kind": "method",
+      "path": "SERVICIOS/motor_recursos_produccion_556e2.py",
+      "qualified_name": "MotorRecursosProduccion556E2._recursos_para_fase",
+      "start_line": 48
+    },
+    {
+      "end_line": 77,
+      "function_type": "method",
+      "id": "function:SERVICIOS.motor_recursos_produccion_556e2.MotorRecursosProduccion556E2.analizar",
+      "method_kind": "method",
+      "path": "SERVICIOS/motor_recursos_produccion_556e2.py",
+      "qualified_name": "MotorRecursosProduccion556E2.analizar",
+      "start_line": 58
+    },
+    {
+      "end_line": 105,
+      "function_type": "method",
+      "id": "function:SERVICIOS.motor_recursos_produccion_556e2.MotorRecursosProduccion556E2.detectar_conflictos",
+      "method_kind": "method",
+      "path": "SERVICIOS/motor_recursos_produccion_556e2.py",
+      "qualified_name": "MotorRecursosProduccion556E2.detectar_conflictos",
+      "start_line": 79
+    },
+    {
+      "end_line": 41,
+      "function_type": "method",
+      "id": "function:SERVICIOS.motor_tiempos_produccion_556e1.MotorTiemposProduccion556E1.__init__",
+      "method_kind": "method",
+      "path": "SERVICIOS/motor_tiempos_produccion_556e1.py",
+      "qualified_name": "MotorTiemposProduccion556E1.__init__",
+      "start_line": 37
+    },
+    {
+      "end_line": 55,
+      "function_type": "method",
+      "id": "function:SERVICIOS.motor_tiempos_produccion_556e1.MotorTiemposProduccion556E1._factor_volumen",
+      "method_kind": "staticmethod",
+      "path": "SERVICIOS/motor_tiempos_produccion_556e1.py",
+      "qualified_name": "MotorTiemposProduccion556E1._factor_volumen",
+      "start_line": 52
+    },
+    {
+      "end_line": 49,
+      "function_type": "method",
+      "id": "function:SERVICIOS.motor_tiempos_produccion_556e1.MotorTiemposProduccion556E1._perfil",
+      "method_kind": "method",
+      "path": "SERVICIOS/motor_tiempos_produccion_556e1.py",
+      "qualified_name": "MotorTiemposProduccion556E1._perfil",
+      "start_line": 43
+    },
+    {
+      "end_line": 60,
+      "function_type": "method",
+      "id": "function:SERVICIOS.motor_tiempos_produccion_556e1.MotorTiemposProduccion556E1._redondear",
+      "method_kind": "staticmethod",
+      "path": "SERVICIOS/motor_tiempos_produccion_556e1.py",
+      "qualified_name": "MotorTiemposProduccion556E1._redondear",
+      "start_line": 58
+    },
+    {
+      "end_line": 121,
+      "function_type": "method",
+      "id": "function:SERVICIOS.motor_tiempos_produccion_556e1.MotorTiemposProduccion556E1.estimar",
+      "method_kind": "method",
+      "path": "SERVICIOS/motor_tiempos_produccion_556e1.py",
+      "qualified_name": "MotorTiemposProduccion556E1.estimar",
+      "start_line": 62
+    },
+    {
+      "end_line": 26,
+      "function_type": "method",
+      "id": "function:SERVICIOS.optimizador_inteligente_produccion.OptimizadorInteligenteProduccion.__init__",
+      "method_kind": "method",
+      "path": "SERVICIOS/optimizador_inteligente_produccion.py",
+      "qualified_name": "OptimizadorInteligenteProduccion.__init__",
+      "start_line": 22
+    },
+    {
+      "end_line": 198,
+      "function_type": "method",
+      "id": "function:SERVICIOS.optimizador_inteligente_produccion.OptimizadorInteligenteProduccion._contar",
+      "method_kind": "method",
+      "path": "SERVICIOS/optimizador_inteligente_produccion.py",
+      "qualified_name": "OptimizadorInteligenteProduccion._contar",
+      "start_line": 194
+    },
+    {
+      "end_line": 70,
+      "function_type": "method",
+      "id": "function:SERVICIOS.optimizador_inteligente_produccion.OptimizadorInteligenteProduccion._crear_oportunidad",
+      "method_kind": "method",
+      "path": "SERVICIOS/optimizador_inteligente_produccion.py",
+      "qualified_name": "OptimizadorInteligenteProduccion._crear_oportunidad",
+      "start_line": 69
+    },
+    {
+      "end_line": 181,
+      "function_type": "method",
+      "id": "function:SERVICIOS.optimizador_inteligente_produccion.OptimizadorInteligenteProduccion._crear_plan_optimizado",
+      "method_kind": "method",
+      "path": "SERVICIOS/optimizador_inteligente_produccion.py",
+      "qualified_name": "OptimizadorInteligenteProduccion._crear_plan_optimizado",
+      "start_line": 167
+    },
+    {
+      "end_line": 165,
+      "function_type": "method",
+      "id": "function:SERVICIOS.optimizador_inteligente_produccion.OptimizadorInteligenteProduccion._deduplicar_y_ordenar",
+      "method_kind": "method",
+      "path": "SERVICIOS/optimizador_inteligente_produccion.py",
+      "qualified_name": "OptimizadorInteligenteProduccion._deduplicar_y_ordenar",
+      "start_line": 158
+    },
+    {
+      "end_line": 67,
+      "function_type": "method",
+      "id": "function:SERVICIOS.optimizador_inteligente_produccion.OptimizadorInteligenteProduccion._generar_planificacion",
+      "method_kind": "method",
+      "path": "SERVICIOS/optimizador_inteligente_produccion.py",
+      "qualified_name": "OptimizadorInteligenteProduccion._generar_planificacion",
+      "start_line": 61
+    },
+    {
+      "end_line": 136,
+      "function_type": "method",
+      "id": "function:SERVICIOS.optimizador_inteligente_produccion.OptimizadorInteligenteProduccion._optimizar_carga_cocineros",
+      "method_kind": "method",
+      "path": "SERVICIOS/optimizador_inteligente_produccion.py",
+      "qualified_name": "OptimizadorInteligenteProduccion._optimizar_carga_cocineros",
+      "start_line": 120
+    },
+    {
+      "end_line": 88,
+      "function_type": "method",
+      "id": "function:SERVICIOS.optimizador_inteligente_produccion.OptimizadorInteligenteProduccion._optimizar_pasivos",
+      "method_kind": "method",
+      "path": "SERVICIOS/optimizador_inteligente_produccion.py",
+      "qualified_name": "OptimizadorInteligenteProduccion._optimizar_pasivos",
+      "start_line": 72
+    },
+    {
+      "end_line": 118,
+      "function_type": "method",
+      "id": "function:SERVICIOS.optimizador_inteligente_produccion.OptimizadorInteligenteProduccion._optimizar_recursos",
+      "method_kind": "method",
+      "path": "SERVICIOS/optimizador_inteligente_produccion.py",
+      "qualified_name": "OptimizadorInteligenteProduccion._optimizar_recursos",
+      "start_line": 90
+    },
+    {
+      "end_line": 156,
+      "function_type": "method",
+      "id": "function:SERVICIOS.optimizador_inteligente_produccion.OptimizadorInteligenteProduccion._optimizar_retrasos",
+      "method_kind": "method",
+      "path": "SERVICIOS/optimizador_inteligente_produccion.py",
+      "qualified_name": "OptimizadorInteligenteProduccion._optimizar_retrasos",
+      "start_line": 138
+    },
+    {
+      "end_line": 192,
+      "function_type": "method",
+      "id": "function:SERVICIOS.optimizador_inteligente_produccion.OptimizadorInteligenteProduccion._resumen_recursos",
+      "method_kind": "method",
+      "path": "SERVICIOS/optimizador_inteligente_produccion.py",
+      "qualified_name": "OptimizadorInteligenteProduccion._resumen_recursos",
+      "start_line": 183
+    },
+    {
+      "end_line": 59,
+      "function_type": "method",
+      "id": "function:SERVICIOS.optimizador_inteligente_produccion.OptimizadorInteligenteProduccion.exportar_optimizacion",
+      "method_kind": "method",
+      "path": "SERVICIOS/optimizador_inteligente_produccion.py",
+      "qualified_name": "OptimizadorInteligenteProduccion.exportar_optimizacion",
+      "start_line": 56
+    },
+    {
+      "end_line": 54,
+      "function_type": "method",
+      "id": "function:SERVICIOS.optimizador_inteligente_produccion.OptimizadorInteligenteProduccion.optimizar_produccion",
+      "method_kind": "method",
+      "path": "SERVICIOS/optimizador_inteligente_produccion.py",
+      "qualified_name": "OptimizadorInteligenteProduccion.optimizar_produccion",
+      "start_line": 28
+    },
+    {
+      "end_line": 24,
+      "function_type": "method",
+      "id": "function:SERVICIOS.planificador_diario_produccion_461.PlanificadorDiarioProduccion461.__init__",
+      "method_kind": "method",
+      "path": "SERVICIOS/planificador_diario_produccion_461.py",
+      "qualified_name": "PlanificadorDiarioProduccion461.__init__",
+      "start_line": 18
+    },
+    {
+      "end_line": 78,
+      "function_type": "method",
+      "id": "function:SERVICIOS.planificador_diario_produccion_461.PlanificadorDiarioProduccion461._crear_bloques",
+      "method_kind": "method",
+      "path": "SERVICIOS/planificador_diario_produccion_461.py",
+      "qualified_name": "PlanificadorDiarioProduccion461._crear_bloques",
+      "start_line": 59
+    },
+    {
+      "end_line": 57,
+      "function_type": "method",
+      "id": "function:SERVICIOS.planificador_diario_produccion_461.PlanificadorDiarioProduccion461.exportar_plan",
+      "method_kind": "method",
+      "path": "SERVICIOS/planificador_diario_produccion_461.py",
+      "qualified_name": "PlanificadorDiarioProduccion461.exportar_plan",
+      "start_line": 54
+    },
+    {
+      "end_line": 52,
+      "function_type": "method",
+      "id": "function:SERVICIOS.planificador_diario_produccion_461.PlanificadorDiarioProduccion461.planificar_dia",
+      "method_kind": "method",
+      "path": "SERVICIOS/planificador_diario_produccion_461.py",
+      "qualified_name": "PlanificadorDiarioProduccion461.planificar_dia",
+      "start_line": 26
+    },
+    {
+      "end_line": 29,
+      "function_type": "method",
+      "id": "function:SERVICIOS.planificador_inteligente_produccion.PlanificadorInteligenteProduccion.__init__",
+      "method_kind": "method",
+      "path": "SERVICIOS/planificador_inteligente_produccion.py",
+      "qualified_name": "PlanificadorInteligenteProduccion.__init__",
+      "start_line": 25
+    },
+    {
+      "end_line": 213,
+      "function_type": "method",
+      "id": "function:SERVICIOS.planificador_inteligente_produccion.PlanificadorInteligenteProduccion._calcular_capacidad_activa_dia",
+      "method_kind": "method",
+      "path": "SERVICIOS/planificador_inteligente_produccion.py",
+      "qualified_name": "PlanificadorInteligenteProduccion._calcular_capacidad_activa_dia",
+      "start_line": 212
+    },
+    {
+      "end_line": 218,
+      "function_type": "method",
+      "id": "function:SERVICIOS.planificador_inteligente_produccion.PlanificadorInteligenteProduccion._calcular_ocupacion",
+      "method_kind": "method",
+      "path": "SERVICIOS/planificador_inteligente_produccion.py",
+      "qualified_name": "PlanificadorInteligenteProduccion._calcular_ocupacion",
+      "start_line": 215
+    },
+    {
+      "end_line": 258,
+      "function_type": "method",
+      "id": "function:SERVICIOS.planificador_inteligente_produccion.PlanificadorInteligenteProduccion._cargar_elaboraciones_base",
+      "method_kind": "method",
+      "path": "SERVICIOS/planificador_inteligente_produccion.py",
+      "qualified_name": "PlanificadorInteligenteProduccion._cargar_elaboraciones_base",
+      "start_line": 255
+    },
+    {
+      "end_line": 253,
+      "function_type": "method",
+      "id": "function:SERVICIOS.planificador_inteligente_produccion.PlanificadorInteligenteProduccion._contar",
+      "method_kind": "method",
+      "path": "SERVICIOS/planificador_inteligente_produccion.py",
+      "qualified_name": "PlanificadorInteligenteProduccion._contar",
+      "start_line": 248
+    },
+    {
+      "end_line": 148,
+      "function_type": "method",
+      "id": "function:SERVICIOS.planificador_inteligente_produccion.PlanificadorInteligenteProduccion._crear_bloques_item",
+      "method_kind": "method",
+      "path": "SERVICIOS/planificador_inteligente_produccion.py",
+      "qualified_name": "PlanificadorInteligenteProduccion._crear_bloques_item",
+      "start_line": 95
+    },
+    {
+      "end_line": 243,
+      "function_type": "method",
+      "id": "function:SERVICIOS.planificador_inteligente_produccion.PlanificadorInteligenteProduccion._crear_resumen",
+      "method_kind": "method",
+      "path": "SERVICIOS/planificador_inteligente_produccion.py",
+      "qualified_name": "PlanificadorInteligenteProduccion._crear_resumen",
+      "start_line": 227
+    },
+    {
+      "end_line": 169,
+      "function_type": "method",
+      "id": "function:SERVICIOS.planificador_inteligente_produccion.PlanificadorInteligenteProduccion._normalizar",
+      "method_kind": "method",
+      "path": "SERVICIOS/planificador_inteligente_produccion.py",
+      "qualified_name": "PlanificadorInteligenteProduccion._normalizar",
+      "start_line": 150
+    },
+    {
+      "end_line": 206,
+      "function_type": "method",
+      "id": "function:SERVICIOS.planificador_inteligente_produccion.PlanificadorInteligenteProduccion._normalizar_lista",
+      "method_kind": "method",
+      "path": "SERVICIOS/planificador_inteligente_produccion.py",
+      "qualified_name": "PlanificadorInteligenteProduccion._normalizar_lista",
+      "start_line": 203
+    },
+    {
+      "end_line": 210,
+      "function_type": "method",
+      "id": "function:SERVICIOS.planificador_inteligente_produccion.PlanificadorInteligenteProduccion._normalizar_prioridad",
+      "method_kind": "method",
+      "path": "SERVICIOS/planificador_inteligente_produccion.py",
+      "qualified_name": "PlanificadorInteligenteProduccion._normalizar_prioridad",
+      "start_line": 208
+    },
+    {
+      "end_line": 201,
+      "function_type": "method",
+      "id": "function:SERVICIOS.planificador_inteligente_produccion.PlanificadorInteligenteProduccion._ordenar_por_dependencias_y_prioridad",
+      "method_kind": "method",
+      "path": "SERVICIOS/planificador_inteligente_produccion.py",
+      "qualified_name": "PlanificadorInteligenteProduccion._ordenar_por_dependencias_y_prioridad",
+      "start_line": 171
+    },
+    {
+      "end_line": 246,
+      "function_type": "method",
+      "id": "function:SERVICIOS.planificador_inteligente_produccion.PlanificadorInteligenteProduccion._recurso_principal",
+      "method_kind": "method",
+      "path": "SERVICIOS/planificador_inteligente_produccion.py",
+      "qualified_name": "PlanificadorInteligenteProduccion._recurso_principal",
+      "start_line": 245
+    },
+    {
+      "end_line": 225,
+      "function_type": "method",
+      "id": "function:SERVICIOS.planificador_inteligente_produccion.PlanificadorInteligenteProduccion._resolver_estado_ocupacion",
+      "method_kind": "method",
+      "path": "SERVICIOS/planificador_inteligente_produccion.py",
+      "qualified_name": "PlanificadorInteligenteProduccion._resolver_estado_ocupacion",
+      "start_line": 220
+    },
+    {
+      "end_line": 93,
+      "function_type": "method",
+      "id": "function:SERVICIOS.planificador_inteligente_produccion.PlanificadorInteligenteProduccion.exportar_planificacion",
+      "method_kind": "method",
+      "path": "SERVICIOS/planificador_inteligente_produccion.py",
+      "qualified_name": "PlanificadorInteligenteProduccion.exportar_planificacion",
+      "start_line": 87
+    },
+    {
+      "end_line": 85,
+      "function_type": "method",
+      "id": "function:SERVICIOS.planificador_inteligente_produccion.PlanificadorInteligenteProduccion.planificar_produccion",
+      "method_kind": "method",
+      "path": "SERVICIOS/planificador_inteligente_produccion.py",
+      "qualified_name": "PlanificadorInteligenteProduccion.planificar_produccion",
+      "start_line": 31
+    },
+    {
+      "end_line": 22,
+      "function_type": "method",
+      "id": "function:SERVICIOS.planificador_produccion_556d.PlanificadorProduccion556D.__init__",
+      "method_kind": "method",
+      "path": "SERVICIOS/planificador_produccion_556d.py",
+      "qualified_name": "PlanificadorProduccion556D.__init__",
+      "start_line": 20
+    },
+    {
+      "end_line": 57,
+      "function_type": "method",
+      "id": "function:SERVICIOS.planificador_produccion_556d.PlanificadorProduccion556D._fases",
+      "method_kind": "staticmethod",
+      "path": "SERVICIOS/planificador_produccion_556d.py",
+      "qualified_name": "PlanificadorProduccion556D._fases",
+      "start_line": 25
+    },
+    {
+      "end_line": 72,
+      "function_type": "method",
+      "id": "function:SERVICIOS.planificador_produccion_556d.PlanificadorProduccion556D.generar",
+      "method_kind": "method",
+      "path": "SERVICIOS/planificador_produccion_556d.py",
+      "qualified_name": "PlanificadorProduccion556D.generar",
+      "start_line": 59
+    },
+    {
+      "end_line": 31,
+      "function_type": "method",
+      "id": "function:SERVICIOS.produccion_guiada_piloto_13.ProduccionGuiadaPiloto13.__init__",
+      "method_kind": "method",
+      "path": "SERVICIOS/produccion_guiada_piloto_13.py",
+      "qualified_name": "ProduccionGuiadaPiloto13.__init__",
+      "start_line": 29
+    },
+    {
+      "end_line": 147,
+      "function_type": "method",
+      "id": "function:SERVICIOS.produccion_guiada_piloto_13.ProduccionGuiadaPiloto13._estado_texto",
+      "method_kind": "staticmethod",
+      "path": "SERVICIOS/produccion_guiada_piloto_13.py",
+      "qualified_name": "ProduccionGuiadaPiloto13._estado_texto",
+      "start_line": 141
+    },
+    {
+      "end_line": 161,
+      "function_type": "method",
+      "id": "function:SERVICIOS.produccion_guiada_piloto_13.ProduccionGuiadaPiloto13._hm",
+      "method_kind": "staticmethod",
+      "path": "SERVICIOS/produccion_guiada_piloto_13.py",
+      "qualified_name": "ProduccionGuiadaPiloto13._hm",
+      "start_line": 157
+    },
+    {
+      "end_line": 108,
+      "function_type": "method",
+      "id": "function:SERVICIOS.produccion_guiada_piloto_13.ProduccionGuiadaPiloto13._humanizar_tarea",
+      "method_kind": "method",
+      "path": "SERVICIOS/produccion_guiada_piloto_13.py",
+      "qualified_name": "ProduccionGuiadaPiloto13._humanizar_tarea",
+      "start_line": 86
+    },
+    {
+      "end_line": 168,
+      "function_type": "method",
+      "id": "function:SERVICIOS.produccion_guiada_piloto_13.ProduccionGuiadaPiloto13._lectura_general",
+      "method_kind": "staticmethod",
+      "path": "SERVICIOS/produccion_guiada_piloto_13.py",
+      "qualified_name": "ProduccionGuiadaPiloto13._lectura_general",
+      "start_line": 164
+    },
+    {
+      "end_line": 128,
+      "function_type": "method",
+      "id": "function:SERVICIOS.produccion_guiada_piloto_13.ProduccionGuiadaPiloto13._orden_plan",
+      "method_kind": "staticmethod",
+      "path": "SERVICIOS/produccion_guiada_piloto_13.py",
+      "qualified_name": "ProduccionGuiadaPiloto13._orden_plan",
+      "start_line": 126
+    },
+    {
+      "end_line": 138,
+      "function_type": "method",
+      "id": "function:SERVICIOS.produccion_guiada_piloto_13.ProduccionGuiadaPiloto13._orden_tarea",
+      "method_kind": "staticmethod",
+      "path": "SERVICIOS/produccion_guiada_piloto_13.py",
+      "qualified_name": "ProduccionGuiadaPiloto13._orden_tarea",
+      "start_line": 131
+    },
+    {
+      "end_line": 154,
+      "function_type": "method",
+      "id": "function:SERVICIOS.produccion_guiada_piloto_13.ProduccionGuiadaPiloto13._prioridad_texto",
+      "method_kind": "staticmethod",
+      "path": "SERVICIOS/produccion_guiada_piloto_13.py",
+      "qualified_name": "ProduccionGuiadaPiloto13._prioridad_texto",
+      "start_line": 150
+    },
+    {
+      "end_line": 123,
+      "function_type": "method",
+      "id": "function:SERVICIOS.produccion_guiada_piloto_13.ProduccionGuiadaPiloto13._siguiente_accion",
+      "method_kind": "method",
+      "path": "SERVICIOS/produccion_guiada_piloto_13.py",
+      "qualified_name": "ProduccionGuiadaPiloto13._siguiente_accion",
+      "start_line": 110
+    },
+    {
+      "end_line": 77,
+      "function_type": "method",
+      "id": "function:SERVICIOS.produccion_guiada_piloto_13.ProduccionGuiadaPiloto13.actualizar_avance",
+      "method_kind": "method",
+      "path": "SERVICIOS/produccion_guiada_piloto_13.py",
+      "qualified_name": "ProduccionGuiadaPiloto13.actualizar_avance",
+      "start_line": 76
+    },
+    {
+      "end_line": 62,
+      "function_type": "method",
+      "id": "function:SERVICIOS.produccion_guiada_piloto_13.ProduccionGuiadaPiloto13.construir_panel",
+      "method_kind": "method",
+      "path": "SERVICIOS/produccion_guiada_piloto_13.py",
+      "qualified_name": "ProduccionGuiadaPiloto13.construir_panel",
+      "start_line": 38
+    },
+    {
+      "end_line": 74,
+      "function_type": "method",
+      "id": "function:SERVICIOS.produccion_guiada_piloto_13.ProduccionGuiadaPiloto13.finalizar",
+      "method_kind": "method",
+      "path": "SERVICIOS/produccion_guiada_piloto_13.py",
+      "qualified_name": "ProduccionGuiadaPiloto13.finalizar",
+      "start_line": 73
+    },
+    {
+      "end_line": 65,
+      "function_type": "method",
+      "id": "function:SERVICIOS.produccion_guiada_piloto_13.ProduccionGuiadaPiloto13.iniciar",
+      "method_kind": "method",
+      "path": "SERVICIOS/produccion_guiada_piloto_13.py",
+      "qualified_name": "ProduccionGuiadaPiloto13.iniciar",
+      "start_line": 64
+    },
+    {
+      "end_line": 36,
+      "function_type": "method",
+      "id": "function:SERVICIOS.produccion_guiada_piloto_13.ProduccionGuiadaPiloto13.listar_planes_operativos",
+      "method_kind": "method",
+      "path": "SERVICIOS/produccion_guiada_piloto_13.py",
+      "qualified_name": "ProduccionGuiadaPiloto13.listar_planes_operativos",
+      "start_line": 33
+    },
+    {
+      "end_line": 68,
+      "function_type": "method",
+      "id": "function:SERVICIOS.produccion_guiada_piloto_13.ProduccionGuiadaPiloto13.pausar",
+      "method_kind": "method",
+      "path": "SERVICIOS/produccion_guiada_piloto_13.py",
+      "qualified_name": "ProduccionGuiadaPiloto13.pausar",
+      "start_line": 67
+    },
+    {
+      "end_line": 71,
+      "function_type": "method",
+      "id": "function:SERVICIOS.produccion_guiada_piloto_13.ProduccionGuiadaPiloto13.reanudar",
+      "method_kind": "method",
+      "path": "SERVICIOS/produccion_guiada_piloto_13.py",
+      "qualified_name": "ProduccionGuiadaPiloto13.reanudar",
+      "start_line": 70
+    },
+    {
+      "end_line": 81,
+      "function_type": "method",
+      "id": "function:SERVICIOS.produccion_guiada_piloto_13.ProduccionGuiadaPiloto13.registrar_incidencia",
+      "method_kind": "method",
+      "path": "SERVICIOS/produccion_guiada_piloto_13.py",
+      "qualified_name": "ProduccionGuiadaPiloto13.registrar_incidencia",
+      "start_line": 79
+    },
+    {
+      "end_line": 84,
+      "function_type": "method",
+      "id": "function:SERVICIOS.produccion_guiada_piloto_13.ProduccionGuiadaPiloto13.resolver_bloqueo",
+      "method_kind": "method",
+      "path": "SERVICIOS/produccion_guiada_piloto_13.py",
+      "qualified_name": "ProduccionGuiadaPiloto13.resolver_bloqueo",
+      "start_line": 83
+    },
+    {
+      "end_line": 25,
+      "function_type": "method",
+      "id": "function:SERVICIOS.produccion_stock_piloto_14.ProduccionStockPiloto14.__init__",
+      "method_kind": "method",
+      "path": "SERVICIOS/produccion_stock_piloto_14.py",
+      "qualified_name": "ProduccionStockPiloto14.__init__",
+      "start_line": 20
+    },
+    {
+      "end_line": 138,
+      "function_type": "method",
+      "id": "function:SERVICIOS.produccion_stock_piloto_14.ProduccionStockPiloto14._buscar_escandallo",
+      "method_kind": "method",
+      "path": "SERVICIOS/produccion_stock_piloto_14.py",
+      "qualified_name": "ProduccionStockPiloto14._buscar_escandallo",
+      "start_line": 134
+    },
+    {
+      "end_line": 145,
+      "function_type": "method",
+      "id": "function:SERVICIOS.produccion_stock_piloto_14.ProduccionStockPiloto14._clave",
+      "method_kind": "staticmethod",
+      "path": "SERVICIOS/produccion_stock_piloto_14.py",
+      "qualified_name": "ProduccionStockPiloto14._clave",
+      "start_line": 144
+    },
+    {
+      "end_line": 141,
+      "function_type": "method",
+      "id": "function:SERVICIOS.produccion_stock_piloto_14.ProduccionStockPiloto14._disponible",
+      "method_kind": "method",
+      "path": "SERVICIOS/produccion_stock_piloto_14.py",
+      "qualified_name": "ProduccionStockPiloto14._disponible",
+      "start_line": 140
+    },
+    {
+      "end_line": 154,
+      "function_type": "method",
+      "id": "function:SERVICIOS.produccion_stock_piloto_14.ProduccionStockPiloto14._guardar_registro",
+      "method_kind": "method",
+      "path": "SERVICIOS/produccion_stock_piloto_14.py",
+      "qualified_name": "ProduccionStockPiloto14._guardar_registro",
+      "start_line": 150
+    }
+  ],
+  "task": "Producción"
+}

@@ -1,0 +1,2976 @@
+{
+  "classes": [
+    {
+      "end_line": 2870,
+      "id": "class:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI",
+      "start_line": 7
+    },
+    {
+      "end_line": 379,
+      "id": "class:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.MOTORES.motor_compras.MotorCompras",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras",
+      "start_line": 8
+    },
+    {
+      "end_line": 32,
+      "id": "class:MODELOS.analisis_compras.AnalisisInteligenteCompras",
+      "path": "MODELOS/analisis_compras.py",
+      "qualified_name": "AnalisisInteligenteCompras",
+      "start_line": 11
+    },
+    {
+      "end_line": 35,
+      "id": "class:MODELOS.anomalias_compras.AnomaliaCompra",
+      "path": "MODELOS/anomalias_compras.py",
+      "qualified_name": "AnomaliaCompra",
+      "start_line": 13
+    },
+    {
+      "end_line": 50,
+      "id": "class:MODELOS.anomalias_compras.InformeAnomaliasCompras",
+      "path": "MODELOS/anomalias_compras.py",
+      "qualified_name": "InformeAnomaliasCompras",
+      "start_line": 39
+    },
+    {
+      "end_line": 41,
+      "id": "class:MODELOS.cierre_inteligencia_compras.InformeCierreInteligenciaCompras",
+      "path": "MODELOS/cierre_inteligencia_compras.py",
+      "qualified_name": "InformeCierreInteligenciaCompras",
+      "start_line": 26
+    },
+    {
+      "end_line": 23,
+      "id": "class:MODELOS.cierre_inteligencia_compras.ValidacionModuloCompras",
+      "path": "MODELOS/cierre_inteligencia_compras.py",
+      "qualified_name": "ValidacionModuloCompras",
+      "start_line": 11
+    },
+    {
+      "end_line": 28,
+      "id": "class:MODELOS.comparador_proveedores_inteligente.ComparacionProveedor",
+      "path": "MODELOS/comparador_proveedores_inteligente.py",
+      "qualified_name": "ComparacionProveedor",
+      "start_line": 11
+    },
+    {
+      "end_line": 37,
+      "id": "class:MODELOS.comparador_proveedores_inteligente.InformeComparadorProveedores",
+      "path": "MODELOS/comparador_proveedores_inteligente.py",
+      "qualified_name": "InformeComparadorProveedores",
+      "start_line": 31
+    },
+    {
+      "end_line": 84,
+      "id": "class:MODELOS.compras.LineaPedido",
+      "path": "MODELOS/compras.py",
+      "qualified_name": "LineaPedido",
+      "start_line": 61
+    },
+    {
+      "end_line": 57,
+      "id": "class:MODELOS.compras.NecesidadCompra",
+      "path": "MODELOS/compras.py",
+      "qualified_name": "NecesidadCompra",
+      "start_line": 18
+    },
+    {
+      "end_line": 161,
+      "id": "class:MODELOS.compras.PedidoSugerido",
+      "path": "MODELOS/compras.py",
+      "qualified_name": "PedidoSugerido",
+      "start_line": 88
+    },
+    {
+      "end_line": 28,
+      "id": "class:MODELOS.motor_pedidos_inteligente.DecisionPedidoInteligente",
+      "path": "MODELOS/motor_pedidos_inteligente.py",
+      "qualified_name": "DecisionPedidoInteligente",
+      "start_line": 11
+    },
+    {
+      "end_line": 40,
+      "id": "class:MODELOS.motor_pedidos_inteligente.InformeMotorPedidosInteligente",
+      "path": "MODELOS/motor_pedidos_inteligente.py",
+      "qualified_name": "InformeMotorPedidosInteligente",
+      "start_line": 31
+    },
+    {
+      "end_line": 41,
+      "id": "class:MODELOS.proveedores_pdf.DeteccionProveedorPDF",
+      "path": "MODELOS/proveedores_pdf.py",
+      "qualified_name": "DeteccionProveedorPDF",
+      "start_line": 24
+    },
+    {
+      "end_line": 21,
+      "id": "class:MODELOS.proveedores_pdf.ProveedorPDF",
+      "path": "MODELOS/proveedores_pdf.py",
+      "qualified_name": "ProveedorPDF",
+      "start_line": 11
+    },
+    {
+      "end_line": 22,
+      "id": "class:MODELOS.recomendaciones_compras.RecomendacionCompra",
+      "path": "MODELOS/recomendaciones_compras.py",
+      "qualified_name": "RecomendacionCompra",
+      "start_line": 9
+    },
+    {
+      "end_line": 408,
+      "id": "class:MOTORES.motor_compras.MotorCompras",
+      "path": "MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras",
+      "start_line": 8
+    },
+    {
+      "end_line": 22,
+      "id": "class:PIPELINES.pipeline_analizador_inteligente_compras.PipelineAnalizadorInteligenteCompras",
+      "path": "PIPELINES/pipeline_analizador_inteligente_compras.py",
+      "qualified_name": "PipelineAnalizadorInteligenteCompras",
+      "start_line": 9
+    },
+    {
+      "end_line": 54,
+      "id": "class:PIPELINES.pipeline_aprendizaje_relacion_proveedor.PipelineAprendizajeRelacionProveedor",
+      "path": "PIPELINES/pipeline_aprendizaje_relacion_proveedor.py",
+      "qualified_name": "PipelineAprendizajeRelacionProveedor",
+      "start_line": 7
+    },
+    {
+      "end_line": 17,
+      "id": "class:PIPELINES.pipeline_cierre_inteligencia_compras.PipelineCierreInteligenciaCompras",
+      "path": "PIPELINES/pipeline_cierre_inteligencia_compras.py",
+      "qualified_name": "PipelineCierreInteligenciaCompras",
+      "start_line": 5
+    },
+    {
+      "end_line": 20,
+      "id": "class:PIPELINES.pipeline_comparador_inteligente_proveedores.PipelineComparadorInteligenteProveedores",
+      "path": "PIPELINES/pipeline_comparador_inteligente_proveedores.py",
+      "qualified_name": "PipelineComparadorInteligenteProveedores",
+      "start_line": 5
+    },
+    {
+      "end_line": 21,
+      "id": "class:PIPELINES.pipeline_comparador_proveedores_precios.PipelineComparadorProveedoresPrecios",
+      "path": "PIPELINES/pipeline_comparador_proveedores_precios.py",
+      "qualified_name": "PipelineComparadorProveedoresPrecios",
+      "start_line": 5
+    },
+    {
+      "end_line": 114,
+      "id": "class:PIPELINES.pipeline_compras.PipelineCompras",
+      "path": "PIPELINES/pipeline_compras.py",
+      "qualified_name": "PipelineCompras",
+      "start_line": 7
+    },
+    {
+      "end_line": 54,
+      "id": "class:PIPELINES.pipeline_detector_anomalias_compras.PipelineDetectorAnomaliasCompras",
+      "path": "PIPELINES/pipeline_detector_anomalias_compras.py",
+      "qualified_name": "PipelineDetectorAnomaliasCompras",
+      "start_line": 7
+    },
+    {
+      "end_line": 68,
+      "id": "class:PIPELINES.pipeline_motor_inteligente_pedidos.PipelineMotorInteligentePedidos",
+      "path": "PIPELINES/pipeline_motor_inteligente_pedidos.py",
+      "qualified_name": "PipelineMotorInteligentePedidos",
+      "start_line": 7
+    },
+    {
+      "end_line": 15,
+      "id": "class:PIPELINES.pipeline_motor_recomendaciones_compras.PipelineMotorRecomendacionesCompras",
+      "path": "PIPELINES/pipeline_motor_recomendaciones_compras.py",
+      "qualified_name": "PipelineMotorRecomendacionesCompras",
+      "start_line": 3
+    },
+    {
+      "end_line": 27,
+      "id": "class:PIPELINES.pipeline_proveedores_pdf.PipelineProveedoresPDF",
+      "path": "PIPELINES/pipeline_proveedores_pdf.py",
+      "qualified_name": "PipelineProveedoresPDF",
+      "start_line": 5
+    },
+    {
+      "end_line": 142,
+      "id": "class:SERVICIOS.analizador_inteligente_compras.AnalizadorInteligenteCompras",
+      "path": "SERVICIOS/analizador_inteligente_compras.py",
+      "qualified_name": "AnalizadorInteligenteCompras",
+      "start_line": 22
+    },
+    {
+      "end_line": 165,
+      "id": "class:SERVICIOS.aprendizaje_relacion_proveedor.AprendizajeRelacionProveedorArticulos",
+      "path": "SERVICIOS/aprendizaje_relacion_proveedor.py",
+      "qualified_name": "AprendizajeRelacionProveedorArticulos",
+      "start_line": 13
+    },
+    {
+      "end_line": 76,
+      "id": "class:SERVICIOS.cierre_inteligencia_compras.CierreInteligenciaCompras",
+      "path": "SERVICIOS/cierre_inteligencia_compras.py",
+      "qualified_name": "CierreInteligenciaCompras",
+      "start_line": 6
+    },
+    {
+      "end_line": 17,
+      "id": "class:SERVICIOS.clasificador_familias_proveedor_4112.CambioFamiliaProveedor",
+      "path": "SERVICIOS/clasificador_familias_proveedor_4112.py",
+      "qualified_name": "CambioFamiliaProveedor",
+      "start_line": 11
+    },
+    {
+      "end_line": 177,
+      "id": "class:SERVICIOS.clasificador_familias_proveedor_4112.ClasificadorFamiliasProveedor4112",
+      "path": "SERVICIOS/clasificador_familias_proveedor_4112.py",
+      "qualified_name": "ClasificadorFamiliasProveedor4112",
+      "start_line": 30
+    },
+    {
+      "end_line": 27,
+      "id": "class:SERVICIOS.clasificador_familias_proveedor_4112.InformeClasificacionProveedor",
+      "path": "SERVICIOS/clasificador_familias_proveedor_4112.py",
+      "qualified_name": "InformeClasificacionProveedor",
+      "start_line": 21
+    },
+    {
+      "end_line": 77,
+      "id": "class:SERVICIOS.comparador_inteligente_proveedores.ComparadorInteligenteProveedores",
+      "path": "SERVICIOS/comparador_inteligente_proveedores.py",
+      "qualified_name": "ComparadorInteligenteProveedores",
+      "start_line": 8
+    },
+    {
+      "end_line": 88,
+      "id": "class:SERVICIOS.comparador_proveedores_precios.ComparadorProveedoresPrecios",
+      "path": "SERVICIOS/comparador_proveedores_precios.py",
+      "qualified_name": "ComparadorProveedoresPrecios",
+      "start_line": 7
+    },
+    {
+      "end_line": 105,
+      "id": "class:SERVICIOS.conector_proveedores_real_554.ConectorProveedoresReal554",
+      "path": "SERVICIOS/conector_proveedores_real_554.py",
+      "qualified_name": "ConectorProveedoresReal554",
+      "start_line": 44
+    },
+    {
+      "end_line": 150,
+      "id": "class:SERVICIOS.confirmador_pedido_sugerido_436.ConfirmadorPedidoSugerido436",
+      "path": "SERVICIOS/confirmador_pedido_sugerido_436.py",
+      "qualified_name": "ConfirmadorPedidoSugerido436",
+      "start_line": 39
+    },
+    {
+      "end_line": 18,
+      "id": "class:SERVICIOS.confirmador_pedido_sugerido_436.LineaPedidoConfirmado",
+      "path": "SERVICIOS/confirmador_pedido_sugerido_436.py",
+      "qualified_name": "LineaPedidoConfirmado",
+      "start_line": 11
+    },
+    {
+      "end_line": 27,
+      "id": "class:SERVICIOS.confirmador_pedido_sugerido_436.PedidoConfirmado",
+      "path": "SERVICIOS/confirmador_pedido_sugerido_436.py",
+      "qualified_name": "PedidoConfirmado",
+      "start_line": 22
+    },
+    {
+      "end_line": 36,
+      "id": "class:SERVICIOS.confirmador_pedido_sugerido_436.ResultadoConfirmacionPedido",
+      "path": "SERVICIOS/confirmador_pedido_sugerido_436.py",
+      "qualified_name": "ResultadoConfirmacionPedido",
+      "start_line": 31
+    },
+    {
+      "end_line": 245,
+      "id": "class:SERVICIOS.detector_anomalias_compras.DetectorAnomaliasCompras",
+      "path": "SERVICIOS/detector_anomalias_compras.py",
+      "qualified_name": "DetectorAnomaliasCompras",
+      "start_line": 19
+    },
+    {
+      "end_line": 149,
+      "id": "class:SERVICIOS.detector_proveedores_pdf.DetectorProveedoresPDF",
+      "path": "SERVICIOS/detector_proveedores_pdf.py",
+      "qualified_name": "DetectorProveedoresPDF",
+      "start_line": 7
+    },
+    {
+      "end_line": 153,
+      "id": "class:SERVICIOS.editor_proveedores_422.EditorProveedores422",
+      "path": "SERVICIOS/editor_proveedores_422.py",
+      "qualified_name": "EditorProveedores422",
+      "start_line": 20
+    },
+    {
+      "end_line": 17,
+      "id": "class:SERVICIOS.editor_proveedores_422.ResultadoEdicionProveedor",
+      "path": "SERVICIOS/editor_proveedores_422.py",
+      "qualified_name": "ResultadoEdicionProveedor",
+      "start_line": 11
+    },
+    {
+      "end_line": 198,
+      "id": "class:SERVICIOS.entrada_stock_desde_pedido_438.EntradaStockDesdePedido438",
+      "path": "SERVICIOS/entrada_stock_desde_pedido_438.py",
+      "qualified_name": "EntradaStockDesdePedido438",
+      "start_line": 34
+    },
+    {
+      "end_line": 21,
+      "id": "class:SERVICIOS.entrada_stock_desde_pedido_438.LineaEntradaPedido",
+      "path": "SERVICIOS/entrada_stock_desde_pedido_438.py",
+      "qualified_name": "LineaEntradaPedido",
+      "start_line": 12
+    },
+    {
+      "end_line": 31,
+      "id": "class:SERVICIOS.entrada_stock_desde_pedido_438.ResultadoEntradaPedido",
+      "path": "SERVICIOS/entrada_stock_desde_pedido_438.py",
+      "qualified_name": "ResultadoEntradaPedido",
+      "start_line": 25
+    },
+    {
+      "end_line": 21,
+      "id": "class:SERVICIOS.integrador_compras_escandallos_555a.LineaCompraPropuesta",
+      "path": "SERVICIOS/integrador_compras_escandallos_555a.py",
+      "qualified_name": "LineaCompraPropuesta",
+      "start_line": 11
+    },
+    {
+      "end_line": 33,
+      "id": "class:SERVICIOS.motor_recomendaciones_compras.MotorRecomendacionesCompras",
+      "path": "SERVICIOS/motor_recomendaciones_compras.py",
+      "qualified_name": "MotorRecomendacionesCompras",
+      "start_line": 5
+    }
+  ],
+  "domain": "compras",
+  "functions": [
+    {
+      "end_line": 26,
+      "function_type": "function",
+      "id": "function:APP.clasificar_familias_proveedor_4112.main",
+      "path": "APP/clasificar_familias_proveedor_4112.py",
+      "qualified_name": "main",
+      "start_line": 13
+    },
+    {
+      "end_line": 10,
+      "function_type": "function",
+      "id": "function:APP.comparador_economico_proveedores_486.main",
+      "path": "APP/comparador_economico_proveedores_486.py",
+      "qualified_name": "main",
+      "start_line": 4
+    },
+    {
+      "end_line": 20,
+      "function_type": "function",
+      "id": "function:APP.compras_evento_474.main",
+      "path": "APP/compras_evento_474.py",
+      "qualified_name": "main",
+      "start_line": 8
+    },
+    {
+      "end_line": 25,
+      "function_type": "function",
+      "id": "function:APP.confirmar_pedido_sugerido_436.main",
+      "path": "APP/confirmar_pedido_sugerido_436.py",
+      "qualified_name": "main",
+      "start_line": 13
+    },
+    {
+      "end_line": 47,
+      "function_type": "function",
+      "id": "function:APP.editar_proveedor_422.main",
+      "path": "APP/editar_proveedor_422.py",
+      "qualified_name": "main",
+      "start_line": 23
+    },
+    {
+      "end_line": 20,
+      "function_type": "function",
+      "id": "function:APP.editar_proveedor_422.parsear_cambios",
+      "path": "APP/editar_proveedor_422.py",
+      "qualified_name": "parsear_cambios",
+      "start_line": 13
+    },
+    {
+      "end_line": 28,
+      "function_type": "function",
+      "id": "function:APP.entrada_stock_desde_pedido_438.main",
+      "path": "APP/entrada_stock_desde_pedido_438.py",
+      "qualified_name": "main",
+      "start_line": 13
+    },
+    {
+      "end_line": 30,
+      "function_type": "function",
+      "id": "function:APP.extraer_proveedores_421.main",
+      "path": "APP/extraer_proveedores_421.py",
+      "qualified_name": "main",
+      "start_line": 13
+    },
+    {
+      "end_line": 31,
+      "function_type": "function",
+      "id": "function:APP.informe_proveedores_423.main",
+      "path": "APP/informe_proveedores_423.py",
+      "qualified_name": "main",
+      "start_line": 13
+    },
+    {
+      "end_line": 32,
+      "function_type": "function",
+      "id": "function:APP.pedido_sugerido_stock_bajo_435.main",
+      "path": "APP/pedido_sugerido_stock_bajo_435.py",
+      "qualified_name": "main",
+      "start_line": 13
+    },
+    {
+      "end_line": 44,
+      "function_type": "function",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.TESTS.test_rr13_pulido_stock_compras.test_rr13_cancelar_necesidad_retira_linea_de_pedido_editable",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/TESTS/test_rr13_pulido_stock_compras.py",
+      "qualified_name": "test_rr13_cancelar_necesidad_retira_linea_de_pedido_editable",
+      "start_line": 28
+    },
+    {
+      "end_line": 25,
+      "function_type": "function",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.TESTS.test_rr13_pulido_stock_compras.test_rr13_editar_necesidad_sincroniza_pedido_abierto",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/TESTS/test_rr13_pulido_stock_compras.py",
+      "qualified_name": "test_rr13_editar_necesidad_sincroniza_pedido_abierto",
+      "start_line": 6
+    },
+    {
+      "end_line": 8,
+      "function_type": "function",
+      "id": "function:MODELOS.analisis_compras.nuevo_id",
+      "path": "MODELOS/analisis_compras.py",
+      "qualified_name": "nuevo_id",
+      "start_line": 7
+    },
+    {
+      "end_line": 9,
+      "function_type": "function",
+      "id": "function:MODELOS.anomalias_compras.nuevo_id",
+      "path": "MODELOS/anomalias_compras.py",
+      "qualified_name": "nuevo_id",
+      "start_line": 8
+    },
+    {
+      "end_line": 8,
+      "function_type": "function",
+      "id": "function:MODELOS.cierre_inteligencia_compras.nuevo_id",
+      "path": "MODELOS/cierre_inteligencia_compras.py",
+      "qualified_name": "nuevo_id",
+      "start_line": 7
+    },
+    {
+      "end_line": 8,
+      "function_type": "function",
+      "id": "function:MODELOS.comparador_proveedores_inteligente.nuevo_id",
+      "path": "MODELOS/comparador_proveedores_inteligente.py",
+      "qualified_name": "nuevo_id",
+      "start_line": 7
+    },
+    {
+      "end_line": 14,
+      "function_type": "function",
+      "id": "function:MODELOS.compras.ahora",
+      "path": "MODELOS/compras.py",
+      "qualified_name": "ahora",
+      "start_line": 13
+    },
+    {
+      "end_line": 10,
+      "function_type": "function",
+      "id": "function:MODELOS.compras.nuevo_id",
+      "path": "MODELOS/compras.py",
+      "qualified_name": "nuevo_id",
+      "start_line": 9
+    },
+    {
+      "end_line": 8,
+      "function_type": "function",
+      "id": "function:MODELOS.motor_pedidos_inteligente.nuevo_id",
+      "path": "MODELOS/motor_pedidos_inteligente.py",
+      "qualified_name": "nuevo_id",
+      "start_line": 7
+    },
+    {
+      "end_line": 8,
+      "function_type": "function",
+      "id": "function:MODELOS.proveedores_pdf.nuevo_id",
+      "path": "MODELOS/proveedores_pdf.py",
+      "qualified_name": "nuevo_id",
+      "start_line": 7
+    },
+    {
+      "end_line": 6,
+      "function_type": "function",
+      "id": "function:MODELOS.recomendaciones_compras.nuevo_id",
+      "path": "MODELOS/recomendaciones_compras.py",
+      "qualified_name": "nuevo_id",
+      "start_line": 6
+    },
+    {
+      "end_line": 15,
+      "function_type": "function",
+      "id": "function:SERVICIOS.comparador_economico_proveedores_486.calcular_coste_total_proveedor",
+      "path": "SERVICIOS/comparador_economico_proveedores_486.py",
+      "qualified_name": "calcular_coste_total_proveedor",
+      "start_line": 6
+    },
+    {
+      "end_line": 22,
+      "function_type": "function",
+      "id": "function:SERVICIOS.comparador_economico_proveedores_486.comparar_proveedores",
+      "path": "SERVICIOS/comparador_economico_proveedores_486.py",
+      "qualified_name": "comparar_proveedores",
+      "start_line": 18
+    },
+    {
+      "end_line": 33,
+      "function_type": "function",
+      "id": "function:SERVICIOS.comparador_economico_proveedores_486.recomendacion_compra_proveedor",
+      "path": "SERVICIOS/comparador_economico_proveedores_486.py",
+      "qualified_name": "recomendacion_compra_proveedor",
+      "start_line": 25
+    },
+    {
+      "end_line": 8,
+      "function_type": "function",
+      "id": "function:SERVICIOS.compras_evento_474._num",
+      "path": "SERVICIOS/compras_evento_474.py",
+      "qualified_name": "_num",
+      "start_line": 4
+    },
+    {
+      "end_line": 31,
+      "function_type": "function",
+      "id": "function:SERVICIOS.compras_evento_474.calcular_necesidades_evento",
+      "path": "SERVICIOS/compras_evento_474.py",
+      "qualified_name": "calcular_necesidades_evento",
+      "start_line": 11
+    },
+    {
+      "end_line": 47,
+      "function_type": "function",
+      "id": "function:SERVICIOS.compras_evento_474.comparar_con_stock",
+      "path": "SERVICIOS/compras_evento_474.py",
+      "qualified_name": "comparar_con_stock",
+      "start_line": 34
+    },
+    {
+      "end_line": 68,
+      "function_type": "function",
+      "id": "function:SERVICIOS.compras_evento_474.generar_pedido_evento",
+      "path": "SERVICIOS/compras_evento_474.py",
+      "qualified_name": "generar_pedido_evento",
+      "start_line": 50
+    },
+    {
+      "end_line": 75,
+      "function_type": "function",
+      "id": "function:SERVICIOS.compras_evento_474.integrar_compras_evento",
+      "path": "SERVICIOS/compras_evento_474.py",
+      "qualified_name": "integrar_compras_evento",
+      "start_line": 71
+    },
+    {
+      "end_line": 21,
+      "function_type": "function",
+      "id": "function:SERVICIOS.conector_proveedores_real_554._load_list",
+      "path": "SERVICIOS/conector_proveedores_real_554.py",
+      "qualified_name": "_load_list",
+      "start_line": 16
+    },
+    {
+      "end_line": 13,
+      "function_type": "function",
+      "id": "function:SERVICIOS.conector_proveedores_real_554._norm",
+      "path": "SERVICIOS/conector_proveedores_real_554.py",
+      "qualified_name": "_norm",
+      "start_line": 10
+    },
+    {
+      "end_line": 26,
+      "function_type": "function",
+      "id": "function:SERVICIOS.conector_proveedores_real_554.es_consulta_proveedor_real_554",
+      "path": "SERVICIOS/conector_proveedores_real_554.py",
+      "qualified_name": "es_consulta_proveedor_real_554",
+      "start_line": 24
+    },
+    {
+      "end_line": 41,
+      "function_type": "function",
+      "id": "function:SERVICIOS.conector_proveedores_real_554.extraer_articulo_proveedor_554",
+      "path": "SERVICIOS/conector_proveedores_real_554.py",
+      "qualified_name": "extraer_articulo_proveedor_554",
+      "start_line": 29
+    },
+    {
+      "end_line": 138,
+      "function_type": "function",
+      "id": "function:SERVICIOS.conector_proveedores_real_554.formatear_proveedores_real_554",
+      "path": "SERVICIOS/conector_proveedores_real_554.py",
+      "qualified_name": "formatear_proveedores_real_554",
+      "start_line": 108
+    },
+    {
+      "end_line": 155,
+      "function_type": "function",
+      "id": "function:SERVICIOS.conector_proveedores_real_554.procesar_consulta_proveedores_real_554",
+      "path": "SERVICIOS/conector_proveedores_real_554.py",
+      "qualified_name": "procesar_consulta_proveedores_real_554",
+      "start_line": 141
+    },
+    {
+      "end_line": 164,
+      "function_type": "nested_function",
+      "id": "function:SERVICIOS.detector_anomalias_compras._detectar_articulos_desconocidos_en_datos.recorrer",
+      "path": "SERVICIOS/detector_anomalias_compras.py",
+      "qualified_name": "_detectar_articulos_desconocidos_en_datos.recorrer",
+      "start_line": 157
+    },
+    {
+      "end_line": 30,
+      "function_type": "function",
+      "id": "function:SERVICIOS.integrador_compras_escandallos_555a._leer_articulos",
+      "path": "SERVICIOS/integrador_compras_escandallos_555a.py",
+      "qualified_name": "_leer_articulos",
+      "start_line": 24
+    },
+    {
+      "end_line": 34,
+      "function_type": "function",
+      "id": "function:SERVICIOS.integrador_compras_escandallos_555a._normalizar",
+      "path": "SERVICIOS/integrador_compras_escandallos_555a.py",
+      "qualified_name": "_normalizar",
+      "start_line": 33
+    },
+    {
+      "end_line": 70,
+      "function_type": "function",
+      "id": "function:SERVICIOS.integrador_compras_escandallos_555a.preparar_compras_desde_faltantes",
+      "path": "SERVICIOS/integrador_compras_escandallos_555a.py",
+      "qualified_name": "preparar_compras_desde_faltantes",
+      "start_line": 37
+    },
+    {
+      "end_line": 27,
+      "function_type": "function",
+      "id": "function:TESTS.test_474_compras_evento.main",
+      "path": "TESTS/test_474_compras_evento.py",
+      "qualified_name": "main",
+      "start_line": 11
+    },
+    {
+      "end_line": 10,
+      "function_type": "function",
+      "id": "function:TESTS.test_508_afinador_compras_rentabilidad.assert_intencion",
+      "path": "TESTS/test_508_afinador_compras_rentabilidad.py",
+      "qualified_name": "assert_intencion",
+      "start_line": 4
+    },
+    {
+      "end_line": 27,
+      "function_type": "function",
+      "id": "function:TESTS.test_508_afinador_compras_rentabilidad.main",
+      "path": "TESTS/test_508_afinador_compras_rentabilidad.py",
+      "qualified_name": "main",
+      "start_line": 13
+    },
+    {
+      "end_line": 47,
+      "function_type": "function",
+      "id": "function:TESTS.test_604_c1_gestion_compras.test_c1_gestion_compras_persistencia_y_estados",
+      "path": "TESTS/test_604_c1_gestion_compras.py",
+      "qualified_name": "test_c1_gestion_compras_persistencia_y_estados",
+      "start_line": 6
+    },
+    {
+      "end_line": 55,
+      "function_type": "function",
+      "id": "function:TESTS.test_analizador_inteligente_compras.ejecutar_prueba",
+      "path": "TESTS/test_analizador_inteligente_compras.py",
+      "qualified_name": "ejecutar_prueba",
+      "start_line": 9
+    },
+    {
+      "end_line": 15,
+      "function_type": "function",
+      "id": "function:TESTS.test_cierre_inteligencia_compras.cargar_datos",
+      "path": "TESTS/test_cierre_inteligencia_compras.py",
+      "qualified_name": "cargar_datos",
+      "start_line": 8
+    },
+    {
+      "end_line": 24,
+      "function_type": "function",
+      "id": "function:TESTS.test_cierre_inteligencia_compras.ejecutar_prueba",
+      "path": "TESTS/test_cierre_inteligencia_compras.py",
+      "qualified_name": "ejecutar_prueba",
+      "start_line": 17
+    },
+    {
+      "end_line": 68,
+      "function_type": "function",
+      "id": "function:TESTS.test_detector_anomalias_compras.ejecutar_prueba",
+      "path": "TESTS/test_detector_anomalias_compras.py",
+      "qualified_name": "ejecutar_prueba",
+      "start_line": 10
+    },
+    {
+      "end_line": 64,
+      "function_type": "function",
+      "id": "function:TESTS.test_inteligencia_compras_3041_3042_3043_3044.ejecutar_prueba",
+      "path": "TESTS/test_inteligencia_compras_3041_3042_3043_3044.py",
+      "qualified_name": "ejecutar_prueba",
+      "start_line": 10
+    },
+    {
+      "end_line": 32,
+      "function_type": "function",
+      "id": "function:TESTS.test_inteligencia_compras_3041_3042_3043_3044_3045_3046.ejecutar_prueba",
+      "path": "TESTS/test_inteligencia_compras_3041_3042_3043_3044_3045_3046.py",
+      "qualified_name": "ejecutar_prueba",
+      "start_line": 8
+    },
+    {
+      "end_line": 16,
+      "function_type": "function",
+      "id": "function:TESTS.test_inteligencia_compras_3041_3042_3043_3044_3045_3046_3047_3048.cargar_datos",
+      "path": "TESTS/test_inteligencia_compras_3041_3042_3043_3044_3045_3046_3047_3048.py",
+      "qualified_name": "cargar_datos",
+      "start_line": 8
+    },
+    {
+      "end_line": 36,
+      "function_type": "function",
+      "id": "function:TESTS.test_inteligencia_compras_3041_3042_3043_3044_3045_3046_3047_3048.ejecutar_prueba",
+      "path": "TESTS/test_inteligencia_compras_3041_3042_3043_3044_3045_3046_3047_3048.py",
+      "qualified_name": "ejecutar_prueba",
+      "start_line": 18
+    },
+    {
+      "end_line": 14,
+      "function_type": "function",
+      "id": "function:TESTS.test_motor_recomendaciones_compras.ejecutar_prueba",
+      "path": "TESTS/test_motor_recomendaciones_compras.py",
+      "qualified_name": "ejecutar_prueba",
+      "start_line": 7
+    },
+    {
+      "end_line": 72,
+      "function_type": "function",
+      "id": "function:TESTS.test_pipeline_compras.ejecutar_prueba",
+      "path": "TESTS/test_pipeline_compras.py",
+      "qualified_name": "ejecutar_prueba",
+      "start_line": 13
+    },
+    {
+      "end_line": 13,
+      "function_type": "function",
+      "id": "function:TESTS.test_rr161b_compras_recepcion._crear_pedido",
+      "path": "TESTS/test_rr161b_compras_recepcion.py",
+      "qualified_name": "_crear_pedido",
+      "start_line": 7
+    },
+    {
+      "end_line": 83,
+      "function_type": "function",
+      "id": "function:TESTS.test_rr161b_compras_recepcion.test_rr161b_consola_propone_ultimo_coste_y_muestra_resumen",
+      "path": "TESTS/test_rr161b_compras_recepcion.py",
+      "qualified_name": "test_rr161b_consola_propone_ultimo_coste_y_muestra_resumen",
+      "start_line": 55
+    },
+    {
+      "end_line": 52,
+      "function_type": "function",
+      "id": "function:TESTS.test_rr161b_compras_recepcion.test_rr161b_recepcion_devuelve_datos_planos_y_guarda_precio",
+      "path": "TESTS/test_rr161b_compras_recepcion.py",
+      "qualified_name": "test_rr161b_recepcion_devuelve_datos_planos_y_guarda_precio",
+      "start_line": 30
+    },
+    {
+      "end_line": 27,
+      "function_type": "function",
+      "id": "function:TESTS.test_rr161b_compras_recepcion.test_rr161b_resumen_distingue_pendientes_libres_y_vinculadas",
+      "path": "TESTS/test_rr161b_compras_recepcion.py",
+      "qualified_name": "test_rr161b_resumen_distingue_pendientes_libres_y_vinculadas",
+      "start_line": 16
+    }
+  ],
+  "methods": [
+    {
+      "end_line": 20,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI.__init__",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI.__init__",
+      "start_line": 15
+    },
+    {
+      "end_line": 1783,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._agregar_ingrediente_escandallo",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._agregar_ingrediente_escandallo",
+      "start_line": 1760
+    },
+    {
+      "end_line": 1475,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._agregar_linea_pedido_compra",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._agregar_linea_pedido_compra",
+      "start_line": 1455
+    },
+    {
+      "end_line": 1044,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._ajustar_inventario_stock",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._ajustar_inventario_stock",
+      "start_line": 1028
+    },
+    {
+      "end_line": 1758,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._bucle_agregar_ingredientes",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._bucle_agregar_ingredientes",
+      "start_line": 1752
+    },
+    {
+      "end_line": 845,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._buscar_catalogo_articulos",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._buscar_catalogo_articulos",
+      "start_line": 833
+    },
+    {
+      "end_line": 1700,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._buscar_escandallo",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._buscar_escandallo",
+      "start_line": 1697
+    },
+    {
+      "end_line": 574,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._buscar_recetas_para_pase",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._buscar_recetas_para_pase",
+      "start_line": 531
+    },
+    {
+      "end_line": 339,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._buscar_y_seleccionar_evento",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._buscar_y_seleccionar_evento",
+      "start_line": 333
+    },
+    {
+      "end_line": 117,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._cabecera",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._cabecera",
+      "start_line": 114
+    },
+    {
+      "end_line": 1853,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._calcular_escandallo",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._calcular_escandallo",
+      "start_line": 1846
+    },
+    {
+      "end_line": 1837,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._cambiar_estado_escandallo",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._cambiar_estado_escandallo",
+      "start_line": 1832
+    },
+    {
+      "end_line": 1320,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._cambiar_estado_necesidad_compra",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._cambiar_estado_necesidad_compra",
+      "start_line": 1304
+    },
+    {
+      "end_line": 1555,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._cambiar_estado_pedido_compra",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._cambiar_estado_pedido_compra",
+      "start_line": 1538
+    },
+    {
+      "end_line": 803,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._cargar_catalogo_articulos",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._cargar_catalogo_articulos",
+      "start_line": 793
+    },
+    {
+      "end_line": 523,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._catalogo_recetas",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._catalogo_recetas",
+      "start_line": 519
+    },
+    {
+      "end_line": 661,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._continuar_evento",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._continuar_evento",
+      "start_line": 651
+    },
+    {
+      "end_line": 1104,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._corregir_ultima_entrada_stock",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._corregir_ultima_entrada_stock",
+      "start_line": 1092
+    },
+    {
+      "end_line": 831,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._crear_articulo_catalogo_stock",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._crear_articulo_catalogo_stock",
+      "start_line": 811
+    },
+    {
+      "end_line": 1689,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._crear_escandallo",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._crear_escandallo",
+      "start_line": 1670
+    },
+    {
+      "end_line": 312,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._crear_evento_rapido",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._crear_evento_rapido",
+      "start_line": 279
+    },
+    {
+      "end_line": 1360,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._diagnosticar_compras",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._diagnosticar_compras",
+      "start_line": 1350
+    },
+    {
+      "end_line": 1069,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._diagnosticar_stock_operativo",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._diagnosticar_stock_operativo",
+      "start_line": 1057
+    },
+    {
+      "end_line": 1830,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._duplicar_escandallo",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._duplicar_escandallo",
+      "start_line": 1822
+    },
+    {
+      "end_line": 415,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._duplicar_evento_activo",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._duplicar_evento_activo",
+      "start_line": 401
+    },
+    {
+      "end_line": 1453,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._editar_cabecera_pedido_compra",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._editar_cabecera_pedido_compra",
+      "start_line": 1444
+    },
+    {
+      "end_line": 383,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._editar_evento_activo",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._editar_evento_activo",
+      "start_line": 341
+    },
+    {
+      "end_line": 1732,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._editar_ficha_escandallo",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._editar_ficha_escandallo",
+      "start_line": 1713
+    },
+    {
+      "end_line": 1813,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._editar_ingrediente_escandallo",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._editar_ingrediente_escandallo",
+      "start_line": 1792
+    },
+    {
+      "end_line": 1521,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._editar_linea_pedido_compra",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._editar_linea_pedido_compra",
+      "start_line": 1493
+    },
+    {
+      "end_line": 1302,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._editar_necesidad_compra",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._editar_necesidad_compra",
+      "start_line": 1260
+    },
+    {
+      "end_line": 1790,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._elegir_linea",
+      "method_kind": "staticmethod",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._elegir_linea",
+      "start_line": 1786
+    },
+    {
+      "end_line": 1844,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._eliminar_escandallo",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._eliminar_escandallo",
+      "start_line": 1839
+    },
+    {
+      "end_line": 399,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._eliminar_evento_activo",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._eliminar_evento_activo",
+      "start_line": 386
+    },
+    {
+      "end_line": 1820,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._eliminar_ingrediente_escandallo",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._eliminar_ingrediente_escandallo",
+      "start_line": 1815
+    },
+    {
+      "end_line": 1536,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._eliminar_linea_pedido_compra",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._eliminar_linea_pedido_compra",
+      "start_line": 1523
+    },
+    {
+      "end_line": 1331,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._eliminar_necesidad_compra",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._eliminar_necesidad_compra",
+      "start_line": 1322
+    },
+    {
+      "end_line": 2870,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._escandallo_demo",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._escandallo_demo",
+      "start_line": 2840
+    },
+    {
+      "end_line": 1891,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._escandallo_operativo",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._escandallo_operativo",
+      "start_line": 1880
+    },
+    {
+      "end_line": 2708,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._estado_sistema",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._estado_sistema",
+      "start_line": 2704
+    },
+    {
+      "end_line": 1348,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._generar_pedidos_sugeridos_compra",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._generar_pedidos_sugeridos_compra",
+      "start_line": 1333
+    },
+    {
+      "end_line": 2648,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._gestionar_checklist_tarea",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._gestionar_checklist_tarea",
+      "start_line": 2614
+    },
+    {
+      "end_line": 1750,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._gestionar_ingredientes_escandallo",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._gestionar_ingredientes_escandallo",
+      "start_line": 1734
+    },
+    {
+      "end_line": 996,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._gestionar_lotes_stock",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._gestionar_lotes_stock",
+      "start_line": 970
+    },
+    {
+      "end_line": 649,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._gestionar_pases_evento_activo",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._gestionar_pases_evento_activo",
+      "start_line": 576
+    },
+    {
+      "end_line": 502,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._gestionar_servicios_evento_activo",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._gestionar_servicios_evento_activo",
+      "start_line": 444
+    },
+    {
+      "end_line": 2246,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._gestionar_tareas_plan",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._gestionar_tareas_plan",
+      "start_line": 2221
+    },
+    {
+      "end_line": 809,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._guardar_catalogo_articulos",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._guardar_catalogo_articulos",
+      "start_line": 805
+    },
+    {
+      "end_line": 160,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._hablar_host_ai",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._hablar_host_ai",
+      "start_line": 137
+    },
+    {
+      "end_line": 1936,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._historial_economico_escandallo",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._historial_economico_escandallo",
+      "start_line": 1928
+    },
+    {
+      "end_line": 1055,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._historial_movimientos_stock",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._historial_movimientos_stock",
+      "start_line": 1046
+    },
+    {
+      "end_line": 2657,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._hora_desde_minutos",
+      "method_kind": "staticmethod",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._hora_desde_minutos",
+      "start_line": 2651
+    },
+    {
+      "end_line": 1396,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._imprimir_detalle_pedido",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._imprimir_detalle_pedido",
+      "start_line": 1386
+    },
+    {
+      "end_line": 1648,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._imprimir_escandallos",
+      "method_kind": "staticmethod",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._imprimir_escandallos",
+      "start_line": 1642
+    },
+    {
+      "end_line": 261,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._imprimir_eventos",
+      "method_kind": "staticmethod",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._imprimir_eventos",
+      "start_line": 254
+    },
+    {
+      "end_line": 1229,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._imprimir_necesidades_compra",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._imprimir_necesidades_compra",
+      "start_line": 1221
+    },
+    {
+      "end_line": 1369,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._imprimir_pedidos_compra",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._imprimir_pedidos_compra",
+      "start_line": 1363
+    },
+    {
+      "end_line": 2218,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._imprimir_plan_produccion",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._imprimir_plan_produccion",
+      "start_line": 2211
+    },
+    {
+      "end_line": 2699,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._imprimir_planificacion_inteligente",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._imprimir_planificacion_inteligente",
+      "start_line": 2659
+    },
+    {
+      "end_line": 2041,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._imprimir_rentabilidad_evento",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._imprimir_rentabilidad_evento",
+      "start_line": 2036
+    },
+    {
+      "end_line": 1878,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._imprimir_resultado_escandallo_operativo",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._imprimir_resultado_escandallo_operativo",
+      "start_line": 1855
+    },
+    {
+      "end_line": 2058,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._imprimir_resumen_costes_evento",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._imprimir_resumen_costes_evento",
+      "start_line": 2043
+    },
+    {
+      "end_line": 1245,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._listar_buscar_necesidades_compra",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._listar_buscar_necesidades_compra",
+      "start_line": 1231
+    },
+    {
+      "end_line": 1695,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._listar_escandallos",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._listar_escandallos",
+      "start_line": 1691
+    },
+    {
+      "end_line": 517,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._listar_pases",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._listar_pases",
+      "start_line": 510
+    },
+    {
+      "end_line": 442,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._listar_servicios_evento_activo",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._listar_servicios_evento_activo",
+      "start_line": 431
+    },
+    {
+      "end_line": 331,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._listar_y_seleccionar_eventos",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._listar_y_seleccionar_eventos",
+      "start_line": 326
+    },
+    {
+      "end_line": 2832,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._menu_base_datos",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._menu_base_datos",
+      "start_line": 2814
+    },
+    {
+      "end_line": 1147,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._menu_compras",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._menu_compras",
+      "start_line": 1109
+    },
+    {
+      "end_line": 2033,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._menu_costes",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._menu_costes",
+      "start_line": 1941
+    },
+    {
+      "end_line": 2337,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._menu_ejecucion_produccion",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._menu_ejecucion_produccion",
+      "start_line": 2249
+    },
+    {
+      "end_line": 1639,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._menu_escandallos",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._menu_escandallos",
+      "start_line": 1606
+    },
+    {
+      "end_line": 239,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._menu_eventos",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._menu_eventos",
+      "start_line": 196
+    },
+    {
+      "end_line": 2812,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._menu_excel",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._menu_excel",
+      "start_line": 2712
+    },
+    {
+      "end_line": 2393,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._menu_optimizacion_basica",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._menu_optimizacion_basica",
+      "start_line": 2340
+    },
+    {
+      "end_line": 2446,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._menu_optimizacion_recursos",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._menu_optimizacion_recursos",
+      "start_line": 2395
+    },
+    {
+      "end_line": 2612,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._menu_panel_produccion",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._menu_panel_produccion",
+      "start_line": 2571
+    },
+    {
+      "end_line": 1442,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._menu_pedidos_compra",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._menu_pedidos_compra",
+      "start_line": 1398
+    },
+    {
+      "end_line": 132,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._menu_principal",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._menu_principal",
+      "start_line": 119
+    },
+    {
+      "end_line": 2153,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._menu_produccion_real",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._menu_produccion_real",
+      "start_line": 2062
+    },
+    {
+      "end_line": 2513,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._menu_recomendaciones_inteligentes",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._menu_recomendaciones_inteligentes",
+      "start_line": 2448
+    },
+    {
+      "end_line": 2569,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._menu_recomendaciones_inteligentes",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._menu_recomendaciones_inteligentes",
+      "start_line": 2515
+    },
+    {
+      "end_line": 791,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._menu_stock",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._menu_stock",
+      "start_line": 752
+    },
+    {
+      "end_line": 2209,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._mostrar_conflictos_produccion",
+      "method_kind": "staticmethod",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._mostrar_conflictos_produccion",
+      "start_line": 2201
+    },
+    {
+      "end_line": 251,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._mostrar_evento_activo",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._mostrar_evento_activo",
+      "start_line": 241
+    },
+    {
+      "end_line": 529,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._nombre_receta",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._nombre_receta",
+      "start_line": 525
+    },
+    {
+      "end_line": 890,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._normalizar_fecha_stock",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._normalizar_fecha_stock",
+      "start_line": 879
+    },
+    {
+      "end_line": 1170,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._normalizar_prioridad_compra",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._normalizar_prioridad_compra",
+      "start_line": 1161
+    },
+    {
+      "end_line": 318,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._pedir_estado",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._pedir_estado",
+      "start_line": 314
+    },
+    {
+      "end_line": 37,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._preguntar_si_no",
+      "method_kind": "staticmethod",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._preguntar_si_no",
+      "start_line": 23
+    },
+    {
+      "end_line": 191,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._probar_comprension_ia11",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._probar_comprension_ia11",
+      "start_line": 162
+    },
+    {
+      "end_line": 1592,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._recibir_pedido_compra",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._recibir_pedido_compra",
+      "start_line": 1557
+    },
+    {
+      "end_line": 926,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._registrar_entrada_stock",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._registrar_entrada_stock",
+      "start_line": 892
+    },
+    {
+      "end_line": 1026,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._registrar_merma_stock",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._registrar_merma_stock",
+      "start_line": 1013
+    },
+    {
+      "end_line": 1208,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._registrar_necesidad_compra",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._registrar_necesidad_compra",
+      "start_line": 1172
+    },
+    {
+      "end_line": 936,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._registrar_varias_entradas_stock",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._registrar_varias_entradas_stock",
+      "start_line": 928
+    },
+    {
+      "end_line": 1219,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._registrar_varias_necesidades_compra",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._registrar_varias_necesidades_compra",
+      "start_line": 1210
+    },
+    {
+      "end_line": 2838,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._requiere_evento",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._requiere_evento",
+      "start_line": 2834
+    },
+    {
+      "end_line": 1090,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._resumen_operativo_stock",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._resumen_operativo_stock",
+      "start_line": 1071
+    },
+    {
+      "end_line": 1159,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._seleccionar_articulo_compra",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._seleccionar_articulo_compra",
+      "start_line": 1149
+    },
+    {
+      "end_line": 877,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._seleccionar_articulo_stock",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._seleccionar_articulo_stock",
+      "start_line": 847
+    },
+    {
+      "end_line": 78,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._seleccionar_con_activo",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._seleccionar_con_activo",
+      "start_line": 59
+    },
+    {
+      "end_line": 57,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._seleccionar_elemento",
+      "method_kind": "staticmethod",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._seleccionar_elemento",
+      "start_line": 40
+    },
+    {
+      "end_line": 1668,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._seleccionar_escandallo",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._seleccionar_escandallo",
+      "start_line": 1650
+    },
+    {
+      "end_line": 277,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._seleccionar_evento_de_lista",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._seleccionar_evento_de_lista",
+      "start_line": 263
+    },
+    {
+      "end_line": 1011,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._seleccionar_item_stock_actual",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._seleccionar_item_stock_actual",
+      "start_line": 998
+    },
+    {
+      "end_line": 1491,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._seleccionar_linea_pedido_compra",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._seleccionar_linea_pedido_compra",
+      "start_line": 1477
+    },
+    {
+      "end_line": 1258,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._seleccionar_necesidad_compra",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._seleccionar_necesidad_compra",
+      "start_line": 1247
+    },
+    {
+      "end_line": 1384,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._seleccionar_pedido_compra",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._seleccionar_pedido_compra",
+      "start_line": 1371
+    },
+    {
+      "end_line": 2198,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._seleccionar_plan_produccion",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._seleccionar_plan_produccion",
+      "start_line": 2155
+    },
+    {
+      "end_line": 429,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._seleccionar_por_numero",
+      "method_kind": "staticmethod",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._seleccionar_por_numero",
+      "start_line": 418
+    },
+    {
+      "end_line": 508,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._seleccionar_servicio_evento_activo",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._seleccionar_servicio_evento_activo",
+      "start_line": 504
+    },
+    {
+      "end_line": 1926,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._simular_escandallo",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._simular_escandallo",
+      "start_line": 1893
+    },
+    {
+      "end_line": 323,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._valor_editable",
+      "method_kind": "staticmethod",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._valor_editable",
+      "start_line": 321
+    },
+    {
+      "end_line": 1711,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._ver_detalle_escandallo",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._ver_detalle_escandallo",
+      "start_line": 1702
+    },
+    {
+      "end_line": 716,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._ver_ficha_evento_activo",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._ver_ficha_evento_activo",
+      "start_line": 695
+    },
+    {
+      "end_line": 1601,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._ver_historial_pedido_compra",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._ver_historial_pedido_compra",
+      "start_line": 1594
+    },
+    {
+      "end_line": 693,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._ver_linea_temporal_evento_activo",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._ver_linea_temporal_evento_activo",
+      "start_line": 663
+    },
+    {
+      "end_line": 747,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._ver_resumen_ejecutivo_evento_activo",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._ver_resumen_ejecutivo_evento_activo",
+      "start_line": 718
+    },
+    {
+      "end_line": 968,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI._ver_stock_actual_con_filtros",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI._ver_stock_actual_con_filtros",
+      "start_line": 938
+    },
+    {
+      "end_line": 112,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.APP.consola.AppConsolaHostAI.ejecutar",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/APP/consola.py",
+      "qualified_name": "AppConsolaHostAI.ejecutar",
+      "start_line": 80
+    },
+    {
+      "end_line": 15,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.MOTORES.motor_compras.MotorCompras.__init__",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras.__init__",
+      "start_line": 11
+    },
+    {
+      "end_line": 31,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.MOTORES.motor_compras.MotorCompras._cargar",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras._cargar",
+      "start_line": 17
+    },
+    {
+      "end_line": 37,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.MOTORES.motor_compras.MotorCompras._guardar",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras._guardar",
+      "start_line": 33
+    },
+    {
+      "end_line": 379,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.MOTORES.motor_compras.MotorCompras._lectura_pedidos",
+      "method_kind": "staticmethod",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras._lectura_pedidos",
+      "start_line": 375
+    },
+    {
+      "end_line": 167,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.MOTORES.motor_compras.MotorCompras._necesidades_ya_asignadas",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras._necesidades_ya_asignadas",
+      "start_line": 161
+    },
+    {
+      "end_line": 372,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.MOTORES.motor_compras.MotorCompras._obtener_linea",
+      "method_kind": "staticmethod",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras._obtener_linea",
+      "start_line": 368
+    },
+    {
+      "end_line": 365,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.MOTORES.motor_compras.MotorCompras._pedido_editable",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras._pedido_editable",
+      "start_line": 359
+    },
+    {
+      "end_line": 126,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.MOTORES.motor_compras.MotorCompras._sincronizar_necesidad_en_pedidos",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras._sincronizar_necesidad_en_pedidos",
+      "start_line": 101
+    },
+    {
+      "end_line": 239,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.MOTORES.motor_compras.MotorCompras.agregar_linea_pedido",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras.agregar_linea_pedido",
+      "start_line": 231
+    },
+    {
+      "end_line": 80,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.MOTORES.motor_compras.MotorCompras.buscar_necesidades",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras.buscar_necesidades",
+      "start_line": 70
+    },
+    {
+      "end_line": 149,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.MOTORES.motor_compras.MotorCompras.cambiar_estado",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras.cambiar_estado",
+      "start_line": 128
+    },
+    {
+      "end_line": 283,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.MOTORES.motor_compras.MotorCompras.cambiar_estado_pedido",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras.cambiar_estado_pedido",
+      "start_line": 267
+    },
+    {
+      "end_line": 357,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.MOTORES.motor_compras.MotorCompras.diagnosticar_compras",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras.diagnosticar_compras",
+      "start_line": 333
+    },
+    {
+      "end_line": 255,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.MOTORES.motor_compras.MotorCompras.editar_linea_pedido",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras.editar_linea_pedido",
+      "start_line": 241
+    },
+    {
+      "end_line": 99,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.MOTORES.motor_compras.MotorCompras.editar_necesidad",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras.editar_necesidad",
+      "start_line": 82
+    },
+    {
+      "end_line": 229,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.MOTORES.motor_compras.MotorCompras.editar_pedido",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras.editar_pedido",
+      "start_line": 221
+    },
+    {
+      "end_line": 265,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.MOTORES.motor_compras.MotorCompras.eliminar_linea_pedido",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras.eliminar_linea_pedido",
+      "start_line": 257
+    },
+    {
+      "end_line": 156,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.MOTORES.motor_compras.MotorCompras.eliminar_necesidad",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras.eliminar_necesidad",
+      "start_line": 151
+    },
+    {
+      "end_line": 202,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.MOTORES.motor_compras.MotorCompras.generar_pedidos_sugeridos",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras.generar_pedidos_sugeridos",
+      "start_line": 169
+    },
+    {
+      "end_line": 331,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.MOTORES.motor_compras.MotorCompras.historial_pedido",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras.historial_pedido",
+      "start_line": 327
+    },
+    {
+      "end_line": 68,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.MOTORES.motor_compras.MotorCompras.listar_necesidades",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras.listar_necesidades",
+      "start_line": 61
+    },
+    {
+      "end_line": 219,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.MOTORES.motor_compras.MotorCompras.listar_pedidos",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras.listar_pedidos",
+      "start_line": 207
+    },
+    {
+      "end_line": 59,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.MOTORES.motor_compras.MotorCompras.obtener",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras.obtener",
+      "start_line": 58
+    },
+    {
+      "end_line": 205,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.MOTORES.motor_compras.MotorCompras.obtener_pedido",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras.obtener_pedido",
+      "start_line": 204
+    },
+    {
+      "end_line": 325,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.MOTORES.motor_compras.MotorCompras.recibir_pedido",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras.recibir_pedido",
+      "start_line": 285
+    },
+    {
+      "end_line": 56,
+      "function_type": "method",
+      "id": "function:HOST_AI_RR13_PULIDO_STOCK_COMPRAS.MOTORES.motor_compras.MotorCompras.registrar_necesidad",
+      "method_kind": "method",
+      "path": "HOST_AI_RR13_PULIDO_STOCK_COMPRAS/MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras.registrar_necesidad",
+      "start_line": 42
+    },
+    {
+      "end_line": 29,
+      "function_type": "method",
+      "id": "function:MODELOS.analisis_compras.AnalisisInteligenteCompras.__post_init__",
+      "method_kind": "method",
+      "path": "MODELOS/analisis_compras.py",
+      "qualified_name": "AnalisisInteligenteCompras.__post_init__",
+      "start_line": 25
+    },
+    {
+      "end_line": 32,
+      "function_type": "method",
+      "id": "function:MODELOS.analisis_compras.AnalisisInteligenteCompras.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/analisis_compras.py",
+      "qualified_name": "AnalisisInteligenteCompras.to_dict",
+      "start_line": 31
+    },
+    {
+      "end_line": 32,
+      "function_type": "method",
+      "id": "function:MODELOS.anomalias_compras.AnomaliaCompra.__post_init__",
+      "method_kind": "method",
+      "path": "MODELOS/anomalias_compras.py",
+      "qualified_name": "AnomaliaCompra.__post_init__",
+      "start_line": 28
+    },
+    {
+      "end_line": 35,
+      "function_type": "method",
+      "id": "function:MODELOS.anomalias_compras.AnomaliaCompra.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/anomalias_compras.py",
+      "qualified_name": "AnomaliaCompra.to_dict",
+      "start_line": 34
+    },
+    {
+      "end_line": 50,
+      "function_type": "method",
+      "id": "function:MODELOS.anomalias_compras.InformeAnomaliasCompras.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/anomalias_compras.py",
+      "qualified_name": "InformeAnomaliasCompras.to_dict",
+      "start_line": 49
+    },
+    {
+      "end_line": 40,
+      "function_type": "method",
+      "id": "function:MODELOS.cierre_inteligencia_compras.InformeCierreInteligenciaCompras.__post_init__",
+      "method_kind": "method",
+      "path": "MODELOS/cierre_inteligencia_compras.py",
+      "qualified_name": "InformeCierreInteligenciaCompras.__post_init__",
+      "start_line": 38
+    },
+    {
+      "end_line": 41,
+      "function_type": "method",
+      "id": "function:MODELOS.cierre_inteligencia_compras.InformeCierreInteligenciaCompras.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/cierre_inteligencia_compras.py",
+      "qualified_name": "InformeCierreInteligenciaCompras.to_dict",
+      "start_line": 41
+    },
+    {
+      "end_line": 22,
+      "function_type": "method",
+      "id": "function:MODELOS.cierre_inteligencia_compras.ValidacionModuloCompras.__post_init__",
+      "method_kind": "method",
+      "path": "MODELOS/cierre_inteligencia_compras.py",
+      "qualified_name": "ValidacionModuloCompras.__post_init__",
+      "start_line": 20
+    },
+    {
+      "end_line": 23,
+      "function_type": "method",
+      "id": "function:MODELOS.cierre_inteligencia_compras.ValidacionModuloCompras.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/cierre_inteligencia_compras.py",
+      "qualified_name": "ValidacionModuloCompras.to_dict",
+      "start_line": 23
+    },
+    {
+      "end_line": 27,
+      "function_type": "method",
+      "id": "function:MODELOS.comparador_proveedores_inteligente.ComparacionProveedor.__post_init__",
+      "method_kind": "method",
+      "path": "MODELOS/comparador_proveedores_inteligente.py",
+      "qualified_name": "ComparacionProveedor.__post_init__",
+      "start_line": 25
+    },
+    {
+      "end_line": 28,
+      "function_type": "method",
+      "id": "function:MODELOS.comparador_proveedores_inteligente.ComparacionProveedor.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/comparador_proveedores_inteligente.py",
+      "qualified_name": "ComparacionProveedor.to_dict",
+      "start_line": 28
+    },
+    {
+      "end_line": 37,
+      "function_type": "method",
+      "id": "function:MODELOS.comparador_proveedores_inteligente.InformeComparadorProveedores.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/comparador_proveedores_inteligente.py",
+      "qualified_name": "InformeComparadorProveedores.to_dict",
+      "start_line": 37
+    },
+    {
+      "end_line": 76,
+      "function_type": "method",
+      "id": "function:MODELOS.compras.LineaPedido.__post_init__",
+      "method_kind": "method",
+      "path": "MODELOS/compras.py",
+      "qualified_name": "LineaPedido.__post_init__",
+      "start_line": 72
+    },
+    {
+      "end_line": 81,
+      "function_type": "method",
+      "id": "function:MODELOS.compras.LineaPedido.from_dict",
+      "method_kind": "classmethod",
+      "path": "MODELOS/compras.py",
+      "qualified_name": "LineaPedido.from_dict",
+      "start_line": 79
+    },
+    {
+      "end_line": 84,
+      "function_type": "method",
+      "id": "function:MODELOS.compras.LineaPedido.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/compras.py",
+      "qualified_name": "LineaPedido.to_dict",
+      "start_line": 83
+    },
+    {
+      "end_line": 46,
+      "function_type": "method",
+      "id": "function:MODELOS.compras.NecesidadCompra.__post_init__",
+      "method_kind": "method",
+      "path": "MODELOS/compras.py",
+      "qualified_name": "NecesidadCompra.__post_init__",
+      "start_line": 35
+    },
+    {
+      "end_line": 51,
+      "function_type": "method",
+      "id": "function:MODELOS.compras.NecesidadCompra.from_dict",
+      "method_kind": "classmethod",
+      "path": "MODELOS/compras.py",
+      "qualified_name": "NecesidadCompra.from_dict",
+      "start_line": 49
+    },
+    {
+      "end_line": 57,
+      "function_type": "method",
+      "id": "function:MODELOS.compras.NecesidadCompra.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/compras.py",
+      "qualified_name": "NecesidadCompra.to_dict",
+      "start_line": 56
+    },
+    {
+      "end_line": 54,
+      "function_type": "method",
+      "id": "function:MODELOS.compras.NecesidadCompra.tocar",
+      "method_kind": "method",
+      "path": "MODELOS/compras.py",
+      "qualified_name": "NecesidadCompra.tocar",
+      "start_line": 53
+    },
+    {
+      "end_line": 114,
+      "function_type": "method",
+      "id": "function:MODELOS.compras.PedidoSugerido.__post_init__",
+      "method_kind": "method",
+      "path": "MODELOS/compras.py",
+      "qualified_name": "PedidoSugerido.__post_init__",
+      "start_line": 102
+    },
+    {
+      "end_line": 135,
+      "function_type": "method",
+      "id": "function:MODELOS.compras.PedidoSugerido.from_dict",
+      "method_kind": "classmethod",
+      "path": "MODELOS/compras.py",
+      "qualified_name": "PedidoSugerido.from_dict",
+      "start_line": 117
+    },
+    {
+      "end_line": 145,
+      "function_type": "method",
+      "id": "function:MODELOS.compras.PedidoSugerido.importe_estimado",
+      "method_kind": "method",
+      "path": "MODELOS/compras.py",
+      "qualified_name": "PedidoSugerido.importe_estimado",
+      "start_line": 144
+    },
+    {
+      "end_line": 161,
+      "function_type": "method",
+      "id": "function:MODELOS.compras.PedidoSugerido.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/compras.py",
+      "qualified_name": "PedidoSugerido.to_dict",
+      "start_line": 147
+    },
+    {
+      "end_line": 139,
+      "function_type": "method",
+      "id": "function:MODELOS.compras.PedidoSugerido.tocar",
+      "method_kind": "method",
+      "path": "MODELOS/compras.py",
+      "qualified_name": "PedidoSugerido.tocar",
+      "start_line": 137
+    },
+    {
+      "end_line": 142,
+      "function_type": "method",
+      "id": "function:MODELOS.compras.PedidoSugerido.total_lineas",
+      "method_kind": "method",
+      "path": "MODELOS/compras.py",
+      "qualified_name": "PedidoSugerido.total_lineas",
+      "start_line": 141
+    },
+    {
+      "end_line": 27,
+      "function_type": "method",
+      "id": "function:MODELOS.motor_pedidos_inteligente.DecisionPedidoInteligente.__post_init__",
+      "method_kind": "method",
+      "path": "MODELOS/motor_pedidos_inteligente.py",
+      "qualified_name": "DecisionPedidoInteligente.__post_init__",
+      "start_line": 25
+    },
+    {
+      "end_line": 28,
+      "function_type": "method",
+      "id": "function:MODELOS.motor_pedidos_inteligente.DecisionPedidoInteligente.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/motor_pedidos_inteligente.py",
+      "qualified_name": "DecisionPedidoInteligente.to_dict",
+      "start_line": 28
+    },
+    {
+      "end_line": 40,
+      "function_type": "method",
+      "id": "function:MODELOS.motor_pedidos_inteligente.InformeMotorPedidosInteligente.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/motor_pedidos_inteligente.py",
+      "qualified_name": "InformeMotorPedidosInteligente.to_dict",
+      "start_line": 40
+    },
+    {
+      "end_line": 39,
+      "function_type": "method",
+      "id": "function:MODELOS.proveedores_pdf.DeteccionProveedorPDF.__post_init__",
+      "method_kind": "method",
+      "path": "MODELOS/proveedores_pdf.py",
+      "qualified_name": "DeteccionProveedorPDF.__post_init__",
+      "start_line": 35
+    },
+    {
+      "end_line": 41,
+      "function_type": "method",
+      "id": "function:MODELOS.proveedores_pdf.DeteccionProveedorPDF.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/proveedores_pdf.py",
+      "qualified_name": "DeteccionProveedorPDF.to_dict",
+      "start_line": 40
+    },
+    {
+      "end_line": 21,
+      "function_type": "method",
+      "id": "function:MODELOS.proveedores_pdf.ProveedorPDF.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/proveedores_pdf.py",
+      "qualified_name": "ProveedorPDF.to_dict",
+      "start_line": 20
+    },
+    {
+      "end_line": 21,
+      "function_type": "method",
+      "id": "function:MODELOS.recomendaciones_compras.RecomendacionCompra.__post_init__",
+      "method_kind": "method",
+      "path": "MODELOS/recomendaciones_compras.py",
+      "qualified_name": "RecomendacionCompra.__post_init__",
+      "start_line": 19
+    },
+    {
+      "end_line": 22,
+      "function_type": "method",
+      "id": "function:MODELOS.recomendaciones_compras.RecomendacionCompra.to_dict",
+      "method_kind": "method",
+      "path": "MODELOS/recomendaciones_compras.py",
+      "qualified_name": "RecomendacionCompra.to_dict",
+      "start_line": 22
+    },
+    {
+      "end_line": 15,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_compras.MotorCompras.__init__",
+      "method_kind": "method",
+      "path": "MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras.__init__",
+      "start_line": 11
+    },
+    {
+      "end_line": 31,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_compras.MotorCompras._cargar",
+      "method_kind": "method",
+      "path": "MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras._cargar",
+      "start_line": 17
+    },
+    {
+      "end_line": 37,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_compras.MotorCompras._guardar",
+      "method_kind": "method",
+      "path": "MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras._guardar",
+      "start_line": 33
+    },
+    {
+      "end_line": 408,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_compras.MotorCompras._lectura_pedidos",
+      "method_kind": "staticmethod",
+      "path": "MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras._lectura_pedidos",
+      "start_line": 404
+    },
+    {
+      "end_line": 180,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_compras.MotorCompras._necesidades_ya_asignadas",
+      "method_kind": "method",
+      "path": "MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras._necesidades_ya_asignadas",
+      "start_line": 174
+    },
+    {
+      "end_line": 401,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_compras.MotorCompras._obtener_linea",
+      "method_kind": "staticmethod",
+      "path": "MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras._obtener_linea",
+      "start_line": 397
+    },
+    {
+      "end_line": 394,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_compras.MotorCompras._pedido_editable",
+      "method_kind": "method",
+      "path": "MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras._pedido_editable",
+      "start_line": 388
+    },
+    {
+      "end_line": 126,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_compras.MotorCompras._sincronizar_necesidad_en_pedidos",
+      "method_kind": "method",
+      "path": "MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras._sincronizar_necesidad_en_pedidos",
+      "start_line": 101
+    },
+    {
+      "end_line": 252,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_compras.MotorCompras.agregar_linea_pedido",
+      "method_kind": "method",
+      "path": "MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras.agregar_linea_pedido",
+      "start_line": 244
+    },
+    {
+      "end_line": 80,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_compras.MotorCompras.buscar_necesidades",
+      "method_kind": "method",
+      "path": "MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras.buscar_necesidades",
+      "start_line": 70
+    },
+    {
+      "end_line": 149,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_compras.MotorCompras.cambiar_estado",
+      "method_kind": "method",
+      "path": "MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras.cambiar_estado",
+      "start_line": 128
+    },
+    {
+      "end_line": 296,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_compras.MotorCompras.cambiar_estado_pedido",
+      "method_kind": "method",
+      "path": "MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras.cambiar_estado_pedido",
+      "start_line": 280
+    },
+    {
+      "end_line": 386,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_compras.MotorCompras.diagnosticar_compras",
+      "method_kind": "method",
+      "path": "MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras.diagnosticar_compras",
+      "start_line": 362
+    },
+    {
+      "end_line": 268,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_compras.MotorCompras.editar_linea_pedido",
+      "method_kind": "method",
+      "path": "MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras.editar_linea_pedido",
+      "start_line": 254
+    },
+    {
+      "end_line": 99,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_compras.MotorCompras.editar_necesidad",
+      "method_kind": "method",
+      "path": "MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras.editar_necesidad",
+      "start_line": 82
+    },
+    {
+      "end_line": 242,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_compras.MotorCompras.editar_pedido",
+      "method_kind": "method",
+      "path": "MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras.editar_pedido",
+      "start_line": 234
+    },
+    {
+      "end_line": 278,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_compras.MotorCompras.eliminar_linea_pedido",
+      "method_kind": "method",
+      "path": "MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras.eliminar_linea_pedido",
+      "start_line": 270
+    },
+    {
+      "end_line": 156,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_compras.MotorCompras.eliminar_necesidad",
+      "method_kind": "method",
+      "path": "MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras.eliminar_necesidad",
+      "start_line": 151
+    },
+    {
+      "end_line": 215,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_compras.MotorCompras.generar_pedidos_sugeridos",
+      "method_kind": "method",
+      "path": "MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras.generar_pedidos_sugeridos",
+      "start_line": 182
+    },
+    {
+      "end_line": 360,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_compras.MotorCompras.historial_pedido",
+      "method_kind": "method",
+      "path": "MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras.historial_pedido",
+      "start_line": 356
+    },
+    {
+      "end_line": 68,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_compras.MotorCompras.listar_necesidades",
+      "method_kind": "method",
+      "path": "MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras.listar_necesidades",
+      "start_line": 61
+    },
+    {
+      "end_line": 232,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_compras.MotorCompras.listar_pedidos",
+      "method_kind": "method",
+      "path": "MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras.listar_pedidos",
+      "start_line": 220
+    },
+    {
+      "end_line": 59,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_compras.MotorCompras.obtener",
+      "method_kind": "method",
+      "path": "MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras.obtener",
+      "start_line": 58
+    },
+    {
+      "end_line": 218,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_compras.MotorCompras.obtener_pedido",
+      "method_kind": "method",
+      "path": "MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras.obtener_pedido",
+      "start_line": 217
+    },
+    {
+      "end_line": 354,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_compras.MotorCompras.recibir_pedido",
+      "method_kind": "method",
+      "path": "MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras.recibir_pedido",
+      "start_line": 298
+    },
+    {
+      "end_line": 56,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_compras.MotorCompras.registrar_necesidad",
+      "method_kind": "method",
+      "path": "MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras.registrar_necesidad",
+      "start_line": 42
+    },
+    {
+      "end_line": 169,
+      "function_type": "method",
+      "id": "function:MOTORES.motor_compras.MotorCompras.resumen_necesidades",
+      "method_kind": "method",
+      "path": "MOTORES/motor_compras.py",
+      "qualified_name": "MotorCompras.resumen_necesidades",
+      "start_line": 159
+    },
+    {
+      "end_line": 22,
+      "function_type": "method",
+      "id": "function:PIPELINES.pipeline_analizador_inteligente_compras.PipelineAnalizadorInteligenteCompras._ejecutar",
+      "method_kind": "method",
+      "path": "PIPELINES/pipeline_analizador_inteligente_compras.py",
+      "qualified_name": "PipelineAnalizadorInteligenteCompras._ejecutar",
+      "start_line": 14
+    },
+    {
+      "end_line": 54,
+      "function_type": "method",
+      "id": "function:PIPELINES.pipeline_aprendizaje_relacion_proveedor.PipelineAprendizajeRelacionProveedor._ejecutar",
+      "method_kind": "method",
+      "path": "PIPELINES/pipeline_aprendizaje_relacion_proveedor.py",
+      "qualified_name": "PipelineAprendizajeRelacionProveedor._ejecutar",
+      "start_line": 12
+    },
+    {
+      "end_line": 17,
+      "function_type": "method",
+      "id": "function:PIPELINES.pipeline_cierre_inteligencia_compras.PipelineCierreInteligenciaCompras._ejecutar",
+      "method_kind": "method",
+      "path": "PIPELINES/pipeline_cierre_inteligencia_compras.py",
+      "qualified_name": "PipelineCierreInteligenciaCompras._ejecutar",
+      "start_line": 9
+    },
+    {
+      "end_line": 20,
+      "function_type": "method",
+      "id": "function:PIPELINES.pipeline_comparador_inteligente_proveedores.PipelineComparadorInteligenteProveedores._ejecutar",
+      "method_kind": "method",
+      "path": "PIPELINES/pipeline_comparador_inteligente_proveedores.py",
+      "qualified_name": "PipelineComparadorInteligenteProveedores._ejecutar",
+      "start_line": 9
+    },
+    {
+      "end_line": 21,
+      "function_type": "method",
+      "id": "function:PIPELINES.pipeline_comparador_proveedores_precios.PipelineComparadorProveedoresPrecios._ejecutar",
+      "method_kind": "method",
+      "path": "PIPELINES/pipeline_comparador_proveedores_precios.py",
+      "qualified_name": "PipelineComparadorProveedoresPrecios._ejecutar",
+      "start_line": 10
+    },
+    {
+      "end_line": 114,
+      "function_type": "method",
+      "id": "function:PIPELINES.pipeline_compras.PipelineCompras._ejecutar",
+      "method_kind": "method",
+      "path": "PIPELINES/pipeline_compras.py",
+      "qualified_name": "PipelineCompras._ejecutar",
+      "start_line": 18
+    },
+    {
+      "end_line": 54,
+      "function_type": "method",
+      "id": "function:PIPELINES.pipeline_detector_anomalias_compras.PipelineDetectorAnomaliasCompras._ejecutar",
+      "method_kind": "method",
+      "path": "PIPELINES/pipeline_detector_anomalias_compras.py",
+      "qualified_name": "PipelineDetectorAnomaliasCompras._ejecutar",
+      "start_line": 31
+    },
+    {
+      "end_line": 29,
+      "function_type": "method",
+      "id": "function:PIPELINES.pipeline_detector_anomalias_compras.PipelineDetectorAnomaliasCompras._resultado_accion_no_implementada",
+      "method_kind": "method",
+      "path": "PIPELINES/pipeline_detector_anomalias_compras.py",
+      "qualified_name": "PipelineDetectorAnomaliasCompras._resultado_accion_no_implementada",
+      "start_line": 22
+    },
+    {
+      "end_line": 68,
+      "function_type": "method",
+      "id": "function:PIPELINES.pipeline_motor_inteligente_pedidos.PipelineMotorInteligentePedidos._ejecutar",
+      "method_kind": "method",
+      "path": "PIPELINES/pipeline_motor_inteligente_pedidos.py",
+      "qualified_name": "PipelineMotorInteligentePedidos._ejecutar",
+      "start_line": 27
+    },
+    {
+      "end_line": 25,
+      "function_type": "method",
+      "id": "function:PIPELINES.pipeline_motor_inteligente_pedidos.PipelineMotorInteligentePedidos._resultado_accion_no_implementada",
+      "method_kind": "method",
+      "path": "PIPELINES/pipeline_motor_inteligente_pedidos.py",
+      "qualified_name": "PipelineMotorInteligentePedidos._resultado_accion_no_implementada",
+      "start_line": 18
+    },
+    {
+      "end_line": 15,
+      "function_type": "method",
+      "id": "function:PIPELINES.pipeline_motor_recomendaciones_compras.PipelineMotorRecomendacionesCompras._ejecutar",
+      "method_kind": "method",
+      "path": "PIPELINES/pipeline_motor_recomendaciones_compras.py",
+      "qualified_name": "PipelineMotorRecomendacionesCompras._ejecutar",
+      "start_line": 7
+    },
+    {
+      "end_line": 27,
+      "function_type": "method",
+      "id": "function:PIPELINES.pipeline_proveedores_pdf.PipelineProveedoresPDF._ejecutar",
+      "method_kind": "method",
+      "path": "PIPELINES/pipeline_proveedores_pdf.py",
+      "qualified_name": "PipelineProveedoresPDF._ejecutar",
+      "start_line": 10
+    },
+    {
+      "end_line": 29,
+      "function_type": "method",
+      "id": "function:SERVICIOS.analizador_inteligente_compras.AnalizadorInteligenteCompras.__init__",
+      "method_kind": "method",
+      "path": "SERVICIOS/analizador_inteligente_compras.py",
+      "qualified_name": "AnalizadorInteligenteCompras.__init__",
+      "start_line": 25
+    },
+    {
+      "end_line": 115,
+      "function_type": "method",
+      "id": "function:SERVICIOS.analizador_inteligente_compras.AnalizadorInteligenteCompras._analizar_articulos_stock",
+      "method_kind": "method",
+      "path": "SERVICIOS/analizador_inteligente_compras.py",
+      "qualified_name": "AnalizadorInteligenteCompras._analizar_articulos_stock",
+      "start_line": 93
+    },
+    {
+      "end_line": 130,
+      "function_type": "method",
+      "id": "function:SERVICIOS.analizador_inteligente_compras.AnalizadorInteligenteCompras._analizar_gasto_precios",
+      "method_kind": "method",
+      "path": "SERVICIOS/analizador_inteligente_compras.py",
+      "qualified_name": "AnalizadorInteligenteCompras._analizar_gasto_precios",
+      "start_line": 117
+    },
+    {
+      "end_line": 142,
+      "function_type": "method",
+      "id": "function:SERVICIOS.analizador_inteligente_compras.AnalizadorInteligenteCompras._generar_avisos",
+      "method_kind": "method",
+      "path": "SERVICIOS/analizador_inteligente_compras.py",
+      "qualified_name": "AnalizadorInteligenteCompras._generar_avisos",
+      "start_line": 132
+    },
+    {
+      "end_line": 88,
+      "function_type": "method",
+      "id": "function:SERVICIOS.analizador_inteligente_compras.AnalizadorInteligenteCompras._obtener_registros_auditoria",
+      "method_kind": "method",
+      "path": "SERVICIOS/analizador_inteligente_compras.py",
+      "qualified_name": "AnalizadorInteligenteCompras._obtener_registros_auditoria",
+      "start_line": 86
+    },
+    {
+      "end_line": 91,
+      "function_type": "method",
+      "id": "function:SERVICIOS.analizador_inteligente_compras.AnalizadorInteligenteCompras._resolver_proveedor",
+      "method_kind": "method",
+      "path": "SERVICIOS/analizador_inteligente_compras.py",
+      "qualified_name": "AnalizadorInteligenteCompras._resolver_proveedor",
+      "start_line": 90
+    },
+    {
+      "end_line": 74,
+      "function_type": "method",
+      "id": "function:SERVICIOS.analizador_inteligente_compras.AnalizadorInteligenteCompras.analizar_compras",
+      "method_kind": "method",
+      "path": "SERVICIOS/analizador_inteligente_compras.py",
+      "qualified_name": "AnalizadorInteligenteCompras.analizar_compras",
+      "start_line": 31
+    },
+    {
+      "end_line": 84,
+      "function_type": "method",
+      "id": "function:SERVICIOS.analizador_inteligente_compras.AnalizadorInteligenteCompras.exportar_analisis",
+      "method_kind": "method",
+      "path": "SERVICIOS/analizador_inteligente_compras.py",
+      "qualified_name": "AnalizadorInteligenteCompras.exportar_analisis",
+      "start_line": 76
+    },
+    {
+      "end_line": 30,
+      "function_type": "method",
+      "id": "function:SERVICIOS.aprendizaje_relacion_proveedor.AprendizajeRelacionProveedorArticulos.__init__",
+      "method_kind": "method",
+      "path": "SERVICIOS/aprendizaje_relacion_proveedor.py",
+      "qualified_name": "AprendizajeRelacionProveedorArticulos.__init__",
+      "start_line": 25
+    },
+    {
+      "end_line": 149,
+      "function_type": "method",
+      "id": "function:SERVICIOS.aprendizaje_relacion_proveedor.AprendizajeRelacionProveedorArticulos._cargar",
+      "method_kind": "method",
+      "path": "SERVICIOS/aprendizaje_relacion_proveedor.py",
+      "qualified_name": "AprendizajeRelacionProveedorArticulos._cargar",
+      "start_line": 138
+    },
+    {
+      "end_line": 159,
+      "function_type": "method",
+      "id": "function:SERVICIOS.aprendizaje_relacion_proveedor.AprendizajeRelacionProveedorArticulos._clave",
+      "method_kind": "method",
+      "path": "SERVICIOS/aprendizaje_relacion_proveedor.py",
+      "qualified_name": "AprendizajeRelacionProveedorArticulos._clave",
+      "start_line": 158
+    },
+    {
+      "end_line": 156,
+      "function_type": "method",
+      "id": "function:SERVICIOS.aprendizaje_relacion_proveedor.AprendizajeRelacionProveedorArticulos._guardar",
+      "method_kind": "method",
+      "path": "SERVICIOS/aprendizaje_relacion_proveedor.py",
+      "qualified_name": "AprendizajeRelacionProveedorArticulos._guardar",
+      "start_line": 151
+    },
+    {
+      "end_line": 165,
+      "function_type": "method",
+      "id": "function:SERVICIOS.aprendizaje_relacion_proveedor.AprendizajeRelacionProveedorArticulos._normalizar",
+      "method_kind": "method",
+      "path": "SERVICIOS/aprendizaje_relacion_proveedor.py",
+      "qualified_name": "AprendizajeRelacionProveedorArticulos._normalizar",
+      "start_line": 161
+    },
+    {
+      "end_line": 121,
+      "function_type": "method",
+      "id": "function:SERVICIOS.aprendizaje_relacion_proveedor.AprendizajeRelacionProveedorArticulos.aplicar_a_bloque",
+      "method_kind": "method",
+      "path": "SERVICIOS/aprendizaje_relacion_proveedor.py",
+      "qualified_name": "AprendizajeRelacionProveedorArticulos.aplicar_a_bloque",
+      "start_line": 105
+    },
+    {
+      "end_line": 103,
+      "function_type": "method",
+      "id": "function:SERVICIOS.aprendizaje_relacion_proveedor.AprendizajeRelacionProveedorArticulos.aplicar_a_linea",
+      "method_kind": "method",
+      "path": "SERVICIOS/aprendizaje_relacion_proveedor.py",
+      "qualified_name": "AprendizajeRelacionProveedorArticulos.aplicar_a_linea",
+      "start_line": 81
+    },
+    {
+      "end_line": 65,
+      "function_type": "method",
+      "id": "function:SERVICIOS.aprendizaje_relacion_proveedor.AprendizajeRelacionProveedorArticulos.aprender",
+      "method_kind": "method",
+      "path": "SERVICIOS/aprendizaje_relacion_proveedor.py",
+      "qualified_name": "AprendizajeRelacionProveedorArticulos.aprender",
+      "start_line": 32
+    },
+    {
+      "end_line": 79,
+      "function_type": "method",
+      "id": "function:SERVICIOS.aprendizaje_relacion_proveedor.AprendizajeRelacionProveedorArticulos.buscar_aprendizaje",
+      "method_kind": "method",
+      "path": "SERVICIOS/aprendizaje_relacion_proveedor.py",
+      "qualified_name": "AprendizajeRelacionProveedorArticulos.buscar_aprendizaje",
+      "start_line": 67
+    },
+    {
+      "end_line": 136,
+      "function_type": "method",
+      "id": "function:SERVICIOS.aprendizaje_relacion_proveedor.AprendizajeRelacionProveedorArticulos.exportar",
+      "method_kind": "method",
+      "path": "SERVICIOS/aprendizaje_relacion_proveedor.py",
+      "qualified_name": "AprendizajeRelacionProveedorArticulos.exportar",
+      "start_line": 131
+    },
+    {
+      "end_line": 129,
+      "function_type": "method",
+      "id": "function:SERVICIOS.aprendizaje_relacion_proveedor.AprendizajeRelacionProveedorArticulos.listar",
+      "method_kind": "method",
+      "path": "SERVICIOS/aprendizaje_relacion_proveedor.py",
+      "qualified_name": "AprendizajeRelacionProveedorArticulos.listar",
+      "start_line": 123
+    },
+    {
+      "end_line": 15,
+      "function_type": "method",
+      "id": "function:SERVICIOS.cierre_inteligencia_compras.CierreInteligenciaCompras.__init__",
+      "method_kind": "method",
+      "path": "SERVICIOS/cierre_inteligencia_compras.py",
+      "qualified_name": "CierreInteligenciaCompras.__init__",
+      "start_line": 11
+    },
+    {
+      "end_line": 76,
+      "function_type": "method",
+      "id": "function:SERVICIOS.cierre_inteligencia_compras.CierreInteligenciaCompras._contar",
+      "method_kind": "method",
+      "path": "SERVICIOS/cierre_inteligencia_compras.py",
+      "qualified_name": "CierreInteligenciaCompras._contar",
+      "start_line": 69
+    }
+  ],
+  "task": "Compras"
+}

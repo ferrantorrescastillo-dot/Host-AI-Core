@@ -1,0 +1,6371 @@
+{
+  "manifest_version": "ai_core_v1",
+  "entries": [
+    {
+      "relative_path": "AGENTS.md",
+      "category": "gobierno",
+      "priority": 2,
+      "size": 16114,
+      "inclusion_reason": "Documento obligatorio base",
+      "status": "selected",
+      "warnings": [
+        "Incluido por autoridad documental aunque no coincida con dominio solicitado"
+      ],
+      "domain_tags": [
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "MASTER_PLAN.md",
+      "category": "gobierno",
+      "priority": 3,
+      "size": 2178,
+      "inclusion_reason": "Documento obligatorio base",
+      "status": "selected",
+      "warnings": [
+        "Incluido por autoridad documental aunque no coincida con dominio solicitado"
+      ],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CODEX-01.md",
+      "category": "gobierno",
+      "priority": 4,
+      "size": 1988,
+      "inclusion_reason": "Documento obligatorio base",
+      "status": "selected",
+      "warnings": [
+        "Incluido por autoridad documental aunque no coincida con dominio solicitado"
+      ],
+      "domain_tags": [
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "CODEX-02.md",
+      "category": "gobierno",
+      "priority": 5,
+      "size": 2045,
+      "inclusion_reason": "Documento obligatorio base",
+      "status": "selected",
+      "warnings": [
+        "Incluido por autoridad documental aunque no coincida con dominio solicitado"
+      ],
+      "domain_tags": [
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "ROC/ROC-01A_NUCLEO.md",
+      "category": "arquitectura",
+      "priority": 110,
+      "size": 2026,
+      "inclusion_reason": "Documento ROC de arquitectura y dominio",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "ROC/ROC-01B_NUCLEO.md",
+      "category": "arquitectura",
+      "priority": 110,
+      "size": 3091,
+      "inclusion_reason": "Documento ROC de arquitectura y dominio",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "ROC/ROC-02A_OPERACION.md",
+      "category": "arquitectura",
+      "priority": 110,
+      "size": 1529,
+      "inclusion_reason": "Documento ROC de arquitectura y dominio",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "ROC/ROC-02B_OPERACION.md",
+      "category": "arquitectura",
+      "priority": 110,
+      "size": 2040,
+      "inclusion_reason": "Documento ROC de arquitectura y dominio",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "ROC/ROC-03A_NEGOCIO.md",
+      "category": "arquitectura",
+      "priority": 110,
+      "size": 2290,
+      "inclusion_reason": "Documento ROC de arquitectura y dominio",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "ROC/ROC-03B_NEGOCIO.md",
+      "category": "arquitectura",
+      "priority": 110,
+      "size": 2235,
+      "inclusion_reason": "Documento ROC de arquitectura y dominio",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "ROC/ROC-04A_COCINA.md",
+      "category": "arquitectura",
+      "priority": 110,
+      "size": 2234,
+      "inclusion_reason": "Documento ROC de arquitectura y dominio",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "ROC/ROC-04B_COCINA.md",
+      "category": "arquitectura",
+      "priority": 110,
+      "size": 2006,
+      "inclusion_reason": "Documento ROC de arquitectura y dominio",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DEVKIT/KNOWLEDGE_CORE/01_IDENTIDAD.md",
+      "category": "gobierno",
+      "priority": 120,
+      "size": 21389,
+      "inclusion_reason": "Normativa oficial de proyecto (DEVKIT/Knowledge Core)",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DEVKIT/KNOWLEDGE_CORE/03_REGLAS.md",
+      "category": "gobierno",
+      "priority": 120,
+      "size": 45752,
+      "inclusion_reason": "Normativa oficial de proyecto (DEVKIT/Knowledge Core)",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DEVKIT/KNOWLEDGE_CORE/04_ROADMAP.md",
+      "category": "gobierno",
+      "priority": 120,
+      "size": 22726,
+      "inclusion_reason": "Normativa oficial de proyecto (DEVKIT/Knowledge Core)",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DEVKIT/KNOWLEDGE_CORE/05_SPRINTS.md",
+      "category": "gobierno",
+      "priority": 120,
+      "size": 28576,
+      "inclusion_reason": "Normativa oficial de proyecto (DEVKIT/Knowledge Core)",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DEVKIT/KNOWLEDGE_CORE/08_CERTIFICACIONES.md",
+      "category": "gobierno",
+      "priority": 120,
+      "size": 20615,
+      "inclusion_reason": "Normativa oficial de proyecto (DEVKIT/Knowledge Core)",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DEVKIT/KNOWLEDGE_CORE/09_ESTADO_ACTUAL.md",
+      "category": "gobierno",
+      "priority": 120,
+      "size": 31481,
+      "inclusion_reason": "Normativa oficial de proyecto (DEVKIT/Knowledge Core)",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DEVKIT/KNOWLEDGE_CORE/10_PENDIENTES.md",
+      "category": "gobierno",
+      "priority": 120,
+      "size": 19085,
+      "inclusion_reason": "Normativa oficial de proyecto (DEVKIT/Knowledge Core)",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DEVKIT/KNOWLEDGE_CORE/11.1A_FILOSOFIA_Y_MODELO_DE_COMPONENTES.md",
+      "category": "gobierno",
+      "priority": 120,
+      "size": 27030,
+      "inclusion_reason": "Normativa oficial de proyecto (DEVKIT/Knowledge Core)",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "DEVKIT/KNOWLEDGE_CORE/11.1B_FILOSOFIA_Y_MODELO_DE_COMPONENTES.md",
+      "category": "gobierno",
+      "priority": 120,
+      "size": 27419,
+      "inclusion_reason": "Normativa oficial de proyecto (DEVKIT/Knowledge Core)",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "DEVKIT/KNOWLEDGE_CORE/11.2_REGISTRO_OFICIAL_DE_COMPONENTES.md",
+      "category": "gobierno",
+      "priority": 120,
+      "size": 26058,
+      "inclusion_reason": "Normativa oficial de proyecto (DEVKIT/Knowledge Core)",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "Documentos/DEVKIT/KNOWLEDGE_CORE/01_IDENTIDAD.md",
+      "category": "gobierno",
+      "priority": 120,
+      "size": 21389,
+      "inclusion_reason": "Normativa oficial de proyecto (DEVKIT/Knowledge Core)",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "Documentos/DEVKIT/KNOWLEDGE_CORE/03_REGLAS.md",
+      "category": "gobierno",
+      "priority": 120,
+      "size": 45752,
+      "inclusion_reason": "Normativa oficial de proyecto (DEVKIT/Knowledge Core)",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "Documentos/DEVKIT/KNOWLEDGE_CORE/04_ROADMAP.md",
+      "category": "gobierno",
+      "priority": 120,
+      "size": 22726,
+      "inclusion_reason": "Normativa oficial de proyecto (DEVKIT/Knowledge Core)",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "Documentos/DEVKIT/KNOWLEDGE_CORE/05_SPRINTS.md",
+      "category": "gobierno",
+      "priority": 120,
+      "size": 28576,
+      "inclusion_reason": "Normativa oficial de proyecto (DEVKIT/Knowledge Core)",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "Documentos/DEVKIT/KNOWLEDGE_CORE/08_CERTIFICACIONES.md",
+      "category": "gobierno",
+      "priority": 120,
+      "size": 20615,
+      "inclusion_reason": "Normativa oficial de proyecto (DEVKIT/Knowledge Core)",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "Documentos/DEVKIT/KNOWLEDGE_CORE/09_ESTADO_ACTUAL.md",
+      "category": "gobierno",
+      "priority": 120,
+      "size": 31481,
+      "inclusion_reason": "Normativa oficial de proyecto (DEVKIT/Knowledge Core)",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "Documentos/DEVKIT/KNOWLEDGE_CORE/10_PENDIENTES.md",
+      "category": "gobierno",
+      "priority": 120,
+      "size": 19085,
+      "inclusion_reason": "Normativa oficial de proyecto (DEVKIT/Knowledge Core)",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "Documentos/DEVKIT/KNOWLEDGE_CORE/11.1A_FILOSOFIA_Y_MODELO_DE_COMPONENTES.md",
+      "category": "gobierno",
+      "priority": 120,
+      "size": 27030,
+      "inclusion_reason": "Normativa oficial de proyecto (DEVKIT/Knowledge Core)",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "Documentos/DEVKIT/KNOWLEDGE_CORE/11.1B_FILOSOFIA_Y_MODELO_DE_COMPONENTES.md",
+      "category": "gobierno",
+      "priority": 120,
+      "size": 27419,
+      "inclusion_reason": "Normativa oficial de proyecto (DEVKIT/Knowledge Core)",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "Documentos/DEVKIT/KNOWLEDGE_CORE/11.2_REGISTRO_OFICIAL_DE_COMPONENTES.md",
+      "category": "gobierno",
+      "priority": 120,
+      "size": 26058,
+      "inclusion_reason": "Normativa oficial de proyecto (DEVKIT/Knowledge Core)",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHECKLIST_PRODUCCION.md",
+      "category": "dominio funcional",
+      "priority": 130,
+      "size": 319,
+      "inclusion_reason": "Documento funcional orientado a un dominio operativo",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "produccion"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_3.0.6_PRODUCCION.md",
+      "category": "dominio funcional",
+      "priority": 130,
+      "size": 827,
+      "inclusion_reason": "Documento funcional orientado a un dominio operativo",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "produccion"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_6_1_4_6_4_PRODUCCION_OPERATIVA.md",
+      "category": "dominio funcional",
+      "priority": 130,
+      "size": 1251,
+      "inclusion_reason": "Documento funcional orientado a un dominio operativo",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "produccion"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_6_5_4_6_8_PRODUCCION_OPERATIVA.md",
+      "category": "dominio funcional",
+      "priority": 130,
+      "size": 1104,
+      "inclusion_reason": "Documento funcional orientado a un dominio operativo",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "produccion"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5.5.6_CONECTOR_PRODUCCION_REAL.md",
+      "category": "dominio funcional",
+      "priority": 130,
+      "size": 476,
+      "inclusion_reason": "Documento funcional orientado a un dominio operativo",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "produccion"
+      ]
+    },
+    {
+      "relative_path": "Auditoria/AUDITORIA_FASE_1.4_ARQUITECTURA_REAL.md",
+      "category": "arquitectura",
+      "priority": 140,
+      "size": 18827,
+      "inclusion_reason": "Describe arquitectura, componentes o dependencias",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "DOCS/ARQUITECTURA_GENERAL_HOST_AI.md",
+      "category": "arquitectura",
+      "priority": 140,
+      "size": 8910,
+      "inclusion_reason": "Describe arquitectura, componentes o dependencias",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/ARQUITECTURA_TECNICA_I1.3.4.1.1.md",
+      "category": "arquitectura",
+      "priority": 140,
+      "size": 841,
+      "inclusion_reason": "Describe arquitectura, componentes o dependencias",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/ARQUITECTURA_TECNICA_I1.3.4.1.2.md",
+      "category": "arquitectura",
+      "priority": 140,
+      "size": 1547,
+      "inclusion_reason": "Describe arquitectura, componentes o dependencias",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/ARQUITECTURA_TECNICA_I1.3.4.1.3.md",
+      "category": "arquitectura",
+      "priority": 140,
+      "size": 843,
+      "inclusion_reason": "Describe arquitectura, componentes o dependencias",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/ARQUITECTURA_TECNICA_I1.3.4.1.4.md",
+      "category": "arquitectura",
+      "priority": 140,
+      "size": 637,
+      "inclusion_reason": "Describe arquitectura, componentes o dependencias",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/ARQUITECTURA_TECNICA_I1.3.4.1.5.md",
+      "category": "arquitectura",
+      "priority": 140,
+      "size": 1317,
+      "inclusion_reason": "Describe arquitectura, componentes o dependencias",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/ARQUITECTURA_TECNICA_I1.3.4.1.md",
+      "category": "arquitectura",
+      "priority": 140,
+      "size": 846,
+      "inclusion_reason": "Describe arquitectura, componentes o dependencias",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/ARQUITECTURA_TECNICA_I1.3.4.2.md",
+      "category": "arquitectura",
+      "priority": 140,
+      "size": 446,
+      "inclusion_reason": "Describe arquitectura, componentes o dependencias",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/ARQUITECTURA_TECNICA_M1.1.md",
+      "category": "arquitectura",
+      "priority": 140,
+      "size": 757,
+      "inclusion_reason": "Describe arquitectura, componentes o dependencias",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/ARQUITECTURA_TECNICA_M1.2.md",
+      "category": "arquitectura",
+      "priority": 140,
+      "size": 773,
+      "inclusion_reason": "Describe arquitectura, componentes o dependencias",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/ARQUITECTURA_TECNICA_M1.3.1.md",
+      "category": "arquitectura",
+      "priority": 140,
+      "size": 687,
+      "inclusion_reason": "Describe arquitectura, componentes o dependencias",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/ARQUITECTURA_TECNICA_M1.3.2.md",
+      "category": "arquitectura",
+      "priority": 140,
+      "size": 697,
+      "inclusion_reason": "Describe arquitectura, componentes o dependencias",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/ARQUITECTURA_TECNICA_M1.3.3.md",
+      "category": "arquitectura",
+      "priority": 140,
+      "size": 1520,
+      "inclusion_reason": "Describe arquitectura, componentes o dependencias",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/ARQUITECTURA_TECNICA_M1.3.md",
+      "category": "arquitectura",
+      "priority": 140,
+      "size": 630,
+      "inclusion_reason": "Describe arquitectura, componentes o dependencias",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/AUDITORIA_RC1/00_RESUMEN_RC1_1_AUDITORIA_ARQUITECTURA.md",
+      "category": "arquitectura",
+      "priority": 140,
+      "size": 1670,
+      "inclusion_reason": "Describe arquitectura, componentes o dependencias",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "arquitectura",
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_PILOTO-1.3.md",
+      "category": "historico",
+      "priority": 160,
+      "size": 895,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "produccion"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_PILOTO-1.4.md",
+      "category": "historico",
+      "priority": 160,
+      "size": 786,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "produccion"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/CERTIFICACION_PILOTO-1.3.md",
+      "category": "desconocido",
+      "priority": 170,
+      "size": 715,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "produccion"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/CERTIFICACION_PILOTO-1.4.md",
+      "category": "desconocido",
+      "priority": 170,
+      "size": 401,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "produccion"
+      ]
+    },
+    {
+      "relative_path": "DOCS/5.5.2_BUSCADOR_MENUS_RECETAS_ESCANDALLOS.md",
+      "category": "dominio funcional",
+      "priority": 180,
+      "size": 245,
+      "inclusion_reason": "Documento funcional orientado a un dominio operativo",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "escandallos",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_3.0.7.5_SIMULADOR_COSTES.md",
+      "category": "dominio funcional",
+      "priority": 180,
+      "size": 377,
+      "inclusion_reason": "Documento funcional orientado a un dominio operativo",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "costes",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_3_0_4_3_DETECTOR_ANOMALIAS_COMPRAS.md",
+      "category": "dominio funcional",
+      "priority": 180,
+      "size": 532,
+      "inclusion_reason": "Documento funcional orientado a un dominio operativo",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "compras",
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_3_10_HISTORIAL_MOVIMIENTOS_STOCK.md",
+      "category": "dominio funcional",
+      "priority": 180,
+      "size": 757,
+      "inclusion_reason": "Documento funcional orientado a un dominio operativo",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "ia",
+        "stock"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_3_2_IMPORTADOR_STOCK_INICIAL.md",
+      "category": "dominio funcional",
+      "priority": 180,
+      "size": 890,
+      "inclusion_reason": "Documento funcional orientado a un dominio operativo",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "ia",
+        "stock"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_3_3_INFORME_STOCK_INICIAL.md",
+      "category": "dominio funcional",
+      "priority": 180,
+      "size": 508,
+      "inclusion_reason": "Documento funcional orientado a un dominio operativo",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "ia",
+        "stock"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_3_4_ALERTAS_STOCK_BAJO.md",
+      "category": "dominio funcional",
+      "priority": 180,
+      "size": 402,
+      "inclusion_reason": "Documento funcional orientado a un dominio operativo",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "stock"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_3_5_PEDIDO_SUGERIDO_STOCK_BAJO.md",
+      "category": "dominio funcional",
+      "priority": 180,
+      "size": 500,
+      "inclusion_reason": "Documento funcional orientado a un dominio operativo",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "compras",
+        "general",
+        "stock"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_3_7_MOTOR_MOVIMIENTOS_STOCK.md",
+      "category": "dominio funcional",
+      "priority": 180,
+      "size": 760,
+      "inclusion_reason": "Documento funcional orientado a un dominio operativo",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "stock"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_3_8_ENTRADA_STOCK_DESDE_PEDIDO.md",
+      "category": "dominio funcional",
+      "priority": 180,
+      "size": 591,
+      "inclusion_reason": "Documento funcional orientado a un dominio operativo",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "compras",
+        "general",
+        "stock"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_3_9_SALIDAS_STOCK.md",
+      "category": "dominio funcional",
+      "priority": 180,
+      "size": 768,
+      "inclusion_reason": "Documento funcional orientado a un dominio operativo",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "stock"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_4_1_4_4_2_RECEPCION_TEXTO.md",
+      "category": "dominio funcional",
+      "priority": 180,
+      "size": 1588,
+      "inclusion_reason": "Documento funcional orientado a un dominio operativo",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "recepcion"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_4_3_4_4_4_RECEPCION_APLICACION_ALTA.md",
+      "category": "dominio funcional",
+      "priority": 180,
+      "size": 1547,
+      "inclusion_reason": "Documento funcional orientado a un dominio operativo",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "recepcion"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_7_1_4_7_4_EVENTOS_BANQUETES.md",
+      "category": "dominio funcional",
+      "priority": 180,
+      "size": 1404,
+      "inclusion_reason": "Documento funcional orientado a un dominio operativo",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "eventos",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_7_5_4_7_8_EVENTOS_BANQUETES.md",
+      "category": "dominio funcional",
+      "priority": 180,
+      "size": 824,
+      "inclusion_reason": "Documento funcional orientado a un dominio operativo",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "eventos",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5.5.3_CONECTOR_STOCK_REAL.md",
+      "category": "dominio funcional",
+      "priority": 180,
+      "size": 568,
+      "inclusion_reason": "Documento funcional orientado a un dominio operativo",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "stock"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5.5.5_CONECTOR_ESCANDALLOS_REAL.md",
+      "category": "dominio funcional",
+      "priority": 180,
+      "size": 440,
+      "inclusion_reason": "Documento funcional orientado a un dominio operativo",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "escandallos",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5_0_5_CONFIRMACION_RECEPCION.md",
+      "category": "dominio funcional",
+      "priority": 180,
+      "size": 1055,
+      "inclusion_reason": "Documento funcional orientado a un dominio operativo",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "recepcion"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5_0_8_AFINADOR_COMPRAS_RENTABILIDAD.md",
+      "category": "dominio funcional",
+      "priority": 180,
+      "size": 977,
+      "inclusion_reason": "Documento funcional orientado a un dominio operativo",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "compras",
+        "costes",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/5.3.5_PLANIFICADOR_INTELIGENTE.md",
+      "category": "referencia",
+      "priority": 195,
+      "size": 487,
+      "inclusion_reason": "Planificación, backlog o referencia de ejecución",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/5.3.8_REPLANIFICADOR_INTELIGENTE.md",
+      "category": "referencia",
+      "priority": 195,
+      "size": 687,
+      "inclusion_reason": "Planificación, backlog o referencia de ejecución",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/AUDITORIA_RC1/08_PLAN_RC1_RECOMENDADO.md",
+      "category": "referencia",
+      "priority": 195,
+      "size": 1539,
+      "inclusion_reason": "Planificación, backlog o referencia de ejecución",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_1_10_INFORME_PENDIENTES_FAMILIA.md",
+      "category": "referencia",
+      "priority": 195,
+      "size": 617,
+      "inclusion_reason": "Planificación, backlog o referencia de ejecución",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_3_11_1_PLANTILLA_INVENTARIO.md",
+      "category": "referencia",
+      "priority": 195,
+      "size": 770,
+      "inclusion_reason": "Planificación, backlog o referencia de ejecución",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "stock"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_3_1_PLANTILLA_STOCK_INICIAL.md",
+      "category": "referencia",
+      "priority": 195,
+      "size": 723,
+      "inclusion_reason": "Planificación, backlog o referencia de ejecución",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "ia",
+        "stock"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_4_3_4_4_4_RECEPCION_APLICAR_Y_PENDIENTES.md",
+      "category": "referencia",
+      "priority": 195,
+      "size": 1036,
+      "inclusion_reason": "Planificación, backlog o referencia de ejecución",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "recepcion"
+      ]
+    },
+    {
+      "relative_path": "DOCS/ROADMAP_HOST_AI.md",
+      "category": "referencia",
+      "priority": 195,
+      "size": 245,
+      "inclusion_reason": "Planificación, backlog o referencia de ejecución",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/CHECKLIST_RR1.6.2.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 1974,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/suite_oficial_rr163.txt",
+      "category": "historico",
+      "priority": 210,
+      "size": 368,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_CO1.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 491,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_CO2.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 459,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_ES1.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 925,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_ES2.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 617,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_HOST_AI_3.0.7.3_3.0.7.4.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 534,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_HOST_AI_3.0.7.5_3.0.7.6.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 515,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_HOST_AI_3.0.7.7_3.0.7.8.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 603,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_HOST_AI_3.0.8.1_3.0.8.2.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 459,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_HOST_AI_3.0.8.3_3.0.8.4.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 530,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_HOST_AI_3.0.8.5_3.0.8.6.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 807,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_HOST_AI_3.0.8.7_3.0.8.8.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 595,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_HOST_AI_3.0_STABLE_CANDIDATE.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 331,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_HOST_AI_3.0_STABLE_S002.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 647,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_I1.1.1.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 858,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_I1.1.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 989,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_I1.2.1.1.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 383,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_I1.2.1.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 721,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_I1.2.2.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 988,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_I1.2.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 456,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_I1.3.1.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 1457,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_I1.3.2.1.1.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 880,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_I1.3.2.1.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 774,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_I1.3.2.2.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 579,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_I1.3.2.3.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 719,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_I1.3.2.4.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 700,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_I1.3.3.1.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 897,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_I1.3.3.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 670,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_I1.3.4.1.1.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 845,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_I1.3.4.1.2.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 894,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_I1.3.4.1.3.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 659,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_I1.3.4.1.4.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 729,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_I1.3.4.1.5.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 714,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_I1.3.4.1.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 338,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_I1.3.4.2.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 434,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_I1.3.4.3.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 660,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_I1.3.4.3a.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 851,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_I1.3.4.3b.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 946,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_I1.3.4.3c.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 913,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_I1.3.4.4.1.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 1373,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_I1.3.4.4.2.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 838,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_I1.3.4.4.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 916,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_I1.3.5.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 671,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_I1.3.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 964,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_IA1.1.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 474,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_IA1.2.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 660,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_IA1.3.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 534,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_IA1.4.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 461,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_M1.1.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 1055,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_M1.2.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 875,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_M1.3.1.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 589,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_M1.3.2.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 842,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_M1.3.3.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 1136,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_M1.3.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 417,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_P1.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 696,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_P2.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 303,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_P3.1.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 626,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_P3.2.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 701,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_P3.3.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 454,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_P4.1.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 735,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_P4.2.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 616,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_P4.3.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 705,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_PILOTO-1.1.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 823,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_PILOTO-1.2.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 885,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_PILOTO-1.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 924,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_PILOTO_0.1.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 1062,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_RR1.5.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 1036,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_RR1.6.1-A.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 1297,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_RR1.6.1-B.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 787,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_RR1.6.1-C.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 628,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_RR1.6.1-D.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 514,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_RR1.6.2.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 552,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_RR1.6.3.1.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 342,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_RR1.6.3.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 805,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CHANGELOG/CHANGELOG_UX1.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 886,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/5.3.9_CIERRE_INTELIGENCIA_OPERATIVA.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 1114,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_HOST_AI_5.3.7_5.3.8.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 1013,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_HOST_AI_5.3.9.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 845,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_HOST_AI_5.4.1.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 248,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_HOST_AI_5.4.14.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 306,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_HOST_AI_5.4.15.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 260,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_HOST_AI_5.4.2.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 260,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_HOST_AI_5.4.3.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 285,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_HOST_AI_5.4.4.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 283,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_HOST_AI_5.4.5.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 236,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_HOST_AI_5.4.6.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 229,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_HOST_AI_5.4.7.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 215,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_HOST_AI_5.4.8.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 235,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_HOST_AI_5.5.5A.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 492,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v1_0_2.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 621,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v1_0_3.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 329,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v1_0_4.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 123,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v1_0_5.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 309,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v2_0_6.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 537,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v2_0_7.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 536,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v2_0_8.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 525,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v2_0_9.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 408,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_0.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 594,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_1.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 85,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_2_1.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 546,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_2_2.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 589,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_2_3.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 556,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_2_4.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 478,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_2_5.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 536,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_2_6.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 528,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_2_7.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 498,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_2_8.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 684,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_3_1.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 506,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_3_2.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 118,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_3_3_1.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 117,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_3_3_2.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 115,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_3_3_3.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 137,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_3_3_4.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 136,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_3_3_5.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 121,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_3_4_1.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 134,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_3_4_2.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 129,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_3_4_3.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 148,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_3_4_4.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 134,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_3_4_5.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 141,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_3_5_1.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 136,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_3_5_2.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 144,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_3_5_3.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 131,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_3_5_4.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 132,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_3_5_5.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 128,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_3_6_1.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 132,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_3_6_2.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 140,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_3_6_3.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 127,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_3_6_4.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 124,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_3_6_5.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 126,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_3_7_1.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 121,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_3_7_2.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 108,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_3_7_3.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 120,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_3_7_4.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 118,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_3_8_1.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 140,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_3_8_2.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 148,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_3_8_3.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 143,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_3_8_4.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 134,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_3_8_5.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 126,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_4_1.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 130,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_4_1_3_0_4_4_TEST_COMBINADO.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 796,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_4_2.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 128,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_4_3.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 725,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_4_4.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 603,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_4_5.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 254,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_4_5_3_0_4_6.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 250,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_4_6.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 252,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_4_7.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 577,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_4_8.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 571,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_5_1.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 393,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_5_2.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 469,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_5_3.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 554,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_5_4.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 704,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_5_5.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 576,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_5_6.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 594,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_5_7.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 305,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_5_8.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 345,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_6_1.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 296,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_6_2.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 266,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_6_3.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 251,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_6_4.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 242,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_6_5.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 403,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_6_6.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 441,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_6_7.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 752,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_6_8.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 988,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_7_1.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 399,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CHANGELOG_v3_0_7_2.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 381,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/ESTANDAR_DESARROLLO_HOST_AI.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 3877,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_3.0.7.4_COMPARADOR_HISTORICO_ESCANDALLOS.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 377,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "escandallos",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_3.0.7.8_CIERRE_ESCANDALLOS_INTELIGENTES.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 457,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "escandallos",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_3.0.8.8_CIERRE_IA_CONVERSACIONAL.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 318,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_10_7_4_10_8_MAPA_Y_CIERRE_TECNICO.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 1182,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_1_13_CIERRE_CATALOGO_BASE.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 582,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_3_12_CIERRE_MODULO_STOCK.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 835,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "stock"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_5_1_4_5_2_CORRECCION_SQLITE_WINDOWS.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 740,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_9_7_4_9_8_CIERRE_IA_OPERATIVA.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 1144,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5_0_7_CORRECCION_STOCK.md",
+      "category": "historico",
+      "priority": 210,
+      "size": 445,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "stock"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_RR1.6.1-A.txt",
+      "category": "historico",
+      "priority": 210,
+      "size": 561,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_RR1.6.1-B.txt",
+      "category": "historico",
+      "priority": 210,
+      "size": 527,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_RR1.6.1-C.txt",
+      "category": "historico",
+      "priority": 210,
+      "size": 343,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_RR1.6.1-D.txt",
+      "category": "historico",
+      "priority": 210,
+      "size": 549,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_RR1.6.2.txt",
+      "category": "historico",
+      "priority": 210,
+      "size": 532,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_RR1.6.3.1.txt",
+      "category": "historico",
+      "priority": 210,
+      "size": 408,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_RR1.6.3.txt",
+      "category": "historico",
+      "priority": 210,
+      "size": 733,
+      "inclusion_reason": "Documento histórico o de trazabilidad de versiones",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "Auditoria/AUDITORIA_FASE_1.3_FUNCIONAL_TRANSVERSAL.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 26025,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "Auditoria/AUDITORIA_FASE_1_PRIMERA_PASADA.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 12410,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "Auditoria/AUDITORIA_FASE_1_SEGUNDA_PASADA.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 22052,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/CERTIFICACION_I1.3.1.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 1602,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/CERTIFICACION_I1.3.2.1.1.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 856,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/CERTIFICACION_I1.3.2.1.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 1614,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/CERTIFICACION_I1.3.2.2.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 813,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/CERTIFICACION_I1.3.2.3.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 809,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/CERTIFICACION_I1.3.2.4.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 679,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/CERTIFICACION_I1.3.3.1.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 666,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/CERTIFICACION_I1.3.3.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 680,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/CERTIFICACION_I1.3.4.1.1.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 555,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/CERTIFICACION_I1.3.4.1.2.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 942,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/CERTIFICACION_I1.3.4.1.3.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 457,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/CERTIFICACION_I1.3.4.1.4.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 372,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/CERTIFICACION_I1.3.4.1.5.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 858,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/CERTIFICACION_I1.3.4.1.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 650,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/CERTIFICACION_I1.3.4.2.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 250,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/CERTIFICACION_I1.3.4.3.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 629,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/CERTIFICACION_I1.3.4.3a.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 689,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/CERTIFICACION_I1.3.4.3b.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 798,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/CERTIFICACION_I1.3.4.3c.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 632,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/CERTIFICACION_I1.3.4.4.1.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 241,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/CERTIFICACION_I1.3.4.4.2.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 708,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/CERTIFICACION_I1.3.4.4.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 691,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/CERTIFICACION_I1.3.5.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 505,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/CERTIFICACION_M1.1.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 680,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/CERTIFICACION_M1.2.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 506,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/CERTIFICACION_M1.3.1.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 653,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/CERTIFICACION_M1.3.2.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 559,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/CERTIFICACION_M1.3.3.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 1077,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/CERTIFICACION_M1.3.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 748,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/CERTIFICACION_PILOTO-1.2.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 788,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/RESULTADO_TESTS_I1.3.1.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 400,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/RESULTADO_TESTS_I1.3.2.1.1.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 99,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/RESULTADO_TESTS_I1.3.2.1.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 401,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/RESULTADO_TESTS_I1.3.2.2.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 133,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/RESULTADO_TESTS_I1.3.2.3.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 212,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/RESULTADO_TESTS_I1.3.2.4.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 280,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/RESULTADO_TESTS_I1.3.3.1.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 255,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/RESULTADO_TESTS_I1.3.3.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 234,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/RESULTADO_TESTS_I1.3.4.1.1.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 166,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/RESULTADO_TESTS_I1.3.4.1.2.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 293,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/RESULTADO_TESTS_I1.3.4.1.3.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 102,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/RESULTADO_TESTS_I1.3.4.1.4.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 188,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/RESULTADO_TESTS_I1.3.4.1.5.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 149,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/RESULTADO_TESTS_I1.3.4.1.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 356,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/RESULTADO_TESTS_I1.3.4.2.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 621,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/RESULTADO_TESTS_I1.3.4.3.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 97,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/RESULTADO_TESTS_I1.3.4.3a.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 161,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/RESULTADO_TESTS_I1.3.4.3b.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 264,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/RESULTADO_TESTS_I1.3.4.3c.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 124,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/RESULTADO_TESTS_I1.3.4.4.1.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 218,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/RESULTADO_TESTS_I1.3.4.4.2.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 421,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/RESULTADO_TESTS_I1.3.4.4.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 309,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/RESULTADO_TESTS_I1.3.5.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 366,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/RESULTADO_TESTS_M1.1.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 142,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/RESULTADO_TESTS_M1.2.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 10,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/RESULTADO_TESTS_M1.3.1.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 153,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/RESULTADO_TESTS_M1.3.2.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 211,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/RESULTADO_TESTS_M1.3.3.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 141,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/RESULTADO_TESTS_M1.3.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 153,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "CERTIFICACION/SALIDA_ESPERADA_MENU_BODA_31-1.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 2708,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/5.3.6_PRIORIZADOR_TAREAS.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 445,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/5.3.7_DETECTOR_INCIDENCIAS.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 853,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "DOCS/5.4.14_INTEGRACION_CONVERSACIONAL_COMPLETA.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 751,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/5.4.15_RELEASE_CANDIDATE_CONVERSACIONAL.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 527,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/5.4.1_ANALIZADOR_SITUACION.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 512,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/5.4.2_MOTOR_DECISIONES.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 458,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/5.4.3_EVALUADOR_ALTERNATIVAS.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 450,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/5.4.4_SIMULADOR_ESCENARIOS.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 434,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/5.4.5_OPTIMIZADOR_GLOBAL.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 340,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/5.4.6_APRENDIZAJE_OPERATIVO.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 389,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/5.4.7_EXPLICACION_DECISIONES.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 426,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/5.4.8_RELEASE_CANDIDATE.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 541,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/5.5.1_CLASIFICADOR_CONSULTAS_DATOS.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 190,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/5.5.5A_PARTE1.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 36,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/AUDITORIA_RC1/01_CORE.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 1419,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "DOCS/AUDITORIA_RC1/02_MODELOS.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 1115,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "DOCS/AUDITORIA_RC1/03_SERVICIOS.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 1376,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "DOCS/AUDITORIA_RC1/04_PIPELINES.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 1135,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "DOCS/AUDITORIA_RC1/05_TESTS.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 1579,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "DOCS/AUDITORIA_RC1/06_DOCS.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 1024,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "DOCS/AUDITORIA_RC1/07_DATOS.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 1355,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "DOCS/CERTIFICACION_RC3_PILOTO.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 1167,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_3.0.7.3_OPTIMIZADOR_INTELIGENTE_RECETAS.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 420,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "escandallos",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_3.0.7.6_PREDICCION_INTELIGENTE_RENTABILIDAD.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 407,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "costes",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_3.0.7.7_MOTOR_OPTIMIZACION_CARTA.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 388,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_3.0.8.1_ANALIZADOR_LENGUAJE_NATURAL.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 486,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_3.0.8.2_MOTOR_CONVERSACIONAL.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 452,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_3.0.8.3_SELECTOR_INTELIGENTE_MOTORES.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 462,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_3.0.8.4_GENERADOR_INTELIGENTE_RESPUESTAS.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 428,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_3.0.8.5_MEMORIA_CONVERSACIONAL.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 868,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_3.0.8.6_AUTOMATIZADOR_INTELIGENTE.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 877,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_3.0.8.7_ASISTENTE_INTELIGENTE_HOST_AI.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 374,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_3_0_4_4_PREDICCION_INTELIGENTE_PRECIOS.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 642,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_10_1_AUDITORIA_GLOBAL_MODULOS.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 558,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_10_2_AUDITORIA_GLOBAL_TESTS.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 507,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_10_3_AUDITORIA_IMPORTS_DEPENDENCIAS.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 508,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_10_4_INFORME_FINAL_HOST_AI_4.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 415,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_10_5_4_10_6_CLASIFICACION_Y_LIMPIEZA.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 963,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_1_11_EDITOR_FAMILIAS_ARTICULOS.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 594,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_1_12_CLASIFICADOR_FAMILIAS_PROVEEDOR.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 507,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "compras",
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_1_2_CLASIFICADOR_ARTICULOS.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 888,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_1_3_GENERADOR_CODIGOS_ARTICULOS.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 1002,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_1_4_IMPORTADOR_ARTICULOS.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 980,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_1_5_1_BUSCADOR_ARTICULOS_MEJORADO.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 847,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_1_5_BUSCADOR_INTELIGENTE_ARTICULOS.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 877,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_1_6_ALTA_ARTICULO.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 572,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_1_7_EDITOR_ARTICULOS.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 682,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_1_8_INFORME_CATALOGO_ARTICULOS.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 766,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_1_9_1_FIX_CLASIFICADOR_FAMILIAS.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 553,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_1_9_CLASIFICADOR_FAMILIAS_ARTICULOS.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 569,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_2_1_EXTRACTOR_PROVEEDORES.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 655,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "compras",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_2_2_1_FIX_EDITOR_PROVEEDORES.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 453,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "compras",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_2_2_EDITOR_PROVEEDORES.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 634,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "compras",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_2_3_INFORME_PROVEEDORES.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 542,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "compras",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_3_11_2_IMPORTADOR_INVENTARIO.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 649,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "stock"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_3_11_3_COMPARADOR_INVENTARIO.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 664,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "stock"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_3_11_4_APLICADOR_AJUSTES_INVENTARIO.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 856,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "stock"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_3_11_5_INFORME_FINAL_INVENTARIO.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 666,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "stock"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_3_6_CONFIRMADOR_PEDIDO_SUGERIDO.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 519,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "compras",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_4_12_RUNNER_TESTS.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 858,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_4_13_LOGS_PROYECTO.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 762,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_4_14_CONFIGURACION_CENTRAL.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 787,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_4_15_INSTALACION_AUTOMATICA.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 753,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_5_1_BASE_DATOS_DEFINITIVA.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 716,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_5_2_MULTI_RESTAURANTE.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 468,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_5_5_PANEL_ESTADO.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 554,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_5_6_USUARIOS_ROLES.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 548,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_5_7_AUDITORIA_SISTEMA.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 417,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_5_8_PERMISOS_AVANZADOS.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 463,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_8_1_4_8_4_RENTABILIDAD_INTELIGENTE.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 985,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "costes",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_8_5_4_8_8_RENTABILIDAD_INTELIGENTE.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 1107,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "costes",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_9_1_4_9_4_IA_OPERATIVA_CENTRAL.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 1541,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_4_9_5_4_9_6_IA_OPERATIVA.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 1318,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5.4.10_GESTOR_CONTEXTO_PERMANENTE.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 481,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5.4.11_CONTINUADOR_FLUJO.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 494,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5.4.12_CONFIRMACIONES_INTELIGENTES.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 432,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5.4.13_CONVERSACION_NATURAL.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 309,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5.4.9_CONTINUIDAD_CONVERSACIONAL.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 1239,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5.5.4_CONECTOR_PROVEEDORES_REAL.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 526,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "compras",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5.5.5A_PARTE_2.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 1069,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5.5.5A_PARTE_3.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 1092,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5.5.5A_PARTE_4.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 960,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5.5.5B_7_1.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 1187,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5.5.5B_7_2.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 748,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5.5.5B_7_2_1_FIX_BUSQUEDAS.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 623,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5.5.5B_7_3.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 965,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5.5.5B_7_3_1.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 872,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5.5.5B_7_3_2.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 1059,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5.5.5B_7_4.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 957,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5.5.5B_7_4_1.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 480,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5.5.5B_PARTE_1.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 881,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5.5.5B_PARTE_2.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 716,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5.5.5B_PARTE_3.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 850,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5.5.5B_PARTE_3_FIX_RENDIMIENTO.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 663,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5.5.5B_PARTE_4.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 1014,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5.5.5B_PARTE_5.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 1560,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5.5.5B_PARTE_6.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 1308,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5.5.6AB.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 935,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5.5.6AB_1_SELECTOR_VARIANTES.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 748,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5.5.6CD.1.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 1092,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5.5.6CD.2.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 1638,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5.5.6CD.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 772,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5.5.6E.3.2.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 819,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5.5.6E.3.3.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 806,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5.5.6E_1.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 425,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5.5.6E_2.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 447,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5.5.6E_3.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 288,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5.5.6E_3_1.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 1002,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5.5.6E_3_4.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 898,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5.5.6E_3_4_1.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 1016,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5.5.6E_4.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 286,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5_0_1_AUDITORIA_NUCLEO_IA.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 1594,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5_0_2_BOOTLOADER.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 908,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5_0_3_CLASIFICADOR_INTENCIONES.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 504,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5_0_4_INTEGRACION_CHAT.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 769,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5_0_6_BETA_CONVERSACIONAL_QA.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 971,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5_0_7_REFORZADOR_CLASIFICADOR.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 1375,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5_0_9_OPTIMIZACION_BETA_1.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 688,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5_1_NUCLEO_IA.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 1002,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5_1_ORQUESTADOR_INTELIGENTE.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 1175,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5_2_DATOS_MINIMOS_EVENTO.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 1050,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "eventos",
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5_3_1_5_3_2_FLUJO_OPERATIVO.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 818,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5_3_3_RESPUESTA_EJECUTIVA.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 479,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/HOST_AI_5_3_4_CONFIRMACION_INTELIGENTE.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 597,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/INVENTARIO_HOST_AI.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 256,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "stock"
+      ]
+    },
+    {
+      "relative_path": "DOCS/LIMPIEZA_HOST_AI_4_0/ESTRUCTURA_FINAL.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 313,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/LIMPIEZA_HOST_AI_4_0/INFORME_LIMPIEZA_HOST_AI_4_0.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 1938,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/PILOTO-1.1_BANDEJA_TRABAJO.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 550,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/PILOTO_0.1_ESTABILIZACION.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 847,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/RC3_1_CALIDAD_PILOTO.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 1032,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/RC3_2_RENDIMIENTO_PILOTO.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 858,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/RC3_3_LOGS_PILOTO.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 653,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/RC3_4_INSTALACION_PILOTO.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 849,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/README_HOST_AI_3_0_6_3_3_0_6_4.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 474,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/README_HOST_AI_3_0_6_7_3_0_6_8.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 877,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "DOCS/README_HOST_AI_3_0_7_1_3_0_7_2.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 342,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "Documentos/AUDITORIA_FUNCIONAL_HOST_AI_6.0_PILOTO.md",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 8627,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_C1.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 1201,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_C2.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 1335,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_E1.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 1737,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_E2.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 1661,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_E3.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 1401,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_I1.1.1.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 414,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_I1.1.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 633,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_I1.2.1.1.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 258,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_I1.2.1.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 454,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_I1.2.2.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 644,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_I1.2.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 276,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_I1.3.1.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 737,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_I1.3.2.1.1.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 629,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_I1.3.2.1.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 675,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_I1.3.2.2.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 565,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_I1.3.2.3.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 782,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_I1.3.2.4.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 596,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_I1.3.3.1.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 762,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_I1.3.3.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 711,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_I1.3.4.1.1.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 614,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_I1.3.4.1.2.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 350,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_I1.3.4.1.3.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 460,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_I1.3.4.1.4.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 387,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_I1.3.4.1.5.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 422,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_I1.3.4.1.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 294,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_I1.3.4.2.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 221,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_I1.3.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 560,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_IA1.3.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 575,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_IA1.4.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 359,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general",
+        "ia"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_INSTALACION.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 740,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_M1.1.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 670,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_M1.2.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 589,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_M1.3.1.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 463,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_M1.3.2.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 385,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_M1.3.3.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 546,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_M1.3.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 271,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_P1.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 384,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_P2.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 104,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_P3.1.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 399,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_P3.2.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 640,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_P3.3.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 377,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_P4.1.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 456,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_P4.2.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 507,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_P4.3.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 596,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_PILOTO-1.1.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 487,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_PILOTO-1.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 1207,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_S1.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 1002,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_S2.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 1164,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    },
+    {
+      "relative_path": "LEEME/LEEME_UX1.txt",
+      "category": "desconocido",
+      "priority": 220,
+      "size": 370,
+      "inclusion_reason": "No coincide con reglas explícitas de clasificación",
+      "status": "selected",
+      "warnings": [],
+      "domain_tags": [
+        "general"
+      ]
+    }
+  ],
+  "warnings": []
+}

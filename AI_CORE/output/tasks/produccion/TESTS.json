@@ -1,0 +1,110 @@
+{
+  "coverage_known": {
+    "code_files_considered": 60,
+    "tests_found": 25
+  },
+  "domain": "produccion",
+  "task": "Producción",
+  "tests": [
+    {
+      "path": "TESTS/test_461_planificador_diario_produccion.py",
+      "reason": "match_stem:test_461_planificador_diario_produccion"
+    },
+    {
+      "path": "TESTS/test_467_checklist_final_produccion.py",
+      "reason": "match_stem:test_467_checklist_final_produccion"
+    },
+    {
+      "path": "TESTS/test_468_informe_diario_produccion.py",
+      "reason": "match_stem:test_468_informe_diario_produccion"
+    },
+    {
+      "path": "TESTS/test_473_produccion_evento.py",
+      "reason": "match_stem:test_473_produccion_evento"
+    },
+    {
+      "path": "TESTS/test_556_conector_produccion_real.py",
+      "reason": "match_stem:test_556_conector_produccion_real"
+    },
+    {
+      "path": "TESTS/test_556e34_planificacion_rendimiento_jornadas.py",
+      "reason": "match_keyword:jornada"
+    },
+    {
+      "path": "TESTS/test_analizador_inteligente_produccion.py",
+      "reason": "match_stem:test_analizador_inteligente_produccion"
+    },
+    {
+      "path": "TESTS/test_asignador_recursos_produccion.py",
+      "reason": "match_stem:test_asignador_recursos_produccion"
+    },
+    {
+      "path": "TESTS/test_cierre_inteligente_produccion.py",
+      "reason": "match_stem:test_cierre_inteligente_produccion"
+    },
+    {
+      "path": "TESTS/test_control_ejecucion_produccion.py",
+      "reason": "match_stem:test_control_ejecucion_produccion"
+    },
+    {
+      "path": "TESTS/test_motor_alertas_produccion.py",
+      "reason": "match_stem:motor_alertas_produccion"
+    },
+    {
+      "path": "TESTS/test_motor_produccion_real.py",
+      "reason": "match_stem:produccion_real"
+    },
+    {
+      "path": "TESTS/test_optimizador_inteligente_produccion.py",
+      "reason": "match_stem:optimizador_inteligente_produccion"
+    },
+    {
+      "path": "TESTS/test_p1_gestion_produccion.py",
+      "reason": "match_keyword:produccion"
+    },
+    {
+      "path": "TESTS/test_p33_panel_produccion.py",
+      "reason": "match_keyword:produccion"
+    },
+    {
+      "path": "TESTS/test_piloto_12_jornada.py",
+      "reason": "match_keyword:jornada"
+    },
+    {
+      "path": "TESTS/test_piloto_13_produccion_guiada.py",
+      "reason": "match_keyword:produccion"
+    },
+    {
+      "path": "TESTS/test_piloto_14_produccion_stock.py",
+      "reason": "match_keyword:produccion"
+    },
+    {
+      "path": "TESTS/test_pipeline_produccion_completa.py",
+      "reason": "match_stem:produccion_completa"
+    },
+    {
+      "path": "TESTS/test_planificador_inteligente_produccion.py",
+      "reason": "match_stem:planificador_inteligente_produccion"
+    },
+    {
+      "path": "TESTS/test_produccion_3061_3062.py",
+      "reason": "match_keyword:produccion"
+    },
+    {
+      "path": "TESTS/test_produccion_3061_3062_3063_3064.py",
+      "reason": "match_keyword:produccion"
+    },
+    {
+      "path": "TESTS/test_produccion_3061_3062_3063_3064_3065_3066.py",
+      "reason": "match_keyword:produccion"
+    },
+    {
+      "path": "TESTS/test_produccion_3061_3062_3063_3064_3065_3066_3067_3068.py",
+      "reason": "match_keyword:produccion"
+    },
+    {
+      "path": "TESTS/test_replanificador_inteligente_produccion.py",
+      "reason": "match_stem:replanificador_inteligente_produccion"
+    }
+  ]
+}

@@ -1,0 +1,122 @@
+{
+  "coverage_known": {
+    "code_files_considered": 60,
+    "tests_found": 28
+  },
+  "domain": "compras",
+  "task": "Compras",
+  "tests": [
+    {
+      "path": "TESTS/test_4112_clasificador_familias_proveedor.py",
+      "reason": "match_keyword:proveedor"
+    },
+    {
+      "path": "TESTS/test_421_extractor_proveedores.py",
+      "reason": "match_keyword:proveedor"
+    },
+    {
+      "path": "TESTS/test_422_editor_proveedores.py",
+      "reason": "match_keyword:proveedor"
+    },
+    {
+      "path": "TESTS/test_423_informe_proveedores.py",
+      "reason": "match_keyword:proveedor"
+    },
+    {
+      "path": "TESTS/test_435_pedido_sugerido_stock_bajo.py",
+      "reason": "match_keyword:pedido"
+    },
+    {
+      "path": "TESTS/test_436_confirmador_pedido_sugerido.py",
+      "reason": "match_keyword:pedido"
+    },
+    {
+      "path": "TESTS/test_438_entrada_stock_desde_pedido.py",
+      "reason": "match_keyword:pedido"
+    },
+    {
+      "path": "TESTS/test_474_compras_evento.py",
+      "reason": "match_stem:compras"
+    },
+    {
+      "path": "TESTS/test_486_comparador_economico_proveedores.py",
+      "reason": "match_keyword:proveedor"
+    },
+    {
+      "path": "TESTS/test_508_afinador_compras_rentabilidad.py",
+      "reason": "match_stem:test_508_afinador_compras_rentabilidad"
+    },
+    {
+      "path": "TESTS/test_554_conector_proveedores_real.py",
+      "reason": "match_keyword:proveedor"
+    },
+    {
+      "path": "TESTS/test_604_c1_gestion_compras.py",
+      "reason": "match_stem:compras"
+    },
+    {
+      "path": "TESTS/test_604_c2_pedido_operativo.py",
+      "reason": "match_keyword:pedido"
+    },
+    {
+      "path": "TESTS/test_604_ux1_flujos_consola.py",
+      "reason": "match_stem:consola"
+    },
+    {
+      "path": "TESTS/test_analizador_inteligente_compras.py",
+      "reason": "match_stem:test_analizador_inteligente_compras"
+    },
+    {
+      "path": "TESTS/test_aprendizaje_relacion_proveedor.py",
+      "reason": "match_stem:aprendizaje_relacion_proveedor"
+    },
+    {
+      "path": "TESTS/test_cierre_inteligencia_compras.py",
+      "reason": "match_stem:compras"
+    },
+    {
+      "path": "TESTS/test_comparador_inteligente_proveedores.py",
+      "reason": "match_stem:comparador_inteligente_proveedores"
+    },
+    {
+      "path": "TESTS/test_comparador_proveedores_precios.py",
+      "reason": "match_stem:comparador_proveedores_precios"
+    },
+    {
+      "path": "TESTS/test_detector_anomalias_compras.py",
+      "reason": "match_stem:detector_anomalias_compras"
+    },
+    {
+      "path": "TESTS/test_detector_proveedores_pdf.py",
+      "reason": "match_stem:proveedores_pdf"
+    },
+    {
+      "path": "TESTS/test_inteligencia_compras_3041_3042_3043_3044.py",
+      "reason": "match_stem:test_inteligencia_compras_3041_3042_3043_3044"
+    },
+    {
+      "path": "TESTS/test_inteligencia_compras_3041_3042_3043_3044_3045_3046.py",
+      "reason": "match_stem:test_inteligencia_compras_3041_3042_3043_3044_3045_3046"
+    },
+    {
+      "path": "TESTS/test_inteligencia_compras_3041_3042_3043_3044_3045_3046_3047_3048.py",
+      "reason": "match_stem:test_inteligencia_compras_3041_3042_3043_3044_3045_3046_3047_3048"
+    },
+    {
+      "path": "TESTS/test_motor_inteligente_pedidos.py",
+      "reason": "match_keyword:pedido"
+    },
+    {
+      "path": "TESTS/test_motor_recomendaciones_compras.py",
+      "reason": "match_stem:test_motor_recomendaciones_compras"
+    },
+    {
+      "path": "TESTS/test_pipeline_compras.py",
+      "reason": "match_stem:compras"
+    },
+    {
+      "path": "TESTS/test_rr161b_compras_recepcion.py",
+      "reason": "match_stem:test_rr161b_compras_recepcion"
+    }
+  ]
+}
