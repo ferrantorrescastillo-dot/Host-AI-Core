@@ -1,8 +1,18 @@
 """Nucleo principal de Host AI.
 
-Este modulo inicializa servicios, motores, registro de pipelines, director y
-orquestador. RC2.2 mantiene el comportamiento existente y separa parte de la
-configuracion interna para que el archivo sea mas mantenible sin cambiar la API.
+Este módulo actúa como `composition root` y sigue el flujo de arranque
+documentado para facilitar la mantenibilidad. Etapas principales:
+
+1) Entrada al sistema (módulo `main.py`).
+2) Creación de `HostAICore` (esta clase).
+3) Registro/creación de servicios auxiliares (importadores, OCR, analizadores).
+4) Registro/creación de motores de dominio (memoria, compras, stock, producción).
+5) Registro de pipelines disponibles (`RegistroPipelines`).
+6) Exposición de `DirectorHostAI` y `OrquestadorHostAI` para ejecutar pipelines.
+7) El lanzador/console inicia la interacción con el usuario.
+
+Se preserva el orden de inicialización y la API pública; los cambios son
+meramente organizativos y documentales.
 """
 
 import json

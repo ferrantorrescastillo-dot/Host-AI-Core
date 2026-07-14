@@ -1,5 +1,14 @@
 from __future__ import annotations
 
+"""Lanzador del Piloto 01.
+
+Rol:
+- Actúa como punto de arranque interactivo (menu) del sistema.
+- Valida auditoría, inicia `HostAICore` y delega a la consola de piloto.
+
+Está alineado con el flujo de arranque documentado en `CORE/host_ai_core.py`.
+"""
+
 from pathlib import Path
 import sys
 from typing import Callable, Optional
