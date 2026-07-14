@@ -2,11 +2,17 @@ from __future__ import annotations
 
 """Lanzador del Piloto 01.
 
-Rol:
-- Actúa como punto de arranque interactivo (menu) del sistema.
-- Valida auditoría, inicia `HostAICore` y delega a la consola de piloto.
+Rol y responsabilidades en el ciclo de vida de arranque:
 
-Está alineado con el flujo de arranque documentado en `CORE/host_ai_core.py`.
+1) Inicio de la aplicación: `main()` delega aquí la ejecución.
+2) Inicialización del núcleo: valida auditoría y crea `HostAICore`.
+3) Ejecución del piloto: instancia y ejecuta `ConsolaPiloto01`.
+4) Gestión de errores: el método `ejecutar()` controla errores de menú y
+    muestra mensajes al usuario sin modificar la lógica subyacente.
+5) Finalización: la consola o el lanzador deciden cuándo terminar el proceso.
+
+Este módulo documenta su responsabilidad y mantiene la delegación de
+funciones a `CORE` y `APP` sin introducir cambios de comportamiento.
 """
 
 from pathlib import Path

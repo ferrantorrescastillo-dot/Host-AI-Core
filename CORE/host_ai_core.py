@@ -1,15 +1,17 @@
 """Nucleo principal de Host AI.
 
-Este módulo actúa como `composition root` y sigue el flujo de arranque
-documentado para facilitar la mantenibilidad. Etapas principales:
+This módulo actúa como `composition root` y sigue el flujo de arranque
+documentado para facilitar la mantenibilidad. Etapas principales y
+responsables:
 
-1) Entrada al sistema (módulo `main.py`).
-2) Creación de `HostAICore` (esta clase).
-3) Registro/creación de servicios auxiliares (importadores, OCR, analizadores).
-4) Registro/creación de motores de dominio (memoria, compras, stock, producción).
-5) Registro de pipelines disponibles (`RegistroPipelines`).
-6) Exposición de `DirectorHostAI` y `OrquestadorHostAI` para ejecutar pipelines.
-7) El lanzador/console inicia la interacción con el usuario.
+1) Entrada al sistema — `main.py` (delegación al lanzador).
+2) Creación de `HostAICore` — `SERVICIOS.lanzador_piloto_01` crea la instancia.
+3) Registro de servicios — `HostAICore._inicializar_servicios`.
+4) Registro de motores — `HostAICore._inicializar_motores`.
+5) Registro de pipelines — `HostAICore._registrar_pipelines`.
+6) Exposición de `DirectorHostAI` y `OrquestadorHostAI` — responsabilidad de
+    `HostAICore.__init__` tras el registro.
+7) Interacción/arranque — `SERVICIOS.lanzador_piloto_01` / `APP.consola_piloto_01`.
 
 Se preserva el orden de inicialización y la API pública; los cambios son
 meramente organizativos y documentales.

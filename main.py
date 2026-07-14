@@ -3,13 +3,18 @@ import sys
 
 """Punto de entrada oficial de Host AI (piloto).
 
-Flujo de arranque documentado:
-1) Entrada al sistema (`main`).
-2) Creación/resolución de `BASE_DIR`.
-3) Delegación al lanzador (`SERVICIOS.lanzador_piloto_01.ejecutar_piloto_01`).
+Define y documenta el ciclo de vida de arranque (solo documentación,
+sin cambiar comportamiento):
 
-Este módulo mantiene un único `main()` ligero que delega la lógica al
-lanzador para mantener la responsabilidad clara.
+1) Inicio de la aplicación: `main()` — resuelve `BASE_DIR` y prepara imports.
+2) Inicialización del núcleo: `HostAICore` es creado por el lanzador.
+3) Ejecución del piloto: `LanzadorPiloto01` invoca la consola de piloto.
+4) Gestión de errores: `main()` captura y re-lanza excepciones para no
+  ocultar fallos (el lanzador gestiona errores en el menú interactivo).
+5) Finalización: la finalización es responsabilidad del lanzador/consola.
+
+Este módulo mantiene `main()` ligero y delegador; la responsabilidad
+operativa recae en `SERVICIOS.lanzador_piloto_01` y `CORE.host_ai_core`.
 """
 
 BASE_DIR = Path(__file__).resolve().parent
