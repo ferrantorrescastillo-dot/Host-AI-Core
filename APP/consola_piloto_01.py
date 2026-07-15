@@ -23,7 +23,7 @@ class ConsolaPiloto01:
                 ConsolaJornadaPiloto12(self.app.core.base_dir).ejecutar()
             elif opcion == "2":
                 from APP.consola_recepcion_piloto_1 import ConsolaRecepcionPiloto1
-                ConsolaRecepcionPiloto1(self.app.core.base_dir).ejecutar()
+                ConsolaRecepcionPiloto1(self.app.core.base_dir, core=self.app.core).ejecutar()
             elif opcion == "3":
                 self.app._menu_eventos()
             elif opcion == "4":

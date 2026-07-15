@@ -63,6 +63,7 @@ class JornadaPiloto12:
         self.planes_path = self.base_dir / "DATOS" / "db" / "planes_produccion.json"
         self.eventos_path = self.base_dir / "DATOS" / "db" / "eventos.json"
         self.pedidos_path = self.base_dir / "DATOS" / "db" / "compras_pedidos.json"
+        self.recepciones_rp3_path = self.base_dir / "DATOS" / "piloto" / "recepciones_rp3" / "registros.json"
         self.menus_path = self.base_dir / "DATOS" / "db" / "menus.json"
         self.articulos_path = self.base_dir / "DATOS" / "db" / "articulos.json"
         self.stock_path = self.base_dir / "DATOS" / "db" / "stock_inicial.json"
@@ -311,6 +312,8 @@ class JornadaPiloto12:
         personal = self._personal_eventos(eventos_hoy, menus)
         alertas_stock = self._alertas_stock()
         incidencias = self._incidencias(items, compras_criticas, recepciones_previstas, personal, eventos_hoy)
+        recepciones_rp3 = self._resumen_recepciones_rp3()
+        incidencias = incidencias + list(recepciones_rp3.get("incidencias", []))
         alergenos = self._alergenos(eventos_hoy, articulos, menus)
         produccion_viva = self._resumen_produccion_viva(planes_raw)
         prioridades = [
@@ -335,6 +338,7 @@ class JornadaPiloto12:
             "alertas": len(alertas_jornada) + len(alertas_stock),
             "incidencias": len(incidencias),
             "produccion_viva_planes": int(produccion_viva.get("planes_activos", 0)),
+            "recepciones_rp3_hoy": int(recepciones_rp3.get("recepciones_hoy", 0)),
         }
         return {
             "pregunta": "¿Qué tiene que hacer el jefe de cocina durante los próximos minutos?",
@@ -349,6 +353,7 @@ class JornadaPiloto12:
             "personal": personal,
             "alergenos": alergenos,
             "incidencias": incidencias,
+            "recepciones_rp3": recepciones_rp3,
             "produccion_viva": produccion_viva,
             "prioridades": prioridades,
             "orden_automatico": {
@@ -620,8 +625,34 @@ class JornadaPiloto12:
         return (
             f"Empieza por {top.get('titulo')} y mantén el foco en servicio próximo. "
             f"Eventos hoy: {contexto.get('eventos_hoy', 0)}, compras críticas: {contexto.get('compras_criticas', 0)}, "
-            f"recepciones previstas: {contexto.get('recepciones_previstas', 0)}, planes vivos: {contexto.get('produccion_viva_planes', 0)}."
+            f"recepciones previstas: {contexto.get('recepciones_previstas', 0)}, recepciones aplicadas hoy: {contexto.get('recepciones_rp3_hoy', 0)}, planes vivos: {contexto.get('produccion_viva_planes', 0)}."
         )
+
+    def _resumen_recepciones_rp3(self) -> dict[str, Any]:
+        data = self._load_json(self.recepciones_rp3_path, [])
+        if not isinstance(data, list):
+            return {"recepciones_hoy": 0, "lineas_recibidas_hoy": 0, "incidencias_hoy": 0, "incidencias": []}
+        hoy = date.today().isoformat()
+        regs_hoy = []
+        for r in data:
+            fecha = str(r.get("creado_en") or "")[:10]
+            if fecha == hoy:
+                regs_hoy.append(r)
+        incidencias = []
+        for r in regs_hoy:
+            for inc in r.get("incidencias", []) or []:
+                incidencias.append({
+                    "tipo": "recepcion_rp3",
+                    "nivel": "medio",
+                    "titulo": f"Recepción {r.get('pedido_id', '')}",
+                    "detalle": f"{inc.get('tipo')}: {inc.get('detalle')}",
+                })
+        return {
+            "recepciones_hoy": len(regs_hoy),
+            "lineas_recibidas_hoy": sum(len(r.get("entradas_stock", []) or []) for r in regs_hoy),
+            "incidencias_hoy": sum(len(r.get("incidencias", []) or []) for r in regs_hoy),
+            "incidencias": incidencias[:20],
+        }
 
     @staticmethod
     def _resumen_produccion_viva(planes_raw: list[dict[str, Any]]) -> dict[str, Any]:

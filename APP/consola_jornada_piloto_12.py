@@ -127,6 +127,13 @@ class ConsolaJornadaPiloto12:
             print_fn(f"- Progreso global: {viva.get('progreso_promedio', 0)}%")
             print_fn(f"- Siguiente acción: {viva.get('siguiente_accion', 'Sin acciones')}")
 
+        rec = briefing.get("recepciones_rp3") or {}
+        if rec:
+            print_fn("\nRECEPCIONES RP-3")
+            print_fn(f"- Recepciones aplicadas hoy: {rec.get('recepciones_hoy', 0)}")
+            print_fn(f"- Líneas recibidas hoy: {rec.get('lineas_recibidas_hoy', 0)}")
+            print_fn(f"- Incidencias de recepción hoy: {rec.get('incidencias_hoy', 0)}")
+
         prioridades = briefing.get("prioridades", [])[:5]
         if prioridades:
             print_fn("\nPRIORIDADES AUTOMÁTICAS (próximos minutos)")

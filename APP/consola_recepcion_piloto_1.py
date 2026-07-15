@@ -4,14 +4,18 @@ import json
 from pathlib import Path
 from typing import Callable
 
+from CORE.host_ai_core import HostAICore
 from SERVICIOS.recepcion_inteligente_piloto_1 import RecepcionInteligentePiloto1, formatear_diagnostico_piloto1
+from SERVICIOS.recepcion_operativa_rp3 import RecepcionOperativaRP3
 from SERVICIOS.bandeja_trabajo_piloto_11 import BandejaTrabajoPiloto11
 
 
 class ConsolaRecepcionPiloto1:
-    def __init__(self, base_dir: Path):
+    def __init__(self, base_dir: Path, core=None):
         self.base_dir = Path(base_dir)
+        self.core = core or HostAICore(self.base_dir)
         self.service = RecepcionInteligentePiloto1(self.base_dir)
+        self.service_rp3 = RecepcionOperativaRP3(self.core)
         self.bandeja = BandejaTrabajoPiloto11(self.base_dir)
 
     def ejecutar(self, input_fn: Callable[[str], str] = input, print_fn: Callable[..., None] = print) -> None:
@@ -20,6 +24,7 @@ class ConsolaRecepcionPiloto1:
             print_fn("1. Añadir una factura, albarán o recepción")
             print_fn("2. Retomar una recepción pendiente")
             print_fn("3. Ver recepciones pendientes")
+            print_fn("4. Recepción guiada desde pedido esperado (RP-3)")
             print_fn("9. Diagnóstico aislado")
             print_fn("0. Volver")
             op = input_fn("Elige una opción: ").strip()
@@ -31,10 +36,150 @@ class ConsolaRecepcionPiloto1:
                 self._retomar(input_fn, print_fn)
             elif op == "3":
                 self._listar_pendientes(print_fn)
+            elif op == "4":
+                self._recepcion_por_pedido(input_fn, print_fn)
             elif op == "0":
                 return
             else:
                 print_fn("Opción no válida.")
+
+    def _recepcion_por_pedido(self, input_fn, print_fn) -> None:
+        pedidos = [p for p in self.core.compras.listar_pedidos() if p.get("estado") in {"borrador", "preparado", "enviado"}]
+        if not pedidos:
+            print_fn("No hay pedidos abiertos para recepcionar.")
+            return
+        print_fn("\nPEDIDOS ABIERTOS")
+        for i, p in enumerate(pedidos, 1):
+            print_fn(f"{i}. {p.get('id')} | {p.get('proveedor')} | {p.get('estado')} | {p.get('total_lineas', 0)} linea(s)")
+        raw = input_fn("Selecciona pedido (0=cancelar): ").strip()
+        if raw == "0":
+            return
+        if not raw.isdigit() or not 1 <= int(raw) <= len(pedidos):
+            print_fn("Selección no válida.")
+            return
+        pedido = pedidos[int(raw) - 1]
+        proveedor_llegada = input_fn(f"Proveedor que llega [{pedido.get('proveedor')}]: ").strip()
+        sesion = self.service_rp3.iniciar_recepcion(pedido["id"], proveedor_llegada)
+        print_fn(f"Sesión creada: {sesion['id']}")
+
+        for linea in sesion.get("lineas_esperadas", []):
+            print_fn("\n" + "-" * 72)
+            print_fn(f"Esperado: {linea['nombre']} | {linea['cantidad_esperada']} {linea['unidad_esperada']} | precio {linea.get('precio_esperado', 0)}")
+            print_fn("1. Aceptar completa")
+            print_fn("2. Parcial")
+            print_fn("3. No recibido")
+            print_fn("4. Rechazado")
+            print_fn("5. Sustitución")
+            op = input_fn("Decisión [1]: ").strip() or "1"
+
+            if op == "1":
+                cant = float(input_fn(f"Cantidad recibida [{linea['cantidad_esperada']}]: ").strip() or str(linea["cantidad_esperada"]))
+                uni = input_fn(f"Unidad [{linea['unidad_esperada']}]: ").strip() or linea["unidad_esperada"]
+                precio = input_fn(f"Precio [{linea.get('precio_esperado', 0)}]: ").strip()
+                lote = input_fn("Lote (opcional): ").strip()
+                cad = input_fn("Caducidad (AAAA-MM-DD, opcional): ").strip()
+                self.service_rp3.actualizar_linea_esperada(
+                    sesion["id"], linea["linea_id"],
+                    cantidad_recibida=cant,
+                    unidad_recibida=uni,
+                    precio_recibido=(float(precio.replace(",", ".")) if precio else linea.get("precio_esperado", 0)),
+                    lote=lote,
+                    caducidad=cad,
+                    estado_linea="aceptada",
+                )
+            elif op == "2":
+                cant = float(input_fn("Cantidad recibida: ").strip() or "0")
+                uni = input_fn(f"Unidad [{linea['unidad_esperada']}]: ").strip() or linea["unidad_esperada"]
+                precio = input_fn(f"Precio [{linea.get('precio_esperado', 0)}]: ").strip()
+                motivo = input_fn("Motivo parcial: ").strip()
+                self.service_rp3.actualizar_linea_esperada(
+                    sesion["id"], linea["linea_id"],
+                    cantidad_recibida=cant,
+                    unidad_recibida=uni,
+                    precio_recibido=(float(precio.replace(",", ".")) if precio else linea.get("precio_esperado", 0)),
+                    estado_linea="parcial",
+                    motivo=motivo,
+                )
+            elif op == "3":
+                motivo = input_fn("Motivo no recibido: ").strip()
+                self.service_rp3.actualizar_linea_esperada(
+                    sesion["id"], linea["linea_id"],
+                    cantidad_recibida=0,
+                    unidad_recibida=linea["unidad_esperada"],
+                    precio_recibido=linea.get("precio_esperado", 0),
+                    estado_linea="no_recibida",
+                    motivo=motivo,
+                )
+            elif op == "4":
+                motivo = input_fn("Motivo rechazo: ").strip()
+                self.service_rp3.actualizar_linea_esperada(
+                    sesion["id"], linea["linea_id"],
+                    cantidad_recibida=0,
+                    unidad_recibida=linea["unidad_esperada"],
+                    precio_recibido=linea.get("precio_esperado", 0),
+                    estado_linea="rechazada",
+                    motivo=motivo,
+                )
+            elif op == "5":
+                nombre_s = input_fn("Nombre producto sustituto: ").strip()
+                art_s = input_fn("Articulo ID sustituto (opcional): ").strip()
+                cant = float(input_fn("Cantidad recibida: ").strip() or "0")
+                uni = input_fn(f"Unidad [{linea['unidad_esperada']}]: ").strip() or linea["unidad_esperada"]
+                precio = input_fn(f"Precio [{linea.get('precio_esperado', 0)}]: ").strip()
+                lote = input_fn("Lote (opcional): ").strip()
+                cad = input_fn("Caducidad (AAAA-MM-DD, opcional): ").strip()
+                self.service_rp3.actualizar_linea_esperada(
+                    sesion["id"], linea["linea_id"],
+                    cantidad_recibida=cant,
+                    unidad_recibida=uni,
+                    precio_recibido=(float(precio.replace(",", ".")) if precio else linea.get("precio_esperado", 0)),
+                    lote=lote,
+                    caducidad=cad,
+                    estado_linea="sustitucion",
+                    articulo_id_recibido=art_s,
+                    nombre_recibido=nombre_s,
+                )
+            else:
+                print_fn("Opción no válida. Se deja como pendiente.")
+
+        add = input_fn("¿Registrar producto adicional? (s/n): ").strip().lower()
+        while add in {"s", "si", "sí"}:
+            nombre = input_fn("Nombre producto adicional: ").strip()
+            cant = float(input_fn("Cantidad: ").strip() or "0")
+            uni = input_fn("Unidad: ").strip() or "ud"
+            precio = float((input_fn("Precio unitario [0]: ").strip() or "0").replace(",", "."))
+            art = input_fn("Articulo ID (opcional): ").strip()
+            lote = input_fn("Lote (opcional): ").strip()
+            cad = input_fn("Caducidad (AAAA-MM-DD, opcional): ").strip()
+            motivo = input_fn("Motivo adicional (opcional): ").strip()
+            self.service_rp3.registrar_adicional(
+                sesion["id"],
+                nombre=nombre,
+                cantidad=cant,
+                unidad=uni,
+                precio_unitario=precio,
+                articulo_id=art,
+                lote=lote,
+                caducidad=cad,
+                motivo=motivo,
+            )
+            add = input_fn("¿Registrar otro adicional? (s/n): ").strip().lower()
+
+        preview = self.service_rp3.preparar_validacion(sesion["id"])
+        print_fn("\nVALIDACIÓN RECEPCIÓN RP-3")
+        print_fn("=" * 72)
+        print_fn(f"Pedido esperado: {preview['pedido_id']} | Proveedor esperado: {preview['proveedor_esperado']} | Llegada: {preview['proveedor_llegada']}")
+        print_fn(f"Diferencias detectadas: {len(preview.get('diferencias', []))}")
+        for d in preview.get("diferencias", [])[:20]:
+            print_fn(f"- {d.get('tipo')}: {d.get('detalle')}")
+        print_fn(f"Stock antes: {preview.get('stock_antes', {}).get('total_items', 0)} articulo(s), {preview.get('stock_antes', {}).get('total_lotes', 0)} lote(s)")
+        confirmar = input_fn("Escribe RECEPCIONAR para aplicar: ").strip()
+        resultado = self.service_rp3.finalizar_recepcion(sesion["id"], confirmar)
+        print_fn(resultado.get("mensaje", ""))
+        if resultado.get("ok"):
+            reg = resultado.get("registro", {})
+            print_fn(f"Entradas stock: {len(reg.get('entradas_stock', []))} | Incidencias: {len(reg.get('incidencias', []))}")
+            print_fn(f"Stock después: {resultado.get('stock_despues', {}).get('total_items', 0)} articulo(s), {resultado.get('stock_despues', {}).get('total_lotes', 0)} lote(s)")
 
     def _nueva(self, input_fn, print_fn) -> None:
         ruta = input_fn("Ruta del documento (PDF/Excel/CSV/TXT/imagen): ").strip().strip('"')
