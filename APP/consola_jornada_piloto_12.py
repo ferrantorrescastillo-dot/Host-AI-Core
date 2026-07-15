@@ -60,12 +60,19 @@ class ConsolaJornadaPiloto12:
                 print_fn("Opción no válida.")
 
     def _mostrar_portada(self, jornada: dict, print_fn) -> None:
+        briefing = jornada.get("briefing_apertura", {})
         r = jornada["resumen"]
         print_fn("\n" + "=" * 78)
-        print_fn("MI JORNADA — TRABAJO PENDIENTE")
+        print_fn("APERTURA RESTAURANTE — BRIEFING OPERATIVO")
         print_fn("=" * 78)
         print_fn(f"Fecha: {jornada['fecha']} | Tareas abiertas: {r['abiertas']}")
+        if briefing:
+            print_fn(briefing.get("pregunta", ""))
+            print_fn(f"Respuesta: {briefing.get('mensaje_operativo', '')}")
         print_fn(f"Muy urgentes: {r['muy_urgentes']} | Para hoy: {r['hoy']} | Esta semana: {r['esta_semana']} | Cuando puedas: {r['cuando_puedas']}")
+
+        if briefing:
+            self._mostrar_briefing_apertura(briefing, print_fn)
 
         if jornada["alertas"]:
             print_fn("\nAVISOS")
@@ -90,6 +97,27 @@ class ConsolaJornadaPiloto12:
             hora = datetime.fromisoformat(t["fin_estimado_por_trabajo_activo"]).strftime("%H:%M")
             print_fn(f"Fin aproximado según trabajo activo conocido: {hora}")
         print_fn("Nota: no se inventan tiempos; la estimación usa únicamente datos registrados.")
+
+    def _mostrar_briefing_apertura(self, briefing: dict, print_fn) -> None:
+        print_fn("\nSECCIONES DE APERTURA")
+        print_fn(f"- Eventos de hoy: {len(briefing.get('eventos_hoy', []))}")
+        print_fn(f"- Cronología: {len(briefing.get('cronologia', []))} hitos")
+        print_fn(f"- Producción priorizada: {len(briefing.get('produccion_priorizada', []))}")
+        print_fn(f"- Compras críticas: {len(briefing.get('compras_criticas', []))}")
+        print_fn(f"- Recepciones previstas: {len(briefing.get('recepciones_previstas', []))}")
+        print_fn(f"- Productos a descongelar: {len(briefing.get('productos_descongelar', []))}")
+        print_fn(f"- Alertas: {len(briefing.get('alertas', []))}")
+        print_fn(f"- Personal: {len(briefing.get('personal', []))} evento(s)")
+        print_fn(f"- Alérgenos: {briefing.get('alergenos', {}).get('estado', 'sin datos')}")
+        print_fn(f"- Incidencias: {len(briefing.get('incidencias', []))}")
+        print_fn(f"- Prioridades: {len(briefing.get('prioridades', []))}")
+
+        prioridades = briefing.get("prioridades", [])[:5]
+        if prioridades:
+            print_fn("\nPRIORIDADES AUTOMÁTICAS (próximos minutos)")
+            for i, item in enumerate(prioridades, 1):
+                etiqueta = ICONOS.get(item.get("prioridad_codigo", ""), "")
+                print_fn(f"{i}. {etiqueta} {item.get('titulo')} | {TIPOS_TEXTO.get(item.get('tipo'), item.get('tipo'))}")
 
     def _mostrar_plan(self, jornada: dict, print_fn) -> None:
         print_fn("\nPLAN DEL DÍA")

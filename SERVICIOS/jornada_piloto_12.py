@@ -8,7 +8,13 @@ from datetime import date, datetime
 from pathlib import Path
 from typing import Any
 
+from SERVICIOS.alertas_stock_bajo_434 import AlertasStockBajo434
 from SERVICIOS.bandeja_trabajo_piloto_11 import BandejaTrabajoPiloto11
+from SERVICIOS.compras_evento_474 import calcular_necesidades_evento, comparar_con_stock
+from SERVICIOS.cronograma_evento_477 import generar_cronograma_evento
+from SERVICIOS.detector_incidencias_537 import detectar_incidencias_operativas
+from SERVICIOS.personal_evento_475 import calcular_personal_evento
+from SERVICIOS.produccion_evento_473 import generar_produccion_evento
 
 
 PRIORIDAD_HUMANA = (
@@ -57,6 +63,9 @@ class JornadaPiloto12:
         self.planes_path = self.base_dir / "DATOS" / "db" / "planes_produccion.json"
         self.eventos_path = self.base_dir / "DATOS" / "db" / "eventos.json"
         self.pedidos_path = self.base_dir / "DATOS" / "db" / "compras_pedidos.json"
+        self.menus_path = self.base_dir / "DATOS" / "db" / "menus.json"
+        self.articulos_path = self.base_dir / "DATOS" / "db" / "articulos.json"
+        self.stock_path = self.base_dir / "DATOS" / "db" / "stock_inicial.json"
 
     def construir(self, ahora: datetime | None = None) -> dict[str, Any]:
         ahora = ahora or datetime.now()
@@ -64,13 +73,18 @@ class JornadaPiloto12:
         tareas = self.bandeja.listar()
         planes = self._indexar_produccion()
         eventos = self._indexar_eventos()
+        pedidos = self._load_json(self.pedidos_path, [])
+        menus = self._load_json(self.menus_path, [])
+        articulos = self._load_json(self.articulos_path, [])
+        stock = self._load_json(self.stock_path, [])
 
         items: list[dict[str, Any]] = []
         for tarea in tareas:
             duracion = self._duracion_tarea(tarea, planes)
             prioridad = self._prioridad_humana(int(tarea.get("prioridad", 50)))
             evento_info = self._evento_tarea(tarea, eventos, ahora.date())
-            score = self._score(tarea, evento_info)
+            factores = self._factores_operativos(tarea, planes, evento_info, ahora)
+            score = self._score(tarea, evento_info, factores)
             items.append({
                 **tarea,
                 "prioridad_codigo": prioridad[0],
@@ -80,7 +94,13 @@ class JornadaPiloto12:
                 "duracion_pasiva_min": duracion.pasivo_min,
                 "duracion_fuente": duracion.fuente,
                 "evento": evento_info,
+                "dependencias": factores["dependencias"],
+                "reposo_min": factores["reposo_min"],
+                "abatimiento_min": factores["abatimiento_min"],
+                "descongelacion_min": factores["descongelacion_min"],
+                "servicio_en_min": factores["servicio_en_min"],
                 "orden_score": score,
+                "orden_score_operativo": score,
             })
 
         items.sort(key=lambda x: (-x["orden_score"], x.get("creado_en", ""), x.get("titulo", "")))
@@ -101,6 +121,18 @@ class JornadaPiloto12:
         alertas = self._alertas(items, ahora)
         recomendaciones = self._recomendaciones(items)
         counts = Counter(x["prioridad_codigo"] for x in items)
+
+        briefing = self._briefing_apertura(
+            items=items,
+            eventos=eventos,
+            menus=menus if isinstance(menus, list) else [],
+            pedidos=pedidos if isinstance(pedidos, list) else [],
+            stock=stock if isinstance(stock, list) else [],
+            articulos=articulos if isinstance(articulos, list) else [],
+            planes=planes,
+            ahora=ahora,
+            alertas_jornada=alertas,
+        )
 
         return {
             "version": self.VERSION,
@@ -126,6 +158,7 @@ class JornadaPiloto12:
             "grupos": dict(grupos),
             "recomendaciones": recomendaciones,
             "alertas": alertas,
+            "briefing_apertura": briefing,
             "solo_lectura": True,
         }
 
@@ -135,7 +168,7 @@ class JornadaPiloto12:
                 return codigo, texto
         return "CUANDO_PUEDAS", "Cuando puedas"
 
-    def _score(self, tarea: dict[str, Any], evento_info: dict[str, Any]) -> int:
+    def _score(self, tarea: dict[str, Any], evento_info: dict[str, Any], factores: dict[str, int | None]) -> int:
         score = int(tarea.get("prioridad", 50)) * 10
         estado = tarea.get("estado", "PENDIENTE")
         score += {"EN_CURSO": 300, "BLOQUEADA": 180, "PENDIENTE": 100, "APLAZADA": -100}.get(estado, 0)
@@ -148,7 +181,69 @@ class JornadaPiloto12:
             elif dias == 0: score += 240
             elif dias <= 2: score += 180
             elif dias <= 7: score += 80
+        servicio_en = factores.get("servicio_en_min")
+        if isinstance(servicio_en, int):
+            if servicio_en <= 0:
+                score += 280
+            elif servicio_en <= 120:
+                score += 220
+            elif servicio_en <= 360:
+                score += 170
+            elif servicio_en <= 720:
+                score += 120
+            elif servicio_en <= 1440:
+                score += 80
+        score += int(min(max(0, int(factores.get("dependencias") or 0)), 8) * 25)
+        score += int(min(max(0, int(factores.get("reposo_min") or 0)), 240) / 4)
+        score += int(min(max(0, int(factores.get("abatimiento_min") or 0)), 240) / 3)
+        score += int(min(max(0, int(factores.get("descongelacion_min") or 0)), 480) / 2)
         return score
+
+    def _factores_operativos(
+        self,
+        tarea: dict[str, Any],
+        planes: dict[str, dict[str, Any]],
+        evento_info: dict[str, Any],
+        ahora: datetime,
+    ) -> dict[str, int | None]:
+        out: dict[str, int | None] = {
+            "dependencias": 0,
+            "reposo_min": 0,
+            "abatimiento_min": 0,
+            "descongelacion_min": 0,
+            "servicio_en_min": None,
+        }
+        if tarea.get("tipo") == "PRODUCCION":
+            tarea_id = str(tarea.get("metadatos", {}).get("tarea_id") or "")
+            original = planes.get(tarea_id) or {}
+            fases = original.get("fases") or []
+            dependencias = 0
+            reposo = 0
+            abatimiento = 0
+            descongelado = 0
+            for fase in fases:
+                dependencia = str(fase.get("dependencia") or "").strip()
+                if dependencia:
+                    dependencias += 1
+                tipo = str(fase.get("tipo") or "").lower()
+                dur = self._int(fase.get("duracion_min"))
+                if tipo == "reposo":
+                    reposo += dur
+                elif tipo in {"abatido", "abatimiento"}:
+                    abatimiento += dur
+                elif tipo in {"descongelacion", "descongelado", "descongelar"}:
+                    descongelado += dur
+            if str(original.get("bloqueo") or "").strip():
+                dependencias += 1
+            out["dependencias"] = dependencias
+            out["reposo_min"] = reposo
+            out["abatimiento_min"] = abatimiento
+            out["descongelacion_min"] = descongelado
+
+        servicio = self._fecha_hora_evento(evento_info.get("fecha"), evento_info.get("hora"))
+        if servicio is not None:
+            out["servicio_en_min"] = int((servicio - ahora).total_seconds() // 60)
+        return out
 
     def _duracion_tarea(self, tarea: dict[str, Any], planes: dict[str, dict[str, Any]]) -> DuracionTarea:
         if tarea.get("tipo") != "PRODUCCION":
@@ -186,9 +281,341 @@ class JornadaPiloto12:
             "id": evento_id,
             "nombre": evento.get("nombre", ""),
             "fecha": evento.get("fecha", ""),
+            "hora": evento.get("hora") or evento.get("hora_inicio") or "",
             "pax": evento.get("pax", 0),
             "dias_restantes": dias,
         }
+
+    def _briefing_apertura(
+        self,
+        *,
+        items: list[dict[str, Any]],
+        eventos: dict[str, dict[str, Any]],
+        menus: list[dict[str, Any]],
+        pedidos: list[dict[str, Any]],
+        stock: list[dict[str, Any]],
+        articulos: list[dict[str, Any]],
+        planes: dict[str, dict[str, Any]],
+        ahora: datetime,
+        alertas_jornada: list[dict[str, str]],
+    ) -> dict[str, Any]:
+        eventos_hoy = self._eventos_hoy(eventos, ahora.date())
+        cronologia = self._cronologia(eventos_hoy)
+        produccion_priorizada = [x for x in items if x.get("tipo") == "PRODUCCION"][:8]
+        compras_criticas = self._compras_criticas(eventos_hoy, menus, stock, pedidos)
+        recepciones_previstas = self._recepciones_previstas(pedidos)
+        descongelaciones = self._descongelaciones(items)
+        personal = self._personal_eventos(eventos_hoy, menus)
+        alertas_stock = self._alertas_stock()
+        incidencias = self._incidencias(items, compras_criticas, recepciones_previstas, personal, eventos_hoy)
+        alergenos = self._alergenos(eventos_hoy, articulos, menus)
+        prioridades = [
+            {
+                "tarea_id": x.get("id"),
+                "titulo": x.get("titulo"),
+                "tipo": x.get("tipo"),
+                "prioridad_codigo": x.get("prioridad_codigo"),
+                "prioridad": x.get("prioridad_texto"),
+                "orden_score": x.get("orden_score_operativo"),
+                "servicio_en_min": x.get("servicio_en_min"),
+            }
+            for x in items[:10]
+        ]
+        contexto = {
+            "eventos_hoy": len(eventos_hoy),
+            "cronologia_items": len(cronologia),
+            "produccion_priorizada": len(produccion_priorizada),
+            "compras_criticas": len(compras_criticas),
+            "recepciones_previstas": len(recepciones_previstas),
+            "descongelaciones": len(descongelaciones),
+            "alertas": len(alertas_jornada) + len(alertas_stock),
+            "incidencias": len(incidencias),
+        }
+        return {
+            "pregunta": "¿Qué tiene que hacer el jefe de cocina durante los próximos minutos?",
+            "mensaje_operativo": self._mensaje_operativo(prioridades, contexto),
+            "eventos_hoy": eventos_hoy,
+            "cronologia": cronologia,
+            "produccion_priorizada": produccion_priorizada,
+            "compras_criticas": compras_criticas,
+            "recepciones_previstas": recepciones_previstas,
+            "productos_descongelar": descongelaciones,
+            "alertas": alertas_jornada + alertas_stock,
+            "personal": personal,
+            "alergenos": alergenos,
+            "incidencias": incidencias,
+            "prioridades": prioridades,
+            "orden_automatico": {
+                "criterios": [
+                    "hora del evento",
+                    "duración",
+                    "dependencias",
+                    "tiempos de reposo",
+                    "tiempos de abatimiento",
+                    "tiempos de descongelación",
+                ],
+                "fuente": "JornadaPiloto12 + servicios operativos existentes",
+            },
+            "solo_lectura": True,
+        }
+
+    def _eventos_hoy(self, eventos: dict[str, dict[str, Any]], hoy: date) -> list[dict[str, Any]]:
+        out: list[dict[str, Any]] = []
+        for evt in eventos.values():
+            f = self._parse_fecha(evt.get("fecha"))
+            if f != hoy:
+                continue
+            estado = str(evt.get("estado") or "pendiente")
+            out.append({
+                "id": evt.get("id") or evt.get("id_evento"),
+                "nombre": evt.get("nombre", ""),
+                "fecha": evt.get("fecha", ""),
+                "hora": evt.get("hora") or evt.get("hora_inicio") or "13:00",
+                "pax": int(evt.get("pax") or evt.get("personas") or 0),
+                "estado": estado,
+            })
+        out.sort(key=lambda x: (x.get("hora") or "23:59", x.get("nombre") or ""))
+        return out
+
+    def _cronologia(self, eventos_hoy: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        timeline: list[dict[str, Any]] = []
+        for evento in eventos_hoy:
+            cronograma = generar_cronograma_evento(
+                {
+                    "id_evento": evento.get("id"),
+                    "fecha": evento.get("fecha"),
+                    "hora": evento.get("hora"),
+                    "personas": evento.get("pax"),
+                },
+                produccion=[],
+            )
+            for tarea in (cronograma.get("tareas") or [])[:4]:
+                timeline.append({
+                    "evento_id": evento.get("id"),
+                    "evento": evento.get("nombre"),
+                    "inicio": tarea.get("inicio"),
+                    "fin": tarea.get("fin"),
+                    "titulo": tarea.get("titulo"),
+                    "area": tarea.get("area"),
+                })
+        timeline.sort(key=lambda x: x.get("inicio") or "")
+        return timeline[:20]
+
+    def _compras_criticas(
+        self,
+        eventos_hoy: list[dict[str, Any]],
+        menus: list[dict[str, Any]],
+        stock: list[dict[str, Any]],
+        pedidos: list[dict[str, Any]],
+    ) -> list[dict[str, Any]]:
+        stock_dict: dict[str, float] = {}
+        for item in stock:
+            nombre = str(item.get("articulo") or item.get("nombre") or "").strip()
+            if not nombre:
+                continue
+            stock_dict[nombre] = float(item.get("stock_actual") or item.get("cantidad") or 0)
+
+        abiertos = [
+            p for p in pedidos
+            if str(p.get("estado") or "").lower() not in {"recibido", "cerrado", "cancelado"}
+        ]
+
+        out: list[dict[str, Any]] = []
+        menu = menus[0] if menus else {}
+        for evento in eventos_hoy:
+            evento_ctx = {
+                "id_evento": evento.get("id"),
+                "nombre": evento.get("nombre"),
+                "personas": evento.get("pax"),
+                "menus": [menu] if menu else [],
+            }
+            necesidades = calcular_necesidades_evento(evento_ctx, menu=menu if menu else None)
+            faltantes = [x for x in comparar_con_stock(necesidades, stock=stock_dict) if x.get("estado") == "comprar"]
+            for faltante in faltantes:
+                out.append({
+                    "evento": evento.get("nombre"),
+                    "articulo": faltante.get("articulo"),
+                    "cantidad_a_comprar": faltante.get("cantidad_a_comprar"),
+                    "unidad": faltante.get("unidad"),
+                    "stock_disponible": faltante.get("stock_disponible"),
+                    "estado": "critico" if float(faltante.get("cantidad_a_comprar") or 0) > 0 else "ok",
+                })
+        for pedido in abiertos:
+            out.append({
+                "evento": "sin_evento",
+                "articulo": f"Pedido pendiente {pedido.get('id')}",
+                "cantidad_a_comprar": pedido.get("total_lineas", len(pedido.get("lineas", []))),
+                "unidad": "líneas",
+                "stock_disponible": 0,
+                "estado": "critico",
+            })
+        return out[:20]
+
+    def _recepciones_previstas(self, pedidos: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        previstas = []
+        for pedido in pedidos:
+            estado = str(pedido.get("estado") or "").lower()
+            if estado in {"recibido", "cerrado", "cancelado"}:
+                continue
+            previstas.append({
+                "pedido_id": pedido.get("id"),
+                "proveedor": pedido.get("proveedor", ""),
+                "estado": pedido.get("estado", ""),
+                "lineas": pedido.get("total_lineas", len(pedido.get("lineas", []))),
+                "fecha_prevista": pedido.get("entrega_prevista") or pedido.get("enviado_en") or pedido.get("creado_en") or "",
+            })
+        return previstas
+
+    def _descongelaciones(self, items: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        out = []
+        for item in items:
+            minutos = int(item.get("descongelacion_min") or 0)
+            if minutos <= 0:
+                continue
+            out.append({
+                "tarea_id": item.get("id"),
+                "titulo": item.get("titulo"),
+                "minutos_descongelacion": minutos,
+                "servicio_en_min": item.get("servicio_en_min"),
+                "prioridad": item.get("prioridad_texto"),
+            })
+        out.sort(key=lambda x: (x.get("servicio_en_min") if isinstance(x.get("servicio_en_min"), int) else 999999, -int(x.get("minutos_descongelacion") or 0)))
+        return out
+
+    def _personal_eventos(self, eventos_hoy: list[dict[str, Any]], menus: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        out = []
+        menu = menus[0] if menus else None
+        for evento in eventos_hoy:
+            plan = calcular_personal_evento(
+                {
+                    "id_evento": evento.get("id"),
+                    "personas": evento.get("pax"),
+                    "tipo": evento.get("nombre"),
+                },
+                menu=menu,
+                tipo_servicio="catering",
+                complejidad="media",
+            )
+            if not plan.get("ok"):
+                continue
+            out.append({
+                "evento": evento.get("nombre"),
+                "total_equipo": plan.get("total_personas_equipo"),
+                "roles": plan.get("personal", {}),
+            })
+        return out
+
+    def _alertas_stock(self) -> list[dict[str, str]]:
+        informe = AlertasStockBajo434(self.stock_path).generar()
+        alertas = []
+        for alerta in informe.alertas[:8]:
+            nivel = "ALTA" if alerta.prioridad in {"critica", "alta"} else "MEDIA"
+            alertas.append({
+                "nivel": nivel,
+                "codigo": "STOCK_BAJO",
+                "mensaje": f"{alerta.articulo}: faltan {alerta.diferencia} {alerta.unidad} para mínimo.",
+            })
+        return alertas
+
+    def _incidencias(
+        self,
+        items: list[dict[str, Any]],
+        compras_criticas: list[dict[str, Any]],
+        recepciones_previstas: list[dict[str, Any]],
+        personal: list[dict[str, Any]],
+        eventos_hoy: list[dict[str, Any]],
+    ) -> list[dict[str, Any]]:
+        planning = {
+            "ok": True,
+            "plan": [
+                {
+                    "codigo": x.get("id"),
+                    "nombre": x.get("titulo"),
+                    "bloqueado_por": ["BLOQUEO"] if x.get("estado") == "BLOQUEADA" else [],
+                }
+                for x in items
+            ],
+        }
+        contexto = {
+            "stock": [
+                {
+                    "nombre": c.get("articulo"),
+                    "disponible": c.get("stock_disponible"),
+                    "necesario": (float(c.get("stock_disponible") or 0) + float(c.get("cantidad_a_comprar") or 0)),
+                    "imprescindible": True,
+                }
+                for c in compras_criticas
+            ],
+            "tareas": [
+                {
+                    "codigo": x.get("id"),
+                    "nombre": x.get("titulo"),
+                    "retrasada": x.get("estado") == "BLOQUEADA",
+                    "bloquea_servicio": bool(isinstance(x.get("servicio_en_min"), int) and x.get("servicio_en_min") <= 180),
+                }
+                for x in items
+            ],
+            "personal": {
+                "disponibles": sum(int(p.get("total_equipo") or 0) for p in personal),
+                "necesarios": sum(int(p.get("total_equipo") or 0) for p in personal),
+            },
+            "conflictos": [
+                {
+                    "tipo": "recepcion_pendiente",
+                    "nivel": "alto",
+                    "titulo": f"Recepción pendiente: {r.get('proveedor')}",
+                    "detalle": f"Pedido {r.get('pedido_id')} pendiente con estado {r.get('estado')}",
+                }
+                for r in recepciones_previstas
+            ],
+        }
+        resultado = detectar_incidencias_operativas(planning, prioridades={}, contexto=contexto)
+        return resultado.get("incidencias", [])[:12]
+
+    def _alergenos(
+        self,
+        eventos_hoy: list[dict[str, Any]],
+        articulos: list[dict[str, Any]],
+        menus: list[dict[str, Any]],
+    ) -> dict[str, Any]:
+        observaciones = []
+        for evento in eventos_hoy:
+            texto = str(evento.get("nombre") or "")
+            if texto:
+                pass
+        for evento in eventos_hoy:
+            # El campo de observaciones puede contener recordatorios de alérgenos.
+            origen = next((e for e in self._indexar_eventos().values() if str(e.get("id") or e.get("id_evento")) == str(evento.get("id"))), None)
+            obs = str((origen or {}).get("observaciones") or "")
+            if "alergen" in obs.lower() or "alérgen" in obs.lower():
+                observaciones.append({"evento": evento.get("nombre"), "mensaje": obs})
+
+        articulos_con_alergenos = []
+        for art in articulos:
+            alerg = art.get("alergenos")
+            if alerg:
+                articulos_con_alergenos.append({
+                    "articulo": art.get("nombre") or art.get("articulo") or art.get("codigo"),
+                    "alergenos": alerg,
+                })
+        menus_con_componentes = sum(len(m.get("platos", [])) for m in menus)
+        return {
+            "pendientes_revision_evento": observaciones,
+            "articulos_con_alergenos": articulos_con_alergenos[:12],
+            "menus_componentes_revisar": menus_con_componentes,
+            "estado": "revisar" if observaciones or articulos_con_alergenos else "sin_alertas",
+        }
+
+    @staticmethod
+    def _mensaje_operativo(prioridades: list[dict[str, Any]], contexto: dict[str, int]) -> str:
+        if not prioridades:
+            return "No hay tareas abiertas en la bandeja. Validar eventos y recepciones de hoy."
+        top = prioridades[0]
+        return (
+            f"Empieza por {top.get('titulo')} y mantén el foco en servicio próximo. "
+            f"Eventos hoy: {contexto.get('eventos_hoy', 0)}, compras críticas: {contexto.get('compras_criticas', 0)}, "
+            f"recepciones previstas: {contexto.get('recepciones_previstas', 0)}."
+        )
 
     def _recomendaciones(self, items: list[dict[str, Any]]) -> list[dict[str, Any]]:
         out: list[dict[str, Any]] = []
@@ -311,7 +738,29 @@ class JornadaPiloto12:
 
     def _indexar_eventos(self) -> dict[str, dict[str, Any]]:
         data = self._load_json(self.eventos_path, [])
-        return {str(x.get("id")): x for x in data if isinstance(x, dict) and x.get("id")} if isinstance(data, list) else {}
+        out: dict[str, dict[str, Any]] = {}
+        if not isinstance(data, list):
+            return out
+        for item in data:
+            if not isinstance(item, dict):
+                continue
+            key = str(item.get("id") or item.get("id_evento") or "")
+            if key:
+                out[key] = item
+        return out
+
+    @staticmethod
+    def _fecha_hora_evento(fecha: Any, hora: Any) -> datetime | None:
+        fecha_txt = str(fecha or "").strip()
+        hora_txt = str(hora or "13:00").strip()[:5]
+        if not fecha_txt:
+            return None
+        for fmt in ("%Y-%m-%d %H:%M", "%d/%m/%Y %H:%M", "%d-%m-%Y %H:%M"):
+            try:
+                return datetime.strptime(f"{fecha_txt} {hora_txt}", fmt)
+            except ValueError:
+                continue
+        return None
 
     @staticmethod
     def _load_json(path: Path, default: Any) -> Any:
