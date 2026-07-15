@@ -65,6 +65,7 @@ class JornadaPiloto12:
         self.pedidos_path = self.base_dir / "DATOS" / "db" / "compras_pedidos.json"
         self.recepciones_rp3_path = self.base_dir / "DATOS" / "piloto" / "recepciones_rp3" / "registros.json"
         self.rp4_confirmados_path = self.base_dir / "DATOS" / "piloto" / "rp4_preparar_manana" / "confirmados.json"
+        self.rp5_incidencias_path = self.base_dir / "DATOS" / "piloto" / "rp5_incidencias_replan" / "incidencias.json"
         self.menus_path = self.base_dir / "DATOS" / "db" / "menus.json"
         self.articulos_path = self.base_dir / "DATOS" / "db" / "articulos.json"
         self.stock_path = self.base_dir / "DATOS" / "db" / "stock_inicial.json"
@@ -315,6 +316,8 @@ class JornadaPiloto12:
         incidencias = self._incidencias(items, compras_criticas, recepciones_previstas, personal, eventos_hoy)
         recepciones_rp3 = self._resumen_recepciones_rp3()
         incidencias = incidencias + list(recepciones_rp3.get("incidencias", []))
+        incidencias_rp5 = self._resumen_incidencias_rp5()
+        incidencias = incidencias + list(incidencias_rp5.get("incidencias", []))
         plan_rp4 = self._plan_rp4_confirmado_hoy(ahora.date())
         incidencias = incidencias + list(plan_rp4.get("incidencias", []))
         alergenos = self._alergenos(eventos_hoy, articulos, menus)
@@ -357,6 +360,7 @@ class JornadaPiloto12:
             "alergenos": alergenos,
             "incidencias": incidencias,
             "recepciones_rp3": recepciones_rp3,
+            "incidencias_rp5": incidencias_rp5,
             "plan_manana_rp4": plan_rp4,
             "produccion_viva": produccion_viva,
             "prioridades": prioridades,
@@ -629,7 +633,7 @@ class JornadaPiloto12:
         return (
             f"Empieza por {top.get('titulo')} y mantén el foco en servicio próximo. "
             f"Eventos hoy: {contexto.get('eventos_hoy', 0)}, compras críticas: {contexto.get('compras_criticas', 0)}, "
-            f"recepciones previstas: {contexto.get('recepciones_previstas', 0)}, recepciones aplicadas hoy: {contexto.get('recepciones_rp3_hoy', 0)}, planes vivos: {contexto.get('produccion_viva_planes', 0)}."
+            f"recepciones previstas: {contexto.get('recepciones_previstas', 0)}, recepciones aplicadas hoy: {contexto.get('recepciones_rp3_hoy', 0)}, incidencias abiertas: {contexto.get('incidencias_rp5_abiertas', 0)}, planes vivos: {contexto.get('produccion_viva_planes', 0)}."
         )
 
     def _resumen_recepciones_rp3(self) -> dict[str, Any]:
@@ -656,6 +660,28 @@ class JornadaPiloto12:
             "lineas_recibidas_hoy": sum(len(r.get("entradas_stock", []) or []) for r in regs_hoy),
             "incidencias_hoy": sum(len(r.get("incidencias", []) or []) for r in regs_hoy),
             "incidencias": incidencias[:20],
+        }
+
+    def _resumen_incidencias_rp5(self) -> dict[str, Any]:
+        data = self._load_json(self.rp5_incidencias_path, [])
+        if not isinstance(data, list):
+            return {"incidencias_abiertas": 0, "propuestas_abiertas": 0, "incidencias": []}
+        abiertas = []
+        propuestas = []
+        for item in data:
+            estado = str(item.get("estado") or "").upper()
+            if estado in {"ABIERTA", "EN_ANALISIS", "PENDIENTE_DECISION", "BLOQUEANTE"}:
+                abiertas.append(item)
+                propuestas.append({
+                    "tipo": "incidencia_rp5",
+                    "nivel": str(item.get("gravedad") or "media").upper(),
+                    "titulo": str(item.get("tipo") or "Incidencia"),
+                    "detalle": str(item.get("descripcion") or "Incidencia operativa abierta."),
+                })
+        return {
+            "incidencias_abiertas": len(abiertas),
+            "propuestas_abiertas": 0,
+            "incidencias": propuestas[:20],
         }
 
     def _plan_rp4_confirmado_hoy(self, hoy: date) -> dict[str, Any]:
@@ -693,6 +719,8 @@ class JornadaPiloto12:
                 "titulo": "Alerta planificada RP-4",
                 "detalle": str(a.get("detalle") or a.get("tipo") or "Alerta en plan confirmado"),
             })
+        rp5 = self._resumen_incidencias_rp5()
+        incidencias.extend(list(rp5.get("incidencias", [])))
         eventos = (plan.get("eventos") or {}).get("manana", []) or []
         compras = ((plan.get("compras") or {}).get("lineas") or [])
         recepciones = plan.get("recepciones") or []
@@ -713,6 +741,7 @@ class JornadaPiloto12:
             "personal_revision_manual": bool((plan.get("personal") or {}).get("revision_manual")),
             "alertas": len(plan.get("alertas") or []),
             "bloqueos": len(plan.get("bloqueos") or []),
+            "incidencias_rp5_abiertas": rp5.get("incidencias_abiertas", 0),
             "eventos_items": eventos,
             "cronologia_items": cronologia,
             "compras_items": compras,

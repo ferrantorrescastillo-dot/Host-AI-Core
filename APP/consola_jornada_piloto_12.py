@@ -8,6 +8,7 @@ from APP.consola_bandeja_trabajo_piloto_11 import ConsolaBandejaTrabajoPiloto11
 from APP.consola_produccion_guiada_piloto_13 import ConsolaProduccionGuiadaPiloto13
 from CORE.host_ai_core import HostAICore
 from SERVICIOS.cierre_operativo_rp4 import CierreOperativoRP4, formatear_diagnostico_rp4
+from SERVICIOS.incidencias_replanificacion_rp5 import IncidenciasReplanificacionRP5, formatear_diagnostico_rp5
 from SERVICIOS.jornada_piloto_12 import JornadaPiloto12, formatear_diagnostico_piloto12
 
 
@@ -35,6 +36,7 @@ class ConsolaJornadaPiloto12:
         self.base_dir = Path(base_dir)
         self.service = JornadaPiloto12(self.base_dir)
         self.rp4 = CierreOperativoRP4(self.base_dir)
+        self._rp5 = None
 
     def ejecutar(self, input_fn: Callable[[str], str] = input, print_fn: Callable[..., None] = print) -> None:
         while True:
@@ -47,6 +49,7 @@ class ConsolaJornadaPiloto12:
             print_fn("4. Recalcular la jornada")
             print_fn("5. Abrir Producción Viva")
             print_fn("6. Cierre operativo y preparar mañana (RP-4)")
+            print_fn("7. Incidencias y replanificación (RP-5)")
             print_fn("9. Diagnóstico aislado")
             print_fn("0. Volver")
             op = input_fn("Elige una opción: ").strip()
@@ -63,6 +66,8 @@ class ConsolaJornadaPiloto12:
                 ConsolaProduccionGuiadaPiloto13(core).ejecutar(input_fn=input_fn, print_fn=print_fn)
             elif op == "6":
                 self._menu_rp4(input_fn, print_fn)
+            elif op == "7":
+                self._menu_rp5(input_fn, print_fn)
             elif op == "9":
                 print_fn(formatear_diagnostico_piloto12(self.service.diagnostico()))
             elif op == "0":
@@ -138,6 +143,12 @@ class ConsolaJornadaPiloto12:
             print_fn(f"- Recepciones aplicadas hoy: {rec.get('recepciones_hoy', 0)}")
             print_fn(f"- Líneas recibidas hoy: {rec.get('lineas_recibidas_hoy', 0)}")
             print_fn(f"- Incidencias de recepción hoy: {rec.get('incidencias_hoy', 0)}")
+
+        rp5 = briefing.get("incidencias_rp5") or {}
+        if rp5.get("incidencias_abiertas", 0):
+            print_fn("\nINCIDENCIAS RP-5")
+            print_fn(f"- Incidencias abiertas: {rp5.get('incidencias_abiertas', 0)}")
+            print_fn(f"- Cambios relevantes en briefing: {len(rp5.get('incidencias', []))}")
 
         rp4 = briefing.get("plan_manana_rp4") or {}
         if rp4.get("disponible"):
@@ -306,6 +317,173 @@ class ConsolaJornadaPiloto12:
                 return
             else:
                 print_fn("Opción no válida.")
+
+    def _menu_rp5(self, input_fn, print_fn) -> None:
+        service = self._servicio_rp5()
+        while True:
+            print_fn("\nRP-5 — INCIDENCIAS Y REPLANIFICACIÓN")
+            print_fn("1. Registrar incidencia")
+            print_fn("2. Ver incidencias abiertas")
+            print_fn("3. Ver impacto")
+            print_fn("4. Ver alternativas")
+            print_fn("5. Seleccionar solución y confirmar replanificación")
+            print_fn("6. Ver diferencias entre planes")
+            print_fn("7. Deshacer una propuesta no confirmada")
+            print_fn("8. Cerrar incidencia")
+            print_fn("9. Actualizar briefing")
+            print_fn("99. Diagnóstico RP-5")
+            print_fn("0. Volver")
+            op = input_fn("Elige una opción: ").strip()
+            try:
+                if op == "1":
+                    incidencia = self._capturar_incidencia_rp5(input_fn)
+                    out = service.registrar_incidencia(**incidencia)
+                    print_fn(f"Incidencia registrada: {out.get('id')} | estado {out.get('estado')}")
+                elif op == "2":
+                    items = service.listar_incidencias()
+                    if not items:
+                        print_fn("No hay incidencias registradas.")
+                    for i, item in enumerate(items, 1):
+                        print_fn(f"{i}. [{item.get('estado')}] {item.get('tipo')} · {item.get('descripcion')}")
+                elif op == "3":
+                    inc = self._seleccionar_incidencia_rp5(service, input_fn, print_fn)
+                    if inc:
+                        analisis = service.analizar_impacto(inc.get("id"))
+                        self._mostrar_impacto_rp5(analisis, print_fn)
+                elif op == "4":
+                    inc = self._seleccionar_incidencia_rp5(service, input_fn, print_fn)
+                    if inc:
+                        alternativas = service.proponer_alternativas(inc.get("id"))
+                        self._mostrar_alternativas_rp5(alternativas, print_fn)
+                elif op == "5":
+                    inc = self._seleccionar_incidencia_rp5(service, input_fn, print_fn)
+                    if inc:
+                        alternativas = service.proponer_alternativas(inc.get("id"))
+                        self._mostrar_alternativas_rp5(alternativas, print_fn)
+                        alt_id = input_fn("ID de alternativa (vacío = primera): ").strip()
+                        parcial = input_fn("¿Confirmación parcial? (s/n): ").strip().lower() in {"s", "si", "sí"}
+                        token = input_fn("Escribe CONFIRMAR: ").strip()
+                        out = service.confirmar_replanificacion(inc.get("id"), confirmacion=token, alternativa_id=alt_id, parcial=parcial)
+                        print_fn(f"Replanificación confirmada: {out.get('estado')} | versión {out.get('version', {}).get('version')}")
+                elif op == "6":
+                    inc = self._seleccionar_incidencia_rp5(service, input_fn, print_fn)
+                    if inc:
+                        dif = service.diferencias_plan(inc.get("id"))
+                        print_fn(f"Plan anterior: {dif.get('plan_anterior_id')} | Plan resultante: {dif.get('plan_resultante_id')}")
+                        print_fn(f"Tareas: {dif.get('tareas_anteriores')} → {dif.get('tareas_resultantes')}")
+                        print_fn(f"Compras: {dif.get('compras_anteriores')} → {dif.get('compras_resultantes')}")
+                        print_fn(f"Cronología: {dif.get('cronologia_anterior')} → {dif.get('cronologia_resultante')}")
+                elif op == "7":
+                    props = self._rp5_propuestas(service)
+                    if not props:
+                        print_fn("No hay propuestas para deshacer.")
+                    else:
+                        for i, p in enumerate(props, 1):
+                            print_fn(f"{i}. {p.get('id')} | {p.get('estado')} | incidencia {p.get('incidencia_id')}")
+                        raw = input_fn("Número de propuesta: ").strip()
+                        if raw.isdigit() and 1 <= int(raw) <= len(props):
+                            motivo = input_fn("Motivo del descarte: ").strip()
+                            out = service.deshacer_propuesta(props[int(raw)-1].get('id'), motivo=motivo)
+                            print_fn(f"Propuesta deshecha: {out.get('id')} | estado {out.get('estado')}")
+                elif op == "8":
+                    inc = self._seleccionar_incidencia_rp5(service, input_fn, print_fn)
+                    if inc:
+                        motivo = input_fn("Motivo de cierre: ").strip()
+                        out = service.cerrar_incidencia(inc.get("id"), motivo=motivo)
+                        print_fn(f"Incidencia cerrada: {out.get('id')} | estado {out.get('estado')}")
+                elif op == "9":
+                    plan = self.rp4.preparar_manana()
+                    print_fn(f"Brífing actualizado con RP-5. Plan RP-4 actual: {plan.get('id')}")
+                elif op == "99":
+                    print_fn(formatear_diagnostico_rp5(service.diagnostico()))
+                elif op == "0":
+                    return
+                else:
+                    print_fn("Opción no válida.")
+            except Exception as exc:
+                print_fn(f"No se pudo completar la acción: {exc}")
+
+    def _servicio_rp5(self) -> IncidenciasReplanificacionRP5:
+        if self._rp5 is None:
+            self._rp5 = IncidenciasReplanificacionRP5(self.base_dir)
+        return self._rp5
+
+    @staticmethod
+    def _capturar_incidencia_rp5(input_fn) -> dict:
+        print("\nREGISTRO DE INCIDENCIA RP-5")
+        tipo = input_fn("Tipo de incidencia: ").strip()
+        gravedad = input_fn("Gravedad [media]: ").strip() or "media"
+        descripcion = input_fn("Descripción: ").strip()
+        origen = input_fn("Origen [operativa]: ").strip() or "operativa"
+        evento_id = input_fn("Evento ID (opcional): ").strip()
+        tarea_id = input_fn("Tarea ID (opcional): ").strip()
+        recurso = input_fn("Recurso (opcional): ").strip()
+        articulo = input_fn("Artículo (opcional): ").strip()
+        persona = input_fn("Persona (opcional): ").strip()
+        cantidad_prevista = input_fn("Cantidad prevista (opcional): ").strip()
+        cantidad_real = input_fn("Cantidad real (opcional): ").strip()
+        unidad = input_fn("Unidad (opcional): ").strip()
+        evidencia = input_fn("Evidencia separada por coma (opcional): ").strip()
+        fecha_hora = input_fn("Fecha y hora (opcional, YYYY-MM-DD HH:MM): ").strip()
+        nuevo_valor = input_fn("Nuevo valor (opcional): ").strip()
+        return {
+            "tipo": tipo,
+            "gravedad": gravedad,
+            "descripcion": descripcion,
+            "origen": origen,
+            "evento_id": evento_id,
+            "tarea_id": tarea_id,
+            "recurso": recurso,
+            "articulo": articulo,
+            "persona": persona,
+            "cantidad_prevista": float(cantidad_prevista.replace(",", ".")) if cantidad_prevista else None,
+            "cantidad_real": float(cantidad_real.replace(",", ".")) if cantidad_real else None,
+            "unidad": unidad,
+            "evidencia": [x.strip() for x in evidencia.split(",") if x.strip()] if evidencia else [],
+            "fecha_hora": fecha_hora,
+            "nuevo_valor": float(nuevo_valor.replace(",", ".")) if nuevo_valor and nuevo_valor.replace(",", ".").replace(".", "", 1).isdigit() else (nuevo_valor or None),
+        }
+
+    @staticmethod
+    def _mostrar_impacto_rp5(impacto: dict, print_fn) -> None:
+        print_fn("\nIMPACTO RP-5")
+        print_fn(f"Tipo: {impacto.get('tipo')} | Gravedad: {impacto.get('gravedad')}")
+        print_fn(f"Severidad: {impacto.get('severidad')} | Retraso estimado: {impacto.get('retraso_est_min', 0)} min")
+        print_fn(f"Bloqueos: {len(impacto.get('bloqueos', []))} | Acciones a recalcular: {', '.join(impacto.get('acciones_recalcular', [])) or '-'}")
+        print_fn(f"Cantidades: {impacto.get('cantidades', {})}")
+        for e in impacto.get("elementos_afectados", [])[:12]:
+            print_fn(f"- {e.get('tipo')}: {e.get('nombre') or e.get('id')}")
+
+    @staticmethod
+    def _mostrar_alternativas_rp5(alternativas: list[dict], print_fn) -> None:
+        print_fn("\nALTERNATIVAS RP-5")
+        if not alternativas:
+            print_fn("No hay alternativas disponibles.")
+            return
+        for i, alt in enumerate(alternativas, 1):
+            print_fn(f"{i}. {alt.get('id')} | {alt.get('descripcion')}")
+            print_fn(f"   Motivo: {alt.get('motivo')} | Prioridad: {alt.get('prioridad')} | Reversible: {alt.get('reversibilidad')}")
+
+    @staticmethod
+    def _seleccionar_incidencia_rp5(service, input_fn, print_fn):
+        items = service.listar_incidencias()
+        if not items:
+            print_fn("No hay incidencias registradas.")
+            return None
+        for i, item in enumerate(items, 1):
+            print_fn(f"{i}. [{item.get('estado')}] {item.get('tipo')} · {item.get('descripcion')}")
+        raw = input_fn("Selecciona incidencia (0=cancelar): ").strip()
+        if raw == "0":
+            return None
+        if not raw.isdigit() or not 1 <= int(raw) <= len(items):
+            print_fn("Selección no válida.")
+            return None
+        return items[int(raw) - 1]
+
+    @staticmethod
+    def _rp5_propuestas(service) -> list[dict[str, Any]]:
+        data = service._load_json(service.path_propuestas, [])
+        return [p for p in data if str(p.get("estado")) != "descartada"]
 
 
 __all__ = ["ConsolaJornadaPiloto12"]
