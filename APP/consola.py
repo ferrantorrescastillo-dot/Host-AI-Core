@@ -287,65 +287,118 @@ class AppConsolaHostAI:
     # ------------------------------------------------------------------
     def _menu_eventos(self):
         while True:
-            print("\nEVENTOS")
-            print("1. Crear evento rápido")
-            print("2. Listar y seleccionar eventos")
-            print("3. Buscar evento")
-            print("4. Editar evento activo")
-            print("5. Eliminar evento activo")
-            print("6. Duplicar evento activo")
-            print("7. Gestionar servicios del evento activo")
-            print("8. Gestionar pases y recetas")
-            print("9. Ver línea temporal del evento activo")
-            print("10. Ver ficha completa del evento activo")
-            print("11. Ver resumen ejecutivo")
+            print("\nEVENTOS — PREPARAR UN SERVICIO")
+            evento_activo = self._obtener_evento_activo()
+            if evento_activo:
+                self._mostrar_evento_activo(evento_activo)
+                print("\nCONTINUAR PREPARANDO")
+                print("1. Ver qué falta y qué está listo")
+                print("2. Preparar servicios")
+                print("3. Preparar el menú y los pases")
+                print("4. Ver producción relacionada")
+                print("5. Ver cronología")
+                print("6. Abrir ficha completa")
+                print("7. Editar datos del evento")
+                print("8. Acciones avanzadas")
+                print("9. Buscar o cambiar de evento")
+            else:
+                print("Todavía no hay un evento seleccionado.")
+                print("Siguiente paso: crea el evento que vas a preparar o busca uno existente.")
+                print("\nEMPEZAR")
+                print("1. Crear evento")
+                print("2. Buscar o listar eventos")
+                print("8. Acciones avanzadas")
             print("0. Volver")
-            self._mostrar_evento_activo()
             op = input("Elige una opción: ").strip()
 
             if op == "0":
                 return
-            if op == "1":
-                self._crear_evento_rapido()
-            elif op == "2":
-                self._listar_y_seleccionar_eventos()
-            elif op == "3":
-                self._buscar_y_seleccionar_evento()
-            elif op == "4":
-                self._editar_evento_activo()
-            elif op == "5":
-                self._eliminar_evento_activo()
-            elif op == "6":
-                self._duplicar_evento_activo()
-            elif op == "7":
-                self._gestionar_servicios_evento_activo()
-            elif op == "8":
-                self._gestionar_pases_evento_activo()
-            elif op == "9":
-                self._ver_linea_temporal_evento_activo()
-            elif op == "10":
-                self._ver_ficha_evento_activo()
-            elif op == "11":
+            if not evento_activo:
+                if op == "1":
+                    self._crear_evento_rapido()
+                elif op == "2":
+                    self._buscar_o_listar_eventos()
+                elif op == "8":
+                    self._acciones_avanzadas_evento()
+                else:
+                    print("Esa acción necesita un evento activo. Crea uno o busca uno existente.")
+            elif op == "1":
                 self._ver_resumen_ejecutivo_evento_activo()
+            elif op == "2":
+                self._gestionar_servicios_evento_activo()
+            elif op == "3":
+                self._gestionar_pases_evento_activo()
+            elif op == "4":
+                self._ver_produccion_evento_activo()
+            elif op == "5":
+                self._ver_linea_temporal_evento_activo()
+            elif op == "6":
+                self._ver_ficha_evento_activo()
+            elif op == "7":
+                self._editar_evento_activo()
+            elif op == "8":
+                self._acciones_avanzadas_evento()
+            elif op == "9":
+                self._buscar_o_listar_eventos()
             else:
-                print("Opción no válida.")
+                print("Opción no válida. Elige una de las acciones mostradas o vuelve con 0.")
 
-    def _mostrar_evento_activo(self):
+    def _obtener_evento_activo(self):
         if not self.ultimo_evento_id:
-            print("Evento activo: ninguno")
-            return
+            return None
         try:
-            evento = self.core.eventos.obtener(self.ultimo_evento_id)
-            hora = f" {evento.hora_inicio}" if evento.hora_inicio else ""
-            print(f"Evento activo: {evento.nombre} | {evento.fecha}{hora} | {evento.pax} pax | {evento.estado} | {evento.id}")
+            return self.core.eventos.obtener(self.ultimo_evento_id)
         except ValueError:
             self.ultimo_evento_id = None
-            print("Evento activo: ninguno")
+            return None
+
+    def _mostrar_evento_activo(self, evento=None):
+        evento = evento or self._obtener_evento_activo()
+        if not evento:
+            print("No hay un evento activo.")
+            print("Siguiente paso: crea uno o busca el evento que quieres preparar.")
+            return
+        hora = f" · {evento.hora_inicio}" if evento.hora_inicio else ""
+        print("\nEVENTO QUE ESTÁS PREPARANDO")
+        print(f"{evento.nombre}")
+        print(f"{evento.fecha}{hora} · {evento.pax} pax · {evento.estado}")
+
+    def _buscar_o_listar_eventos(self):
+        print("\nBUSCAR UN EVENTO")
+        print("1. Ver todos los eventos")
+        print("2. Buscar por nombre, fecha, cliente o ubicación")
+        print("0. Volver")
+        op = input("Elige una opción: ").strip()
+        if op == "1":
+            self._listar_y_seleccionar_eventos()
+        elif op == "2":
+            self._buscar_y_seleccionar_evento()
+        elif op not in {"", "0"}:
+            print("Opción no válida. Puedes ver todos los eventos, hacer una búsqueda o volver.")
+
+    def _acciones_avanzadas_evento(self):
+        print("\nACCIONES AVANZADAS")
+        if not self._obtener_evento_activo():
+            print("Para editar, duplicar o eliminar primero debes seleccionar un evento.")
+            print("Siguiente paso: vuelve y elige 'Buscar o listar eventos'.")
+            return
+        print("1. Duplicar evento")
+        print("2. Eliminar evento")
+        print("0. Volver")
+        op = input("Elige una opción: ").strip()
+        if op == "1":
+            self._duplicar_evento_activo()
+        elif op == "2":
+            self._eliminar_evento_activo()
+        elif op not in {"", "0"}:
+            print("Opción no válida. Elige duplicar, eliminar o volver.")
 
     @staticmethod
     def _imprimir_eventos(eventos):
         if not eventos:
-            print("No hay eventos para mostrar.")
+            print("No hay eventos que coincidan con esta consulta.")
+            print("Estado actual: no se ha cambiado el evento activo.")
+            print("Siguiente paso: prueba otra búsqueda o crea un evento nuevo.")
             return
         for indice, evento in enumerate(eventos, start=1):
             cliente = f" | Cliente: {evento.get('cliente')}" if evento.get("cliente") else ""
@@ -369,21 +422,26 @@ class AppConsolaHostAI:
         return True
 
     def _crear_evento_rapido(self):
-        print("Deja vacíos los datos opcionales que no conozcas todavía.")
+        print("\nNUEVO EVENTO — DATOS DEL SERVICIO")
+        print("Vamos a dejar preparado lo esencial. Puedes completar el resto más tarde.")
         nombre = input("Nombre del evento: ").strip() or "Evento Demo"
         try:
             pax = int(input("Pax: ").strip() or "0")
         except ValueError:
             print("Los pax deben ser un número entero.")
+            print("Siguiente paso: vuelve a crear el evento e indica solo el número de comensales.")
             return
         tipo = input("Tipo (boda/catering/evento): ").strip() or "evento"
         fecha_txt = input("Fecha (ej. 22/10/2026, mañana o viernes; vacío=hoy): ").strip()
+        print("\nCONTACTO Y LUGAR")
+        print("Deja vacío cualquier dato que todavía no tengas.")
         cliente = input("Cliente: ").strip()
         telefono = input("Teléfono: ").strip()
         email = input("Email: ").strip()
         ubicacion = input("Ubicación: ").strip()
         hora_inicio = input("Hora principal HH:MM (opcional): ").strip()
         observaciones = input("Observaciones (opcional): ").strip()
+        print("\nESTADO DE PREPARACIÓN")
         estado = self._pedir_estado("pendiente")
         r = self.core.orquestador.resolver(SolicitudHostAI("crear_evento", {
             "nombre": nombre,
@@ -401,7 +459,32 @@ class AppConsolaHostAI:
         print(r.mensaje)
         if r.ok:
             self.ultimo_evento_id = r.datos["evento"]["id"]
-            print(f"Evento activo: {self.ultimo_evento_id}")
+            evento = self.core.eventos.obtener(self.ultimo_evento_id)
+            print("\nEVENTO CREADO Y SELECCIONADO")
+            self._mostrar_evento_activo(evento)
+            self._continuar_tras_crear_evento()
+        else:
+            print("El evento no se ha creado y no se ha cambiado el evento activo.")
+            print("Siguiente paso: revisa los datos indicados y vuelve a intentarlo.")
+
+    def _continuar_tras_crear_evento(self):
+        print("\n¿QUÉ QUIERES HACER AHORA?")
+        print("1. Añadir servicios")
+        print("2. Añadir pases")
+        print("3. Ver resumen")
+        print("4. Abrir ficha")
+        print("5. Volver")
+        op = input("Elige una opción: ").strip()
+        if op == "1":
+            self._gestionar_servicios_evento_activo()
+        elif op == "2":
+            self._gestionar_pases_evento_activo()
+        elif op == "3":
+            self._ver_resumen_ejecutivo_evento_activo()
+        elif op == "4":
+            self._ver_ficha_evento_activo()
+        elif op not in {"", "5"}:
+            print("Opción no válida. El evento sigue activo y puedes continuar desde su menú.")
 
     def _pedir_estado(self, actual="pendiente"):
         estados = list(self.core.eventos.ESTADOS)
@@ -509,7 +592,8 @@ class AppConsolaHostAI:
     @staticmethod
     def _seleccionar_por_numero(elementos, etiqueta):
         if not elementos:
-            print(f"No hay {etiqueta}.")
+            print(f"Todavía no hay {etiqueta} para seleccionar.")
+            print("Siguiente paso: crea el primero o vuelve a la preparación del evento.")
             return None
         valor = input(f"Número de {etiqueta[:-1] if etiqueta.endswith('s') else etiqueta} (vacío=cancelar): ").strip()
         if not valor:
@@ -523,7 +607,8 @@ class AppConsolaHostAI:
     def _listar_servicios_evento_activo(self):
         evento = self.core.eventos.obtener(self.ultimo_evento_id)
         if not evento.servicios:
-            print("El evento no tiene servicios.")
+            print("Todavía no has preparado ningún servicio para este evento.")
+            print("Siguiente paso: añade el primer servicio, por ejemplo cóctel, comida o cena.")
             return []
         total_pases = 0
         for indice, servicio in enumerate(evento.servicios, start=1):
@@ -537,7 +622,7 @@ class AppConsolaHostAI:
         if not self._requiere_evento():
             return
         while True:
-            print("\nSERVICIOS DEL EVENTO")
+            print("\nPREPARAR SERVICIOS")
             print("1. Añadir servicio")
             print("2. Listar servicios")
             print("3. Editar servicio")
@@ -601,7 +686,8 @@ class AppConsolaHostAI:
 
     def _listar_pases(self, servicio):
         if not servicio.pases:
-            print(f"El servicio '{servicio.nombre}' no tiene pases.")
+            print(f"'{servicio.nombre}' todavía no tiene pases preparados.")
+            print("Siguiente paso: añade el primer pase y después vincula sus recetas.")
             return []
         for indice, pase in enumerate(servicio.pases, start=1):
             recetas = ", ".join(pase.recetas) if pase.recetas else "sin recetas"
@@ -670,10 +756,11 @@ class AppConsolaHostAI:
             return
         evento = self.core.eventos.obtener(self.ultimo_evento_id)
         if not evento.servicios:
-            print("Primero añade un servicio.")
+            print("Todavía no puedes preparar pases porque el evento no tiene servicios.")
+            print("Siguiente paso: entra en 'Preparar servicios' y añade el primero.")
             return
         while True:
-            print("\nPASES Y RECETAS")
+            print("\nPREPARAR EL MENÚ DEL EVENTO")
             print("1. Añadir pase")
             print("2. Listar pases")
             print("3. Editar pase")
@@ -761,6 +848,7 @@ class AppConsolaHostAI:
         print("=" * 62)
         if not evento.servicios:
             print("Todavía no hay servicios ni pases programados.")
+            print("Siguiente paso: prepara el primer servicio para construir la cronología.")
         total_pases = 0
         total_recetas = 0
         servicios = sorted(evento.servicios, key=lambda s: self.core.eventos._minutos(s.hora_inicio))
@@ -768,7 +856,7 @@ class AppConsolaHostAI:
             print(f"{servicio.hora_inicio}  SERVICIO  {servicio.nombre} ({servicio.duracion_min} min)")
             pases = sorted(servicio.pases, key=lambda p: self.core.eventos._minutos(p.hora_inicio))
             if not pases:
-                print("          Sin pases programados")
+                print("          Falta preparar los pases de este servicio")
             for pase in pases:
                 total_pases += 1
                 total_recetas += len(pase.recetas)
@@ -807,6 +895,14 @@ class AppConsolaHostAI:
         print(f"Recetas: {sum(len(p.recetas) for s in evento.servicios for p in s.pases)}")
         print("=" * 62)
 
+    def _ver_produccion_evento_activo(self):
+        if not self._requiere_evento():
+            return
+        evento = self.core.eventos.obtener(self.ultimo_evento_id)
+        print(f"\nPRODUCCIÓN RELACIONADA — {evento.nombre}")
+        print("Estado actual: la producción está pendiente de generar.")
+        print("Siguiente paso: termina servicios, pases y recetas; después genera el plan desde Producción.")
+
     def _ver_resumen_ejecutivo_evento_activo(self):
         if not self._requiere_evento():
             return
@@ -814,7 +910,7 @@ class AppConsolaHostAI:
         evento = self.core.eventos.obtener(self.ultimo_evento_id)
         totales = resumen["totales"]
         print("\n" + "=" * 62)
-        print(f"RESUMEN DEL EVENTO — {evento.nombre}")
+        print(f"QUÉ FALTA Y QUÉ ESTÁ LISTO — {evento.nombre}")
         print("=" * 62)
         print(f"Fecha y hora: {evento.fecha} {evento.hora_inicio or ''}".rstrip())
         print(f"Estado: {evento.estado}")
@@ -822,20 +918,33 @@ class AppConsolaHostAI:
         print(f"Ubicación: {evento.ubicacion or '-'}")
         print(f"Pax: {evento.pax}")
         print("-" * 62)
-        print(f"Servicios: {totales['servicios']}")
-        print(f"Pases: {totales['pases']}")
-        print(f"Recetas añadidas: {totales['recetas']} ({totales['recetas_unicas']} únicas)")
-        print("Producción: pendiente de generar")
-        print("Stock: pendiente de comprobar")
-        print("Compras: pendientes de generar")
-        print("Costes: pendientes de calcular")
+        print("\nQUÉ FALTA")
         if resumen["avisos"]:
-            print("-" * 62)
-            print("REVISAR:")
             for aviso in resumen["avisos"]:
                 print(f"- {aviso}")
         else:
-            print("Estado operativo: estructura del evento completa.")
+            print("- Servicios, pases y recetas están preparados.")
+        print("\nQUÉ ESTÁ LISTO")
+        print(f"- {totales['servicios']} servicios preparados")
+        print(f"- {totales['pases']} pases preparados")
+        print(f"- {totales['recetas']} recetas añadidas ({totales['recetas_unicas']} únicas)")
+        print("\nPRODUCCIÓN QUE DEPENDE DEL EVENTO")
+        print("- Pendiente de generar desde Producción.")
+        print("  Siguiente paso: completa el menú antes de generar el plan.")
+        print("\nCOMPRAS PENDIENTES")
+        print("- Pendientes de generar.")
+        print("  Siguiente paso: comprueba las necesidades cuando el menú esté cerrado.")
+        print("\nRIESGOS")
+        if resumen["avisos"]:
+            for aviso in resumen["avisos"]:
+                print(f"- {aviso}")
+        else:
+            print("- No hay riesgos estructurales señalados por el evento.")
+        print("\nSIGUIENTE ACCIÓN RECOMENDADA")
+        if resumen["avisos"]:
+            print("Resuelve el primer punto de 'Qué falta'.")
+        else:
+            print("Revisa el menú y prepara la producción relacionada.")
         print("=" * 62)
 
     # ------------------------------------------------------------------
@@ -3979,13 +4088,15 @@ class AppConsolaHostAI:
 
     def _requiere_evento(self):
         if not self.ultimo_evento_id:
-            print("No hay evento activo. Selecciona uno desde Eventos > Listar y seleccionar eventos.")
+            print("No hay un evento seleccionado para preparar.")
+            print("Siguiente paso: vuelve a Eventos y elige 'Buscar o listar eventos'.")
             return False
         try:
             self.core.eventos.obtener(self.ultimo_evento_id)
         except Exception:
             self.ultimo_evento_id = None
-            print("El evento guardado en contexto ya no existe. Selecciona otro desde Eventos.")
+            print("El evento que estaba seleccionado ya no está disponible.")
+            print("Siguiente paso: vuelve a Eventos y busca otro evento.")
             return False
         return True
 
