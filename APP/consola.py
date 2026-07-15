@@ -40,6 +40,7 @@ from SERVICIOS.diagnostico_correccion_inteligente_i13442 import (
 )
 from SERVICIOS.importador_definitivo_menus_i1343 import ImportadorDefinitivoMenusI1343
 from SERVICIOS.certificador_final_importador_i135 import CertificadorFinalImportadorI135, formatear_certificacion_i135
+from SERVICIOS.produccion_stock_piloto_14 import ProduccionStockPiloto14
 
 
 class AppConsolaHostAI:
@@ -53,6 +54,7 @@ class AppConsolaHostAI:
     def __init__(self, core):
         self.core = core
         self._contexto_global = ContextoGlobalRR161A(getattr(core, "base_dir", None))
+        self._produccion_stock = ProduccionStockPiloto14(core)
 
     @property
     def ultimo_evento_id(self):
@@ -2534,7 +2536,37 @@ class AppConsolaHostAI:
                     if pendientes:
                         print(f"AVISO: quedan {pendientes} paso(s) del checklist sin completar.")
                     if self._preguntar_si_no(f"¿Finalizar '{tarea['titulo']}'? (s/n): "):
-                        d=self.core.produccion_real.finalizar_tarea(plan['id'],tarea['id']); print(f"Tarea finalizada: {d['titulo']}.")
+                        vista=self._produccion_stock.preparar_cierre(plan['id'],tarea['id'])
+                        if vista.get('estado')=='SIN_ESCANDALLO':
+                            print("No hay escandallo para actualizar stock. La tarea no se ha cerrado.")
+                        elif vista.get('estado')=='STOCK_INSUFICIENTE':
+                            print("No hay stock suficiente:")
+                            for f in vista.get('faltantes',[]):
+                                print(f"- {f['nombre']}: faltan {f['faltante']:g} {f['unidad']}")
+                            if self._preguntar_si_no("¿Registrar incidencia y dejar la tarea bloqueada? (s/n): "):
+                                self._produccion_stock.registrar_incidencia_stock(plan['id'],tarea['id'],"Stock insuficiente para cerrar la producción")
+                                print("Incidencia registrada. No se ha modificado el stock.")
+                        elif vista.get('estado')=='UNIDAD_INCOMPATIBLE':
+                            print(vista.get('mensaje','Hay unidades incompatibles para cerrar la producción.'))
+                            for i in vista.get('incompatibilidades',[]):
+                                print(f"- {i['nombre']}: requiere {i['cantidad']:g} {i['unidad']}")
+                        elif vista.get('estado') in {'RECETA_INCOMPLETA','CANTIDAD_INVALIDA','AP_COMO_MP_NO_PERMITIDO'}:
+                            print(vista.get('mensaje','No se pudo validar el cierre de producción.'))
+                        elif not vista.get('ok'):
+                            print(vista.get('mensaje','No se pudo preparar el cierre.'))
+                        else:
+                            print("Movimientos previstos:")
+                            for c in vista.get('consumos',[]):
+                                print(f"- Salida: {c['nombre']} -{c['cantidad']:g} {c['unidad']}")
+                            g=vista.get('produccion_generada',{})
+                            print(f"- Entrada: {g.get('nombre')} +{g.get('cantidad',0):g} {g.get('unidad','u')}")
+                            if self._preguntar_si_no("¿Registrar producción y actualizar stock? (s/n): "):
+                                operario=(self.core.produccion_real.obtener_plan(plan['id']).responsable or "cocina").strip() or "cocina"
+                                lote=input("Lote (opcional): ").strip()
+                                resultado=self._produccion_stock.cerrar_y_actualizar_stock(plan['id'],tarea['id'],operario,lote)
+                                print(resultado.get('mensaje'))
+                            else:
+                                print("No se ha modificado la tarea ni el stock.")
                     else: print("Finalización cancelada.")
                 elif op=='5':
                     valor=float(input(f"Porcentaje de avance [{tarea.get('porcentaje_avance',0)}]: ").strip())

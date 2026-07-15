@@ -35,6 +35,8 @@ class ProduccionStockPiloto14:
             return {"ok": False, "estado": "YA_REGISTRADA", "mensaje": "Esta producción ya actualizó el stock.", "registro": previo}
         if tarea.estado_ejecucion == "finalizada":
             return {"ok": False, "estado": "FINALIZADA_SIN_REGISTRO", "mensaje": "La tarea ya estaba finalizada antes de PILOTO-1.4. Revísala manualmente antes de tocar stock."}
+        if float(tarea.cantidad or 0) <= 0:
+            return {"ok": False, "estado": "CANTIDAD_INVALIDA", "mensaje": "La tarea tiene una cantidad no válida para cerrar producción."}
 
         escandallo = self._buscar_escandallo(tarea.receta_id, tarea.receta or tarea.titulo)
         if not escandallo:
@@ -43,19 +45,50 @@ class ProduccionStockPiloto14:
         base = float(escandallo.get("raciones_base", 1) or 1)
         cantidad = float(tarea.cantidad or base)
         factor = cantidad / base if base else 1.0
-        consumos, faltantes = [], []
+        consumos, faltantes, incompletas, incompatibles = [], [], [], []
         for linea in escandallo.get("lineas", []) or []:
             requerido = round(float(linea.get("cantidad_bruta", linea.get("cantidad", 0)) or 0) * factor, 6)
             if requerido <= 0:
+                incompletas.append({"linea": linea, "motivo": "Cantidad de línea no válida."})
                 continue
             articulo_id = str(linea.get("articulo_id") or linea.get("elaboracion_id") or "")
             nombre = str(linea.get("nombre") or articulo_id or "Ingrediente")
             unidad = str(linea.get("unidad") or "u")
+            if not nombre.strip() or not unidad.strip():
+                incompletas.append({"linea": linea, "motivo": "Línea sin nombre o unidad."})
+                continue
+            tipo_linea = str(linea.get("tipo") or "articulo").strip().lower()
+            nombre_norm = nombre.strip().lower()
+            articulo_norm = articulo_id.strip().lower()
+            if tipo_linea == "articulo" and (nombre_norm.startswith("a.p") or articulo_norm.startswith("a.p")):
+                return {
+                    "ok": False,
+                    "estado": "AP_COMO_MP_NO_PERMITIDO",
+                    "mensaje": "No se permite usar A.P como materia prima directa en este cierre.",
+                    "linea": {"nombre": nombre, "articulo_id": articulo_id, "unidad": unidad},
+                }
             disponible = self._disponible(nombre, articulo_id, unidad)
             fila = {"nombre": nombre, "articulo_id": articulo_id, "cantidad": requerido, "unidad": unidad, "disponible": round(disponible, 6), "tipo": linea.get("tipo", "articulo")}
             consumos.append(fila)
             if disponible + 1e-9 < requerido:
                 faltantes.append({**fila, "faltante": round(requerido - disponible, 6)})
+                if self._hay_unidad_incompatible(nombre, articulo_id, unidad):
+                    incompatibles.append({**fila, "motivo": "Existe stock del artículo en una unidad distinta."})
+
+        if incompletas:
+            return {
+                "ok": False,
+                "estado": "RECETA_INCOMPLETA",
+                "mensaje": "El escandallo tiene líneas incompletas o inválidas.",
+                "lineas_invalidas": incompletas,
+            }
+        if incompatibles:
+            return {
+                "ok": False,
+                "estado": "UNIDAD_INCOMPATIBLE",
+                "mensaje": "Hay artículos con stock en unidades incompatibles para este cierre.",
+                "incompatibilidades": incompatibles,
+            }
 
         salida = {
             "nombre": tarea.receta or tarea.titulo,
@@ -64,6 +97,7 @@ class ProduccionStockPiloto14:
             "unidad": tarea.unidad or "u",
             "articulo_id": tarea.receta_id or escandallo.get("receta_id", ""),
         }
+        traza = self._trazabilidad_base(plan, tarea, salida)
         return {
             "ok": not faltantes,
             "estado": "LISTO" if not faltantes else "STOCK_INSUFICIENTE",
@@ -71,6 +105,7 @@ class ProduccionStockPiloto14:
             "plan": plan.nombre, "tarea": tarea.titulo,
             "operario": plan.responsable or "cocina",
             "consumos": consumos, "faltantes": faltantes, "produccion_generada": salida,
+            "trazabilidad_base": traza,
             "mensaje": "Stock suficiente para registrar la producción." if not faltantes else "No hay stock suficiente para cerrar normalmente.",
         }
 
@@ -86,19 +121,77 @@ class ProduccionStockPiloto14:
         try:
             movimientos = []
             motivo = f"Producción {vista['tarea']} ({plan_id}/{tarea_id})"
+            traza_base = dict(vista.get("trazabilidad_base") or {})
+            movimientos_salida_ids = []
+            lotes_origen = []
             for linea in vista["consumos"]:
-                resultado = self.stock.consumir(linea["nombre"], linea["cantidad"], linea["unidad"], motivo=motivo, articulo_id=linea["articulo_id"])
+                traza_salida = {
+                    **traza_base,
+                    "elaboracion": vista["produccion_generada"].get("nombre"),
+                    "cantidad": float(linea.get("cantidad") or 0),
+                    "unidad": linea.get("unidad"),
+                    "lote_origen": [],
+                    "lote_generado": "",
+                }
+                resultado = self.stock.consumir(linea["nombre"], linea["cantidad"], linea["unidad"], motivo=motivo, articulo_id=linea["articulo_id"], trazabilidad=traza_salida)
                 if not resultado.get("ok", False):
                     raise RuntimeError(resultado.get("lectura_host_ai") or "No se pudo consumir stock.")
-                movimientos.append(resultado.get("movimiento", {}))
+                mov = dict(resultado.get("movimiento", {}))
+                mov_id = str(mov.get("id") or "")
+                consumos_lotes = list(resultado.get("consumos_lotes") or [])
+                for c in consumos_lotes:
+                    if c.get("lote_id"):
+                        lotes_origen.append(c.get("lote_id"))
+                if mov_id and mov_id in self.stock.movimientos:
+                    traza_actual = dict(self.stock.movimientos[mov_id].trazabilidad or {})
+                    traza_actual["lote_origen"] = [x for x in lotes_origen if x]
+                    self.stock.movimientos[mov_id].trazabilidad = traza_actual
+                    mov = self.stock.movimientos[mov_id].to_dict()
+                    movimientos_salida_ids.append(mov_id)
+                movimientos.append(mov)
 
             salida = vista["produccion_generada"]
+            traza_entrada = {
+                **traza_base,
+                "elaboracion": salida.get("nombre"),
+                "cantidad": float(salida.get("cantidad") or 0),
+                "unidad": salida.get("unidad"),
+                "lote_origen": [x for x in lotes_origen if x],
+                "lote_generado": "",
+            }
             entrada = self.stock.registrar_entrada(
                 salida["nombre"], salida["cantidad"], salida["unidad"],
                 familia="elaboraciones", ubicacion="producción", articulo_id=salida["articulo_id"],
                 motivo=f"Producción terminada {vista['tarea']}" + (f" | lote {lote}" if lote else ""),
+                trazabilidad=traza_entrada,
             )
-            movimientos.append(entrada.get("movimiento", {}))
+            movimiento_entrada = dict(entrada.get("movimiento", {}))
+            lote_generado_id = str((entrada.get("lote") or {}).get("id") or "")
+            mov_ent_id = str(movimiento_entrada.get("id") or "")
+            if mov_ent_id and mov_ent_id in self.stock.movimientos:
+                traza_actual = dict(self.stock.movimientos[mov_ent_id].trazabilidad or {})
+                traza_actual["lote_generado"] = lote_generado_id
+                self.stock.movimientos[mov_ent_id].trazabilidad = traza_actual
+                movimiento_entrada = self.stock.movimientos[mov_ent_id].to_dict()
+            movimientos.append(movimiento_entrada)
+
+            transformacion = self.stock.registrar_transformacion(
+                salida["nombre"], salida["cantidad"], salida["unidad"],
+                motivo=f"Transformación producción {vista['tarea']} ({plan_id}/{tarea_id})",
+                articulo_id=salida["articulo_id"],
+                trazabilidad={
+                    **traza_base,
+                    "elaboracion": salida.get("nombre"),
+                    "cantidad": float(salida.get("cantidad") or 0),
+                    "unidad": salida.get("unidad"),
+                    "lote_origen": [x for x in lotes_origen if x],
+                    "lote_generado": lote_generado_id,
+                    "movimientos_salida": movimientos_salida_ids,
+                    "movimiento_entrada": mov_ent_id,
+                },
+            )
+            movimientos.append(dict(transformacion.get("movimiento", {})))
+            self.stock._guardar_automatico()
             estado_tarea = self.produccion.finalizar_tarea(plan_id, tarea_id)
             registro = {
                 "id": f"PST-{datetime.now().strftime('%Y%m%d%H%M%S%f')}",
@@ -139,6 +232,36 @@ class ProduccionStockPiloto14:
 
     def _disponible(self, nombre: str, articulo_id: str, unidad: str) -> float:
         return float(self.stock._cantidad_disponible(nombre, articulo_id, unidad))
+
+    def _hay_unidad_incompatible(self, nombre: str, articulo_id: str, unidad: str) -> bool:
+        objetivo = str(unidad or "").strip().lower()
+        nombre_n = str(nombre or "").strip().lower()
+        art_n = str(articulo_id or "").strip()
+        for lote in self.stock.lotes.values():
+            if float(lote.cantidad or 0) <= 0:
+                continue
+            mismo_articulo = bool(art_n) and str(lote.articulo_id or "").strip() == art_n
+            mismo_nombre = str(lote.nombre or "").strip().lower() == nombre_n
+            if not (mismo_articulo or mismo_nombre):
+                continue
+            if str(lote.unidad or "").strip().lower() != objetivo:
+                return True
+        return False
+
+    @staticmethod
+    def _trazabilidad_base(plan: Any, tarea: Any, salida: dict[str, Any]) -> dict[str, Any]:
+        hora = datetime.now()
+        return {
+            "evento": str(getattr(plan, "evento", "") or ""),
+            "evento_id": str(getattr(plan, "evento_id", "") or ""),
+            "servicio": str(getattr(tarea, "origen", "") or ""),
+            "pase": str(getattr(tarea, "origen", "") or ""),
+            "receta": str(getattr(tarea, "receta", "") or salida.get("nombre") or ""),
+            "receta_id": str(getattr(tarea, "receta_id", "") or salida.get("receta_id") or ""),
+            "usuario": str(getattr(plan, "responsable", "") or "cocina"),
+            "fecha": hora.date().isoformat(),
+            "hora": hora.time().isoformat(timespec="seconds"),
+        }
 
     @staticmethod
     def _clave(plan_id: str, tarea_id: str) -> str:

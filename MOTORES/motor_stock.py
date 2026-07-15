@@ -35,19 +35,25 @@ class MotorStock:
         self.db.guardar("stock_lotes", [l.to_dict() for l in self.lotes.values()])
         self.db.guardar("stock_movimientos", [m.to_dict() for m in self.movimientos.values()])
 
-    def registrar_entrada(self, nombre: str, cantidad: float, unidad: str, familia: str = "", ubicacion: str = "", proveedor: str = "", articulo_id: str = "", caducidad: str = "", coste_unitario: float = 0.0, motivo: str = "entrada mercancía") -> Dict[str, Any]:
+    def registrar_entrada(self, nombre: str, cantidad: float, unidad: str, familia: str = "", ubicacion: str = "", proveedor: str = "", articulo_id: str = "", caducidad: str = "", coste_unitario: float = 0.0, motivo: str = "entrada mercancía", trazabilidad: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         lote = LoteStock(nombre=nombre, cantidad=float(cantidad), unidad=unidad, familia=familia, ubicacion=ubicacion, proveedor=proveedor, articulo_id=articulo_id, caducidad=caducidad, coste_unitario=float(coste_unitario or 0))
         self.lotes[lote.id] = lote
-        mov = MovimientoStock(tipo="entrada", nombre=nombre, cantidad=float(cantidad), unidad=unidad, motivo=motivo, lote_id=lote.id, articulo_id=articulo_id)
+        mov = MovimientoStock(tipo="entrada", nombre=nombre, cantidad=float(cantidad), unidad=unidad, motivo=motivo, lote_id=lote.id, articulo_id=articulo_id, trazabilidad=dict(trazabilidad or {}))
         self.movimientos[mov.id] = mov
         self._guardar_automatico()
         return {"lote": lote.to_dict(), "movimiento": mov.to_dict()}
 
-    def consumir(self, nombre: str, cantidad: float, unidad: str, motivo: str = "consumo producción", articulo_id: str = "") -> Dict[str, Any]:
-        return self._descontar_stock(nombre, cantidad, unidad, motivo, articulo_id, "salida")
+    def consumir(self, nombre: str, cantidad: float, unidad: str, motivo: str = "consumo producción", articulo_id: str = "", trazabilidad: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        return self._descontar_stock(nombre, cantidad, unidad, motivo, articulo_id, "salida", trazabilidad=trazabilidad)
 
-    def registrar_merma(self, nombre: str, cantidad: float, unidad: str, motivo: str = "merma", articulo_id: str = "") -> Dict[str, Any]:
-        return self._descontar_stock(nombre, cantidad, unidad, motivo, articulo_id, "merma")
+    def registrar_merma(self, nombre: str, cantidad: float, unidad: str, motivo: str = "merma", articulo_id: str = "", trazabilidad: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        return self._descontar_stock(nombre, cantidad, unidad, motivo, articulo_id, "merma", trazabilidad=trazabilidad)
+
+    def registrar_transformacion(self, nombre: str, cantidad: float, unidad: str, motivo: str = "transformación producción", articulo_id: str = "", trazabilidad: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        mov = MovimientoStock(tipo="transformacion", nombre=nombre, cantidad=float(cantidad), unidad=unidad, motivo=motivo, articulo_id=articulo_id, trazabilidad=dict(trazabilidad or {}))
+        self.movimientos[mov.id] = mov
+        self._guardar_automatico()
+        return {"movimiento": mov.to_dict(), "ok": True, "lectura_host_ai": "Transformación registrada correctamente."}
 
     def ajustar_inventario(self, nombre: str, cantidad_objetivo: float, unidad: str, articulo_id: str = "", familia: str = "", ubicacion: str = "", motivo: str = "ajuste inventario") -> Dict[str, Any]:
         actual = self._cantidad_disponible(nombre, articulo_id, unidad)
@@ -250,7 +256,7 @@ class MotorStock:
     def movimientos_listado(self) -> List[Dict[str, Any]]:
         return self.movimientos_articulo("")
 
-    def _descontar_stock(self, nombre: str, cantidad: float, unidad: str, motivo: str, articulo_id: str, tipo_movimiento: str) -> Dict[str, Any]:
+    def _descontar_stock(self, nombre: str, cantidad: float, unidad: str, motivo: str, articulo_id: str, tipo_movimiento: str, trazabilidad: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         cantidad_pendiente = float(cantidad)
         consumos = []
         lotes = sorted(self._lotes_compatibles(nombre, articulo_id, unidad), key=lambda l: (self._fecha_sort(l.caducidad), self._fecha_sort(l.fecha_entrada), l.creado_en, l.id))
@@ -262,7 +268,7 @@ class MotorStock:
             cantidad_pendiente -= usar
             consumos.append({"lote_id": lote.id, "cantidad": usar, "unidad": unidad, "ubicacion": lote.ubicacion})
         aplicado = float(cantidad) - cantidad_pendiente
-        mov = MovimientoStock(tipo=tipo_movimiento, nombre=nombre, cantidad=aplicado, unidad=unidad, motivo=motivo, articulo_id=articulo_id)
+        mov = MovimientoStock(tipo=tipo_movimiento, nombre=nombre, cantidad=aplicado, unidad=unidad, motivo=motivo, articulo_id=articulo_id, trazabilidad=dict(trazabilidad or {}))
         self.movimientos[mov.id] = mov
         self._guardar_automatico()
         ok = cantidad_pendiente <= 0

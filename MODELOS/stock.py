@@ -1,5 +1,5 @@
 from __future__ import annotations
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass, asdict, field
 from typing import Dict, Any
 from datetime import datetime
 import uuid
@@ -40,6 +40,7 @@ class MovimientoStock:
     motivo: str = ""
     lote_id: str = ""
     articulo_id: str = ""
+    trazabilidad: Dict[str, Any] = field(default_factory=dict)
     id: str = ""
     creado_en: str = ""
     def __post_init__(self):
