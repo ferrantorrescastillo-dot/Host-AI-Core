@@ -71,6 +71,7 @@ class JornadaPiloto12:
         ahora = ahora or datetime.now()
         self.bandeja.sincronizar_fuentes()
         tareas = self.bandeja.listar()
+        planes_raw = self._load_json(self.planes_path, [])
         planes = self._indexar_produccion()
         eventos = self._indexar_eventos()
         pedidos = self._load_json(self.pedidos_path, [])
@@ -130,6 +131,7 @@ class JornadaPiloto12:
             stock=stock if isinstance(stock, list) else [],
             articulos=articulos if isinstance(articulos, list) else [],
             planes=planes,
+            planes_raw=planes_raw if isinstance(planes_raw, list) else [],
             ahora=ahora,
             alertas_jornada=alertas,
         )
@@ -296,6 +298,7 @@ class JornadaPiloto12:
         stock: list[dict[str, Any]],
         articulos: list[dict[str, Any]],
         planes: dict[str, dict[str, Any]],
+        planes_raw: list[dict[str, Any]],
         ahora: datetime,
         alertas_jornada: list[dict[str, str]],
     ) -> dict[str, Any]:
@@ -309,6 +312,7 @@ class JornadaPiloto12:
         alertas_stock = self._alertas_stock()
         incidencias = self._incidencias(items, compras_criticas, recepciones_previstas, personal, eventos_hoy)
         alergenos = self._alergenos(eventos_hoy, articulos, menus)
+        produccion_viva = self._resumen_produccion_viva(planes_raw)
         prioridades = [
             {
                 "tarea_id": x.get("id"),
@@ -330,6 +334,7 @@ class JornadaPiloto12:
             "descongelaciones": len(descongelaciones),
             "alertas": len(alertas_jornada) + len(alertas_stock),
             "incidencias": len(incidencias),
+            "produccion_viva_planes": int(produccion_viva.get("planes_activos", 0)),
         }
         return {
             "pregunta": "¿Qué tiene que hacer el jefe de cocina durante los próximos minutos?",
@@ -344,6 +349,7 @@ class JornadaPiloto12:
             "personal": personal,
             "alergenos": alergenos,
             "incidencias": incidencias,
+            "produccion_viva": produccion_viva,
             "prioridades": prioridades,
             "orden_automatico": {
                 "criterios": [
@@ -614,8 +620,74 @@ class JornadaPiloto12:
         return (
             f"Empieza por {top.get('titulo')} y mantén el foco en servicio próximo. "
             f"Eventos hoy: {contexto.get('eventos_hoy', 0)}, compras críticas: {contexto.get('compras_criticas', 0)}, "
-            f"recepciones previstas: {contexto.get('recepciones_previstas', 0)}."
+            f"recepciones previstas: {contexto.get('recepciones_previstas', 0)}, planes vivos: {contexto.get('produccion_viva_planes', 0)}."
         )
+
+    @staticmethod
+    def _resumen_produccion_viva(planes_raw: list[dict[str, Any]]) -> dict[str, Any]:
+        estados_activos = {"en_curso", "en_preparacion", "en_proceso", "en_espera", "incidencia"}
+        totales = {
+            "planes_activos": 0,
+            "tareas_total": 0,
+            "tareas_activas": 0,
+            "tareas_completadas": 0,
+            "tareas_pendientes": 0,
+            "tareas_bloqueadas": 0,
+            "incidencias_abiertas": 0,
+            "retraso_min_total": 0,
+            "progreso_promedio": 0.0,
+            "siguiente_accion": "Sin planes activos de producción.",
+            "siguiente_tarea_id": "",
+        }
+        if not planes_raw:
+            return totales
+
+        planes_uso = [
+            p for p in planes_raw
+            if str(p.get("estado") or "").lower() not in {"finalizado", "cancelado"}
+        ]
+        if not planes_uso:
+            return totales
+
+        totales["planes_activos"] = len(planes_uso)
+        acumulado_progreso = 0.0
+        acumulado_tareas = 0
+        candidatas: list[tuple[int, int, str, dict[str, Any]]] = []
+
+        for plan in planes_uso:
+            for tarea in plan.get("tareas", []) or []:
+                acumulado_tareas += 1
+                estado = str(tarea.get("estado_ejecucion") or "pendiente").lower()
+                prioridad = int(tarea.get("prioridad") or 50)
+                progreso = float(tarea.get("progreso_manual") or 0)
+                retraso = int(tarea.get("retraso_min") or 0)
+                bloqueo = str(tarea.get("bloqueo") or "").strip()
+                incidencias = list(tarea.get("incidencias") or [])
+
+                acumulado_progreso += progreso
+                totales["retraso_min_total"] += max(0, retraso)
+                totales["incidencias_abiertas"] += len(incidencias)
+
+                if estado == "finalizada":
+                    totales["tareas_completadas"] += 1
+                else:
+                    totales["tareas_pendientes"] += 1
+                if estado in estados_activos:
+                    totales["tareas_activas"] += 1
+                if bloqueo:
+                    totales["tareas_bloqueadas"] += 1
+
+                if estado != "finalizada" and not bloqueo:
+                    estado_rank = {"en_proceso": 0, "en_preparacion": 1, "en_espera": 2, "pausada": 3, "lista": 4, "pendiente": 5}.get(estado, 6)
+                    candidatas.append((estado_rank, -prioridad, str(tarea.get("titulo") or ""), tarea))
+
+        totales["tareas_total"] = acumulado_tareas
+        totales["progreso_promedio"] = round(acumulado_progreso / acumulado_tareas, 1) if acumulado_tareas else 0.0
+        if candidatas:
+            _, _, _, tarea = sorted(candidatas)[0]
+            totales["siguiente_tarea_id"] = str(tarea.get("id") or "")
+            totales["siguiente_accion"] = f"Seguir con {tarea.get('titulo') or 'tarea prioritaria'}"
+        return totales
 
     def _recomendaciones(self, items: list[dict[str, Any]]) -> list[dict[str, Any]]:
         out: list[dict[str, Any]] = []

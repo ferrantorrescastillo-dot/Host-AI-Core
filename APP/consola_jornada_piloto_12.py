@@ -5,6 +5,8 @@ from pathlib import Path
 from typing import Callable
 
 from APP.consola_bandeja_trabajo_piloto_11 import ConsolaBandejaTrabajoPiloto11
+from APP.consola_produccion_guiada_piloto_13 import ConsolaProduccionGuiadaPiloto13
+from CORE.host_ai_core import HostAICore
 from SERVICIOS.jornada_piloto_12 import JornadaPiloto12, formatear_diagnostico_piloto12
 
 
@@ -41,6 +43,7 @@ class ConsolaJornadaPiloto12:
             print_fn("2. Ver tareas agrupadas por área")
             print_fn("3. Abrir la bandeja de trabajo")
             print_fn("4. Recalcular la jornada")
+            print_fn("5. Abrir Producción Viva")
             print_fn("9. Diagnóstico aislado")
             print_fn("0. Volver")
             op = input_fn("Elige una opción: ").strip()
@@ -52,6 +55,9 @@ class ConsolaJornadaPiloto12:
                 ConsolaBandejaTrabajoPiloto11(self.base_dir).ejecutar(input_fn=input_fn, print_fn=print_fn)
             elif op == "4":
                 print_fn("Jornada recalculada con el estado actual de la bandeja.")
+            elif op == "5":
+                core = HostAICore(self.base_dir)
+                ConsolaProduccionGuiadaPiloto13(core).ejecutar(input_fn=input_fn, print_fn=print_fn)
             elif op == "9":
                 print_fn(formatear_diagnostico_piloto12(self.service.diagnostico()))
             elif op == "0":
@@ -111,6 +117,15 @@ class ConsolaJornadaPiloto12:
         print_fn(f"- Alérgenos: {briefing.get('alergenos', {}).get('estado', 'sin datos')}")
         print_fn(f"- Incidencias: {len(briefing.get('incidencias', []))}")
         print_fn(f"- Prioridades: {len(briefing.get('prioridades', []))}")
+
+        viva = briefing.get("produccion_viva") or {}
+        if viva:
+            print_fn("\nPRODUCCIÓN VIVA")
+            print_fn(f"- Planes activos: {viva.get('planes_activos', 0)}")
+            print_fn(f"- Tareas: {viva.get('tareas_total', 0)} | Activas: {viva.get('tareas_activas', 0)} | Completadas: {viva.get('tareas_completadas', 0)} | Pendientes: {viva.get('tareas_pendientes', 0)}")
+            print_fn(f"- Bloqueadas: {viva.get('tareas_bloqueadas', 0)} | Incidencias: {viva.get('incidencias_abiertas', 0)} | Retraso acumulado: {viva.get('retraso_min_total', 0)} min")
+            print_fn(f"- Progreso global: {viva.get('progreso_promedio', 0)}%")
+            print_fn(f"- Siguiente acción: {viva.get('siguiente_accion', 'Sin acciones')}")
 
         prioridades = briefing.get("prioridades", [])[:5]
         if prioridades:

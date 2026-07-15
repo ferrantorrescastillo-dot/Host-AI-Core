@@ -214,7 +214,31 @@ class MotorProduccionReal:
         return {"plan":plan.to_dict(),"planificacion":planificacion,"asignacion":asignacion}
 
 
-    ESTADOS_EJECUCION = ("pendiente", "en_curso", "pausada", "finalizada")
+    ESTADOS_EJECUCION = (
+        "pendiente", "bloqueada", "lista", "en_preparacion", "en_proceso",
+        "en_espera", "pausada", "finalizada", "incidencia", "cancelada",
+        # Compatibilidad histórica
+        "en_curso",
+    )
+
+    TRANSICIONES_VALIDAS = {
+        "pendiente": {"lista", "bloqueada", "cancelada"},
+        "bloqueada": {"lista", "cancelada"},
+        "lista": {"en_preparacion", "en_proceso", "bloqueada", "cancelada"},
+        "en_preparacion": {"en_proceso", "pausada", "bloqueada", "cancelada"},
+        "en_proceso": {"en_espera", "pausada", "incidencia", "bloqueada", "finalizada", "cancelada"},
+        "en_espera": {"en_proceso", "pausada", "bloqueada", "cancelada"},
+        "pausada": {"en_proceso", "bloqueada", "cancelada"},
+        "incidencia": {"en_proceso", "pausada", "bloqueada", "cancelada"},
+        "finalizada": set(),
+        "cancelada": set(),
+        # Compatibilidad con estado legado
+        "en_curso": {"pausada", "finalizada", "en_espera", "bloqueada", "incidencia", "cancelada"},
+    }
+
+    ESTADOS_EQUIVALENTES = {
+        "en_curso": "en_proceso",
+    }
 
     def _obtener_tarea(self, plan_id: str, tarea_id: str):
         plan = self.obtener_plan(plan_id)
@@ -223,9 +247,54 @@ class MotorProduccionReal:
             raise ValueError(f"No existe tarea: {tarea_id}")
         return plan, tarea
 
+    @classmethod
+    def _normalizar_estado_ejecucion(cls, estado: str) -> str:
+        return cls.ESTADOS_EQUIVALENTES.get(str(estado or "").lower(), str(estado or "").lower())
+
     @staticmethod
     def _ahora() -> str:
         return datetime.now().isoformat(timespec="seconds")
+
+    def _registrar_historial_estado(self, tarea, estado_anterior: str, estado_nuevo: str, usuario: str = "", motivo: str = "") -> None:
+        tarea.historial_estados.append({
+            "id": f"EST-{datetime.now().strftime('%Y%m%d%H%M%S%f')}",
+            "fecha": self._ahora(),
+            "estado_anterior": estado_anterior,
+            "estado_nuevo": estado_nuevo,
+            "usuario": (usuario or "cocina").strip() or "cocina",
+            "motivo": (motivo or "").strip(),
+        })
+
+    def _dependencias_tarea(self, plan, tarea_id: str) -> list[str]:
+        deps: list[str] = []
+        planif = plan.planificacion_inteligente or {}
+        for bloque in planif.get("bloques", []) or []:
+            clave = str(bloque.get("clave") or "")
+            if clave and clave.replace("_pasivo", "") != str(tarea_id):
+                continue
+            data = bloque.get("datos") or {}
+            for d in data.get("dependencias", []) or []:
+                dd = str(d or "").strip()
+                if dd and dd not in deps:
+                    deps.append(dd)
+        return deps
+
+    def _validar_inicio(self, plan, tarea, autorizar_dependencias: bool = False) -> None:
+        estado = self._normalizar_estado_ejecucion(tarea.estado_ejecucion)
+        if estado == "finalizada":
+            raise ValueError("La tarea ya está finalizada y no puede iniciarse de nuevo.")
+        if estado == "bloqueada" or str(tarea.bloqueo or "").strip():
+            raise ValueError("La tarea está bloqueada y no puede iniciarse.")
+        if estado not in {"pendiente", "lista", "en_preparacion", "en_espera", "pausada", "incidencia"}:
+            raise ValueError("La tarea no está en un estado válido para iniciar.")
+        deps = self._dependencias_tarea(plan, tarea.id)
+        pendientes = []
+        for dep_id in deps:
+            dep = next((x for x in plan.tareas if x.id == dep_id), None)
+            if dep and self._normalizar_estado_ejecucion(dep.estado_ejecucion) != "finalizada":
+                pendientes.append(dep_id)
+        if pendientes and not autorizar_dependencias:
+            raise ValueError("La tarea tiene dependencias pendientes y no puede iniciarse todavía.")
 
     @staticmethod
     def _segundos_desde(iso: str) -> int:
@@ -238,49 +307,70 @@ class MotorProduccionReal:
 
     def tiempo_real_tarea_segundos(self, tarea) -> int:
         total = int(tarea.segundos_acumulados or 0)
-        if tarea.estado_ejecucion == "en_curso" and tarea.cronometro_iniciado_en:
+        estado = self._normalizar_estado_ejecucion(tarea.estado_ejecucion)
+        if estado in {"en_proceso", "en_preparacion", "en_espera", "incidencia"} and tarea.cronometro_iniciado_en:
             total += self._segundos_desde(tarea.cronometro_iniciado_en)
         return total
 
-    def iniciar_tarea(self, plan_id: str, tarea_id: str) -> Dict[str, Any]:
+    def iniciar_tarea(self, plan_id: str, tarea_id: str, usuario: str = "", autorizar_dependencias: bool = False, motivo_autorizacion: str = "") -> Dict[str, Any]:
         plan, tarea = self._obtener_tarea(plan_id, tarea_id)
-        if tarea.estado_ejecucion == "finalizada":
-            raise ValueError("La tarea ya está finalizada.")
-        if tarea.estado_ejecucion == "en_curso":
+        estado = self._normalizar_estado_ejecucion(tarea.estado_ejecucion)
+        if estado in {"en_proceso", "en_preparacion"}:
             raise ValueError("La tarea ya está en curso.")
+        self._validar_inicio(plan, tarea, autorizar_dependencias=autorizar_dependencias)
         ahora = self._ahora()
         if not tarea.iniciado_en:
             tarea.iniciado_en = ahora
-        tarea.estado_ejecucion = "en_curso"
+        estado_anterior = estado
+        nuevo = "en_preparacion" if tarea.fases else "en_proceso"
+        tarea.estado_ejecucion = nuevo
         tarea.cronometro_iniciado_en = ahora
         tarea.pausado_en = ""
+        if tarea.fases and not tarea.fase_activa_id:
+            primera = tarea.fases[0]
+            primera.estado = "EN_CURSO"
+            primera.hora_inicio_real = ahora
+            tarea.fase_activa_id = primera.id
+        self._registrar_historial_estado(
+            tarea,
+            estado_anterior,
+            nuevo,
+            usuario=usuario,
+            motivo=(motivo_autorizacion if autorizar_dependencias else "Inicio de tarea"),
+        )
         plan.estado = "en_produccion"
         plan.actualizado_en = ahora
         self._persistir()
         return self.estado_tarea(plan_id, tarea_id)
 
-    def pausar_tarea(self, plan_id: str, tarea_id: str) -> Dict[str, Any]:
+    def pausar_tarea(self, plan_id: str, tarea_id: str, motivo: str = "", usuario: str = "") -> Dict[str, Any]:
         plan, tarea = self._obtener_tarea(plan_id, tarea_id)
-        if tarea.estado_ejecucion != "en_curso":
+        estado = self._normalizar_estado_ejecucion(tarea.estado_ejecucion)
+        if estado not in {"en_proceso", "en_preparacion", "en_espera", "en_curso", "incidencia"}:
             raise ValueError("Solo se puede pausar una tarea en curso.")
         ahora = self._ahora()
         tarea.segundos_acumulados = self.tiempo_real_tarea_segundos(tarea)
         tarea.cronometro_iniciado_en = ""
         tarea.estado_ejecucion = "pausada"
         tarea.pausado_en = ahora
-        plan.estado = "pausado" if not any(t.estado_ejecucion == "en_curso" for t in plan.tareas) else "en_produccion"
+        if motivo.strip():
+            tarea.observaciones_ejecucion = (tarea.observaciones_ejecucion + " | " + motivo.strip()).strip(" |")
+        self._registrar_historial_estado(tarea, estado, "pausada", usuario=usuario, motivo=motivo or "Pausa operativa")
+        plan.estado = "pausado" if not any(self._normalizar_estado_ejecucion(t.estado_ejecucion) in {"en_proceso", "en_preparacion", "en_espera", "incidencia"} for t in plan.tareas) else "en_produccion"
         plan.actualizado_en = ahora
         self._persistir()
         return self.estado_tarea(plan_id, tarea_id)
 
-    def reanudar_tarea(self, plan_id: str, tarea_id: str) -> Dict[str, Any]:
+    def reanudar_tarea(self, plan_id: str, tarea_id: str, usuario: str = "") -> Dict[str, Any]:
         plan, tarea = self._obtener_tarea(plan_id, tarea_id)
-        if tarea.estado_ejecucion != "pausada":
+        estado = self._normalizar_estado_ejecucion(tarea.estado_ejecucion)
+        if estado != "pausada":
             raise ValueError("Solo se puede reanudar una tarea pausada.")
         ahora = self._ahora()
-        tarea.estado_ejecucion = "en_curso"
+        tarea.estado_ejecucion = "en_espera" if self._fase_activa_pasiva(tarea) else "en_proceso"
         tarea.cronometro_iniciado_en = ahora
         tarea.pausado_en = ""
+        self._registrar_historial_estado(tarea, estado, self._normalizar_estado_ejecucion(tarea.estado_ejecucion), usuario=usuario, motivo="Reanudación")
         plan.estado = "en_produccion"
         plan.actualizado_en = ahora
         self._persistir()
@@ -288,19 +378,31 @@ class MotorProduccionReal:
 
     def finalizar_tarea(self, plan_id: str, tarea_id: str) -> Dict[str, Any]:
         plan, tarea = self._obtener_tarea(plan_id, tarea_id)
-        if tarea.estado_ejecucion == "finalizada":
+        estado = self._normalizar_estado_ejecucion(tarea.estado_ejecucion)
+        if estado == "finalizada":
             raise ValueError("La tarea ya está finalizada.")
+        if estado == "bloqueada":
+            raise ValueError("La tarea está bloqueada y no puede finalizarse.")
         ahora = self._ahora()
-        if tarea.estado_ejecucion == "en_curso":
+        if estado in {"en_proceso", "en_preparacion", "en_espera", "en_curso", "incidencia"}:
             tarea.segundos_acumulados = self.tiempo_real_tarea_segundos(tarea)
         tarea.cronometro_iniciado_en = ""
         tarea.estado_ejecucion = "finalizada"
         tarea.progreso_manual = 100.0
         tarea.finalizado_en = ahora
         tarea.pausado_en = ""
-        if plan.tareas and all(t.estado_ejecucion == "finalizada" for t in plan.tareas):
+        if tarea.fase_activa_id:
+            fase = next((f for f in tarea.fases if f.id == tarea.fase_activa_id), None)
+            if fase:
+                fase.estado = "FINALIZADA"
+                if not fase.hora_inicio_real:
+                    fase.hora_inicio_real = tarea.iniciado_en or ahora
+                fase.hora_fin_real = ahora
+        tarea.fase_activa_id = ""
+        self._registrar_historial_estado(tarea, estado, "finalizada", motivo="Finalización")
+        if plan.tareas and all(self._normalizar_estado_ejecucion(t.estado_ejecucion) == "finalizada" for t in plan.tareas):
             plan.estado = "finalizado"
-        elif any(t.estado_ejecucion == "en_curso" for t in plan.tareas):
+        elif any(self._normalizar_estado_ejecucion(t.estado_ejecucion) in {"en_proceso", "en_preparacion", "en_espera", "incidencia"} for t in plan.tareas):
             plan.estado = "en_produccion"
         else:
             plan.estado = "pausado"
@@ -311,11 +413,13 @@ class MotorProduccionReal:
     def estado_tarea(self, plan_id: str, tarea_id: str) -> Dict[str, Any]:
         _plan, tarea = self._obtener_tarea(plan_id, tarea_id)
         d = tarea.to_dict()
+        d["estado_ejecucion"] = self._normalizar_estado_ejecucion(d.get("estado_ejecucion", "pendiente"))
         d["tiempo_real_segundos"] = self.tiempo_real_tarea_segundos(tarea)
         d["tiempo_real_min"] = round(d["tiempo_real_segundos"] / 60, 2)
         previsto = max(0, tarea.duracion_total_min())
         progreso_tiempo = min(99.0, (d["tiempo_real_min"] / previsto) * 100) if previsto and tarea.estado_ejecucion != "finalizada" else 0.0
-        if tarea.estado_ejecucion == "finalizada":
+        estado_tarea = self._normalizar_estado_ejecucion(tarea.estado_ejecucion)
+        if estado_tarea == "finalizada":
             d["porcentaje_avance"] = 100.0
         else:
             d["porcentaje_avance"] = round(max(float(tarea.progreso_manual or 0), progreso_tiempo), 1)
@@ -324,6 +428,10 @@ class MotorProduccionReal:
         d["checklist_total"] = len(tarea.checklist)
         d["checklist_completado"] = sum(1 for x in tarea.checklist if x.get("completado"))
         d["checklist_pendiente"] = d["checklist_total"] - d["checklist_completado"]
+        d["fase_activa_id"] = tarea.fase_activa_id
+        d["fases"] = [f.to_dict() for f in tarea.fases]
+        d["historial_estados"] = list(tarea.historial_estados)
+        d["mermas"] = list(tarea.mermas)
         return d
 
     def resumen_ejecucion(self, plan_id: str) -> Dict[str, Any]:
@@ -331,8 +439,10 @@ class MotorProduccionReal:
         estados = {e: 0 for e in self.ESTADOS_EJECUCION}
         tareas = []
         for tarea in plan.tareas:
-            estados[tarea.estado_ejecucion] = estados.get(tarea.estado_ejecucion, 0) + 1
+            estado = self._normalizar_estado_ejecucion(tarea.estado_ejecucion)
+            estados[estado] = estados.get(estado, 0) + 1
             tareas.append(self.estado_tarea(plan_id, tarea.id))
+        estados["en_curso"] = estados.get("en_proceso", 0) + estados.get("en_preparacion", 0) + estados.get("en_espera", 0)
         total = len(plan.tareas)
         finalizadas = estados.get("finalizada", 0)
         return {
@@ -357,31 +467,198 @@ class MotorProduccionReal:
         self._persistir()
         return self.estado_tarea(plan_id, tarea_id)
 
-    def registrar_incidencia_tarea(self, plan_id: str, tarea_id: str, tipo: str, descripcion: str, minutos_retraso: int = 0) -> Dict[str, Any]:
+    def registrar_incidencia_tarea(self, plan_id: str, tarea_id: str, tipo: str, descripcion: str, minutos_retraso: int = 0, gravedad: str = "media", efecto_operativo: str = "no_bloquea", accion_tomada: str = "", usuario: str = "") -> Dict[str, Any]:
         plan, tarea = self._obtener_tarea(plan_id, tarea_id)
         tipo = (tipo or "incidencia").strip().lower()
         descripcion = (descripcion or "").strip()
         if not descripcion:
             raise ValueError("La incidencia necesita una descripción.")
+        estado_actual = self._normalizar_estado_ejecucion(tarea.estado_ejecucion)
         incidencia = {
             "id": f"INC-{datetime.now().strftime('%Y%m%d%H%M%S%f')}",
             "tipo": tipo,
+            "gravedad": str(gravedad or "media").lower(),
             "descripcion": descripcion,
             "minutos_retraso": max(0, int(minutos_retraso or 0)),
+            "efecto_operativo": str(efecto_operativo or "no_bloquea").lower(),
+            "accion_tomada": str(accion_tomada or "").strip(),
+            "usuario": (usuario or "cocina").strip() or "cocina",
+            "estado": "abierta",
             "creado_en": self._ahora(),
         }
         tarea.incidencias.append(incidencia)
         tarea.retraso_min += incidencia["minutos_retraso"]
         if tipo in {"bloqueo", "bloqueada", "bloqueado"}:
             tarea.bloqueo = descripcion
+            tarea.estado_ejecucion = "bloqueada"
+            tarea.cronometro_iniciado_en = ""
+            self._registrar_historial_estado(tarea, estado_actual, "bloqueada", usuario=usuario, motivo=descripcion)
+        elif incidencia["efecto_operativo"] == "pausa":
+            tarea.estado_ejecucion = "pausada"
+            tarea.cronometro_iniciado_en = ""
+            self._registrar_historial_estado(tarea, estado_actual, "pausada", usuario=usuario, motivo=descripcion)
+        elif incidencia["efecto_operativo"] == "cancelar":
+            tarea.estado_ejecucion = "cancelada"
+            tarea.cronometro_iniciado_en = ""
+            self._registrar_historial_estado(tarea, estado_actual, "cancelada", usuario=usuario, motivo=descripcion)
+        elif estado_actual in {"en_proceso", "en_preparacion", "en_espera"}:
+            tarea.estado_ejecucion = "incidencia"
+            self._registrar_historial_estado(tarea, estado_actual, "incidencia", usuario=usuario, motivo=descripcion)
         plan.actualizado_en = self._ahora()
         self._persistir()
         return incidencia
 
+    def registrar_merma_tarea(self, plan_id: str, tarea_id: str, cantidad: float, unidad: str, motivo: str = "", merma_prevista: float | None = None, usuario: str = "") -> Dict[str, Any]:
+        plan, tarea = self._obtener_tarea(plan_id, tarea_id)
+        cantidad = float(cantidad or 0)
+        if cantidad <= 0:
+            raise ValueError("La merma debe ser mayor que cero.")
+        unidad = (unidad or tarea.unidad or "u").strip()
+        if not unidad:
+            raise ValueError("La merma requiere unidad.")
+        prevista = None if merma_prevista is None else float(merma_prevista)
+        registro = {
+            "id": f"MER-{datetime.now().strftime('%Y%m%d%H%M%S%f')}",
+            "cantidad": round(cantidad, 6),
+            "unidad": unidad,
+            "motivo": (motivo or "Merma operativa").strip(),
+            "merma_prevista": None if prevista is None else round(prevista, 6),
+            "merma_real": round(cantidad, 6),
+            "diferencia": None if prevista is None else round(cantidad - prevista, 6),
+            "usuario": (usuario or "cocina").strip() or "cocina",
+            "creado_en": self._ahora(),
+        }
+        tarea.mermas.append(registro)
+        plan.actualizado_en = self._ahora()
+        self._persistir()
+        return registro
+
+    def cambiar_fase_tarea(self, plan_id: str, tarea_id: str, fase_id: str = "", usuario: str = "", observaciones: str = "") -> Dict[str, Any]:
+        plan, tarea = self._obtener_tarea(plan_id, tarea_id)
+        if self._normalizar_estado_ejecucion(tarea.estado_ejecucion) in {"finalizada", "cancelada", "bloqueada"}:
+            raise ValueError("La tarea no permite cambio de fase en su estado actual.")
+        if not tarea.fases:
+            raise ValueError("La tarea no tiene fases definidas.")
+        ahora = self._ahora()
+
+        actual = next((f for f in tarea.fases if f.id == tarea.fase_activa_id), None)
+        if actual:
+            actual.estado = "FINALIZADA"
+            if not actual.hora_inicio_real:
+                actual.hora_inicio_real = tarea.iniciado_en or ahora
+            actual.hora_fin_real = ahora
+
+        siguiente = None
+        if fase_id:
+            siguiente = next((f for f in tarea.fases if f.id == fase_id), None)
+            if not siguiente:
+                raise ValueError("La fase indicada no existe en la tarea.")
+        else:
+            for f in tarea.fases:
+                if f.estado.upper() not in {"FINALIZADA"} and f.id != (actual.id if actual else ""):
+                    siguiente = f
+                    break
+
+        if not siguiente:
+            # Sin fase siguiente: no falla, pero deja rastro claro.
+            tarea.fase_activa_id = ""
+            if observaciones.strip():
+                tarea.observaciones_ejecucion = (tarea.observaciones_ejecucion + " | " + observaciones.strip()).strip(" |")
+            plan.actualizado_en = ahora
+            self._persistir()
+            return self.estado_tarea(plan_id, tarea_id)
+
+        siguiente.hora_inicio_real = ahora
+        es_pasiva = int(siguiente.duracion_pasiva_min or 0) > 0 or str(siguiente.tipo or "").lower() in {
+            "reposo", "fermentacion", "fermentación", "enfriado", "abatido", "abatimiento", "descongelacion", "descongelación", "marinado", "espera"
+        }
+        siguiente.estado = "EN_ESPERA" if es_pasiva else "EN_CURSO"
+        tarea.fase_activa_id = siguiente.id
+        estado_anterior = self._normalizar_estado_ejecucion(tarea.estado_ejecucion)
+        tarea.estado_ejecucion = "en_espera" if es_pasiva else "en_proceso"
+        if observaciones.strip():
+            tarea.observaciones_ejecucion = (tarea.observaciones_ejecucion + " | " + observaciones.strip()).strip(" |")
+        self._registrar_historial_estado(tarea, estado_anterior, self._normalizar_estado_ejecucion(tarea.estado_ejecucion), usuario=usuario, motivo=f"Cambio de fase a {siguiente.nombre}")
+        plan.actualizado_en = ahora
+        self._persistir()
+        return self.estado_tarea(plan_id, tarea_id)
+
+    def siguiente_tarea_recomendada(self, plan_id: str) -> Dict[str, Any]:
+        panel = self.panel_produccion(plan_id)
+        tareas = list(panel.get("tareas_pendientes", []))
+        if not tareas:
+            return {"codigo": "SIN_TAREAS", "texto": "No hay tareas pendientes.", "motivo": "El plan está completado."}
+
+        def orden(t):
+            estado = self._normalizar_estado_ejecucion(t.get("estado_ejecucion", "pendiente"))
+            bloqueada = 1 if str(t.get("bloqueo") or "").strip() else 0
+            servicio_en = t.get("servicio_en_min")
+            if not isinstance(servicio_en, (int, float)):
+                servicio_en = 999999
+            pasiva = sum(int(f.get("duracion_pasiva_min", 0) or 0) for f in (t.get("fases") or []))
+            deps = sum(1 for f in (t.get("fases") or []) if str(f.get("dependencia") or "").strip())
+            estado_rank = {"en_proceso": 0, "en_preparacion": 1, "en_espera": 2, "pausada": 3, "lista": 4, "pendiente": 5}.get(estado, 6)
+            return (bloqueada, estado_rank, -int(t.get("prioridad", 50) or 50), int(servicio_en), -pasiva, -deps, str(t.get("titulo") or ""))
+
+        candidata = sorted(tareas, key=orden)[0]
+        pasiva = sum(int(f.get("duracion_pasiva_min", 0) or 0) for f in (candidata.get("fases") or []))
+        deps = sum(1 for f in (candidata.get("fases") or []) if str(f.get("dependencia") or "").strip())
+        return {
+            "codigo": "SUGERIDA",
+            "tarea_id": candidata.get("id"),
+            "texto": f"Empieza ahora: {candidata.get('titulo')}",
+            "motivo": f"Prioridad {int(candidata.get('prioridad',50))}, dependencias {deps}, tiempo pasivo {pasiva} min.",
+            "tarea": candidata,
+        }
+
+    def liberar_tareas_dependientes(self, plan_id: str, tarea_finalizada_id: str) -> Dict[str, Any]:
+        plan = self.obtener_plan(plan_id)
+        liberadas = []
+        for tarea in plan.tareas:
+            estado = self._normalizar_estado_ejecucion(tarea.estado_ejecucion)
+            if estado not in {"pendiente", "bloqueada"}:
+                continue
+            deps = self._dependencias_tarea(plan, tarea.id)
+            if not deps:
+                if estado == "pendiente":
+                    tarea.estado_ejecucion = "lista"
+                    liberadas.append(tarea.id)
+                continue
+            if tarea_finalizada_id not in deps:
+                continue
+            pendientes = []
+            for dep_id in deps:
+                dep = next((x for x in plan.tareas if x.id == dep_id), None)
+                if dep and self._normalizar_estado_ejecucion(dep.estado_ejecucion) != "finalizada":
+                    pendientes.append(dep_id)
+            if not pendientes:
+                tarea.estado_ejecucion = "lista"
+                tarea.bloqueo = ""
+                liberadas.append(tarea.id)
+        if liberadas:
+            plan.actualizado_en = self._ahora()
+            self._persistir()
+        return {"ok": True, "liberadas": liberadas, "total": len(liberadas)}
+
+    @staticmethod
+    def _fase_activa_pasiva(tarea) -> bool:
+        if not tarea.fase_activa_id:
+            return False
+        fase = next((f for f in tarea.fases if f.id == tarea.fase_activa_id), None)
+        if not fase:
+            return False
+        if int(fase.duracion_pasiva_min or 0) > 0:
+            return True
+        return str(fase.tipo or "").lower() in {"reposo", "fermentacion", "fermentación", "enfriado", "abatido", "abatimiento", "descongelacion", "descongelación", "marinado", "espera"}
+
     def resolver_bloqueo_tarea(self, plan_id: str, tarea_id: str, observacion: str = "") -> Dict[str, Any]:
         plan, tarea = self._obtener_tarea(plan_id, tarea_id)
+        estado_anterior = self._normalizar_estado_ejecucion(tarea.estado_ejecucion)
         anterior = tarea.bloqueo
         tarea.bloqueo = ""
+        if estado_anterior == "bloqueada":
+            tarea.estado_ejecucion = "lista"
+            self._registrar_historial_estado(tarea, estado_anterior, "lista", motivo="Bloqueo resuelto")
         if observacion.strip():
             tarea.observaciones_ejecucion = observacion.strip()
         plan.actualizado_en = self._ahora()
@@ -455,7 +732,8 @@ class MotorProduccionReal:
                 alertas.append({"tipo": "bloqueo", "tarea_id": tarea.id, "tarea": tarea.titulo, "mensaje": tarea.bloqueo})
             if tarea.retraso_min > 0:
                 alertas.append({"tipo": "retraso", "tarea_id": tarea.id, "tarea": tarea.titulo, "mensaje": f"Retraso acumulado: {tarea.retraso_min} min"})
-            if previsto and tarea.estado_ejecucion in {"en_curso", "pausada"} and real_min > previsto:
+            estado = self._normalizar_estado_ejecucion(tarea.estado_ejecucion)
+            if previsto and estado in {"en_proceso", "en_preparacion", "en_espera", "pausada", "incidencia"} and real_min > previsto:
                 alertas.append({"tipo": "tiempo_excedido", "tarea_id": tarea.id, "tarea": tarea.titulo, "mensaje": f"Supera el tiempo previsto en {round(real_min-previsto,1)} min"})
         return alertas
 
@@ -499,8 +777,8 @@ class MotorProduccionReal:
             }
             cocinero["tareas"].append(entrada)
             cocinero["minutos_asignados"] += int(asignacion.get("duracion_min", 0) or 0)
-            estado = entrada["estado"]
-            if estado == "en_curso": cocinero["en_curso"] += 1
+            estado = self._normalizar_estado_ejecucion(entrada["estado"])
+            if estado in {"en_proceso", "en_preparacion", "en_espera", "incidencia"}: cocinero["en_curso"] += 1
             elif estado == "pausada": cocinero["pausadas"] += 1
             elif estado == "finalizada": cocinero["finalizadas"] += 1
             else: cocinero["pendientes"] += 1
@@ -527,8 +805,8 @@ class MotorProduccionReal:
                     "prioridad": tarea.get("prioridad", 50),
                 }
                 bloque["tareas"].append(entrada)
-                estado = entrada["estado"]
-                if estado == "en_curso": bloque["en_curso"] += 1
+                estado = self._normalizar_estado_ejecucion(entrada["estado"])
+                if estado in {"en_proceso", "en_preparacion", "en_espera", "incidencia"}: bloque["en_curso"] += 1
                 elif estado == "pausada": bloque["pausadas"] += 1
                 elif estado == "finalizada": bloque["finalizadas"] += 1
                 else: bloque["pendientes"] += 1
@@ -538,7 +816,10 @@ class MotorProduccionReal:
         total_previsto = sum(int(t.get("tiempo_previsto_min", 0) or 0) for t in resumen.get("tareas", []))
         incidencias = sum(len(t.get("incidencias", []) or []) for t in resumen.get("tareas", []))
         bloqueadas = sum(1 for t in resumen.get("tareas", []) if t.get("bloqueo"))
-        en_curso = [t for t in resumen.get("tareas", []) if t.get("estado_ejecucion") == "en_curso"]
+        en_curso = [
+            t for t in resumen.get("tareas", [])
+            if self._normalizar_estado_ejecucion(t.get("estado_ejecucion")) in {"en_proceso", "en_preparacion", "en_espera", "incidencia"}
+        ]
         pausadas = [t for t in resumen.get("tareas", []) if t.get("estado_ejecucion") == "pausada"]
 
         return {

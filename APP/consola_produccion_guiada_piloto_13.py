@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import Any, Callable
 
 from SERVICIOS.produccion_guiada_piloto_13 import ProduccionGuiadaPiloto13
-from SERVICIOS.produccion_stock_piloto_14 import ProduccionStockPiloto14
 
 
 class ConsolaProduccionGuiadaPiloto13:
@@ -11,7 +10,6 @@ class ConsolaProduccionGuiadaPiloto13:
         self.core = core
         self.service = ProduccionGuiadaPiloto13(core)
         self.consola_avanzada = consola_avanzada
-        self.produccion_stock = ProduccionStockPiloto14(core)
 
     def ejecutar(self, input_fn: Callable[[str], str] = input, print_fn: Callable[..., None] = print) -> None:
         while True:
@@ -52,12 +50,14 @@ class ConsolaProduccionGuiadaPiloto13:
             print_fn("4. Quiero indicar cuánto llevo")
             print_fn("5. Ha surgido un problema")
             print_fn("6. He resuelto un bloqueo")
-            print_fn("7. Actualizar la pantalla")
+            print_fn("7. Cambiar a la siguiente fase")
+            print_fn("8. Registrar merma")
+            print_fn("9. Actualizar la pantalla")
             print_fn("0. Volver")
             op = input_fn("Elige una opción: ").strip()
             if op == "0": return
-            if op == "7": continue
-            if op not in {"1", "2", "3", "4", "5", "6"}:
+            if op == "9": continue
+            if op not in {"1", "2", "3", "4", "5", "6", "7", "8"}:
                 print_fn("Opción no válida."); continue
             tarea = self._seleccionar_tarea(panel["tareas"], input_fn, print_fn)
             if not tarea: continue
@@ -70,7 +70,10 @@ class ConsolaProduccionGuiadaPiloto13:
                     if pendientes: print_fn(f"Aviso: quedan {pendientes} paso(s) del checklist sin completar.")
                     confirmar = input_fn(f"¿Confirmas que '{tarea['titulo']}' está terminada? (s/n): ").strip().lower()
                     if confirmar in {"s", "si", "sí"}:
-                        vista = self.produccion_stock.preparar_cierre(plan_id, tarea["id"])
+                        if self.service.produccion_stock is None:
+                            print_fn("No hay módulo de stock disponible en este entorno para cierre transaccional.")
+                            continue
+                        vista = self.service.produccion_stock.preparar_cierre(plan_id, tarea["id"])
                         if vista.get("estado") == "SIN_ESCANDALLO":
                             print_fn("No hay escandallo para actualizar stock. La tarea no se ha cerrado.")
                         elif vista.get("estado") == "STOCK_INSUFICIENTE":
@@ -79,7 +82,7 @@ class ConsolaProduccionGuiadaPiloto13:
                                 print_fn(f"- {f['nombre']}: faltan {f['faltante']:g} {f['unidad']}")
                             reg = input_fn("¿Registrar una incidencia y dejar la tarea bloqueada? (s/n): ").strip().lower()
                             if reg in {"s", "si", "sí"}:
-                                self.produccion_stock.registrar_incidencia_stock(plan_id, tarea["id"], "Stock insuficiente para cerrar la producción")
+                                self.service.produccion_stock.registrar_incidencia_stock(plan_id, tarea["id"], "Stock insuficiente para cerrar la producción")
                                 print_fn("Incidencia registrada. No se ha modificado el stock.")
                         elif not vista.get("ok"):
                             print_fn(vista.get("mensaje", "No se pudo preparar el cierre."))
@@ -92,12 +95,12 @@ class ConsolaProduccionGuiadaPiloto13:
                             if aplicar in {"s", "si", "sí"}:
                                 operario = input_fn("Operario [cocina]: ").strip() or "cocina"
                                 lote = input_fn("Lote (opcional): ").strip()
-                                resultado = self.produccion_stock.cerrar_y_actualizar_stock(plan_id, tarea["id"], operario, lote)
+                                resultado = self.service.finalizar_con_stock(plan_id, tarea["id"], operario, lote)
                                 print_fn(resultado.get("mensaje"))
                             else: print_fn("No se ha modificado la tarea ni el stock.")
                     else: print_fn("No se ha modificado la tarea.")
                 elif op == "3":
-                    if tarea.get("estado_codigo") == "en_curso": self.service.pausar(plan_id, tarea["id"]); print_fn("Tarea pausada.")
+                    if tarea.get("estado_codigo") in {"en_curso", "en_preparacion", "en_proceso", "en_espera", "incidencia"}: self.service.pausar(plan_id, tarea["id"]); print_fn("Tarea pausada.")
                     elif tarea.get("estado_codigo") == "pausada": self.service.reanudar(plan_id, tarea["id"]); print_fn("Tarea reanudada.")
                     else: print_fn("Esta tarea no está en marcha ni pausada.")
                 elif op == "4":
@@ -111,6 +114,31 @@ class ConsolaProduccionGuiadaPiloto13:
                 elif op == "6":
                     observacion = input_fn("Cómo se ha resuelto (opcional): ").strip()
                     self.service.resolver_bloqueo(plan_id, tarea["id"], observacion); print_fn("Bloqueo resuelto.")
+                elif op == "7":
+                    fases = list(tarea.get("fases") or [])
+                    if not fases:
+                        print_fn("La tarea no tiene fases definidas.")
+                    else:
+                        print_fn("Fases disponibles:")
+                        for i, f in enumerate(fases, 1):
+                            print_fn(f"{i}. {f.get('nombre')} [{f.get('estado', 'PENDIENTE')}]")
+                        sel = input_fn("Elige fase (vacío para siguiente automática): ").strip()
+                        fase_id = ""
+                        if sel:
+                            if sel.isdigit() and 1 <= int(sel) <= len(fases):
+                                fase_id = str(fases[int(sel)-1].get("id") or "")
+                            else:
+                                print_fn("Selección de fase inválida.")
+                                continue
+                        obs = input_fn("Observación de fase (opcional): ").strip()
+                        self.service.cambiar_fase(plan_id, tarea["id"], fase_id=fase_id, observaciones=obs)
+                        print_fn("Fase actualizada.")
+                elif op == "8":
+                    cantidad = float(input_fn("Cantidad de merma: ").strip())
+                    unidad = input_fn(f"Unidad [{tarea.get('unidad') or 'u'}]: ").strip() or (tarea.get("unidad") or "u")
+                    motivo = input_fn("Motivo de merma (opcional): ").strip()
+                    self.service.registrar_merma(plan_id, tarea["id"], cantidad, unidad, motivo=motivo)
+                    print_fn("Merma registrada.")
             except Exception as exc:
                 print_fn(f"No se pudo completar la acción: {exc}")
 

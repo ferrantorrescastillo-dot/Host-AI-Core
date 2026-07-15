@@ -3,9 +3,11 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
+from SERVICIOS.produccion_stock_piloto_14 import ProduccionStockPiloto14
+
 
 ESTADOS_TERMINADOS = {"finalizada", "completada", "cancelada"}
-ESTADOS_ACTIVOS = {"en_curso"}
+ESTADOS_ACTIVOS = {"en_curso", "en_proceso", "en_preparacion", "en_espera", "incidencia"}
 ESTADOS_PAUSADOS = {"pausada"}
 
 
@@ -29,6 +31,7 @@ class ProduccionGuiadaPiloto13:
     def __init__(self, core: Any):
         self.core = core
         self.motor = core.produccion_real
+        self.produccion_stock = ProduccionStockPiloto14(core) if hasattr(core, "stock") else None
 
     def listar_planes_operativos(self) -> list[dict[str, Any]]:
         planes = list(self.motor.listar_planes())
@@ -73,15 +76,42 @@ class ProduccionGuiadaPiloto13:
     def finalizar(self, plan_id: str, tarea_id: str) -> dict[str, Any]:
         return self.motor.finalizar_tarea(plan_id, tarea_id)
 
+    def finalizar_con_stock(self, plan_id: str, tarea_id: str, operario: str = "cocina", lote: str = "") -> dict[str, Any]:
+        if self.produccion_stock is None:
+            raise ValueError("El núcleo no tiene módulo de stock disponible para cierre transaccional.")
+        return self.produccion_stock.cerrar_y_actualizar_stock(plan_id, tarea_id, operario=operario, lote=lote)
+
     def actualizar_avance(self, plan_id: str, tarea_id: str, porcentaje: float) -> dict[str, Any]:
         return self.motor.actualizar_progreso_tarea(plan_id, tarea_id, porcentaje)
 
     def registrar_incidencia(self, plan_id: str, tarea_id: str, descripcion: str, bloqueo: bool = False, retraso_min: int = 0) -> dict[str, Any]:
         tipo = "bloqueo" if bloqueo else "incidencia"
-        return self.motor.registrar_incidencia_tarea(plan_id, tarea_id, tipo, descripcion, retraso_min)
+        efecto = "pausa" if bloqueo else "no_bloquea"
+        return self.motor.registrar_incidencia_tarea(plan_id, tarea_id, tipo, descripcion, retraso_min, "media", efecto, "", "")
+
+    def registrar_merma(self, plan_id: str, tarea_id: str, cantidad: float, unidad: str, motivo: str = "") -> dict[str, Any]:
+        return self.motor.registrar_merma_tarea(plan_id, tarea_id, cantidad, unidad, motivo=motivo)
+
+    def cambiar_fase(self, plan_id: str, tarea_id: str, fase_id: str = "", observaciones: str = "") -> dict[str, Any]:
+        return self.motor.cambiar_fase_tarea(plan_id, tarea_id, fase_id=fase_id, observaciones=observaciones)
 
     def resolver_bloqueo(self, plan_id: str, tarea_id: str, observacion: str = "") -> dict[str, Any]:
         return self.motor.resolver_bloqueo_tarea(plan_id, tarea_id, observacion)
+
+    def resumen_vivo(self, plan_id: str) -> dict[str, Any]:
+        panel = self.construir_panel(plan_id)
+        tarea = panel.get("siguiente_accion", {}).get("tarea_id")
+        return {
+            "plan_id": plan_id,
+            "plan": panel.get("plan"),
+            "progreso": panel.get("avance", 0),
+            "pendientes": panel.get("pendientes", 0),
+            "en_curso": panel.get("en_curso", 0),
+            "bloqueadas": panel.get("bloqueadas", 0),
+            "siguiente_tarea_id": tarea,
+            "siguiente_accion": panel.get("siguiente_accion", {}).get("texto", ""),
+            "lectura": panel.get("lectura", ""),
+        }
 
     def _humanizar_tarea(self, tarea: dict[str, Any], plan: dict[str, Any]) -> dict[str, Any]:
         estado = str(tarea.get("estado_ejecucion") or "pendiente").lower()
@@ -101,8 +131,8 @@ class ProduccionGuiadaPiloto13:
             "recurso_texto": str(recurso).replace("_", " ") if recurso else "Sin recurso específico",
             "tiempo_restante_texto": self._hm(restante),
             "tiempo_real_texto": self._hm(real),
-            "puede_iniciar": estado in {"pendiente", "retrasada"} and not tarea.get("bloqueo"),
-            "puede_pausar": estado == "en_curso",
+            "puede_iniciar": estado in {"pendiente", "retrasada", "lista", "en_espera", "incidencia"} and not tarea.get("bloqueo"),
+            "puede_pausar": estado in ESTADOS_ACTIVOS,
             "puede_reanudar": estado == "pausada" and not tarea.get("bloqueo"),
             "puede_finalizar": estado not in ESTADOS_TERMINADOS and not tarea.get("bloqueo"),
         }
@@ -111,7 +141,7 @@ class ProduccionGuiadaPiloto13:
         bloqueada = next((t for t in tareas if t.get("bloqueo")), None)
         if bloqueada:
             return AccionGuiada("RESOLVER_BLOQUEO", f"Resuelve el bloqueo de {bloqueada.get('titulo')}", str(bloqueada.get("bloqueo")), str(bloqueada.get("id")))
-        activa = next((t for t in tareas if t.get("estado_codigo") == "en_curso"), None)
+        activa = next((t for t in tareas if t.get("estado_codigo") in ESTADOS_ACTIVOS), None)
         if activa:
             return AccionGuiada("CONTINUAR", f"Continúa con {activa.get('titulo')}", "Ya está en marcha; conviene terminarla antes de abrir otra elaboración.", str(activa.get("id")))
         pausada = next((t for t in tareas if t.get("estado_codigo") == "pausada"), None)
@@ -141,7 +171,9 @@ class ProduccionGuiadaPiloto13:
     def _estado_texto(estado: str, bloqueo: bool) -> str:
         if bloqueo: return "🔴 Bloqueada"
         return {
-            "pendiente": "⚪ Pendiente", "en_curso": "🟠 En marcha", "pausada": "🟡 Pausada",
+            "pendiente": "⚪ Pendiente", "lista": "🟢 Lista", "en_curso": "🟠 En marcha",
+            "en_preparacion": "🟠 En preparación", "en_proceso": "🟠 En proceso", "en_espera": "🟣 En espera", "incidencia": "🟤 Incidencia",
+            "pausada": "🟡 Pausada",
             "finalizada": "✅ Terminada", "completada": "✅ Terminada", "retrasada": "🔴 Retrasada",
             "cancelada": "⚫ Cancelada",
         }.get(estado, estado.replace("_", " ").capitalize())

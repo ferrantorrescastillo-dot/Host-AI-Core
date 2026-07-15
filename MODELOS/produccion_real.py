@@ -12,10 +12,18 @@ class FaseProduccionReal:
     nombre: str
     duracion_min: int
     tipo: str = "produccion"
+    estado: str = "PENDIENTE"
     recurso: str = ""
     responsable: str = "cocina"
     dependencia: str = ""
     receta_id: str = ""
+    duracion_activa_min: int = 0
+    duracion_pasiva_min: int = 0
+    temperatura: str = ""
+    hora_prevista: str = ""
+    hora_inicio_real: str = ""
+    hora_fin_real: str = ""
+    recurso_ocupado_en_pasiva: bool = True
     notas: str = ""
     id: str = ""
     def __post_init__(self):
@@ -23,7 +31,28 @@ class FaseProduccionReal:
     def to_dict(self): return asdict(self)
     @classmethod
     def from_dict(cls,d):
-        return cls(nombre=str(d.get("nombre","Fase")),duracion_min=int(d.get("duracion_min",0) or 0),tipo=str(d.get("tipo","produccion")),recurso=str(d.get("recurso","")),responsable=str(d.get("responsable","cocina")),dependencia=str(d.get("dependencia","")),receta_id=str(d.get("receta_id","")),notas=str(d.get("notas","")),id=str(d.get("id") or nuevo_id("FASEPR")))
+        duracion = int(d.get("duracion_min",0) or 0)
+        tipo = str(d.get("tipo","produccion"))
+        pasiva = str(tipo).lower() in {"reposo","fermentacion","coccion","coccion_lenta","cocción_lenta","enfriado","abatido","abatimiento","descongelacion","descongelación","marinado","espera"}
+        return cls(
+            nombre=str(d.get("nombre","Fase")),
+            duracion_min=duracion,
+            tipo=tipo,
+            estado=str(d.get("estado","PENDIENTE") or "PENDIENTE"),
+            recurso=str(d.get("recurso","")),
+            responsable=str(d.get("responsable","cocina")),
+            dependencia=str(d.get("dependencia","")),
+            receta_id=str(d.get("receta_id","")),
+            duracion_activa_min=int(d.get("duracion_activa_min",0) or (0 if pasiva else duracion)),
+            duracion_pasiva_min=int(d.get("duracion_pasiva_min",0) or (duracion if pasiva else 0)),
+            temperatura=str(d.get("temperatura","") or ""),
+            hora_prevista=str(d.get("hora_prevista","") or ""),
+            hora_inicio_real=str(d.get("hora_inicio_real","") or ""),
+            hora_fin_real=str(d.get("hora_fin_real","") or ""),
+            recurso_ocupado_en_pasiva=bool(d.get("recurso_ocupado_en_pasiva", True)),
+            notas=str(d.get("notas","") or ""),
+            id=str(d.get("id") or nuevo_id("FASEPR")),
+        )
 
 @dataclass
 class TareaProduccionReal:
@@ -45,7 +74,10 @@ class TareaProduccionReal:
     retraso_min: int = 0
     bloqueo: str = ""
     observaciones_ejecucion: str = ""
+    fase_activa_id: str = ""
+    historial_estados: List[Dict[str, Any]] = field(default_factory=list)
     incidencias: List[Dict[str, Any]] = field(default_factory=list)
+    mermas: List[Dict[str, Any]] = field(default_factory=list)
     checklist: List[Dict[str, Any]] = field(default_factory=list)
     id: str = ""
     def __post_init__(self):
@@ -54,7 +86,32 @@ class TareaProduccionReal:
     def to_dict(self): return {**asdict(self),"fases":[f.to_dict() for f in self.fases],"duracion_total_min":self.duracion_total_min()}
     @classmethod
     def from_dict(cls,d):
-        return cls(titulo=str(d.get("titulo","Tarea")),receta_id=str(d.get("receta_id","")),receta=str(d.get("receta","")),cantidad=float(d.get("cantidad",0) or 0),unidad=str(d.get("unidad","")),fases=[FaseProduccionReal.from_dict(x) for x in d.get("fases",[]) or []],prioridad=int(d.get("prioridad",50) or 50),origen=str(d.get("origen","")),estado_ejecucion=str(d.get("estado_ejecucion","pendiente") or "pendiente"),iniciado_en=str(d.get("iniciado_en","") or ""),pausado_en=str(d.get("pausado_en","") or ""),finalizado_en=str(d.get("finalizado_en","") or ""),cronometro_iniciado_en=str(d.get("cronometro_iniciado_en","") or ""),segundos_acumulados=int(d.get("segundos_acumulados",0) or 0),progreso_manual=float(d.get("progreso_manual",0) or 0),retraso_min=int(d.get("retraso_min",0) or 0),bloqueo=str(d.get("bloqueo","") or ""),observaciones_ejecucion=str(d.get("observaciones_ejecucion","") or ""),incidencias=list(d.get("incidencias",[]) or []),checklist=list(d.get("checklist",[]) or []),id=str(d.get("id") or nuevo_id("TAREAPR")))
+        return cls(
+            titulo=str(d.get("titulo","Tarea")),
+            receta_id=str(d.get("receta_id","")),
+            receta=str(d.get("receta","")),
+            cantidad=float(d.get("cantidad",0) or 0),
+            unidad=str(d.get("unidad","")),
+            fases=[FaseProduccionReal.from_dict(x) for x in d.get("fases",[]) or []],
+            prioridad=int(d.get("prioridad",50) or 50),
+            origen=str(d.get("origen","")),
+            estado_ejecucion=str(d.get("estado_ejecucion","pendiente") or "pendiente"),
+            iniciado_en=str(d.get("iniciado_en","") or ""),
+            pausado_en=str(d.get("pausado_en","") or ""),
+            finalizado_en=str(d.get("finalizado_en","") or ""),
+            cronometro_iniciado_en=str(d.get("cronometro_iniciado_en","") or ""),
+            segundos_acumulados=int(d.get("segundos_acumulados",0) or 0),
+            progreso_manual=float(d.get("progreso_manual",0) or 0),
+            retraso_min=int(d.get("retraso_min",0) or 0),
+            bloqueo=str(d.get("bloqueo","") or ""),
+            observaciones_ejecucion=str(d.get("observaciones_ejecucion","") or ""),
+            fase_activa_id=str(d.get("fase_activa_id","") or ""),
+            historial_estados=list(d.get("historial_estados",[]) or []),
+            incidencias=list(d.get("incidencias",[]) or []),
+            mermas=list(d.get("mermas",[]) or []),
+            checklist=list(d.get("checklist",[]) or []),
+            id=str(d.get("id") or nuevo_id("TAREAPR")),
+        )
 
 @dataclass
 class BloqueProduccionReal:
