@@ -13,6 +13,12 @@ from SERVICIOS.escalador_explosion_recetas_556ab import (
 )
 from SERVICIOS.cruce_stock_produccion_556c import CruceStockProduccion556C, formatear_cruce_stock_556c
 from SERVICIOS.planificador_produccion_556d import PlanificadorProduccion556D, formatear_plan_556d
+from SERVICIOS.produccion_automatica_evento_556f import (
+    ProduccionAutomaticaEvento556F,
+    es_consulta_produccion_automatica_evento_556f,
+    extraer_consulta_evento_556f,
+    formatear_produccion_automatica_evento_556f,
+)
 
 
 def _norm(value: Any) -> str:
@@ -23,7 +29,7 @@ def _norm(value: Any) -> str:
 
 def es_consulta_produccion_real_556(texto: str) -> bool:
     t = _norm(texto)
-    return any(p in t for p in (
+    return es_consulta_produccion_automatica_evento_556f(texto) or any(p in t for p in (
         "planifica la produccion", "prepara la produccion", "produccion de", "que tengo que producir",
         "calcula la produccion", "plan de produccion", "calcula la receta", "escala la receta", "desglosa", "explota",
         "incluyendo elaboraciones", "elaboraciones internas", "con el stock actual", "stock necesario", "puedo producir",
@@ -33,6 +39,35 @@ def es_consulta_produccion_real_556(texto: str) -> bool:
 def procesar_consulta_produccion_real_556(texto: str, base_dir: Path) -> Dict[str, Any]:
     if not es_consulta_produccion_real_556(texto):
         return {"gestionado": False}
+    if es_consulta_produccion_automatica_evento_556f(texto):
+        entrada_evento = extraer_consulta_evento_556f(texto)
+        if not entrada_evento.get("evento"):
+            return {
+                "gestionado": True,
+                "ok": False,
+                "version": "5.5.6F",
+                "intencion": "planificar_produccion_automatica_evento",
+                "estado": "FALTA_EVENTO",
+                "mensaje": "PRODUCCIÓN AUTOMÁTICA\n- Indica el evento (nombre o ID EVT-...).\n- Ejemplo: Planifica la producción automática del evento BoronatX con 3 cocineros.\n\nSEGURIDAD\n- Datos reales modificados: NO.",
+                "datos": entrada_evento,
+                "pasos": [],
+            }
+        datos = ProduccionAutomaticaEvento556F(base_dir).planificar_evento(
+            entrada_evento["evento"],
+            cocineros=int(entrada_evento.get("cocineros", 3)),
+            inicio_jornada=str(entrada_evento.get("inicio_jornada") or "08:00"),
+            fin_jornada=str(entrada_evento.get("fin_jornada") or "15:30"),
+        )
+        return {
+            "gestionado": True,
+            "ok": bool(datos.get("ok", False)),
+            "version": "5.5.6F",
+            "intencion": "planificar_produccion_automatica_evento",
+            "estado": datos.get("estado"),
+            "mensaje": formatear_produccion_automatica_evento_556f(datos),
+            "datos": datos,
+            "pasos": [],
+        }
     entrada = extraer_consulta_556ab(texto)
     termino_limpio = re.sub(r"^(?:el\s+)?plan\s+de\s+produccion\s+de\s+", "", str(entrada.get("termino") or ""), flags=re.I).strip()
     entrada["termino"] = termino_limpio

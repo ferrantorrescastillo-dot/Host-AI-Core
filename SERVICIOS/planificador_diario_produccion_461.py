@@ -15,10 +15,12 @@ from SERVICIOS.asignacion_cocineros_463 import AsignadorCocineros463
 
 
 class PlanificadorDiarioProduccion461:
-    def __init__(self, base_dir: str | Path | None = None):
+    def __init__(self, base_dir: str | Path | None = None, create_output_dir: bool = True):
         self.base_dir = Path(base_dir or Path.cwd())
         self.datos_dir = self.base_dir / "DATOS" / "produccion"
-        self.datos_dir.mkdir(parents=True, exist_ok=True)
+        self.create_output_dir = bool(create_output_dir)
+        if self.create_output_dir:
+            self.datos_dir.mkdir(parents=True, exist_ok=True)
         self.tiempos = GestorTiemposActivosPasivos464()
         self.prioridades = MotorPrioridadesInteligentesCocina462()
         self.asignador = AsignadorCocineros463()
@@ -52,6 +54,7 @@ class PlanificadorDiarioProduccion461:
         return plan
 
     def exportar_plan(self, plan: Dict[str, Any], nombre: str = "plan_diario_produccion_461.json") -> Dict[str, Any]:
+        self.datos_dir.mkdir(parents=True, exist_ok=True)
         destino = self.datos_dir / nombre
         destino.write_text(json.dumps(plan, ensure_ascii=False, indent=2), encoding="utf-8")
         return {"archivo": str(destino), "lectura_host_ai": f"Plan diario de producción exportado: {destino.name}."}
