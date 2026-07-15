@@ -17,14 +17,17 @@ class ConsolaRecepcionPiloto1:
         self.service = RecepcionInteligentePiloto1(self.base_dir)
         self.service_rp3 = RecepcionOperativaRP3(self.core)
         self.bandeja = BandejaTrabajoPiloto11(self.base_dir)
+        self._contexto_documento = {}
 
     def ejecutar(self, input_fn: Callable[[str], str] = input, print_fn: Callable[..., None] = print) -> None:
         while True:
-            print_fn("\nRECEPCIONES — ¿QUÉ QUIERES HACER?")
-            print_fn("1. Añadir una factura, albarán o recepción")
-            print_fn("2. Retomar una recepción pendiente")
-            print_fn("3. Ver recepciones pendientes")
-            print_fn("4. Recepción guiada desde pedido esperado (RP-3)")
+            print_fn("\nRECEPCIONES — HA LLEGADO MERCANCÍA")
+            print_fn("1. Ha llegado un proveedor")
+            print_fn("2. Recibir un pedido esperado")
+            print_fn("3. Continuar una recepción pendiente")
+            print_fn("4. Ver recepciones pendientes")
+            print_fn("5. Ver historial o detalle")
+            print_fn("\nOPCIONES TÉCNICAS")
             print_fn("9. Diagnóstico aislado")
             print_fn("0. Volver")
             op = input_fn("Elige una opción: ").strip()
@@ -33,11 +36,13 @@ class ConsolaRecepcionPiloto1:
             elif op == "1":
                 self._nueva(input_fn, print_fn)
             elif op == "2":
-                self._retomar(input_fn, print_fn)
-            elif op == "3":
-                self._listar_pendientes(print_fn)
-            elif op == "4":
                 self._recepcion_por_pedido(input_fn, print_fn)
+            elif op == "3":
+                self._retomar(input_fn, print_fn)
+            elif op == "4":
+                self._listar_pendientes(print_fn)
+            elif op == "5":
+                self._mostrar_historial(input_fn, print_fn)
             elif op == "0":
                 return
             else:
@@ -46,7 +51,7 @@ class ConsolaRecepcionPiloto1:
     def _recepcion_por_pedido(self, input_fn, print_fn) -> None:
         pedidos = [p for p in self.core.compras.listar_pedidos() if p.get("estado") in {"borrador", "preparado", "enviado"}]
         if not pedidos:
-            print_fn("No hay pedidos abiertos para recepcionar.")
+            self._mostrar_sin_pedidos(print_fn)
             return
         print_fn("\nPEDIDOS ABIERTOS")
         for i, p in enumerate(pedidos, 1):
@@ -166,35 +171,183 @@ class ConsolaRecepcionPiloto1:
             add = input_fn("¿Registrar otro adicional? (s/n): ").strip().lower()
 
         preview = self.service_rp3.preparar_validacion(sesion["id"])
-        print_fn("\nVALIDACIÓN RECEPCIÓN RP-3")
+        print_fn("\nQUÉ DEBES REVISAR")
         print_fn("=" * 72)
-        print_fn(f"Pedido esperado: {preview['pedido_id']} | Proveedor esperado: {preview['proveedor_esperado']} | Llegada: {preview['proveedor_llegada']}")
-        print_fn(f"Diferencias detectadas: {len(preview.get('diferencias', []))}")
-        for d in preview.get("diferencias", [])[:20]:
-            print_fn(f"- {d.get('tipo')}: {d.get('detalle')}")
-        print_fn(f"Stock antes: {preview.get('stock_antes', {}).get('total_items', 0)} articulo(s), {preview.get('stock_antes', {}).get('total_lotes', 0)} lote(s)")
+        self._mostrar_resumen_diferencias(preview, print_fn)
         confirmar = input_fn("Escribe RECEPCIONAR para aplicar: ").strip()
-        resultado = self.service_rp3.finalizar_recepcion(sesion["id"], confirmar)
+        try:
+            resultado = self.service_rp3.finalizar_recepcion(sesion["id"], confirmar)
+        except ValueError:
+            print_fn("Recepción no aplicada. La sesión conserva lo revisado para continuar después.")
+            print_fn("Siguiente paso: vuelve a Recepciones y elige 'Continuar una recepción pendiente'.")
+            return
         print_fn(resultado.get("mensaje", ""))
         if resultado.get("ok"):
-            reg = resultado.get("registro", {})
-            print_fn(f"Entradas stock: {len(reg.get('entradas_stock', []))} | Incidencias: {len(reg.get('incidencias', []))}")
-            print_fn(f"Stock después: {resultado.get('stock_despues', {}).get('total_items', 0)} articulo(s), {resultado.get('stock_despues', {}).get('total_lotes', 0)} lote(s)")
+            self._mostrar_final_rp3(resultado, preview, input_fn, print_fn)
+        else:
+            print_fn("No se ha aplicado la recepción; el stock y el pedido mantienen su estado anterior.")
+            print_fn("Siguiente paso: revisa las diferencias e inténtalo de nuevo, o continúa la recepción más tarde.")
+
+    def _mostrar_sin_pedidos(self, print_fn) -> None:
+        print_fn("\nNo hay pedidos pendientes de recibir.")
+        avisos = []
+        for plan in self.core.produccion_real.listar_planes():
+            for tarea in plan.get("tareas", []) or []:
+                if str(tarea.get("bloqueo") or "").strip():
+                    avisos.append(f"Producción bloqueada: {tarea.get('titulo')} — {tarea.get('bloqueo')}")
+        eventos = [e for e in self.core.eventos.listar_eventos() if str(getattr(e, "estado", "")).lower() not in {"cancelado", "cerrado"}]
+        if avisos:
+            print_fn(f"Atención: {avisos[0]}")
+        elif eventos:
+            print_fn(f"Hay {len(eventos)} evento(s) abierto(s); revisa si la mercancía llegó sin pedido registrado.")
+        print_fn("Puedes:")
+        print_fn("1. Registrar una recepción manual con 'Ha llegado un proveedor'.")
+        print_fn("2. Revisar pedidos y necesidades desde Compras.")
+        print_fn("3. Volver a la jornada.")
+        print_fn("4. Ver recepciones pendientes.")
+        print_fn("Siguiente acción recomendada: si la mercancía está delante, usa la recepción manual.")
+
+    @staticmethod
+    def _mostrar_resumen_diferencias(preview: dict, print_fn) -> None:
+        resumen = preview.get("resumen") or {}
+        total = int(resumen.get("esperadas", len(preview.get("lineas_esperadas", []))) or 0)
+        parciales = int(resumen.get("parciales", 0) or 0)
+        no_recibidas = int(resumen.get("no_recibidas", 0) or 0)
+        rechazadas = int(resumen.get("rechazadas", 0) or 0)
+        aceptadas = int(resumen.get("aceptadas", 0) or 0)
+        sustituciones = sum(1 for x in preview.get("lineas_esperadas", []) if x.get("estado_linea") == "sustitucion")
+        diferencias = list(preview.get("diferencias") or [])
+        precios = sum(1 for x in diferencias if x.get("tipo") == "precio_incorrecto")
+        print_fn(f"{preview.get('proveedor_llegada') or preview.get('proveedor_esperado') or 'Proveedor'} — {total} líneas")
+        print_fn(f"{aceptadas} correctas")
+        if parciales: print_fn(f"{parciales} recibida(s) parcialmente")
+        if no_recibidas: print_fn(f"{no_recibidas} no recibida(s)")
+        if sustituciones: print_fn(f"{sustituciones} sustituida(s)")
+        if rechazadas: print_fn(f"{rechazadas} rechazada(s)")
+        if precios: print_fn(f"{precios} diferencia(s) de precio")
+        if diferencias:
+            print_fn(f"\nRevisa estas {len(diferencias)} diferencias:")
+            for diferencia in diferencias[:20]:
+                etiquetas = {
+                    "cantidad_incorrecta": "Cantidad parcial",
+                    "no_recibido": "No recibido",
+                    "producto_rechazado": "Rechazado",
+                    "sustitucion": "Sustituido",
+                    "precio_incorrecto": "Precio distinto",
+                    "unidad_diferente": "Unidad distinta",
+                    "caducidad": "Caducidad a revisar",
+                    "lote": "Lote informado",
+                    "producto_adicional": "Producto no esperado",
+                }
+                print_fn(f"- {etiquetas.get(diferencia.get('tipo'), 'Diferencia')}: {diferencia.get('detalle')}")
+        else:
+            print_fn("Todo coincide con el pedido. Puedes confirmar la recepción.")
+
+    def _mostrar_final_rp3(self, resultado: dict, preview: dict, input_fn, print_fn) -> None:
+        registro = resultado.get("registro") or {}
+        resumen = preview.get("resumen") or {}
+        incidencias = list(registro.get("incidencias") or [])
+        print_fn("\nRECEPCIÓN GUARDADA Y STOCK ACTUALIZADO")
+        print_fn(f"Llegó: {len(registro.get('entradas_stock', []))} entrada(s) de stock")
+        print_fn(f"Parcial: {resumen.get('parciales', 0)} | No recibido: {resumen.get('no_recibidas', 0)} | Rechazado: {resumen.get('rechazadas', 0)}")
+        print_fn(f"Precios distintos: {sum(1 for x in incidencias if x.get('tipo') == 'precio_incorrecto')}")
+        print_fn(f"Queda pendiente: {sum(int(resumen.get(k, 0) or 0) for k in ('parciales', 'no_recibidas', 'rechazadas'))} línea(s)")
+        print_fn("\n¿Qué quieres hacer ahora?")
+        print_fn("1. Guardar y cerrar")
+        print_fn("2. Revisar diferencias")
+        print_fn("3. Continuar con otra recepción")
+        print_fn("4. Volver a la jornada")
+        opcion = input_fn("Opción [1]: ").strip() or "1"
+        if opcion == "2":
+            self._mostrar_resumen_diferencias(preview, print_fn)
+        elif opcion == "3":
+            self._nueva(input_fn, print_fn)
+        elif opcion == "4":
+            from APP.consola_jornada_piloto_12 import ConsolaJornadaPiloto12
+            ConsolaJornadaPiloto12(self.base_dir).ejecutar(input_fn=input_fn, print_fn=print_fn)
+        else:
+            print_fn("Recepción cerrada. Siguiente paso: continúa con la jornada.")
 
     def _nueva(self, input_fn, print_fn) -> None:
-        ruta = input_fn("Ruta del documento (PDF/Excel/CSV/TXT/imagen): ").strip().strip('"')
+        print_fn("\nHA LLEGADO UN PROVEEDOR")
+        print_fn("Selecciona o arrastra el albarán, factura o documento del proveedor.")
+        print_fn("Se leerá primero en vista previa; no se cambiarán precios ni stock sin confirmación.")
+        ruta = input_fn("Documento (0=cancelar): ").strip().strip('"')
+        if ruta == "0" or not ruta:
+            print_fn("Recepción cancelada antes de leer el documento. No se ha modificado ningún dato.")
+            return
+        print_fn(f"Documento elegido: {Path(ruta).name}")
         proveedor = input_fn("Proveedor [detectar por documento/nombre]: ").strip()
-        texto_manual = ""
-        if Path(ruta).suffix.lower() in {".png", ".jpg", ".jpeg"}:
-            print_fn("Pega el texto leído/OCR. Termina con una línea que contenga solo FIN.")
-            lines=[]
-            while True:
-                x=input_fn("")
-                if x.strip().upper()=="FIN": break
-                lines.append(x)
-            texto_manual="\n".join(lines)
-        plan = self.service.preparar(ruta, texto_manual=texto_manual, proveedor=proveedor)
+        self._contexto_documento = {"ruta": ruta, "proveedor": proveedor, "estado": "leyendo"}
+        try:
+            plan = self.service.preparar(ruta, proveedor=proveedor)
+        except (ValueError, FileNotFoundError, OSError) as exc:
+            mensaje = str(exc).lower()
+            if "texto extraíble" in mensaje or "ocr/manual" in mensaje or Path(ruta).suffix.lower() in {".png", ".jpg", ".jpeg"}:
+                self._documento_sin_texto(ruta, proveedor, input_fn, print_fn)
+            else:
+                self._contexto_documento["estado"] = "fallo_lectura"
+                print_fn(f"No he podido leer el documento: {exc}")
+                print_fn("El proveedor y la ruta siguen disponibles durante esta recepción.")
+                print_fn("Siguiente paso: comprueba el archivo, carga otra versión o cancela sin aplicar cambios.")
+            return
+        self._contexto_documento["estado"] = "leido"
         self._procesar_plan(plan, input_fn, print_fn)
+
+    def _documento_sin_texto(self, ruta: str, proveedor: str, input_fn, print_fn) -> None:
+        self._contexto_documento["estado"] = "pendiente_lectura"
+        print_fn("\nEL DOCUMENTO PARECE ESTAR ESCANEADO")
+        print_fn("No contiene texto extraíble. Aún no se ha modificado ningún dato.")
+
+        ocr = getattr(self.core, "motor_ocr_simulado", None)
+        if ocr is not None:
+            try:
+                resultado = ocr.extraer_texto(ruta)
+                texto = str(resultado.get("texto_extraido") or "").strip()
+            except (ValueError, FileNotFoundError, OSError):
+                texto = ""
+            if texto:
+                print_fn("He encontrado una lectura OCR asociada anteriormente. La revisaré en vista previa.")
+                plan = self.service.preparar(ruta, texto_manual=texto, proveedor=proveedor)
+                self._contexto_documento["estado"] = "leido_con_ocr_existente"
+                self._procesar_plan(plan, input_fn, print_fn)
+                return
+
+        print_fn("No hay lectura visual automática disponible en este entorno.")
+        print_fn("1. Cargar otra versión del documento")
+        print_fn("2. Introducir solo los productos esenciales")
+        print_fn("3. Mantener el contexto y continuar después")
+        print_fn("0. Cancelar sin aplicar cambios")
+        opcion = input_fn("Elige una opción: ").strip()
+        if opcion == "1":
+            self._nueva(input_fn, print_fn)
+        elif opcion == "2":
+            texto = self._capturar_lineas_esenciales(input_fn, print_fn)
+            if not texto:
+                print_fn("No se introdujeron productos. La recepción sigue pendiente de lectura y no se aplicó nada.")
+                return
+            plan = self.service.preparar(ruta, texto_manual=texto, proveedor=proveedor)
+            self._contexto_documento["estado"] = "leido_manual_esencial"
+            self._procesar_plan(plan, input_fn, print_fn)
+        elif opcion == "3":
+            print_fn("Conservo el proveedor y el documento durante esta sesión.")
+            print_fn("Siguiente paso: carga otra versión o introduce las líneas esenciales cuando puedas.")
+        else:
+            self._contexto_documento["estado"] = "cancelado"
+            print_fn("Lectura cancelada. No se ha modificado ningún dato.")
+
+    @staticmethod
+    def _capturar_lineas_esenciales(input_fn, print_fn) -> str:
+        print_fn("Introduce una línea por producto: nombre ; cantidad ; unidad ; precio opcional")
+        print_fn("Escribe FIN cuando hayas terminado o FIN directamente para cancelar.")
+        lineas = []
+        while True:
+            linea = input_fn("Producto: ").strip()
+            if linea.upper() == "FIN":
+                break
+            if linea:
+                lineas.append(linea)
+        return "\n".join(lineas)
 
     def _procesar_plan(self, plan, input_fn, print_fn) -> None:
         self._mostrar(plan, print_fn)
@@ -202,7 +355,8 @@ class ConsolaRecepcionPiloto1:
         path = self.service.guardar_plan(plan)
         if plan["estado"] != "LISTA_PARA_CONFIRMAR":
             self.bandeja.registrar_recepcion_pendiente(plan, "Recepción pendiente de resolver dudas.")
-            print_fn(f"Recepción guardada en la bandeja: {path}")
+            print_fn(f"Recepción guardada para continuar después: {path}")
+            print_fn("Hay productos que no he podido identificar. Revísalos desde 'Continuar una recepción pendiente'.")
             return
         print_fn("\n¿Qué quieres hacer ahora?")
         print_fn("1. Actualizar precios y stock ahora")
@@ -212,18 +366,24 @@ class ConsolaRecepcionPiloto1:
         if decision != "1":
             motivo = "Actualizar precios y stock al final del día" if decision == "2" else "Recepción guardada pendiente de decisión"
             self.bandeja.registrar_recepcion_pendiente(plan, motivo)
-            print_fn("Recepción guardada. Aparece en la Bandeja de trabajo.")
+            print_fn("Recepción guardada. Aparece en la Bandeja de trabajo y no se ha actualizado el stock.")
+            print_fn("Siguiente paso: continúa con otra recepción o vuelve a la jornada.")
             return
         confirm = input_fn("Escribe RECEPCIONAR para actualizar precios, stock y guardar la factura: ")
         if confirm.strip().upper() != "RECEPCIONAR":
             self.bandeja.registrar_recepcion_pendiente(plan, "Confirmación cancelada; recepción pendiente.")
             print_fn("Operación cancelada. La recepción queda en la Bandeja de trabajo.")
             return
-        result = self.service.aplicar(plan, confirm)
-        print_fn("\nRECEPCIÓN COMPLETADA")
-        print_fn(f"Estado: {result['estado']} | Integridad: {result['integridad']}")
-        print_fn(f"Artículos creados: {result['articulos_creados']} | Precios: {result['precios_actualizados']} | Entradas stock: {result['entradas_stock']}")
-        print_fn(f"Backup: {result['backup']}")
+        try:
+            result = self.service.aplicar(plan, confirm)
+        except Exception:
+            print_fn("No he podido terminar la recepción.")
+            print_fn("No des por actualizados el stock ni los precios. El documento guardado permite volver a revisarla.")
+            print_fn("Siguiente paso: abre 'Continuar una recepción pendiente' y comprueba las líneas antes de repetir.")
+            return
+        print_fn("\nRECEPCIÓN GUARDADA Y STOCK ACTUALIZADO")
+        print_fn(f"Productos nuevos: {result['articulos_creados']} | Precios actualizados: {result['precios_actualizados']} | Entradas de stock: {result['entradas_stock']}")
+        print_fn("Siguiente paso: guarda el documento del proveedor y continúa con la jornada.")
 
     def _listar_pendientes(self, print_fn) -> list[Path]:
         folder = self.base_dir / "DATOS" / "piloto" / "recepciones"
@@ -238,8 +398,25 @@ class ConsolaRecepcionPiloto1:
                 if data.get("estado") in {"LISTA_PARA_CONFIRMAR","REQUIERE_REVISION"}:
                     paths.append(p)
                     print_fn(f"{len(paths)}. {data.get('proveedor') or '-'} | {data.get('plan_id')} | {data.get('estado')} | {data.get('resumen',{}).get('lineas',0)} líneas")
-        if not paths: print_fn("No hay recepciones pendientes.")
+        if not paths:
+            print_fn("No hay recepciones pendientes.")
+            print_fn("Estado actual: todo lo guardado está resuelto o aplicado.")
+            print_fn("Siguiente paso: registra la mercancía que acaba de llegar o vuelve a la jornada.")
         return paths
+
+    def _mostrar_historial(self, input_fn, print_fn) -> None:
+        registros = list(self.service_rp3._leer_lista(self.service_rp3.path_registros))
+        resultados = sorted((self.base_dir / "DATOS" / "piloto" / "recepciones").glob("*_resultado.json")) if (self.base_dir / "DATOS" / "piloto" / "recepciones").exists() else []
+        print_fn("\nHISTORIAL DE RECEPCIONES")
+        if not registros and not resultados:
+            print_fn("Todavía no hay recepciones terminadas.")
+            print_fn("Siguiente paso: usa 'Ha llegado un proveedor' o recibe un pedido esperado.")
+            return
+        for i, registro in enumerate(registros, 1):
+            print_fn(f"{i}. {registro.get('proveedor_llegada') or registro.get('proveedor_esperado') or '-'} | {registro.get('pedido_id')} | {len(registro.get('entradas_stock', []))} entradas | {len(registro.get('incidencias', []))} diferencias")
+        if resultados:
+            print_fn(f"Recepciones documentales terminadas: {len(resultados)}")
+        input_fn("Pulsa Intro para volver: ")
 
     def _retomar(self, input_fn, print_fn) -> None:
         paths=self._listar_pendientes(print_fn)
@@ -254,10 +431,11 @@ class ConsolaRecepcionPiloto1:
     def _mostrar(plan, print_fn):
         print_fn("\nVISTA PREVIA — NO SE HAN MODIFICADO DATOS")
         print_fn("="*78)
-        print_fn(f"Proveedor: {plan['proveedor'] or '-'} | Líneas: {plan['resumen']['lineas']} | Estado: {plan['estado']}")
+        print_fn(f"Proveedor: {plan['proveedor'] or '-'} | Líneas detectadas: {plan['resumen']['lineas']}")
+        print_fn(f"Reconocidas: {plan['resumen']['exactas']} | Dudosas: {plan['resumen']['probables']} | Sin identificar: {plan['resumen']['pendientes']}")
         for x in plan["lineas"]:
-            target = x["articulo_nombre"] or "SIN VINCULAR"
-            print_fn(f"{x['numero']}. [{x['estado']}] {x['descripcion']} | {x['cantidad']} {x['unidad']} | {x.get('precio_unitario')} € | → {target} | {round(x['confianza']*100)}%")
+            target = x["articulo_nombre"] or "No he podido identificar este producto"
+            print_fn(f"{x['numero']}. {x['descripcion']} | {x['cantidad']} {x['unidad']} | {x.get('precio_unitario')} € | {target}")
 
     def _revisar(self, plan, input_fn, print_fn):
         pending = [x for x in plan["lineas"] if x["estado"] in {"PROBABLE", "SIN_RESOLVER"}]
@@ -279,7 +457,8 @@ class ConsolaRecepcionPiloto1:
             elif op=="P":
                 print_fn("La línea queda pendiente.")
             else:
-                print_fn("Sin decisión: la recepción permanecerá bloqueada.")
+                print_fn("No he entendido la decisión. Esta línea queda pendiente y todavía no se actualizará el stock.")
+                print_fn("Siguiente paso: elige un producto, créalo, omite la línea o déjala pendiente de forma explícita.")
 
 
 __all__=["ConsolaRecepcionPiloto1"]
