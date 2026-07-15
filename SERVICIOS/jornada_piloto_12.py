@@ -64,6 +64,7 @@ class JornadaPiloto12:
         self.eventos_path = self.base_dir / "DATOS" / "db" / "eventos.json"
         self.pedidos_path = self.base_dir / "DATOS" / "db" / "compras_pedidos.json"
         self.recepciones_rp3_path = self.base_dir / "DATOS" / "piloto" / "recepciones_rp3" / "registros.json"
+        self.rp4_confirmados_path = self.base_dir / "DATOS" / "piloto" / "rp4_preparar_manana" / "confirmados.json"
         self.menus_path = self.base_dir / "DATOS" / "db" / "menus.json"
         self.articulos_path = self.base_dir / "DATOS" / "db" / "articulos.json"
         self.stock_path = self.base_dir / "DATOS" / "db" / "stock_inicial.json"
@@ -314,6 +315,8 @@ class JornadaPiloto12:
         incidencias = self._incidencias(items, compras_criticas, recepciones_previstas, personal, eventos_hoy)
         recepciones_rp3 = self._resumen_recepciones_rp3()
         incidencias = incidencias + list(recepciones_rp3.get("incidencias", []))
+        plan_rp4 = self._plan_rp4_confirmado_hoy(ahora.date())
+        incidencias = incidencias + list(plan_rp4.get("incidencias", []))
         alergenos = self._alergenos(eventos_hoy, articulos, menus)
         produccion_viva = self._resumen_produccion_viva(planes_raw)
         prioridades = [
@@ -354,6 +357,7 @@ class JornadaPiloto12:
             "alergenos": alergenos,
             "incidencias": incidencias,
             "recepciones_rp3": recepciones_rp3,
+            "plan_manana_rp4": plan_rp4,
             "produccion_viva": produccion_viva,
             "prioridades": prioridades,
             "orden_automatico": {
@@ -651,6 +655,70 @@ class JornadaPiloto12:
             "recepciones_hoy": len(regs_hoy),
             "lineas_recibidas_hoy": sum(len(r.get("entradas_stock", []) or []) for r in regs_hoy),
             "incidencias_hoy": sum(len(r.get("incidencias", []) or []) for r in regs_hoy),
+            "incidencias": incidencias[:20],
+        }
+
+    def _plan_rp4_confirmado_hoy(self, hoy: date) -> dict[str, Any]:
+        data = self._load_json(self.rp4_confirmados_path, [])
+        if not isinstance(data, list):
+            return {
+                "disponible": False,
+                "fecha_objetivo": hoy.isoformat(),
+                "estado": "sin_plan",
+                "incidencias": [],
+            }
+        planes_hoy = [p for p in data if str(p.get("fecha_objetivo") or "") == hoy.isoformat()]
+        if not planes_hoy:
+            return {
+                "disponible": False,
+                "fecha_objetivo": hoy.isoformat(),
+                "estado": "sin_plan",
+                "incidencias": [],
+            }
+        planes_hoy.sort(key=lambda x: str(x.get("confirmado_en") or x.get("generado_en") or ""), reverse=True)
+        plan = planes_hoy[0]
+        incidencias = []
+        for b in plan.get("bloqueos", []) or []:
+            incidencias.append({
+                "tipo": "rp4_bloqueo",
+                "nivel": "alto",
+                "titulo": "Bloqueo planificado RP-4",
+                "detalle": str(b.get("detalle") or b.get("tipo") or "Bloqueo en plan confirmado"),
+            })
+        for a in plan.get("alertas", []) or []:
+            nivel = str(a.get("nivel") or "medio")
+            incidencias.append({
+                "tipo": "rp4_alerta",
+                "nivel": nivel,
+                "titulo": "Alerta planificada RP-4",
+                "detalle": str(a.get("detalle") or a.get("tipo") or "Alerta en plan confirmado"),
+            })
+        eventos = (plan.get("eventos") or {}).get("manana", []) or []
+        compras = ((plan.get("compras") or {}).get("lineas") or [])
+        recepciones = plan.get("recepciones") or []
+        descongelaciones = plan.get("descongelaciones") or []
+        cronologia = plan.get("cronologia") or []
+        tareas = plan.get("tareas") or []
+        return {
+            "disponible": True,
+            "id": plan.get("id"),
+            "fecha_objetivo": plan.get("fecha_objetivo"),
+            "estado": plan.get("estado"),
+            "eventos": len(eventos),
+            "tareas": len(tareas),
+            "compras": len(compras),
+            "recepciones": len(recepciones),
+            "descongelaciones": len(descongelaciones),
+            "cronologia": len(cronologia),
+            "personal_revision_manual": bool((plan.get("personal") or {}).get("revision_manual")),
+            "alertas": len(plan.get("alertas") or []),
+            "bloqueos": len(plan.get("bloqueos") or []),
+            "eventos_items": eventos,
+            "cronologia_items": cronologia,
+            "compras_items": compras,
+            "recepciones_items": recepciones,
+            "descongelaciones_items": descongelaciones,
+            "tareas_items": tareas,
             "incidencias": incidencias[:20],
         }
 
