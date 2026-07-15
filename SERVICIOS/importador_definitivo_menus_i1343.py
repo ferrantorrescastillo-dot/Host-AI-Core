@@ -42,6 +42,24 @@ class ImportadorDefinitivoMenusI1343:
         if not plan.get('acciones'):
             raise ValueError('El plan no contiene acciones.')
 
+        revision = plan.get('revision')
+        if isinstance(revision, dict):
+            if int(revision.get('pendientes') or 0) != 0 or int(revision.get('bloqueantes') or 0) != 0:
+                raise ValueError('El plan de revisión todavía contiene pendientes o bloqueantes.')
+
+        menus_validados = plan.get('menus_validados')
+        if isinstance(menus_validados, list) and menus_validados:
+            permitidos = {str(x) for x in menus_validados}
+            for a in plan.get('acciones', []):
+                if a.get('entidad') != 'MENU':
+                    continue
+                d = a.get('detalle', {})
+                menu_id = str(d.get('menu_id') or _stable_id('MENU', a.get('nombre'), d.get('hoja')))
+                if menu_id not in permitidos:
+                    raise ValueError(
+                        f'El plan contiene un menú no validado para importar: {a.get("nombre")} ({menu_id}).'
+                    )
+
 
     def cargar_sesion_revisada(self, ruta_sesion: str | Path) -> dict[str, Any]:
         """Carga y valida una sesión revisada antes de permitir cualquier escritura real.

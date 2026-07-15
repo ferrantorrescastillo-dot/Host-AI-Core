@@ -19,6 +19,18 @@ def test_bloquea_plan_no_listo(tmp_path):
  x=plan(); x['estado_simulacion']='BLOQUEADA'
  with pytest.raises(ValueError): ImportadorDefinitivoMenusI1343(tmp_path).importar(x,confirmar=True)
 
+def test_bloquea_menu_fuera_de_lista_validada(tmp_path):
+ rel='DATOS/db/menus.json'; p=tmp_path/rel; p.parent.mkdir(parents=True); p.write_text('[]')
+ x=plan(); x['menus_validados']=['MID-OTRO']
+ with pytest.raises(ValueError, match='no validado'):
+  ImportadorDefinitivoMenusI1343(tmp_path).importar(x,confirmar=True)
+
+def test_admite_menu_en_lista_validada(tmp_path):
+ rel='DATOS/db/menus.json'; p=tmp_path/rel; p.parent.mkdir(parents=True); p.write_text('[]')
+ x=plan(); x['menus_validados']=['MID1']; x['revision']={'pendientes':0,'bloqueantes':0}
+ r=ImportadorDefinitivoMenusI1343(tmp_path).importar(x,confirmar=True)
+ assert r['resultado_transaccion']['estado']=='COMMIT'
+
 def test_exige_confirmacion(tmp_path):
  rel='DATOS/db/menus.json'; p=tmp_path/rel; p.parent.mkdir(parents=True); p.write_text('[]')
  with pytest.raises(PermissionError): ImportadorDefinitivoMenusI1343(tmp_path).importar(plan())

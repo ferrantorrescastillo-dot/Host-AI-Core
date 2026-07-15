@@ -59,3 +59,23 @@ def test_mantener_bloqueante_no_desbloquea(tmp_path: Path):
     s=b.aplicar_masiva(s,"1","MANTENER")
     assert s["resumen_revision"]["bloqueantes"] == 1
     assert s["plan"]["estado_simulacion"] == "BLOQUEADA"
+
+
+def test_consolida_dudas_pendientes_con_huella_estable(tmp_path: Path):
+    b=BandejaRevisionI13413(tmp_path); s=b.crear_sesion(_plan())
+    pendientes=s.get("dudas_pendientes",[])
+    assert len(pendientes) == s["resumen_revision"]["pendientes"]
+    assert all(p.get("fingerprint") for p in pendientes)
+    assert [p["fingerprint"] for p in pendientes] == sorted(p["fingerprint"] for p in pendientes)
+    assert s["resumen_revision"].get("huella_dudas_pendientes")
+
+
+def test_trazabilidad_revision_en_acciones_afectadas(tmp_path: Path):
+    b=BandejaRevisionI13413(tmp_path); s=b.crear_sesion(_plan())
+    s=b.aplicar_masiva(s,"2","CLASIFICAR",clasificacion="PLATO_RECETA")
+    a=next(a for a in s["plan"]["acciones"] if a["accion_id"]=="A2")
+    d=a.get("detalle",{})
+    assert d.get("revision_sesion_id") == s.get("sesion_id")
+    assert d.get("revision_incidencia_id")
+    assert d.get("revision_fingerprint")
+    assert d.get("revision_ultima_accion") == "CLASIFICAR"

@@ -25,6 +25,7 @@ class IncidenciaRevision:
     confianza: int
     motivo: str
     accion_ids: list[str]
+    fingerprint: str
     estado: str = "PENDIENTE"
     decision: dict[str, Any] | None = None
 
@@ -59,6 +60,10 @@ class BandejaRevisionI13413:
     def preparar(self, ruta_excel: str | Path, hojas: list[str] | None = None) -> dict[str, Any]:
         plan = self.simulador.simular(ruta_excel, hojas=hojas)
         return self.crear_sesion(plan, origen={"excel": str(ruta_excel), "hojas": hojas or []})
+
+    @staticmethod
+    def _fingerprint_incidencia(menu: str, plato: str | None, nombre: str, tipo: str, nivel: str) -> str:
+        return _stable_id("FP", _norm(menu), _norm(plato), _norm(nombre), tipo, nivel)
 
     def crear_sesion(self, plan: dict[str, Any], origen: dict[str, Any] | None = None) -> dict[str, Any]:
         trabajo = deepcopy(plan)
@@ -124,8 +129,15 @@ class BandejaRevisionI13413:
 
         salida = []
         for n, g in enumerate(grupos.values(), 1):
-            iid = _stable_id("INC", self.VERSION, g["menu"], g["plato"], g["nombre"], n)
-            salida.append(IncidenciaRevision(incidencia_id=iid, numero=n, **g))
+            fp = self._fingerprint_incidencia(
+                str(g.get("menu") or ""),
+                str(g.get("plato") or "") or None,
+                str(g.get("nombre") or ""),
+                str(g.get("tipo") or ""),
+                str(g.get("nivel") or ""),
+            )
+            iid = _stable_id("INC", self.VERSION, fp, n)
+            salida.append(IncidenciaRevision(incidencia_id=iid, numero=n, fingerprint=fp, **g))
         return salida
 
     @staticmethod
@@ -262,11 +274,22 @@ class BandejaRevisionI13413:
             inc["decision"] = {"accion": "MANTENER"}
 
     def _registrar(self, sesion: dict[str, Any], accion: str, incidencias: list[dict[str, Any]], datos: dict[str, Any]) -> None:
+        marca_tiempo = self._ahora()
         sesion.setdefault("historial", []).append({
-            "fecha": self._ahora(), "accion": accion,
+            "fecha": marca_tiempo, "accion": accion,
             "incidencias": [i.get("incidencia_id") for i in incidencias], "datos": datos,
         })
-        sesion["actualizada_en"] = self._ahora()
+        for inc in incidencias:
+            fp = str(inc.get("fingerprint") or "")
+            for a in sesion.get("plan", {}).get("acciones", []):
+                if a.get("accion_id") in set(inc.get("accion_ids", [])):
+                    d = a.setdefault("detalle", {})
+                    d["revision_sesion_id"] = sesion.get("sesion_id")
+                    d["revision_incidencia_id"] = inc.get("incidencia_id")
+                    d["revision_fingerprint"] = fp
+                    d["revision_ultima_accion"] = accion
+                    d["revision_ultima_accion_en"] = marca_tiempo
+        sesion["actualizada_en"] = marca_tiempo
 
     def _recalcular(self, sesion: dict[str, Any]) -> None:
         plan = sesion["plan"]
@@ -280,7 +303,43 @@ class BandejaRevisionI13413:
         })
         pendientes = [i for i in sesion.get("incidencias", []) if i.get("estado") == "PENDIENTE"]
         bloqueantes = [i for i in pendientes if i.get("nivel") == "BLOQUEANTE"]
+        pendientes_ordenadas = sorted(pendientes, key=lambda i: str(i.get("fingerprint") or ""))
+        huella_pendientes = _stable_id(
+            "DUDAS", self.VERSION,
+            *(str(i.get("fingerprint") or "") for i in pendientes_ordenadas),
+        )
         plan["estado_simulacion"] = "LISTA_PARA_TRANSACCION" if not bloqueadas and not bloqueantes else "BLOQUEADA"
+        sesion["dudas_pendientes"] = [
+            {
+                "numero": i.get("numero"),
+                "incidencia_id": i.get("incidencia_id"),
+                "fingerprint": i.get("fingerprint"),
+                "menu": i.get("menu"),
+                "plato": i.get("plato"),
+                "nombre": i.get("nombre"),
+                "nivel": i.get("nivel"),
+                "tipo": i.get("tipo"),
+            }
+            for i in pendientes_ordenadas
+        ]
+
+        menu_ids_por_nombre: dict[str, str] = {}
+        for a in acciones:
+            if a.get("entidad") != "MENU":
+                continue
+            d = a.get("detalle", {})
+            menu_nombre_norm = _norm(a.get("nombre") or d.get("menu"))
+            menu_id = str(d.get("menu_id") or _stable_id("MENU", a.get("nombre"), d.get("hoja")))
+            if menu_nombre_norm:
+                menu_ids_por_nombre[menu_nombre_norm] = menu_id
+        menus_pendientes = {
+            menu_ids_por_nombre.get(_norm(i.get("menu")))
+            for i in pendientes
+            if menu_ids_por_nombre.get(_norm(i.get("menu")))
+        }
+        menus_validados = sorted(mid for mid in menu_ids_por_nombre.values() if mid not in menus_pendientes)
+        menus_bloqueados = sorted(mid for mid in menus_pendientes)
+
         sesion["resumen_revision"] = {
             "iniciales": len(sesion.get("incidencias", [])),
             "pendientes": len(pendientes),
@@ -288,7 +347,20 @@ class BandejaRevisionI13413:
             "resueltas": sum(i.get("estado") == "RESUELTA" for i in sesion.get("incidencias", [])),
             "eliminadas": sum(i.get("estado") == "ELIMINADA" for i in sesion.get("incidencias", [])),
             "estado_plan": plan["estado_simulacion"],
+            "huella_dudas_pendientes": huella_pendientes,
+            "menus_validados": len(menus_validados),
+            "menus_bloqueados": len(menus_bloqueados),
         }
+        plan["revision"] = {
+            "version": self.VERSION,
+            "sesion_id": sesion.get("sesion_id"),
+            "actualizada_en": sesion.get("actualizada_en"),
+            "pendientes": len(pendientes),
+            "bloqueantes": len(bloqueantes),
+            "huella_dudas_pendientes": huella_pendientes,
+        }
+        plan["menus_validados"] = menus_validados
+        plan["menus_bloqueados"] = menus_bloqueados
         plan["plan_id"] = _stable_id("PLAN", self.VERSION, *(a.get("accion_id") for a in acciones), *(str(i.get("decision")) for i in sesion.get("incidencias", [])))
 
     def _guardar_sesion(self, sesion: dict[str, Any]) -> Path:
