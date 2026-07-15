@@ -18,7 +18,8 @@ class ConsolaProduccionGuiadaPiloto13:
             print_fn("PRODUCCIÓN GUIADA")
             print_fn("=" * 78)
             if not planes:
-                print_fn("No hay planes de producción con tareas abiertas.")
+                print_fn("No hay producción preparada para trabajar ahora.")
+                print_fn("Siguiente paso: abre la gestión avanzada para revisar o crear el plan.")
                 print_fn("1. Abrir gestión avanzada de producción")
                 print_fn("0. Volver")
                 op = input_fn("Elige una opción: ").strip()
@@ -44,14 +45,17 @@ class ConsolaProduccionGuiadaPiloto13:
             panel = self.service.construir_panel(plan_id)
             self._mostrar_panel(panel, print_fn)
             print_fn("\n¿Qué acaba de pasar?")
+            print_fn("ACCIONES HABITUALES")
             print_fn("1. Voy a empezar una tarea")
             print_fn("2. He terminado una tarea")
             print_fn("3. Necesito pausar o reanudar")
+            print_fn("7. He cambiado a la siguiente fase")
+            print_fn("\nREGISTRAR LO OCURRIDO")
             print_fn("4. Quiero indicar cuánto llevo")
             print_fn("5. Ha surgido un problema")
             print_fn("6. He resuelto un bloqueo")
-            print_fn("7. Cambiar a la siguiente fase")
             print_fn("8. Registrar merma")
+            print_fn("\nOTRAS OPCIONES")
             print_fn("9. Actualizar la pantalla")
             print_fn("0. Volver")
             op = input_fn("Elige una opción: ").strip()
@@ -145,18 +149,37 @@ class ConsolaProduccionGuiadaPiloto13:
     @staticmethod
     def _mostrar_panel(panel: dict[str, Any], print_fn) -> None:
         print_fn("\n" + "=" * 78)
-        print_fn(f"PRODUCCIÓN — {panel['plan']}")
+        print_fn("QUÉ DEBO HACER AHORA")
         print_fn("=" * 78)
-        print_fn(f"Avance: {panel['avance']}% | Abiertas: {panel['pendientes']} | En marcha: {panel['en_curso']} | Bloqueadas: {panel['bloqueadas']}")
-        print_fn(f"\nAHORA: {panel['siguiente_accion']['texto']}")
-        print_fn(f"Por qué: {panel['siguiente_accion']['explicacion']}")
+        accion = panel["siguiente_accion"]
+        print_fn(f"> {accion['texto']}")
+        print_fn(f"  {accion['explicacion']}")
+
+        bloqueadas = [t for t in panel["tareas"] if t.get("bloqueo")]
+        if bloqueadas:
+            print_fn("\nTE IMPIDE CONTINUAR")
+            for tarea in bloqueadas:
+                print_fn(f"- {tarea.get('titulo')}: {tarea.get('bloqueo')}")
+            alternativa = next(
+                (t for t in panel["tareas"] if not t.get("bloqueo") and t.get("puede_iniciar")),
+                None,
+            )
+            if alternativa:
+                print_fn(f"> Mientras se resuelve, puedes adelantar {alternativa.get('titulo')}.")
+            else:
+                espera = next((t for t in panel["tareas"] if t.get("estado_codigo") == "en_espera"), None)
+                if espera:
+                    print_fn(f"> Aprovecha la espera de {espera.get('titulo')} para revisar el siguiente trabajo.")
+                else:
+                    print_fn("> Revisa stock, recepciones o compras y vuelve cuando el bloqueo esté resuelto.")
         if panel.get("alertas"):
             print_fn("\nAVISOS")
             for a in panel["alertas"]: print_fn(f"- {a.get('tarea') or 'Producción'}: {a.get('mensaje')}")
-        print_fn("\nTAREAS")
+        print_fn(f"\n{panel['plan']} | {panel['avance']}% hecho | {panel['pendientes']} por hacer | {panel['en_curso']} en marcha")
+        print_fn("\nSIGUIENTE TRABAJO")
         for i, t in enumerate(panel["tareas"], 1):
             print_fn(f"{i}. {t['estado_texto']} {t.get('titulo')} · {t['prioridad_texto']}")
-            print_fn(f"   Responsable: {t['responsable_texto']} | Recurso: {t['recurso_texto']} | Queda: {t['tiempo_restante_texto']}")
+            print_fn(f"   Queda: {t['tiempo_restante_texto']}")
             if t.get("bloqueo"): print_fn(f"   Bloqueo: {t['bloqueo']}")
 
     @staticmethod

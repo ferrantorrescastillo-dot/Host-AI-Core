@@ -43,13 +43,16 @@ class ConsolaJornadaPiloto12:
             jornada = self.service.construir()
             self._mostrar_portada(jornada, print_fn)
             print_fn("\n¿Qué quieres hacer?")
-            print_fn("1. Ver el plan completo del día")
-            print_fn("2. Ver tareas agrupadas por área")
-            print_fn("3. Abrir la bandeja de trabajo")
-            print_fn("4. Recalcular la jornada")
+            print_fn("ACCIONES HABITUALES")
             print_fn("5. Abrir Producción Viva")
             print_fn("6. Cierre operativo y preparar mañana (RP-4)")
             print_fn("7. Incidencias y replanificación (RP-5)")
+            print_fn("3. Abrir la bandeja de trabajo")
+            print_fn("\nCONSULTAR EL DÍA")
+            print_fn("1. Ver el plan completo del día")
+            print_fn("2. Ver el trabajo agrupado por área")
+            print_fn("4. Actualizar la jornada")
+            print_fn("\nOPCIONES TÉCNICAS")
             print_fn("9. Diagnóstico aislado")
             print_fn("0. Volver")
             op = input_fn("Elige una opción: ").strip()
@@ -79,63 +82,102 @@ class ConsolaJornadaPiloto12:
         briefing = jornada.get("briefing_apertura", {})
         r = jornada["resumen"]
         print_fn("\n" + "=" * 78)
-        print_fn("APERTURA RESTAURANTE — BRIEFING OPERATIVO")
+        print_fn("APERTURA DE COCINA")
         print_fn("=" * 78)
-        print_fn(f"Fecha: {jornada['fecha']} | Tareas abiertas: {r['abiertas']}")
-        if briefing:
-            print_fn(briefing.get("pregunta", ""))
-            print_fn(f"Respuesta: {briefing.get('mensaje_operativo', '')}")
-        print_fn(f"Muy urgentes: {r['muy_urgentes']} | Para hoy: {r['hoy']} | Esta semana: {r['esta_semana']} | Cuando puedas: {r['cuando_puedas']}")
+        print_fn(f"{jornada['fecha']} | {r['abiertas']} trabajos abiertos")
 
+        recomendaciones = list(jornada.get("recomendaciones") or [])
+        print_fn("\nQUÉ HAGO PRIMERO")
+        if recomendaciones:
+            principal = recomendaciones[0]
+            print_fn(f"> {principal.get('titulo')}")
+            print_fn(f"  {principal.get('motivo')}")
+        elif briefing.get("mensaje_operativo"):
+            print_fn(f"> {briefing.get('mensaje_operativo')}")
+        else:
+            print_fn("> No hay trabajo abierto. Revisa los eventos y recepciones de hoy antes de empezar.")
+
+        self._mostrar_bloqueos_apertura(briefing, jornada.get("alertas") or [], print_fn)
+        self._mostrar_produccion_apertura(briefing, print_fn)
+        self._mostrar_adelantables(recomendaciones[1:], briefing, print_fn)
+        self._mostrar_eventos_atencion(briefing, print_fn)
+
+        print_fn("\nRESUMEN DEL DÍA")
+        print_fn(f"Muy urgente: {r['muy_urgentes']} | Para hoy: {r['hoy']} | Esta semana: {r['esta_semana']}")
         if briefing:
             self._mostrar_briefing_apertura(briefing, print_fn)
 
-        if jornada["alertas"]:
-            print_fn("\nAVISOS")
-            for alerta in jornada["alertas"]:
-                print_fn(f"- [{alerta['nivel']}] {alerta['mensaje']}")
-
-        print_fn("\nQUÉ HARÍA PRIMERO")
-        recomendaciones = jornada["recomendaciones"][:5]
-        if not recomendaciones:
-            print_fn("No hay trabajo pendiente registrado.")
-        else:
-            for i, rec in enumerate(recomendaciones, 1):
-                print_fn(f"{i}. {rec['titulo']} · {rec['prioridad']}")
-                print_fn(f"   Motivo: {rec['motivo']}")
-
         t = jornada["tiempos"]
-        print_fn("\nTIEMPO REGISTRADO")
+        print_fn("\nTIEMPO DE COCINA REGISTRADO")
         print_fn(f"Activo conocido: {self._hm(t['activo_conocido_min'])} | Pasivo conocido: {self._hm(t['pasivo_conocido_min'])}")
         if t["tareas_sin_duracion"]:
             print_fn(f"Tareas sin tiempo registrado: {t['tareas_sin_duracion']}")
         if t["fin_estimado_por_trabajo_activo"]:
             hora = datetime.fromisoformat(t["fin_estimado_por_trabajo_activo"]).strftime("%H:%M")
             print_fn(f"Fin aproximado según trabajo activo conocido: {hora}")
-        print_fn("Nota: no se inventan tiempos; la estimación usa únicamente datos registrados.")
+        print_fn("Estimación basada solo en tiempos registrados.")
+
+    @staticmethod
+    def _mostrar_bloqueos_apertura(briefing: dict, alertas_jornada: list[dict], print_fn) -> None:
+        incidencias = list(briefing.get("incidencias") or [])
+        alertas = list(briefing.get("alertas") or []) + list(alertas_jornada)
+        print_fn("\nQUÉ PUEDE IMPEDIRME TRABAJAR")
+        if not incidencias and not alertas:
+            print_fn("> Nada crítico detectado. Puedes empezar por la recomendación principal.")
+            return
+        for item in incidencias[:3]:
+            print_fn(f"- {item.get('detalle') or item.get('mensaje') or item.get('titulo') or 'Revisión pendiente'}")
+        for item in alertas[:3]:
+            print_fn(f"- {item.get('mensaje') or item.get('detalle') or item.get('titulo') or 'Aviso pendiente'}")
+        print_fn("> Resuelve primero lo que bloquee el servicio; revisa el resto después de arrancar.")
+
+    @staticmethod
+    def _mostrar_produccion_apertura(briefing: dict, print_fn) -> None:
+        viva = briefing.get("produccion_viva") or {}
+        priorizada = list(briefing.get("produccion_priorizada") or [])
+        print_fn("\nQUÉ PRODUCCIÓN EMPIEZA AHORA")
+        if str(viva.get("siguiente_accion") or "").strip():
+            print_fn(f"> {viva.get('siguiente_accion')}")
+        elif priorizada:
+            print_fn(f"> Empieza por {priorizada[0].get('titulo')}.")
+        else:
+            print_fn("> No hay producción preparada. Revisa el plan o crea la producción necesaria.")
+
+    @staticmethod
+    def _mostrar_adelantables(recomendaciones: list[dict], briefing: dict, print_fn) -> None:
+        print_fn("\nQUÉ PUEDO ADELANTAR")
+        if recomendaciones:
+            for item in recomendaciones[:2]:
+                print_fn(f"- {item.get('titulo')}")
+            return
+        descongelar = list(briefing.get("productos_descongelar") or [])
+        if descongelar:
+            print_fn(f"- Deja preparado: {descongelar[0].get('titulo')}.")
+        else:
+            print_fn("- No hay adelantos registrados. Mantén el foco en la primera acción.")
+
+    @staticmethod
+    def _mostrar_eventos_atencion(briefing: dict, print_fn) -> None:
+        eventos = list(briefing.get("eventos_hoy") or [])
+        print_fn("\nEVENTOS QUE REQUIEREN ATENCIÓN")
+        if not eventos:
+            print_fn("> No hay eventos hoy. Revisa el plan de mañana al cerrar la jornada.")
+            return
+        for evento in eventos[:4]:
+            print_fn(f"- {evento.get('hora') or 'sin hora'} · {evento.get('nombre')} · {evento.get('pax', 0)} pax")
 
     def _mostrar_briefing_apertura(self, briefing: dict, print_fn) -> None:
-        print_fn("\nSECCIONES DE APERTURA")
-        print_fn(f"- Eventos de hoy: {len(briefing.get('eventos_hoy', []))}")
-        print_fn(f"- Cronología: {len(briefing.get('cronologia', []))} hitos")
-        print_fn(f"- Producción priorizada: {len(briefing.get('produccion_priorizada', []))}")
-        print_fn(f"- Compras críticas: {len(briefing.get('compras_criticas', []))}")
-        print_fn(f"- Recepciones previstas: {len(briefing.get('recepciones_previstas', []))}")
-        print_fn(f"- Productos a descongelar: {len(briefing.get('productos_descongelar', []))}")
-        print_fn(f"- Alertas: {len(briefing.get('alertas', []))}")
-        print_fn(f"- Personal: {len(briefing.get('personal', []))} evento(s)")
-        print_fn(f"- Alérgenos: {briefing.get('alergenos', {}).get('estado', 'sin datos')}")
-        print_fn(f"- Incidencias: {len(briefing.get('incidencias', []))}")
-        print_fn(f"- Prioridades: {len(briefing.get('prioridades', []))}")
+        print_fn("\nINFORMACIÓN DE APOYO")
+        print_fn(
+            f"Compras críticas: {len(briefing.get('compras_criticas', []))} | "
+            f"Recepciones: {len(briefing.get('recepciones_previstas', []))} | "
+            f"Descongelaciones: {len(briefing.get('productos_descongelar', []))} | "
+            f"Alérgenos: {briefing.get('alergenos', {}).get('estado', 'sin datos')}"
+        )
 
         viva = briefing.get("produccion_viva") or {}
         if viva:
-            print_fn("\nPRODUCCIÓN VIVA")
-            print_fn(f"- Planes activos: {viva.get('planes_activos', 0)}")
-            print_fn(f"- Tareas: {viva.get('tareas_total', 0)} | Activas: {viva.get('tareas_activas', 0)} | Completadas: {viva.get('tareas_completadas', 0)} | Pendientes: {viva.get('tareas_pendientes', 0)}")
-            print_fn(f"- Bloqueadas: {viva.get('tareas_bloqueadas', 0)} | Incidencias: {viva.get('incidencias_abiertas', 0)} | Retraso acumulado: {viva.get('retraso_min_total', 0)} min")
-            print_fn(f"- Progreso global: {viva.get('progreso_promedio', 0)}%")
-            print_fn(f"- Siguiente acción: {viva.get('siguiente_accion', 'Sin acciones')}")
+            print_fn(f"Producción: {viva.get('progreso_promedio', 0)}% hecha | {viva.get('tareas_pendientes', 0)} por hacer | {viva.get('tareas_bloqueadas', 0)} bloqueadas")
 
         rec = briefing.get("recepciones_rp3") or {}
         if rec:
@@ -161,17 +203,10 @@ class ConsolaJornadaPiloto12:
             if rp4.get("personal_revision_manual"):
                 print_fn("- Personal: revisión manual pendiente")
 
-        prioridades = briefing.get("prioridades", [])[:5]
-        if prioridades:
-            print_fn("\nPRIORIDADES AUTOMÁTICAS (próximos minutos)")
-            for i, item in enumerate(prioridades, 1):
-                etiqueta = ICONOS.get(item.get("prioridad_codigo", ""), "")
-                print_fn(f"{i}. {etiqueta} {item.get('titulo')} | {TIPOS_TEXTO.get(item.get('tipo'), item.get('tipo'))}")
-
     def _mostrar_plan(self, jornada: dict, print_fn) -> None:
         print_fn("\nPLAN DEL DÍA")
         if not jornada["tareas"]:
-            print_fn("No hay tareas abiertas.")
+            print_fn("No hay trabajos abiertos. Revisa eventos y recepciones; si están cubiertos, prepara mañana.")
             return
         for i, tarea in enumerate(jornada["tareas"], 1):
             etiqueta = ICONOS.get(tarea["prioridad_codigo"], "")
@@ -186,7 +221,7 @@ class ConsolaJornadaPiloto12:
     def _mostrar_grupos(self, jornada: dict, print_fn) -> None:
         print_fn("\nTRABAJO POR ÁREAS")
         if not jornada["grupos"]:
-            print_fn("No hay tareas abiertas.")
+            print_fn("No hay trabajos abiertos por área. Revisa eventos y recepciones antes de preparar mañana.")
             return
         orden = ["PRODUCCION", "RECEPCION", "EVENTO", "PEDIDO", "STOCK", "INCIDENCIA_PROVEEDOR", "DOCUMENTO", "GENERAL"]
         for tipo in orden:
@@ -209,18 +244,21 @@ class ConsolaJornadaPiloto12:
     def _menu_rp4(self, input_fn, print_fn) -> None:
         while True:
             print_fn("\nRP-4 — PREPARAR MAÑANA")
-            print_fn("1. Cerrar jornada")
-            print_fn("2. Preparar mañana")
-            print_fn("3. Ver propuesta")
+            print_fn("ACCIONES HABITUALES")
+            print_fn("2. Preparar el trabajo de mañana")
+            print_fn("3. Ver qué queda preparado")
+            print_fn("10. Confirmar el plan")
+            print_fn("1. Cerrar la jornada de hoy")
+            print_fn("\nREVISAR EL PLAN")
             print_fn("4. Ver bloqueos")
             print_fn("5. Ver descongelaciones")
             print_fn("6. Ver compras")
             print_fn("7. Ver cronología")
             print_fn("8. Ver asignación")
             print_fn("9. Editar decisiones")
-            print_fn("10. Confirmar plan")
-            print_fn("11. Regenerar")
-            print_fn("12. Abrir briefing de mañana en modo vista previa")
+            print_fn("12. Ver el briefing de mañana")
+            print_fn("\nOPCIONES TÉCNICAS")
+            print_fn("11. Regenerar la propuesta")
             print_fn("99. Diagnóstico RP-4")
             print_fn("0. Volver")
             op = input_fn("Elige una opción: ").strip()
@@ -233,7 +271,7 @@ class ConsolaJornadaPiloto12:
             elif op == "3":
                 plan = self.rp4.ver_propuesta()
                 if not plan:
-                    print_fn("No hay propuesta RP-4.")
+                    print_fn("Todavía no hay plan para mañana. Elige 2 para prepararlo con los datos actuales.")
                 else:
                     print_fn(f"Plan: {plan.get('id')} | Estado: {plan.get('estado')} | Fecha: {plan.get('fecha_objetivo')}")
                     print_fn(f"Eventos mañana: {len((plan.get('eventos') or {}).get('manana', []))} | Tareas: {len(plan.get('tareas', []))}")
@@ -241,7 +279,7 @@ class ConsolaJornadaPiloto12:
                 plan = self.rp4.ver_propuesta()
                 bloques = list((plan or {}).get("bloqueos", []))
                 if not bloques:
-                    print_fn("No hay bloqueos en la propuesta actual.")
+                    print_fn("No hay bloqueos. Puedes revisar compras o confirmar el plan.")
                 else:
                     for i, b in enumerate(bloques, 1):
                         print_fn(f"{i}. {b.get('tipo')}: {b.get('detalle')}")
@@ -249,7 +287,7 @@ class ConsolaJornadaPiloto12:
                 plan = self.rp4.ver_propuesta()
                 items = list((plan or {}).get("descongelaciones", []))
                 if not items:
-                    print_fn("No hay descongelaciones propuestas.")
+                    print_fn("No hay descongelaciones propuestas. Continúa con compras o confirma el plan.")
                 else:
                     for i, d in enumerate(items, 1):
                         print_fn(f"{i}. {d.get('producto')} | límite {d.get('momento_limite')} | estado {d.get('estado')}")
@@ -257,7 +295,7 @@ class ConsolaJornadaPiloto12:
                 plan = self.rp4.ver_propuesta()
                 items = list(((plan or {}).get("compras") or {}).get("lineas", []))
                 if not items:
-                    print_fn("No hay compras propuestas.")
+                    print_fn("No hay compras propuestas. El abastecimiento previsto no exige compras aquí.")
                 else:
                     for i, c in enumerate(items, 1):
                         print_fn(f"{i}. {c.get('articulo')} | sin cubrir {c.get('cantidad_sin_cubrir')} {c.get('unidad')} | proveedor {c.get('proveedor_sugerido')}")
@@ -265,7 +303,7 @@ class ConsolaJornadaPiloto12:
                 plan = self.rp4.ver_propuesta()
                 items = list((plan or {}).get("cronologia", []))
                 if not items:
-                    print_fn("No hay cronología propuesta.")
+                    print_fn("No hay cronología. Revisa que existan eventos o producciones para mañana.")
                 else:
                     for i, c in enumerate(items, 1):
                         print_fn(f"{i}. {c.get('hora')} {c.get('titulo')} ({c.get('tipo')})")
