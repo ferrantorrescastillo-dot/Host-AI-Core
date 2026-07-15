@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 from SERVICIOS.cruce_stock_produccion_556c import CruceStockProduccion556C
+from SERVICIOS.integracion_produccion_compras_556f import IntegracionProduccionCompras556F
 from SERVICIOS.motor_planificacion_recetas_reales_556e31 import MotorPlanificacionRecetasReales556E31
 from SERVICIOS.planificador_diario_produccion_461 import PlanificadorDiarioProduccion461
 
@@ -99,6 +100,8 @@ class ProduccionAutomaticaEvento556F:
         cocineros: int = 3,
         inicio_jornada: str = "08:00",
         fin_jornada: str = "15:30",
+        integrar_con_compras: bool = False,
+        generar_pedidos_sugeridos: bool = False,
     ) -> Dict[str, Any]:
         evento, metodo, ambiguos = self._resolver_evento(evento_ref)
         if ambiguos:
@@ -239,7 +242,32 @@ class ProduccionAutomaticaEvento556F:
             fin_jornada=fin_jornada,
         )
 
+        integracion_compras = {
+            "activada": False,
+            "generar_pedidos_sugeridos": False,
+            "necesidades_creadas": 0,
+            "necesidades_actualizadas": 0,
+            "lineas_omitidas": 0,
+            "necesidades_ids": [],
+            "pedidos_sugeridos": {
+                "total_pedidos_nuevos": 0,
+                "total_necesidades_enlazadas": 0,
+                "pedidos_abiertos": 0,
+                "ids": [],
+            },
+            "datos_reales_modificados": False,
+            "modo": "solo_lectura",
+        }
+        if integrar_con_compras:
+            integracion_compras = IntegracionProduccionCompras556F(self.base_dir).integrar(
+                evento=evento,
+                plan_id=plan_id,
+                compras_propuestas=compras,
+                generar_pedidos_sugeridos=bool(generar_pedidos_sugeridos),
+            )
+
         estado = "PLAN_PRELIMINAR_OK" if not bloqueos else "PLAN_BLOQUEADO"
+        datos_modificados = bool(integracion_compras.get("datos_reales_modificados"))
         return {
             "version": self.VERSION,
             "ok": not bloqueos,
@@ -264,8 +292,9 @@ class ProduccionAutomaticaEvento556F:
             "plan_diario": plan_dia,
             "bloqueos": bloqueos,
             "compras_propuestas": compras,
-            "solo_lectura": True,
-            "datos_reales_modificados": False,
+            "integracion_compras": integracion_compras,
+            "solo_lectura": not integrar_con_compras,
+            "datos_reales_modificados": datos_modificados,
             "fuentes": [
                 "DATOS/db/eventos.json",
                 "DATOS/db/escandallos_canonicos.json",
@@ -414,6 +443,7 @@ def formatear_produccion_automatica_evento_556f(resultado: Dict[str, Any]) -> st
     evento = resultado.get("evento") or {}
     bloqueos = resultado.get("bloqueos") or []
     compras = resultado.get("compras_propuestas") or []
+    integracion = resultado.get("integracion_compras") or {}
     plan = resultado.get("plan_diario") or {}
 
     lines = [
@@ -439,13 +469,23 @@ def formatear_produccion_automatica_evento_556f(resultado: Dict[str, Any]) -> st
         for c in compras:
             lines.append(f"- {c.get('articulo')}: {c.get('cantidad'):g} {c.get('unidad')}")
 
+    if integracion.get("activada"):
+        pedidos = integracion.get("pedidos_sugeridos") or {}
+        lines += [
+            "",
+            "INTEGRACIÓN CON COMPRAS",
+            f"- Necesidades creadas: {integracion.get('necesidades_creadas', 0)}",
+            f"- Necesidades actualizadas: {integracion.get('necesidades_actualizadas', 0)}",
+            f"- Pedidos sugeridos nuevos: {pedidos.get('total_pedidos_nuevos', 0)}",
+        ]
+
     lines += [
         "",
         "SEGURIDAD",
-        "- Flujo en modo solo lectura.",
+        "- Flujo en modo solo lectura." if resultado.get("solo_lectura", True) else "- Flujo con integración explícita a compras.",
         "- No se ha descontado stock.",
         "- No se han creado pedidos finales.",
-        "- Datos reales modificados: NO.",
+        f"- Datos reales modificados: {'SÍ' if resultado.get('datos_reales_modificados') else 'NO'}.",
     ]
     return "\n".join(lines)
 

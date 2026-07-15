@@ -41,6 +41,20 @@ def procesar_consulta_produccion_real_556(texto: str, base_dir: Path) -> Dict[st
         return {"gestionado": False}
     if es_consulta_produccion_automatica_evento_556f(texto):
         entrada_evento = extraer_consulta_evento_556f(texto)
+        t = _norm(texto)
+        integrar_con_compras = any(p in t for p in (
+            "integrar compras",
+            "registrar necesidades de compra",
+            "crear necesidades de compra",
+            "pasar a compras",
+        ))
+        generar_pedidos_sugeridos = any(p in t for p in (
+            "generar pedidos sugeridos",
+            "preparar pedidos sugeridos",
+            "crear pedidos sugeridos",
+        ))
+        if generar_pedidos_sugeridos:
+            integrar_con_compras = True
         if not entrada_evento.get("evento"):
             return {
                 "gestionado": True,
@@ -57,6 +71,8 @@ def procesar_consulta_produccion_real_556(texto: str, base_dir: Path) -> Dict[st
             cocineros=int(entrada_evento.get("cocineros", 3)),
             inicio_jornada=str(entrada_evento.get("inicio_jornada") or "08:00"),
             fin_jornada=str(entrada_evento.get("fin_jornada") or "15:30"),
+            integrar_con_compras=integrar_con_compras,
+            generar_pedidos_sugeridos=generar_pedidos_sugeridos,
         )
         return {
             "gestionado": True,
