@@ -7,6 +7,7 @@ from typing import Callable
 from APP.consola_bandeja_trabajo_piloto_11 import ConsolaBandejaTrabajoPiloto11
 from APP.consola_produccion_guiada_piloto_13 import ConsolaProduccionGuiadaPiloto13
 from CORE.host_ai_core import HostAICore
+from SERVICIOS.produccion_guiada_piloto_13 import ProduccionGuiadaPiloto13
 from SERVICIOS.cierre_operativo_rp4 import CierreOperativoRP4, formatear_diagnostico_rp4
 from SERVICIOS.incidencias_replanificacion_rp5 import IncidenciasReplanificacionRP5, formatear_diagnostico_rp5
 from SERVICIOS.jornada_piloto_12 import JornadaPiloto12, formatear_diagnostico_piloto12
@@ -131,13 +132,25 @@ class ConsolaJornadaPiloto12:
             print_fn(f"- {item.get('mensaje') or item.get('detalle') or item.get('titulo') or 'Aviso pendiente'}")
         print_fn("> Resuelve primero lo que bloquee el servicio; revisa el resto después de arrancar.")
 
-    @staticmethod
-    def _mostrar_produccion_apertura(briefing: dict, print_fn) -> None:
+    def _mostrar_produccion_apertura(self, briefing: dict, print_fn) -> None:
         viva = briefing.get("produccion_viva") or {}
         priorizada = list(briefing.get("produccion_priorizada") or [])
+        plan_id = str(viva.get("plan_id_referencia") or "")
+        if plan_id:
+            try:
+                guiada = ProduccionGuiadaPiloto13(HostAICore(self.base_dir)).resumen_vivo(plan_id)
+                if str(guiada.get("siguiente_accion") or "").strip():
+                    viva["siguiente_accion"] = guiada.get("siguiente_accion")
+                if str(guiada.get("siguiente_explicacion") or "").strip():
+                    viva["siguiente_explicacion"] = guiada.get("siguiente_explicacion")
+            except Exception:
+                # Si no se puede enriquecer en este entorno, se mantiene el resumen existente.
+                pass
         print_fn("\nQUÉ PRODUCCIÓN EMPIEZA AHORA")
         if str(viva.get("siguiente_accion") or "").strip():
             print_fn(f"> {viva.get('siguiente_accion')}")
+            if str(viva.get("siguiente_explicacion") or "").strip():
+                print_fn(f"  {viva.get('siguiente_explicacion')}")
         elif priorizada:
             print_fn(f"> Empieza por {priorizada[0].get('titulo')}.")
         else:

@@ -43,7 +43,8 @@ class ProduccionGuiadaPiloto13:
         resumen = self.motor.resumen_ejecucion(plan_id)
         tareas = [self._humanizar_tarea(t, plan) for t in resumen.get("tareas", [])]
         tareas.sort(key=lambda t: self._orden_tarea(t))
-        siguiente = self._siguiente_accion(tareas)
+        siguiente = self._siguiente_accion(plan_id, tareas)
+        recomendacion_motor = self._recomendacion_motor(plan_id, tareas)
         bloqueadas = [t for t in tareas if t.get("bloqueo")]
         activas = [t for t in tareas if t.get("estado_codigo") == "en_curso"]
         pendientes = [t for t in tareas if t.get("estado_codigo") not in ESTADOS_TERMINADOS]
@@ -61,6 +62,7 @@ class ProduccionGuiadaPiloto13:
             "alertas": list(resumen.get("alertas", [])),
             "tareas": tareas,
             "siguiente_accion": siguiente.__dict__,
+            "recomendacion_motor": recomendacion_motor,
             "lectura": self._lectura_general(tareas, siguiente),
         }
 
@@ -100,7 +102,8 @@ class ProduccionGuiadaPiloto13:
 
     def resumen_vivo(self, plan_id: str) -> dict[str, Any]:
         panel = self.construir_panel(plan_id)
-        tarea = panel.get("siguiente_accion", {}).get("tarea_id")
+        siguiente = panel.get("siguiente_accion", {})
+        tarea = siguiente.get("tarea_id")
         return {
             "plan_id": plan_id,
             "plan": panel.get("plan"),
@@ -109,7 +112,8 @@ class ProduccionGuiadaPiloto13:
             "en_curso": panel.get("en_curso", 0),
             "bloqueadas": panel.get("bloqueadas", 0),
             "siguiente_tarea_id": tarea,
-            "siguiente_accion": panel.get("siguiente_accion", {}).get("texto", ""),
+            "siguiente_accion": siguiente.get("texto", ""),
+            "siguiente_explicacion": siguiente.get("explicacion", ""),
             "lectura": panel.get("lectura", ""),
         }
 
@@ -137,7 +141,7 @@ class ProduccionGuiadaPiloto13:
             "puede_finalizar": estado not in ESTADOS_TERMINADOS and not tarea.get("bloqueo"),
         }
 
-    def _siguiente_accion(self, tareas: list[dict[str, Any]]) -> AccionGuiada:
+    def _siguiente_accion(self, plan_id: str, tareas: list[dict[str, Any]]) -> AccionGuiada:
         bloqueada = next((t for t in tareas if t.get("bloqueo")), None)
         if bloqueada:
             return AccionGuiada("RESOLVER_BLOQUEO", f"Resuelve el bloqueo de {bloqueada.get('titulo')}", str(bloqueada.get("bloqueo")), str(bloqueada.get("id")))
@@ -147,10 +151,49 @@ class ProduccionGuiadaPiloto13:
         pausada = next((t for t in tareas if t.get("estado_codigo") == "pausada"), None)
         if pausada:
             return AccionGuiada("REANUDAR", f"Reanuda {pausada.get('titulo')}", "La tarea quedó pausada y todavía no está terminada.", str(pausada.get("id")))
+        if hasattr(self.motor, "siguiente_tarea_recomendada"):
+            recomendacion = self.motor.siguiente_tarea_recomendada(plan_id)
+            if recomendacion.get("codigo") == "SUGERIDA" and recomendacion.get("tarea_id"):
+                tarea_id = str(recomendacion.get("tarea_id"))
+                tarea = next((t for t in tareas if str(t.get("id")) == tarea_id), None)
+                if tarea and tarea.get("estado_codigo") not in ESTADOS_TERMINADOS:
+                    return AccionGuiada(
+                        "INICIAR",
+                        f"Empieza por {tarea.get('titulo')}",
+                        self._explicacion_culinaria(recomendacion, tarea),
+                        tarea_id,
+                    )
         pendiente = next((t for t in tareas if t.get("estado_codigo") not in ESTADOS_TERMINADOS), None)
         if pendiente:
             return AccionGuiada("INICIAR", f"Empieza por {pendiente.get('titulo')}", f"Es la siguiente tarea por prioridad: {pendiente.get('prioridad_texto')}.", str(pendiente.get("id")))
         return AccionGuiada("FINALIZADO", "La producción está terminada", "No quedan tareas abiertas en este plan.")
+
+    def _recomendacion_motor(self, plan_id: str, tareas: list[dict[str, Any]]) -> dict[str, str]:
+        if not hasattr(self.motor, "siguiente_tarea_recomendada"):
+            return {}
+        recomendacion = self.motor.siguiente_tarea_recomendada(plan_id)
+        if recomendacion.get("codigo") != "SUGERIDA" or not recomendacion.get("tarea_id"):
+            return {}
+        tarea_id = str(recomendacion.get("tarea_id"))
+        tarea = next((t for t in tareas if str(t.get("id")) == tarea_id), None)
+        if not tarea:
+            return {}
+        return {
+            "tarea_id": tarea_id,
+            "texto": f"Empieza por {tarea.get('titulo')}",
+            "explicacion": self._explicacion_culinaria(recomendacion, tarea),
+        }
+
+    @staticmethod
+    def _explicacion_culinaria(recomendacion: dict[str, Any], tarea: dict[str, Any]) -> str:
+        criterios = [str(x).strip() for x in (recomendacion.get("criterios") or []) if str(x).strip()]
+        if not criterios and str(recomendacion.get("motivo") or "").strip():
+            criterios = [str(recomendacion.get("motivo")).strip()]
+        if not criterios:
+            return "Es la mejor opción operativa disponible para avanzar la jornada sin perder control."
+        encabezado = f"Se recomienda {tarea.get('titulo')} porque:"
+        detalle = "\n".join(f"- {criterio}" for criterio in criterios)
+        return f"{encabezado}\n{detalle}"
 
     @staticmethod
     def _orden_plan(plan: dict[str, Any]) -> int:

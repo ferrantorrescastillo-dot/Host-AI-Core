@@ -13,6 +13,7 @@ class PlanFake:
 class MotorFake:
     def __init__(self):
         self.calls = []
+        self.recomendacion = None
         self.plan = {
             "id": "P1", "nombre": "Boda sábado", "fecha": "2026-07-18", "estado": "en_produccion",
             "asignacion_recursos": {"asignaciones": [
@@ -37,6 +38,15 @@ class MotorFake:
     def actualizar_progreso_tarea(self,*a): self.calls.append(("avance",a)); return {"porcentaje_avance":a[-1]}
     def registrar_incidencia_tarea(self,*a): self.calls.append(("incidencia",a)); return {"tipo":a[2]}
     def resolver_bloqueo_tarea(self,*a): self.calls.append(("resolver",a)); return {"ok":True}
+    def siguiente_tarea_recomendada(self, plan_id):
+        if self.recomendacion is not None:
+            return self.recomendacion
+        return {
+            "codigo": "SUGERIDA",
+            "tarea_id": "T2",
+            "texto": "Empieza ahora: Cortar verduras",
+            "criterios": ["puede arrancarse ya sin esperar otras tareas"],
+        }
 
 
 def servicio():
@@ -87,3 +97,21 @@ def test_terminado_propone_cierre():
     p = s.construir_panel("P1")
     assert p["siguiente_accion"]["codigo"] == "FINALIZADO"
     assert p["pendientes"] == 0
+
+
+def test_inicio_con_razonamiento_culinario_desde_motor():
+    s, m = servicio()
+    m.tareas[0]["estado_ejecucion"] = "pendiente"
+    m.recomendacion = {
+        "codigo": "SUGERIDA",
+        "tarea_id": "T2",
+        "criterios": [
+            "desbloquea elaboraciones dependientes",
+            "genera tiempo pasivo para avanzar otras elaboraciones",
+        ],
+    }
+    p = s.construir_panel("P1")
+    assert p["siguiente_accion"]["codigo"] == "INICIAR"
+    assert "Se recomienda" in p["siguiente_accion"]["explicacion"]
+    assert "desbloquea elaboraciones dependientes" in p["siguiente_accion"]["explicacion"]
+    assert "genera tiempo pasivo" in p["siguiente_accion"]["explicacion"]

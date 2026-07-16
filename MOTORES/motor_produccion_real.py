@@ -600,14 +600,76 @@ class MotorProduccionReal:
             estado_rank = {"en_proceso": 0, "en_preparacion": 1, "en_espera": 2, "pausada": 3, "lista": 4, "pendiente": 5}.get(estado, 6)
             return (bloqueada, estado_rank, -int(t.get("prioridad", 50) or 50), int(servicio_en), -pasiva, -deps, str(t.get("titulo") or ""))
 
-        candidata = sorted(tareas, key=orden)[0]
+        ordenadas = sorted(tareas, key=orden)
+        candidata = ordenadas[0]
         pasiva = sum(int(f.get("duracion_pasiva_min", 0) or 0) for f in (candidata.get("fases") or []))
         deps = sum(1 for f in (candidata.get("fases") or []) if str(f.get("dependencia") or "").strip())
+        criterios: list[str] = []
+
+        no_bloqueadas = [t for t in tareas if not str(t.get("bloqueo") or "").strip()]
+        if not no_bloqueadas:
+            no_bloqueadas = list(tareas)
+
+        prioridad_candidata = int(candidata.get("prioridad", 50) or 50)
+        prioridad_top = max(int(t.get("prioridad", 50) or 50) for t in no_bloqueadas)
+        if prioridad_candidata == prioridad_top:
+            criterios.append("es la más urgente para la jornada")
+
+        servicios = [int(t.get("servicio_en_min")) for t in no_bloqueadas if isinstance(t.get("servicio_en_min"), (int, float))]
+        servicio_candidata = candidata.get("servicio_en_min")
+        if isinstance(servicio_candidata, (int, float)) and servicios and int(servicio_candidata) == min(servicios):
+            criterios.append("el servicio depende de tenerla lista a tiempo")
+
+        if pasiva > 0:
+            criterios.append("genera tiempo pasivo para avanzar otras elaboraciones")
+
+        candidatas_horno = {
+            str((f or {}).get("recurso") or "").strip().lower()
+            for f in (candidata.get("fases") or [])
+            if isinstance(f, dict)
+        }
+        if "horno" in candidatas_horno:
+            otras_horno = 0
+            for t in no_bloqueadas:
+                if str(t.get("id") or "") == str(candidata.get("id") or ""):
+                    continue
+                recursos_tarea = {
+                    str((f or {}).get("recurso") or "").strip().lower()
+                    for f in (t.get("fases") or [])
+                    if isinstance(f, dict)
+                }
+                if "horno" in recursos_tarea:
+                    otras_horno += 1
+            if otras_horno > 0:
+                criterios.append("conviene adelantarla para liberar el horno antes del siguiente pico")
+
+        dependientes = 0
+        candidata_id = str(candidata.get("id") or "")
+        if candidata_id:
+            for t in no_bloqueadas:
+                if str(t.get("id") or "") == candidata_id:
+                    continue
+                fases = t.get("fases") or []
+                if any(str((f or {}).get("dependencia") or "").strip() == candidata_id for f in fases if isinstance(f, dict)):
+                    dependientes += 1
+        if dependientes > 0:
+            criterios.append("desbloquea elaboraciones dependientes")
+
+        if deps == 0 and any(
+            any(str((f or {}).get("dependencia") or "").strip() for f in (t.get("fases") or []) if isinstance(f, dict))
+            for t in no_bloqueadas
+        ):
+            criterios.append("puede arrancarse ya sin esperar otras tareas")
+
+        if not criterios:
+            criterios.append("es la siguiente elaboración viable según el estado real de cocina")
+
         return {
             "codigo": "SUGERIDA",
             "tarea_id": candidata.get("id"),
             "texto": f"Empieza ahora: {candidata.get('titulo')}",
-            "motivo": f"Prioridad {int(candidata.get('prioridad',50))}, dependencias {deps}, tiempo pasivo {pasiva} min.",
+            "motivo": "; ".join(criterios),
+            "criterios": criterios,
             "tarea": candidata,
         }
 

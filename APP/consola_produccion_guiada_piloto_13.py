@@ -154,6 +154,11 @@ class ConsolaProduccionGuiadaPiloto13:
         accion = panel["siguiente_accion"]
         print_fn(f"> {accion['texto']}")
         print_fn(f"  {accion['explicacion']}")
+        recomendacion_motor = panel.get("recomendacion_motor") or {}
+        if str(recomendacion_motor.get("explicacion") or "").strip():
+            print_fn("\nRECOMENDACIÓN DEL MOTOR")
+            print_fn(recomendacion_motor.get("texto") or "")
+            print_fn(recomendacion_motor.get("explicacion") or "")
 
         bloqueadas = [t for t in panel["tareas"] if t.get("bloqueo")]
         if bloqueadas:

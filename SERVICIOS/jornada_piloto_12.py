@@ -765,7 +765,9 @@ class JornadaPiloto12:
             "retraso_min_total": 0,
             "progreso_promedio": 0.0,
             "siguiente_accion": "Sin planes activos de producción.",
+            "siguiente_explicacion": "",
             "siguiente_tarea_id": "",
+            "plan_id_referencia": "",
         }
         if not planes_raw:
             return totales
@@ -780,7 +782,7 @@ class JornadaPiloto12:
         totales["planes_activos"] = len(planes_uso)
         acumulado_progreso = 0.0
         acumulado_tareas = 0
-        candidatas: list[tuple[int, int, str, dict[str, Any]]] = []
+        candidatas: list[tuple[int, int, str, str, dict[str, Any]]] = []
 
         for plan in planes_uso:
             for tarea in plan.get("tareas", []) or []:
@@ -807,13 +809,14 @@ class JornadaPiloto12:
 
                 if estado != "finalizada" and not bloqueo:
                     estado_rank = {"en_proceso": 0, "en_preparacion": 1, "en_espera": 2, "pausada": 3, "lista": 4, "pendiente": 5}.get(estado, 6)
-                    candidatas.append((estado_rank, -prioridad, str(tarea.get("titulo") or ""), tarea))
+                    candidatas.append((estado_rank, -prioridad, str(tarea.get("titulo") or ""), str(plan.get("id") or ""), tarea))
 
         totales["tareas_total"] = acumulado_tareas
         totales["progreso_promedio"] = round(acumulado_progreso / acumulado_tareas, 1) if acumulado_tareas else 0.0
         if candidatas:
-            _, _, _, tarea = sorted(candidatas)[0]
+            _, _, _, plan_id, tarea = sorted(candidatas)[0]
             totales["siguiente_tarea_id"] = str(tarea.get("id") or "")
+            totales["plan_id_referencia"] = plan_id
             totales["siguiente_accion"] = f"Seguir con {tarea.get('titulo') or 'tarea prioritaria'}"
         return totales
 
