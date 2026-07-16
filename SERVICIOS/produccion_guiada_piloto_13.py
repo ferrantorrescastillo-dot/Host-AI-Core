@@ -45,6 +45,7 @@ class ProduccionGuiadaPiloto13:
         tareas.sort(key=lambda t: self._orden_tarea(t))
         siguiente = self._siguiente_accion(plan_id, tareas)
         recomendacion_motor = self._recomendacion_motor(plan_id, tareas)
+        fase_actual = self._fase_operativa_actual(tareas, siguiente.__dict__, recomendacion_motor)
         bloqueadas = [t for t in tareas if t.get("bloqueo")]
         activas = [t for t in tareas if t.get("estado_codigo") == "en_curso"]
         pendientes = [t for t in tareas if t.get("estado_codigo") not in ESTADOS_TERMINADOS]
@@ -63,6 +64,7 @@ class ProduccionGuiadaPiloto13:
             "tareas": tareas,
             "siguiente_accion": siguiente.__dict__,
             "recomendacion_motor": recomendacion_motor,
+            "fase_actual": fase_actual,
             "lectura": self._lectura_general(tareas, siguiente),
         }
 
@@ -168,7 +170,7 @@ class ProduccionGuiadaPiloto13:
             return AccionGuiada("INICIAR", f"Empieza por {pendiente.get('titulo')}", f"Es la siguiente tarea por prioridad: {pendiente.get('prioridad_texto')}.", str(pendiente.get("id")))
         return AccionGuiada("FINALIZADO", "La producción está terminada", "No quedan tareas abiertas en este plan.")
 
-    def _recomendacion_motor(self, plan_id: str, tareas: list[dict[str, Any]]) -> dict[str, str]:
+    def _recomendacion_motor(self, plan_id: str, tareas: list[dict[str, Any]]) -> dict[str, Any]:
         if not hasattr(self.motor, "siguiente_tarea_recomendada"):
             return {}
         recomendacion = self.motor.siguiente_tarea_recomendada(plan_id)
@@ -178,11 +180,28 @@ class ProduccionGuiadaPiloto13:
         tarea = next((t for t in tareas if str(t.get("id")) == tarea_id), None)
         if not tarea:
             return {}
-        return {
+        out = {
             "tarea_id": tarea_id,
             "texto": f"Empieza por {tarea.get('titulo')}",
             "explicacion": self._explicacion_culinaria(recomendacion, tarea),
         }
+        if isinstance(recomendacion.get("mientras_tanto"), dict):
+            mt = recomendacion.get("mientras_tanto") or {}
+            if str(mt.get("texto") or "").strip():
+                out["mientras_tanto"] = str(mt.get("texto") or "").strip()
+        fase = self._fase_activa_tarea(tarea)
+        atencion_intervalo = str(recomendacion.get("atencion_intervalo") or "").strip()
+        if atencion_intervalo:
+            if fase and not self._es_fase_pasiva(fase):
+                atencion_intervalo = ""
+            if atencion_intervalo:
+                out["atencion_intervalo"] = atencion_intervalo
+        if isinstance(recomendacion.get("siguiente_movimiento"), dict):
+            sm = recomendacion.get("siguiente_movimiento") or {}
+            texto_siguiente = str(sm.get("texto") or "").strip()
+            if texto_siguiente and not self._hay_produccion_critica_pendiente(tareas, {tarea_id, str((recomendacion.get("mientras_tanto") or {}).get("tarea_id") or "").strip()}):
+                out["siguiente_movimiento"] = texto_siguiente
+        return out
 
     @staticmethod
     def _explicacion_culinaria(recomendacion: dict[str, Any], tarea: dict[str, Any]) -> str:
@@ -194,6 +213,168 @@ class ProduccionGuiadaPiloto13:
         encabezado = f"Se recomienda {tarea.get('titulo')} porque:"
         detalle = "\n".join(f"- {criterio}" for criterio in criterios)
         return f"{encabezado}\n{detalle}"
+
+    def _fase_operativa_actual(self, tareas: list[dict[str, Any]], siguiente: dict[str, Any], recomendacion_motor: dict[str, Any]) -> dict[str, Any]:
+        tarea = self._tarea_contexto_fase(tareas, siguiente, recomendacion_motor)
+        if not tarea:
+            return {}
+        fase = self._fase_activa_tarea(tarea)
+        if not fase:
+            return {}
+        nombre_fase = str(fase.get("nombre") or "").strip()
+        if not nombre_fase:
+            return {}
+
+        propiedades: list[str] = []
+        estado = str(fase.get("estado") or "").strip()
+        if estado:
+            propiedades.append(f"Estado operativo: {estado.replace('_', ' ').lower()}")
+
+        if self._es_fase_pasiva(fase):
+            propiedades.append("Atención: seguimiento por intervalo, sin dedicación continua")
+        else:
+            propiedades.append("Atención: dedicación continua hasta completar el paso")
+
+        duracion_activa = int(fase.get("duracion_activa_min", 0) or 0)
+        if duracion_activa > 0:
+            propiedades.append(f"Trabajo activo estimado: {self._hm(duracion_activa)}")
+
+        duracion_pasiva = int(fase.get("duracion_pasiva_min", 0) or 0)
+        if duracion_pasiva > 0:
+            propiedades.append(f"Tiempo pasivo estimado: {self._hm(duracion_pasiva)}")
+
+        recurso = str(fase.get("recurso") or "").strip()
+        if recurso:
+            propiedades.append(f"Recurso principal: {recurso.replace('_', ' ')}")
+
+        responsable = str(fase.get("responsable") or "").strip()
+        if responsable:
+            propiedades.append(f"Responsable operativo: {responsable.replace('_', ' ')}")
+
+        dependencia = str(fase.get("dependencia") or "").strip()
+        if dependencia:
+            propiedades.append(f"Dependencia operativa: {dependencia}")
+
+        checklist_pendiente = int(tarea.get("checklist_pendiente", 0) or 0)
+        if checklist_pendiente > 0:
+            propiedades.append(f"Comprobación antes de cerrar: {checklist_pendiente} paso(s) pendiente(s)")
+
+        if str(tarea.get("bloqueo") or "").strip():
+            propiedades.append("Fase condicionada por bloqueo activo")
+
+        siguiente_fase = self._siguiente_fase_disponible(tarea, str(fase.get("id") or ""))
+        if siguiente_fase:
+            propiedades.append(f"Siguiente cambio de fase: {siguiente_fase}")
+
+        return {
+            "nombre": nombre_fase,
+            "tarea": str(tarea.get("titulo") or "").strip(),
+            "propiedades": [p for p in propiedades if str(p).strip()],
+        }
+
+    @staticmethod
+    def _tarea_contexto_fase(tareas: list[dict[str, Any]], siguiente: dict[str, Any], recomendacion_motor: dict[str, Any]) -> dict[str, Any] | None:
+        def _si_tiene_fase_activa(tarea: dict[str, Any] | None) -> dict[str, Any] | None:
+            if not tarea:
+                return None
+            if ProduccionGuiadaPiloto13._fase_activa_tarea(tarea):
+                return tarea
+            return None
+
+        recomendada = str(recomendacion_motor.get("tarea_id") or "").strip()
+        if recomendada:
+            encontrada = next((t for t in tareas if str(t.get("id") or "") == recomendada), None)
+            encontrada = _si_tiene_fase_activa(encontrada)
+            if encontrada:
+                return encontrada
+
+        tarea_id = str(siguiente.get("tarea_id") or "").strip()
+        if tarea_id:
+            encontrada = next((t for t in tareas if str(t.get("id") or "") == tarea_id), None)
+            encontrada = _si_tiene_fase_activa(encontrada)
+            if encontrada:
+                return encontrada
+
+        activa = next((t for t in tareas if t.get("estado_codigo") in ESTADOS_ACTIVOS), None)
+        activa = _si_tiene_fase_activa(activa)
+        if activa:
+            return activa
+        return None
+
+    @staticmethod
+    def _fase_activa_tarea(tarea: dict[str, Any]) -> dict[str, Any] | None:
+        fases = list(tarea.get("fases") or [])
+        if not fases:
+            return None
+        fase_id = str(tarea.get("fase_activa_id") or "").strip()
+        if fase_id:
+            fase = next((f for f in fases if str(f.get("id") or "") == fase_id), None)
+            if fase:
+                return fase
+        return next(
+            (
+                f
+                for f in fases
+                if str(f.get("estado") or "").upper() in {"EN_CURSO", "EN_ESPERA", "EN_PROCESO"}
+            ),
+            None,
+        )
+
+    @staticmethod
+    def _siguiente_fase_disponible(tarea: dict[str, Any], fase_actual_id: str) -> str:
+        fases = list(tarea.get("fases") or [])
+        if not fases:
+            return ""
+        for fase in fases:
+            fase_id = str(fase.get("id") or "")
+            estado = str(fase.get("estado") or "").upper()
+            if fase_id == fase_actual_id:
+                continue
+            if estado == "FINALIZADA":
+                continue
+            nombre = str(fase.get("nombre") or "").strip()
+            if nombre:
+                return nombre
+        return ""
+
+    @staticmethod
+    def _es_fase_pasiva(fase: dict[str, Any]) -> bool:
+        if int(fase.get("duracion_pasiva_min", 0) or 0) > 0:
+            return True
+        tipo = str(fase.get("tipo") or "").strip().lower()
+        return tipo in {
+            "reposo",
+            "fermentacion",
+            "fermentación",
+            "enfriado",
+            "abatido",
+            "abatimiento",
+            "descongelacion",
+            "descongelación",
+            "marinado",
+            "espera",
+            "coccion",
+            "cocción",
+            "coccion_lenta",
+            "cocción_lenta",
+        }
+
+    @staticmethod
+    def _hay_produccion_critica_pendiente(tareas: list[dict[str, Any]], excluidos: set[str] | None = None) -> bool:
+        excluidos = {str(x).strip() for x in (excluidos or set()) if str(x).strip()}
+        for tarea in tareas:
+            tarea_id = str(tarea.get("id") or "").strip()
+            if tarea_id in excluidos:
+                continue
+            if str(tarea.get("bloqueo") or "").strip():
+                return True
+            estado = str(tarea.get("estado_codigo") or "").strip().lower()
+            if estado in {"finalizada", "cancelada"}:
+                continue
+            prioridad = int(tarea.get("prioridad", 50) or 50)
+            if prioridad >= 70 and estado in {"pendiente", "lista", "retrasada", "pausada", "en_espera", "incidencia", "bloqueada"}:
+                return True
+        return False
 
     @staticmethod
     def _orden_plan(plan: dict[str, Any]) -> int:

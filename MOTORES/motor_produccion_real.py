@@ -589,21 +589,107 @@ class MotorProduccionReal:
         if not tareas:
             return {"codigo": "SIN_TAREAS", "texto": "No hay tareas pendientes.", "motivo": "El plan está completado."}
 
+        def _pasiva_total(t: Dict[str, Any]) -> int:
+            return sum(int(f.get("duracion_pasiva_min", 0) or 0) for f in (t.get("fases") or []))
+
+        def _deps_total(t: Dict[str, Any]) -> int:
+            return sum(1 for f in (t.get("fases") or []) if str(f.get("dependencia") or "").strip())
+
+        def _estado(t: Dict[str, Any]) -> str:
+            return self._normalizar_estado_ejecucion(t.get("estado_ejecucion", "pendiente"))
+
+        def _fase_activa(t: Dict[str, Any]) -> Dict[str, Any] | None:
+            fase_id = str(t.get("fase_activa_id") or "")
+            if not fase_id:
+                return None
+            return next((f for f in (t.get("fases") or []) if str(f.get("id") or "") == fase_id), None)
+
+        def _origen(t: Dict[str, Any]) -> str:
+            return str(t.get("origen") or "").strip().lower()
+
+        def _es_fase_final_jornada(t: Dict[str, Any]) -> bool:
+            origen = _origen(t)
+            if origen in {"logistica", "cierre"}:
+                return True
+            titulo = str(t.get("titulo") or "").strip().lower()
+            claves_finales = ("carga", "transporte", "montaje", "cierre", "retorno")
+            if any(k in titulo for k in claves_finales):
+                return True
+            tipos = {str((f or {}).get("tipo") or "").strip().lower() for f in (t.get("fases") or []) if isinstance(f, dict)}
+            return bool(tipos) and tipos <= {"logistica", "cierre", "evento"}
+
+        def _es_produccion_critica_pendiente(t: Dict[str, Any]) -> bool:
+            if _es_fase_final_jornada(t):
+                return False
+            if str(t.get("bloqueo") or "").strip():
+                return False
+            if _estado(t) in {"finalizada", "cancelada", "bloqueada"}:
+                return False
+            return int(t.get("prioridad", 50) or 50) >= 70
+
+        def _duracion_restante(t: Dict[str, Any]) -> int:
+            return max(0, int(float(t.get("tiempo_restante_estimado_min", 0) or 0)))
+
+        def _recursos_fase(fase: Dict[str, Any] | None) -> set[str]:
+            if not isinstance(fase, dict):
+                return set()
+            recurso = str(fase.get("recurso") or "").strip().lower()
+            return {recurso} if recurso else set()
+
+        def _es_compatible_con_pasiva(principal: Dict[str, Any], candidata_alt: Dict[str, Any]) -> bool:
+            pasiva_principal = _pasiva_total(principal)
+            if pasiva_principal <= 0:
+                return False
+            if str(candidata_alt.get("id") or "") == str(principal.get("id") or ""):
+                return False
+            if str(candidata_alt.get("bloqueo") or "").strip():
+                return False
+            if _estado(candidata_alt) in {"finalizada", "cancelada", "bloqueada"}:
+                return False
+            if _duracion_restante(candidata_alt) <= 0:
+                return False
+            # Debe poder aprovechar de verdad la ventana pasiva de la tarea principal.
+            if _duracion_restante(candidata_alt) > pasiva_principal:
+                return False
+            if any(
+                str((f or {}).get("dependencia") or "").strip() == str(principal.get("id") or "")
+                for f in (candidata_alt.get("fases") or [])
+                if isinstance(f, dict)
+            ):
+                return False
+            # No adelantar fases finales si aún faltan fases críticas de producción.
+            if _es_fase_final_jornada(candidata_alt):
+                criticas_pendientes = [
+                    t for t in no_bloqueadas
+                    if str(t.get("id") or "") not in {str(principal.get("id") or ""), str(candidata_alt.get("id") or "")}
+                    and _es_produccion_critica_pendiente(t)
+                ]
+                if criticas_pendientes:
+                    return False
+            # Fase lógica: si la principal no es final, no se salta a cierres/logística prematuros.
+            if not _es_fase_final_jornada(principal) and _es_fase_final_jornada(candidata_alt):
+                return False
+            recursos_principal = _recursos_fase(_fase_activa(principal))
+            recursos_alt = _recursos_fase(_fase_activa(candidata_alt))
+            if recursos_principal and recursos_alt and recursos_principal & recursos_alt:
+                return False
+            return True
+
         def orden(t):
-            estado = self._normalizar_estado_ejecucion(t.get("estado_ejecucion", "pendiente"))
+            estado = _estado(t)
             bloqueada = 1 if str(t.get("bloqueo") or "").strip() else 0
             servicio_en = t.get("servicio_en_min")
             if not isinstance(servicio_en, (int, float)):
                 servicio_en = 999999
-            pasiva = sum(int(f.get("duracion_pasiva_min", 0) or 0) for f in (t.get("fases") or []))
-            deps = sum(1 for f in (t.get("fases") or []) if str(f.get("dependencia") or "").strip())
+            pasiva = _pasiva_total(t)
+            deps = _deps_total(t)
             estado_rank = {"en_proceso": 0, "en_preparacion": 1, "en_espera": 2, "pausada": 3, "lista": 4, "pendiente": 5}.get(estado, 6)
             return (bloqueada, estado_rank, -int(t.get("prioridad", 50) or 50), int(servicio_en), -pasiva, -deps, str(t.get("titulo") or ""))
 
         ordenadas = sorted(tareas, key=orden)
         candidata = ordenadas[0]
-        pasiva = sum(int(f.get("duracion_pasiva_min", 0) or 0) for f in (candidata.get("fases") or []))
-        deps = sum(1 for f in (candidata.get("fases") or []) if str(f.get("dependencia") or "").strip())
+        pasiva = _pasiva_total(candidata)
+        deps = _deps_total(candidata)
         criterios: list[str] = []
 
         no_bloqueadas = [t for t in tareas if not str(t.get("bloqueo") or "").strip()]
@@ -664,12 +750,70 @@ class MotorProduccionReal:
         if not criterios:
             criterios.append("es la siguiente elaboración viable según el estado real de cocina")
 
+        mientras_tanto = {}
+        if pasiva > 0:
+            candidata_alt = next((t for t in ordenadas if _es_compatible_con_pasiva(candidata, t)), None)
+            if candidata_alt:
+                mientras_tanto = {
+                    "tarea_id": str(candidata_alt.get("id") or ""),
+                    "texto": f"Preparar {candidata_alt.get('titulo')}",
+                }
+
+        atencion_intervalo = ""
+        if pasiva > 0:
+            fase = _fase_activa(candidata)
+            if fase and str(fase.get("nombre") or "").strip():
+                atencion_intervalo = f"Vigilar la fase '{fase.get('nombre')}' y confirmar el cambio cuando termine la espera."
+            else:
+                atencion_intervalo = "Vigilar la elaboración principal durante el tramo pasivo y preparar el cambio de fase."
+
+        siguiente_movimiento = {}
+        principal_id = str(candidata.get("id") or "")
+        alt_id = str(mientras_tanto.get("tarea_id") or "")
+        dependiente = next(
+            (
+                t for t in ordenadas
+                if str(t.get("id") or "") not in {principal_id, alt_id}
+                and not str(t.get("bloqueo") or "").strip()
+                and _estado(t) not in {"finalizada", "cancelada", "bloqueada"}
+                and any(
+                    str((f or {}).get("dependencia") or "").strip() == principal_id
+                    for f in (t.get("fases") or [])
+                    if isinstance(f, dict)
+                )
+            ),
+            None,
+        )
+        if dependiente:
+            siguiente_movimiento = {
+                "tarea_id": str(dependiente.get("id") or ""),
+                "texto": f"Comenzar {dependiente.get('titulo')}",
+            }
+        else:
+            siguiente = next(
+                (
+                    t for t in ordenadas
+                    if str(t.get("id") or "") not in {principal_id, alt_id}
+                    and not str(t.get("bloqueo") or "").strip()
+                    and _estado(t) not in {"finalizada", "cancelada", "bloqueada"}
+                ),
+                None,
+            )
+            if siguiente:
+                siguiente_movimiento = {
+                    "tarea_id": str(siguiente.get("id") or ""),
+                    "texto": f"Comenzar {siguiente.get('titulo')}",
+                }
+
         return {
             "codigo": "SUGERIDA",
             "tarea_id": candidata.get("id"),
             "texto": f"Empieza ahora: {candidata.get('titulo')}",
             "motivo": "; ".join(criterios),
             "criterios": criterios,
+            "mientras_tanto": mientras_tanto,
+            "atencion_intervalo": atencion_intervalo,
+            "siguiente_movimiento": siguiente_movimiento,
             "tarea": candidata,
         }
 

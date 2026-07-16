@@ -159,6 +159,23 @@ class ConsolaProduccionGuiadaPiloto13:
             print_fn("\nRECOMENDACIÓN DEL MOTOR")
             print_fn(recomendacion_motor.get("texto") or "")
             print_fn(recomendacion_motor.get("explicacion") or "")
+            if str(recomendacion_motor.get("mientras_tanto") or "").strip():
+                print_fn("\nMientras tanto:")
+                print_fn(f"- {recomendacion_motor.get('mientras_tanto')}")
+            if str(recomendacion_motor.get("atencion_intervalo") or "").strip():
+                print_fn("\nAtención durante el intervalo:")
+                print_fn(f"- {recomendacion_motor.get('atencion_intervalo')}")
+            if str(recomendacion_motor.get("siguiente_movimiento") or "").strip():
+                print_fn("\nDespués:")
+                print_fn(f"- {recomendacion_motor.get('siguiente_movimiento')}")
+
+        fase_actual = panel.get("fase_actual") or {}
+        propiedades_fase = [p for p in (fase_actual.get("propiedades") or []) if str(p).strip()]
+        if str(fase_actual.get("nombre") or "").strip() and propiedades_fase:
+            print_fn("\nFASE ACTUAL")
+            print_fn(fase_actual.get("nombre"))
+            for propiedad in propiedades_fase:
+                print_fn(f"- {propiedad}")
 
         bloqueadas = [t for t in panel["tareas"] if t.get("bloqueo")]
         if bloqueadas:
