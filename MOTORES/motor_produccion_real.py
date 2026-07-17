@@ -956,6 +956,8 @@ class MotorProduccionReal:
         clasificacion_jornada = self._clasificar_elaboraciones_abiertas(plan, resumen)
         cuellos_botella_previstos = self._analizar_cuellos_botella_previstos(plan, resumen)
         inventario_recursos = self.inventario_recursos(plan_id)
+        cronologia_operativa_prevista = self._construir_cronologia_operativa(plan, resumen)
+        ocupacion_temporal_recursos = self.ocupacion_temporal_recursos(plan_id, cronologia_operativa_prevista)
 
         tarea_por_id = {t.get("id"): t for t in resumen.get("tareas", [])}
         cocineros: Dict[str, Dict[str, Any]] = {}
@@ -1051,8 +1053,9 @@ class MotorProduccionReal:
             "alertas": resumen.get("alertas", []),
             "clasificacion_jornada": clasificacion_jornada,
             "inventario_recursos": inventario_recursos,
+            "ocupacion_temporal_recursos": ocupacion_temporal_recursos,
             "cuellos_botella_previstos": cuellos_botella_previstos,
-            "cronologia_operativa_prevista": self._construir_cronologia_operativa(plan, resumen),
+            "cronologia_operativa_prevista": cronologia_operativa_prevista,
             "cocineros": sorted(cocineros.values(), key=lambda x: x["cocinero"]),
             "metricas_turno": {
                 "minutos_previstos": total_previsto,
@@ -1068,6 +1071,13 @@ class MotorProduccionReal:
     def inventario_recursos(self, plan_id: str) -> Dict[str, Any]:
         plan = self.obtener_plan(plan_id)
         return self.core.inventario_recursos_produccion.construir_inventario_plan(plan)
+
+    def ocupacion_temporal_recursos(self, plan_id: str, cronologia: Dict[str, Any] | None = None) -> Dict[str, Any]:
+        plan = self.obtener_plan(plan_id)
+        if cronologia is None:
+            resumen = self.resumen_ejecucion(plan_id)
+            cronologia = self._construir_cronologia_operativa(plan, resumen)
+        return self.core.inventario_recursos_produccion.construir_ocupacion_plan(plan, cronologia)
 
     def _analizar_cuellos_botella_previstos(self, plan, resumen: Dict[str, Any]) -> Dict[str, Any]:
         detalle: List[Dict[str, Any]] = []
