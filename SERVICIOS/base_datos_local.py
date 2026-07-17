@@ -8,6 +8,7 @@ class BaseDatosLocal:
     COLECCIONES = [
         "eventos", "stock_lotes", "stock_movimientos",
         "compras_necesidades", "compras_pedidos",
+        "compras_proveedores", "compras_propuestas", "compras_registros",
         "escandallos", "precios", "planes_produccion",
         "ideas_culinarias", "historial_chat", "historial_escandallos_costes",
         "historial_costes_eventos", "historial_rentabilidad",
