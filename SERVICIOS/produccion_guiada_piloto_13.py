@@ -41,11 +41,15 @@ class ProduccionGuiadaPiloto13:
     def construir_panel(self, plan_id: str) -> dict[str, Any]:
         plan = self.motor.obtener_plan(plan_id).to_dict()
         resumen = self.motor.resumen_ejecucion(plan_id)
+        panel_motor = self.motor.panel_produccion(plan_id) if hasattr(self.motor, "panel_produccion") else {}
         tareas = [self._humanizar_tarea(t, plan) for t in resumen.get("tareas", [])]
         tareas.sort(key=lambda t: self._orden_tarea(t))
         siguiente = self._siguiente_accion(plan_id, tareas)
         recomendacion_motor = self._recomendacion_motor(plan_id, tareas)
         fase_actual = self._fase_operativa_actual(tareas, siguiente.__dict__, recomendacion_motor)
+        clasificacion_jornada = dict((panel_motor or {}).get("clasificacion_jornada") or {})
+        cuellos_previstos = dict((panel_motor or {}).get("cuellos_botella_previstos") or {})
+        cronologia_prevista = dict((panel_motor or {}).get("cronologia_operativa_prevista") or {})
         bloqueadas = [t for t in tareas if t.get("bloqueo")]
         activas = [t for t in tareas if t.get("estado_codigo") == "en_curso"]
         pendientes = [t for t in tareas if t.get("estado_codigo") not in ESTADOS_TERMINADOS]
@@ -65,6 +69,14 @@ class ProduccionGuiadaPiloto13:
             "siguiente_accion": siguiente.__dict__,
             "recomendacion_motor": recomendacion_motor,
             "fase_actual": fase_actual,
+            "resumen_jornada": dict(clasificacion_jornada.get("resumen") or {}),
+            "clasificacion_detalle": list(clasificacion_jornada.get("detalle") or []),
+            "resumen_cuellos": dict(cuellos_previstos.get("resumen") or {}),
+            "cuellos_detalle": list(cuellos_previstos.get("detalle") or []),
+            "resumen_cronologia": dict(cronologia_prevista.get("resumen") or {}),
+            "cronologia_base_horaria": dict(cronologia_prevista.get("base_horaria") or {}),
+            "cronologia_alertas": list(cronologia_prevista.get("alertas") or []),
+            "cronologia_tramos": list(cronologia_prevista.get("tramos") or []),
             "lectura": self._lectura_general(tareas, siguiente),
         }
 
@@ -339,7 +351,11 @@ class ProduccionGuiadaPiloto13:
 
     @staticmethod
     def _es_fase_pasiva(fase: dict[str, Any]) -> bool:
-        if int(fase.get("duracion_pasiva_min", 0) or 0) > 0:
+        duracion_activa = int(fase.get("duracion_activa_min", 0) or 0)
+        duracion_pasiva = int(fase.get("duracion_pasiva_min", 0) or 0)
+        if duracion_activa or duracion_pasiva:
+            return duracion_pasiva > 0 and duracion_activa == 0
+        if duracion_pasiva > 0:
             return True
         tipo = str(fase.get("tipo") or "").strip().lower()
         return tipo in {

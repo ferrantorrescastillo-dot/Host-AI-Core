@@ -70,6 +70,7 @@ class OrquestadorHostAI:
                     "duplicar_evento": "duplicar",
                     "agregar_servicio_evento": "agregar_servicio",
                     "agregar_pase_evento": "agregar_pase",
+                    "agregar_plato_evento": "agregar_plato",
                     "linea_temporal_evento": "linea_temporal",
                     "diagnosticar_evento": "diagnosticar",
                     "simular_produccion_evento": "simular_produccion",

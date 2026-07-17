@@ -56,11 +56,26 @@ class ConsolaProduccionGuiadaPiloto13:
             print_fn("6. He resuelto un bloqueo")
             print_fn("8. Registrar merma")
             print_fn("\nOTRAS OPCIONES")
+            print_fn("A. Ver detalle de clasificación")
+            print_fn("B. Ver detalle de cuellos previstos")
+            print_fn("C. Ver detalle de cronología prevista")
             print_fn("9. Actualizar la pantalla")
             print_fn("0. Volver")
             op = input_fn("Elige una opción: ").strip()
             if op == "0": return
             if op == "9": continue
+            if op.lower() == "a":
+                self._mostrar_detalle_clasificacion(panel, print_fn)
+                input_fn("Pulsa Enter para volver al panel: ")
+                continue
+            if op.lower() == "b":
+                self._mostrar_detalle_cuellos(panel, print_fn)
+                input_fn("Pulsa Enter para volver al panel: ")
+                continue
+            if op.lower() == "c":
+                self._mostrar_detalle_cronologia(panel, print_fn)
+                input_fn("Pulsa Enter para volver al panel: ")
+                continue
             if op not in {"1", "2", "3", "4", "5", "6", "7", "8"}:
                 print_fn("Opción no válida."); continue
             tarea = self._seleccionar_tarea(panel["tareas"], input_fn, print_fn)
@@ -198,11 +213,90 @@ class ConsolaProduccionGuiadaPiloto13:
             print_fn("\nAVISOS")
             for a in panel["alertas"]: print_fn(f"- {a.get('tarea') or 'Producción'}: {a.get('mensaje')}")
         print_fn(f"\n{panel['plan']} | {panel['avance']}% hecho | {panel['pendientes']} por hacer | {panel['en_curso']} en marcha")
+        resumen_jornada = panel.get("resumen_jornada") or {}
+        if any(int(resumen_jornada.get(clave, 0) or 0) > 0 for clave in ("criticas", "largas", "medias", "rapidas")):
+            print_fn("\nRESUMEN DE LA JORNADA")
+            print_fn(f"- Críticas: {int(resumen_jornada.get('criticas', 0) or 0)}")
+            print_fn(f"- Largas: {int(resumen_jornada.get('largas', 0) or 0)}")
+            print_fn(f"- Medias: {int(resumen_jornada.get('medias', 0) or 0)}")
+            print_fn(f"- Rápidas: {int(resumen_jornada.get('rapidas', 0) or 0)}")
+        resumen_cuellos = panel.get("resumen_cuellos") or {}
+        if int(resumen_cuellos.get("total", 0) or 0) > 0:
+            print_fn("\nCUELLOS PREVISTOS")
+            print_fn(f"- Recursos: {int(resumen_cuellos.get('recursos', 0) or 0)}")
+            print_fn(f"- Personal: {int(resumen_cuellos.get('personal', 0) or 0)}")
+            print_fn(f"- Dependencias: {int(resumen_cuellos.get('dependencias', 0) or 0)}")
+        resumen_cronologia = panel.get("resumen_cronologia") or {}
+        if int(resumen_cronologia.get("total_tramos", 0) or 0) > 0:
+            print_fn("\nCRONOLOGÍA PREVISTA")
+            base = panel.get("cronologia_base_horaria") or {}
+            if str(base.get("texto") or "").strip():
+                print_fn(f"- Base horaria: {base.get('texto')}")
+            print_fn(f"- Tramos: {int(resumen_cronologia.get('total_tramos', 0) or 0)}")
+            print_fn(f"- Estimados: {int(resumen_cronologia.get('tramos_estimados', 0) or 0)}")
+            print_fn(f"- Reales: {int(resumen_cronologia.get('tramos_reales', 0) or 0)}")
+            print_fn(f"- Indeterminados: {int(resumen_cronologia.get('tramos_indeterminados', 0) or 0)}")
         print_fn("\nSIGUIENTE TRABAJO")
         for i, t in enumerate(panel["tareas"], 1):
             print_fn(f"{i}. {t['estado_texto']} {t.get('titulo')} · {t['prioridad_texto']}")
             print_fn(f"   Queda: {t['tiempo_restante_texto']}")
             if t.get("bloqueo"): print_fn(f"   Bloqueo: {t['bloqueo']}")
+
+    @staticmethod
+    def _mostrar_detalle_clasificacion(panel: dict[str, Any], print_fn) -> None:
+        detalle = list(panel.get("clasificacion_detalle") or [])
+        print_fn("\nDETALLE DE CLASIFICACIÓN")
+        if not detalle:
+            print_fn("No hay elaboraciones clasificadas para mostrar ahora mismo.")
+            return
+        for item in detalle:
+            print_fn(f"- {item.get('resumen')}")
+            for razon in item.get("razones", []) or []:
+                print_fn(f"  · {razon}")
+
+    @staticmethod
+    def _mostrar_detalle_cuellos(panel: dict[str, Any], print_fn) -> None:
+        detalle = list(panel.get("cuellos_detalle") or [])
+        print_fn("\nDETALLE DE CUELLOS PREVISTOS")
+        if not detalle:
+            print_fn("No hay cuellos de botella previstos con datos suficientes.")
+            return
+        for item in detalle:
+            print_fn(f"- {item.get('titulo')}")
+            print_fn(f"  Momento: {item.get('momento')}")
+            print_fn(f"  Riesgo: {item.get('riesgo')}")
+            print_fn(f"  Consecuencia: {item.get('consecuencia')}")
+            for razon in item.get("explicacion", []) or []:
+                print_fn(f"  · {razon}")
+
+    @staticmethod
+    def _mostrar_detalle_cronologia(panel: dict[str, Any], print_fn) -> None:
+        tramos = list(panel.get("cronologia_tramos") or [])
+        print_fn("\nDETALLE DE CRONOLOGÍA PREVISTA")
+        if not tramos:
+            print_fn("No hay tramos cronológicos con datos suficientes.")
+            return
+        base = panel.get("cronologia_base_horaria") or {}
+        if str(base.get("texto") or "").strip():
+            print_fn(f"Base horaria: {base.get('texto')}")
+        for tramo in tramos:
+            inicio = tramo.get("inicio") or {}
+            fin = tramo.get("fin") or {}
+            print_fn(f"\n- {inicio.get('texto', 'sin hora')} -> {fin.get('texto', 'sin hora')}")
+            print_fn(f"  Tarea: {tramo.get('tarea')}")
+            print_fn(f"  Fase: {tramo.get('fase')}")
+            if str(tramo.get("recurso") or "").strip():
+                print_fn(f"  Recurso: {tramo.get('recurso')}")
+            print_fn(f"  Por qué empieza aquí: {tramo.get('inicio_razon')}")
+            reales = ", ".join(tramo.get("informacion_real") or []) or "ninguna"
+            estimadas = ", ".join(tramo.get("informacion_estimada") or []) or "ninguna"
+            print_fn(f"  Información real: {reales}")
+            print_fn(f"  Información estimada: {estimadas}")
+        alertas = list(panel.get("cronologia_alertas") or [])
+        if alertas:
+            print_fn("\nAvisos de cronología:")
+            for alerta in alertas:
+                print_fn(f"- {alerta}")
 
     @staticmethod
     def _seleccionar_tarea(tareas, input_fn, print_fn):

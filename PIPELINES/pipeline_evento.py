@@ -7,7 +7,7 @@ class PipelineEvento(BasePipeline):
     descripcion = "Pipeline de eventos."
     acciones_soportadas = [
         "crear", "listar", "buscar", "editar", "eliminar", "duplicar",
-        "agregar_servicio", "agregar_pase", "linea_temporal",
+        "agregar_servicio", "agregar_pase", "agregar_plato", "linea_temporal",
         "diagnosticar", "simular_produccion",
     ]
 
@@ -42,6 +42,18 @@ class PipelineEvento(BasePipeline):
         if solicitud.accion == "agregar_pase":
             e = self.core.eventos.agregar_pase(p["evento_id"], p["servicio_id"], p["nombre"], p["hora_inicio"], p.get("duracion_min", 30), p.get("recetas", []), p.get("notas", ""))
             return ResultadoPipeline(True, self.nombre, solicitud.accion, "Pase añadido.", {"evento": e.to_dict()}, [])
+        if solicitud.accion == "agregar_plato":
+            e = self.core.eventos.agregar_plato(
+                p["evento_id"],
+                p["servicio_id"],
+                p["pase_id"],
+                p["escandallo_id"],
+                p.get("usar_pax_evento", True),
+                p.get("raciones", 0),
+                p.get("observaciones", ""),
+                p.get("ajustes_aprobados", ""),
+            )
+            return ResultadoPipeline(True, self.nombre, solicitud.accion, "Plato añadido al pase.", {"evento": e.to_dict()}, [])
         if solicitud.accion == "linea_temporal":
             d = self.core.eventos.construir_linea_temporal(p["evento_id"])
             return ResultadoPipeline(True, self.nombre, solicitud.accion, d["lectura_host_ai"], d, [])

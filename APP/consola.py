@@ -963,7 +963,7 @@ class AppConsolaHostAI:
                 else:
                     nombre = input(f"Nombre del duplicado [{servicio.nombre} (copia)]: ").strip() or None
                     self.core.eventos.duplicar_servicio(self.ultimo_evento_id, servicio.id, nombre)
-                    print("Servicio duplicado con pases y recetas.")
+                    print("Servicio duplicado con pases y platos.")
             else:
                 print("Opción no válida.")
 
@@ -975,12 +975,12 @@ class AppConsolaHostAI:
 
     def _listar_pases(self, servicio):
         if not servicio.pases:
-            print(f"'{servicio.nombre}' todavía no tiene pases preparados.")
-            print("Siguiente paso: añade el primer pase y después vincula sus recetas.")
+            print("No existe ningún pase para este servicio.")
             return []
         for indice, pase in enumerate(servicio.pases, start=1):
-            recetas = ", ".join(pase.recetas) if pase.recetas else "sin recetas"
-            print(f"{indice}. {pase.hora_inicio} | {pase.nombre} | {pase.duracion_min} min | {recetas}")
+            platos_txt = ", ".join(self._nombre_receta(r) for r in pase.recetas) if pase.recetas else "sin platos"
+            platos = len([p for p in list(getattr(pase, "platos", []) or []) if isinstance(p, dict)])
+            print(f"{indice}. {pase.hora_inicio} | {pase.nombre} | {pase.duracion_min} min | {platos_txt} | platos: {platos}")
         return servicio.pases
 
     def _catalogo_recetas(self):
@@ -995,30 +995,62 @@ class AppConsolaHostAI:
                 return receta.get("nombre") or receta_id
         return receta_id
 
+    @staticmethod
+    def _formatear_valor_busqueda_plato(receta, clave, sufijo=""):
+        valor = receta.get(clave)
+        if valor in (None, "", 0):
+            return None
+        if clave == "coste_por_racion":
+            try:
+                return f"{float(valor):.2f} €/ración"
+            except (TypeError, ValueError):
+                return None
+        if clave == "raciones_base":
+            try:
+                return f"{int(valor)} raciones"
+            except (TypeError, ValueError):
+                return None
+        return f"{valor}{sufijo}"
+
+    def _imprimir_resultado_busqueda_plato(self, indice, receta):
+        print(f"{indice}. {receta.get('nombre')}")
+        codigo = receta.get("receta_id")
+        if codigo:
+            print(f"   {codigo}")
+        familia = receta.get("grupo") or receta.get("familia")
+        if familia:
+            print(f"   {familia}")
+        rendimiento = self._formatear_valor_busqueda_plato(receta, "raciones_base")
+        if rendimiento:
+            print(f"   {rendimiento}")
+        coste_racion = self._formatear_valor_busqueda_plato(receta, "coste_por_racion")
+        if coste_racion:
+            print(f"   {coste_racion}")
+
     def _buscar_recetas_para_pase(self):
         catalogo = self._catalogo_recetas()
         seleccionadas = []
         if not catalogo:
-            texto = input("Recetas por ID separadas por coma: ").strip()
+            texto = input("Platos (escandallos) por ID separados por coma: ").strip()
             return [r.strip() for r in texto.split(",") if r.strip()]
         while True:
             if seleccionadas:
-                print("\nRECETAS ACTUALES DEL PASE")
+                print("\nPLATOS ACTUALES DEL PASE")
                 for receta_id in seleccionadas:
                     print(f"- {self._nombre_receta(receta_id)} ({receta_id})")
-            termino = input("Añade una receta escribiendo parte del nombre (vacío=terminar): ").strip()
+            termino = input("Buscar plato (escandallo) por nombre o código (vacío=terminar): ").strip()
             if not termino:
                 break
             termino_norm = termino.lower()
             coincidencias = [r for r in catalogo if termino_norm in str(r.get("receta_id", "")).lower() or termino_norm in str(r.get("nombre", "")).lower()]
             if not coincidencias:
-                print("No se han encontrado recetas. Prueba con otra parte del nombre.")
+                print("No se han encontrado platos. Prueba con otra parte del nombre.")
                 continue
             for indice, receta in enumerate(coincidencias[:20], start=1):
-                print(f"{indice}. {receta.get('nombre')} | {receta.get('receta_id')}")
+                self._imprimir_resultado_busqueda_plato(indice, receta)
             if len(coincidencias) == 1:
                 receta_id = coincidencias[0].get("receta_id")
-                confirmar = input(f"Añadir '{coincidencias[0].get('nombre')}'? (s/n) [s]: ").strip().lower() or "s"
+                confirmar = input(f"Añadir plato '{coincidencias[0].get('nombre')}'? (s/n) [s]: ").strip().lower() or "s"
                 if confirmar != "s":
                     continue
             else:
@@ -1032,13 +1064,170 @@ class AppConsolaHostAI:
                     continue
             if receta_id not in seleccionadas:
                 seleccionadas.append(receta_id)
-                print(f"Añadida: {self._nombre_receta(receta_id)}")
+                print(f"Plato añadido: {self._nombre_receta(receta_id)}")
             else:
-                print("Esa receta ya estaba añadida.")
-            otra = input("¿Añadir otra receta? (s/n) [n]: ").strip().lower() or "n"
+                print("Ese plato ya estaba añadido.")
+            otra = input("¿Añadir otro plato? (s/n) [n]: ").strip().lower() or "n"
             if otra != "s":
                 break
         return seleccionadas
+
+    def _seleccionar_escandallo_para_plato(self):
+        catalogo = [r for r in self._catalogo_recetas() if bool(r.get("activo", True))]
+        if not catalogo:
+            print("No hay escandallos activos disponibles para asociar al plato.")
+            return None
+        while True:
+            termino = input("Buscar plato (escandallo) por nombre o código (vacío=ver lista, 0=cancelar): ").strip()
+            if termino == "0":
+                return None
+            termino_norm = termino.lower()
+            if termino_norm:
+                coincidencias = [
+                    r for r in catalogo
+                    if termino_norm in str(r.get("receta_id", "")).lower() or termino_norm in str(r.get("nombre", "")).lower()
+                ]
+            else:
+                coincidencias = catalogo
+            if not coincidencias:
+                print("No se han encontrado escandallos. Prueba con otro término.")
+                continue
+            print("\nPLATOS DISPONIBLES")
+            for i, receta in enumerate(coincidencias[:30], 1):
+                self._imprimir_resultado_busqueda_plato(i, receta)
+            sel = input("Selecciona número (0=cancelar): ").strip()
+            if sel == "0":
+                return None
+            try:
+                elegido = coincidencias[int(sel)-1]
+                return elegido
+            except (ValueError, IndexError):
+                print("Selección no válida.")
+
+    def _anadir_plato_desde_escandallo_existente(self):
+        if not self._requiere_evento():
+            return
+        servicio = self._seleccionar_servicio_evento_activo()
+        if not servicio:
+            return
+        pases = self._listar_pases(servicio)
+        if not pases:
+            print("¿Quieres crear uno ahora?")
+            print("1. Sí")
+            print("0. Cancelar")
+            crear = input("Elige una opción: ").strip()
+            if crear != "1":
+                return
+            nombre_pase = input("Nombre del pase [Pase]: ").strip() or "Pase"
+            hora_pase = input(f"Hora pase HH:MM [{servicio.hora_inicio or '21:00'}]: ").strip() or (servicio.hora_inicio or "21:00")
+            try:
+                duracion_pase = int(input("Duración estimada en minutos [35]: ").strip() or "35")
+            except ValueError:
+                print("La duración debe ser un número entero.")
+                return
+            try:
+                self.core.eventos.agregar_pase(self.ultimo_evento_id, servicio.id, nombre_pase, hora_pase, duracion_pase, [], "")
+                servicio = self.core.eventos.obtener_servicio(self.ultimo_evento_id, servicio.id)
+                pases = self._listar_pases(servicio)
+            except ValueError as exc:
+                print(f"No se ha podido crear el pase: {exc}")
+                return
+        pase = self._seleccionar_por_numero(pases, "pases")
+        if not pase:
+            return
+
+        esc = self._seleccionar_escandallo_para_plato()
+        if not esc:
+            return
+
+        evento = self.core.eventos.obtener(self.ultimo_evento_id)
+        receta_id = str(esc.get("receta_id") or "").strip().upper()
+        print(f"\nUsar las raciones del evento ({evento.pax})?")
+        print("1. Sí")
+        print("2. No, indicar otra cantidad")
+        opcion_raciones = input("Elige una opción: ").strip() or "1"
+        if opcion_raciones not in {"1", "2"}:
+            print("Opción no válida.")
+            return
+        usar_pax_evento = opcion_raciones == "1"
+        raciones = evento.pax if usar_pax_evento else 0
+        if opcion_raciones == "2":
+            try:
+                raciones = int(input("Raciones para este plato: ").strip() or "0")
+            except ValueError:
+                print("Raciones no válidas.")
+                return
+
+        observaciones = input("Observaciones del plato (opcional): ").strip()
+        ajustes = input("Ajustes aprobados (opcional): ").strip()
+
+        coste_preview = None
+        try:
+            calculo = self.core.escandallos_inteligente.calcular_necesidades_receta(receta_id, int(raciones), origen="Vista previa plato evento")
+            coste_preview = {
+                "coste_por_racion": calculo.get("coste_por_racion_estimado"),
+                "coste_total": calculo.get("coste_total_estimado"),
+            }
+        except Exception:
+            coste_preview = None
+
+        print("\nCONFIRMACIÓN DE PLATO")
+        print(f"- Plato: {esc.get('nombre')} ({receta_id})")
+        print(f"- Servicio: {servicio.nombre}")
+        print(f"- Pase: {pase.nombre}")
+        print(f"- Raciones: {raciones}")
+        if coste_preview and coste_preview.get("coste_por_racion") not in (None, 0):
+            print(f"- Coste por ración: {float(coste_preview['coste_por_racion']):.4f} €")
+            print(f"- Coste total: {float(coste_preview['coste_total']):.4f} €")
+        else:
+            print("- Coste: no disponible (faltan precios o cálculo del escandallo).")
+        if observaciones:
+            print(f"- Observaciones: {observaciones}")
+        if ajustes:
+            print(f"- Ajustes aprobados: {ajustes}")
+
+        confirmar = input("¿Guardar este plato en el pase? (s/n): ").strip().lower()
+        if confirmar not in {"s", "si", "sí"}:
+            print("Operación cancelada.")
+            return
+
+        try:
+            self.core.orquestador.resolver(SolicitudHostAI("agregar_plato_evento", {
+                "evento_id": self.ultimo_evento_id,
+                "servicio_id": servicio.id,
+                "pase_id": pase.id,
+                "escandallo_id": receta_id,
+                "usar_pax_evento": bool(usar_pax_evento),
+                "raciones": int(raciones),
+                "observaciones": observaciones,
+                "ajustes_aprobados": ajustes,
+            }))
+            print("\nPlato añadido correctamente.")
+            print("")
+            print(f"Servicio: {servicio.nombre}")
+            print(f"Pase: {pase.nombre}")
+            print(f"Plato: {esc.get('nombre')} ({receta_id})")
+            print(f"Raciones: {raciones}")
+        except Exception as exc:
+            print(f"No se pudo asociar el plato: {exc}")
+
+    def _menu_anadir_plato_evento_activo(self):
+        while True:
+            print("\nAÑADIR PLATO")
+            print("1. Buscar en escandallos existentes")
+            print("2. Importar desde archivo — Próximamente")
+            print("3. Crear manualmente — Próximamente")
+            print("0. Volver")
+            op = input("Elige una opción: ").strip()
+            if op == "0":
+                return
+            if op == "1":
+                self._anadir_plato_desde_escandallo_existente()
+                return
+            if op in {"2", "3"}:
+                print("Esta opción estará disponible en un sprint posterior.")
+                continue
+            print("Opción no válida.")
 
     def _gestionar_pases_evento_activo(self):
         if not self._requiere_evento():
@@ -1056,10 +1245,14 @@ class AppConsolaHostAI:
             print("3. Editar pase")
             print("4. Eliminar pase")
             print("5. Duplicar pase")
+            print("6. Añadir plato")
             print("0. Volver")
             op = input("Elige una opción: ").strip()
             if op == "0":
                 return
+            if op == "6":
+                self._menu_anadir_plato_evento_activo()
+                continue
             servicio = self._seleccionar_servicio_evento_activo()
             if not servicio:
                 continue
@@ -1077,7 +1270,7 @@ class AppConsolaHostAI:
                 try:
                     evento = self.core.eventos.agregar_pase(self.ultimo_evento_id, servicio.id, nombre, hora, duracion, recetas, notas)
                     print("\nPerfecto.\n")
-                    print(f"Ya tenemos preparado {nombre} con {len(recetas)} recetas.")
+                    print(f"Ya tenemos preparado {nombre} con {len(recetas)} platos.")
                     self._continuar_evento("pase")
                     return
                 except ValueError as exc:
@@ -1097,7 +1290,7 @@ class AppConsolaHostAI:
                     if nombre and nombre != "-": cambios["nombre"] = nombre
                     if hora and hora != "-": cambios["hora_inicio"] = hora
                     if duracion and duracion != "-": cambios["duracion_min"] = int(duracion)
-                    cambiar_recetas = input("¿Cambiar recetas? (s/n): ").strip().lower()
+                    cambiar_recetas = input("¿Cambiar platos del pase? (s/n): ").strip().lower()
                     if cambiar_recetas == "s": cambios["recetas"] = self._buscar_recetas_para_pase()
                     notas = self._valor_editable("Notas", pase.notas)
                     if notas == "-": cambios["notas"] = ""
@@ -1115,7 +1308,7 @@ class AppConsolaHostAI:
                 else:
                     nombre = input(f"Nombre del duplicado [{pase.nombre} (copia)]: ").strip() or None
                     self.core.eventos.duplicar_pase(self.ultimo_evento_id, servicio.id, pase.id, nombre)
-                    print("Pase duplicado con sus recetas.")
+                    print("Pase duplicado con sus platos.")
             else:
                 print("Opción no válida.")
 
@@ -1149,6 +1342,18 @@ class AppConsolaHostAI:
                     print("          Recetas: " + ", ".join(nombres))
                 else:
                     print("          Recetas: sin recetas")
+                platos = [p for p in list(getattr(pase, "platos", []) or []) if isinstance(p, dict)]
+                if platos:
+                    print("          Platos:")
+                    for plato in platos:
+                        rid = str(plato.get("escandallo_id") or "")
+                        nombre = self._nombre_receta(rid) if rid else str(plato.get("nombre") or "Plato")
+                        coste_pr = plato.get("coste_por_racion")
+                        coste_total = plato.get("coste_total")
+                        if coste_pr is not None and coste_total is not None:
+                            print(f"          - {nombre} | {plato.get('raciones', 0)} raciones | {float(coste_pr):.4f} €/ración | {float(coste_total):.4f} €")
+                        else:
+                            print(f"          - {nombre} | {plato.get('raciones', 0)} raciones | coste no disponible")
                 if pase.notas:
                     print(f"          Notas: {pase.notas}")
             print("-" * 62)
@@ -1175,7 +1380,7 @@ class AppConsolaHostAI:
         print(f"Observaciones: {evento.observaciones or '-'}")
         print(f"Servicios: {len(evento.servicios)}")
         print(f"Pases: {sum(len(s.pases) for s in evento.servicios)}")
-        print(f"Recetas: {sum(len(p.recetas) for s in evento.servicios for p in s.pases)}")
+        print(f"Platos: {sum(len(p.recetas) for s in evento.servicios for p in s.pases)}")
         print("=" * 62)
 
     def _ver_produccion_evento_activo(self, preguntar=False):
@@ -1317,19 +1522,29 @@ class AppConsolaHostAI:
             for aviso in resumen["avisos"]:
                 print(f"- {aviso}")
         else:
-            print("- Servicios, pases y recetas están preparados.")
+            print("- Servicios, pases y platos están preparados.")
         print("\nQUÉ ESTÁ LISTO")
         print(f"- {totales['servicios']} servicios preparados")
         print(f"- {totales['pases']} pases preparados")
-        print(f"- {totales['recetas']} recetas añadidas ({totales['recetas_unicas']} únicas)")
+        print(f"- {totales['recetas']} platos añadidos ({totales['recetas_unicas']} únicos)")
         print("\nSERVICIOS Y PASES")
         if not evento.servicios:
             print("- Todavía no hay servicios preparados.")
         for servicio in evento.servicios:
             print(f"- {servicio.hora_inicio} · {servicio.nombre}")
             for pase in servicio.pases:
-                recetas = ", ".join(self._nombre_receta(r) for r in pase.recetas) or "sin recetas"
+                recetas = ", ".join(self._nombre_receta(r) for r in pase.recetas) or "sin platos"
                 print(f"  {pase.hora_inicio} · {pase.nombre} · {recetas}")
+                platos = [p for p in list(getattr(pase, "platos", []) or []) if isinstance(p, dict)]
+                for plato in platos:
+                    rid = str(plato.get("escandallo_id") or "")
+                    nombre = self._nombre_receta(rid) if rid else str(plato.get("nombre") or "Plato")
+                    coste_pr = plato.get("coste_por_racion")
+                    coste_total = plato.get("coste_total")
+                    if coste_pr is not None and coste_total is not None:
+                        print(f"    Plato: {nombre} · {plato.get('raciones', 0)} raciones · {float(coste_pr):.4f} €/ración · {float(coste_total):.4f} €")
+                    else:
+                        print(f"    Plato: {nombre} · {plato.get('raciones', 0)} raciones · coste no disponible")
         planes = self._planes_del_evento_activo()
         print("\nPRODUCCIÓN QUE DEPENDE DEL EVENTO")
         if planes:

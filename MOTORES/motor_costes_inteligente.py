@@ -297,15 +297,29 @@ class MotorCostesInteligente:
         recetas_coste = []
         avisos = []
 
-        receta_ids = []
+        referencias_receta = []
         for servicio in evento.get("servicios", []):
             for pase in servicio.get("pases", []):
-                for receta_id in pase.get("recetas", []):
-                    receta_ids.append(receta_id)
+                platos = [p for p in list(pase.get("platos", []) or []) if isinstance(p, dict)]
+                if platos:
+                    for plato in platos:
+                        receta_id = str(plato.get("escandallo_id") or "").strip().upper()
+                        if not receta_id:
+                            continue
+                        usar_pax = bool(plato.get("usar_pax_evento", True))
+                        raciones = pax if usar_pax else int(plato.get("raciones", 0) or 0)
+                        if raciones <= 0:
+                            raciones = pax
+                        referencias_receta.append((receta_id, raciones))
+                else:
+                    for receta_id in pase.get("recetas", []):
+                        rid = str(receta_id or "").strip().upper()
+                        if rid:
+                            referencias_receta.append((rid, pax))
 
-        for receta_id in receta_ids:
+        for receta_id, raciones_receta in referencias_receta:
             try:
-                coste = self.calcular_coste_receta(receta_id, pax, 0.0)
+                coste = self.calcular_coste_receta(receta_id, int(raciones_receta), 0.0)
                 recetas_coste.append(coste)
                 avisos.extend(coste.get("avisos", []))
             except Exception as exc:

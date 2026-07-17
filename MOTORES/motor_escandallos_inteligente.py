@@ -234,11 +234,39 @@ class MotorEscandallosInteligente:
         recetas_calculadas, recetas_sin_escandallo = [], []
         for servicio in evento.get("servicios", []):
             for pase in servicio.get("pases", []):
-                for receta_id in pase.get("recetas", []):
+                platos = [p for p in list(pase.get("platos", []) or []) if isinstance(p, dict)]
+                referencias: List[Dict[str, Any]] = []
+                if platos:
+                    for plato in platos:
+                        receta_id = str(plato.get("escandallo_id") or "").strip().upper()
+                        if not receta_id:
+                            continue
+                        usar_pax = bool(plato.get("usar_pax_evento", True))
+                        raciones = pax if usar_pax else int(plato.get("raciones", 0) or 0)
+                        if raciones <= 0:
+                            raciones = pax
+                        referencias.append({
+                            "receta_id": receta_id,
+                            "raciones": raciones,
+                            "origen": f"Evento {evento.get('nombre')} / Pase {pase.get('nombre')} / Plato {plato.get('id') or receta_id}",
+                        })
+                else:
+                    for receta_id in pase.get("recetas", []):
+                        rid = str(receta_id or "").strip().upper()
+                        if not rid:
+                            continue
+                        referencias.append({
+                            "receta_id": rid,
+                            "raciones": pax,
+                            "origen": f"Evento {evento.get('nombre')} / Pase {pase.get('nombre')}",
+                        })
+
+                for referencia in referencias:
+                    receta_id = referencia["receta_id"]
                     if receta_id not in self.escandallos or not self.escandallos[receta_id].activo:
                         recetas_sin_escandallo.append(receta_id)
                         continue
-                    calculo = self.calcular_necesidades_receta(receta_id, pax, f"Evento {evento.get('nombre')} / Pase {pase.get('nombre')}")
+                    calculo = self.calcular_necesidades_receta(receta_id, int(referencia["raciones"]), referencia["origen"])
                     recetas_calculadas.append(calculo)
                     for nec in calculo["necesidades"]:
                         clave = nec.get("articulo_id") or nec.get("elaboracion_id") or f"{nec['nombre'].lower().strip()}|{nec['unidad']}"

@@ -19,6 +19,7 @@ class Pase:
     hora_inicio: str
     duracion_min: int
     recetas: List[str] = field(default_factory=list)
+    platos: List[Dict[str, Any]] = field(default_factory=list)
     notas: str = ""
     id: str = field(default_factory=lambda: nuevo_id("PASE"))
 
@@ -32,6 +33,7 @@ class Pase:
             hora_inicio=str(datos.get("hora_inicio", "21:00")),
             duracion_min=int(datos.get("duracion_min", 30) or 30),
             recetas=list(datos.get("recetas", []) or []),
+            platos=[p for p in list(datos.get("platos", []) or []) if isinstance(p, dict)],
             notas=str(datos.get("notas", "")),
             id=str(datos.get("id") or nuevo_id("PASE")),
         )
@@ -382,9 +384,140 @@ class MotorEventos:
             receta_id = str(receta).strip()
             if receta_id and receta_id not in recetas_limpias:
                 recetas_limpias.append(receta_id)
-        servicio.pases.append(Pase(str(nombre).strip() or "Pase", hora, duracion, recetas_limpias, str(notas).strip()))
+        servicio.pases.append(Pase(
+            nombre=str(nombre).strip() or "Pase",
+            hora_inicio=hora,
+            duracion_min=duracion,
+            recetas=recetas_limpias,
+            notas=str(notas).strip(),
+        ))
         self._persistir()
         return self.obtener(evento_id)
+
+    def _escandallo_disponible(self, receta_id: str) -> bool:
+        receta_id = str(receta_id or "").strip().upper()
+        if not receta_id or self.db is None:
+            return False
+        try:
+            escandallos = list(self.db.cargar("escandallos") or [])
+        except Exception:
+            return False
+        for esc in escandallos:
+            if str(esc.get("receta_id") or "").strip().upper() != receta_id:
+                continue
+            return bool(esc.get("activo", True))
+        return False
+
+    def _coste_escandallo_resumen(self, receta_id: str, raciones: int) -> Dict[str, Any]:
+        receta_id = str(receta_id or "").strip().upper()
+        if self.db is None:
+            return {
+                "coste_disponible": False,
+                "coste_por_racion": None,
+                "coste_total": None,
+                "observacion_coste": "Sin acceso a escandallos para estimar coste.",
+            }
+        try:
+            escandallos = list(self.db.cargar("escandallos") or [])
+        except Exception:
+            escandallos = []
+        esc = next((e for e in escandallos if str(e.get("receta_id") or "").strip().upper() == receta_id), None)
+        if not esc:
+            return {
+                "coste_disponible": False,
+                "coste_por_racion": None,
+                "coste_total": None,
+                "observacion_coste": "No existe escandallo para calcular coste.",
+            }
+        try:
+            coste_por_racion = float(esc.get("coste_por_racion", 0.0) or 0.0)
+        except (TypeError, ValueError):
+            coste_por_racion = 0.0
+        if coste_por_racion <= 0:
+            return {
+                "coste_disponible": False,
+                "coste_por_racion": None,
+                "coste_total": None,
+                "observacion_coste": "Coste no disponible: faltan precios o cálculo del escandallo.",
+            }
+        r = max(0, int(raciones or 0))
+        return {
+            "coste_disponible": True,
+            "coste_por_racion": round(coste_por_racion, 4),
+            "coste_total": round(coste_por_racion * r, 4),
+            "observacion_coste": "",
+        }
+
+    def _platos_legacy_desde_recetas(self, evento: Evento, servicio: Servicio, pase: Pase) -> List[Dict[str, Any]]:
+        salida = []
+        for receta_id in pase.recetas:
+            rid = str(receta_id or "").strip().upper()
+            if not rid:
+                continue
+            raciones = max(0, int(evento.pax or 0))
+            coste = self._coste_escandallo_resumen(rid, raciones)
+            salida.append({
+                "id": nuevo_id("PLATO"),
+                "origen": "escandallo_existente",
+                "escandallo_id": rid,
+                "nombre": rid,
+                "usar_pax_evento": True,
+                "raciones": raciones,
+                "servicio_id": servicio.id,
+                "pase_id": pase.id,
+                "observaciones": "",
+                "ajustes_aprobados": "",
+                "legacy": True,
+                **coste,
+            })
+        return salida
+
+    def listar_platos_pase(self, evento_id: str, servicio_id: str, pase_id: str) -> List[Dict[str, Any]]:
+        evento = self.obtener(evento_id)
+        servicio = self.obtener_servicio(evento_id, servicio_id)
+        pase = self.obtener_pase(evento_id, servicio_id, pase_id)
+        platos = [p for p in list(pase.platos or []) if isinstance(p, dict)]
+        if platos:
+            return platos
+        return self._platos_legacy_desde_recetas(evento, servicio, pase)
+
+    def agregar_plato(self, evento_id: str, servicio_id: str, pase_id: str, escandallo_id: str, usar_pax_evento: bool = True, raciones: int = 0, observaciones: str = "", ajustes_aprobados: str = "") -> Evento:
+        evento = self.obtener(evento_id)
+        servicio = self.obtener_servicio(evento_id, servicio_id)
+        pase = self.obtener_pase(evento_id, servicio_id, pase_id)
+
+        rid = str(escandallo_id or "").strip().upper()
+        if not rid:
+            raise ValueError("Debes indicar un escandallo válido.")
+        if not self._escandallo_disponible(rid):
+            raise ValueError(f"El escandallo '{rid}' no existe o no está disponible.")
+
+        usar_pax = bool(usar_pax_evento)
+        raciones_finales = int(evento.pax or 0) if usar_pax else int(raciones or 0)
+        if raciones_finales <= 0:
+            raise ValueError("Las raciones deben ser mayores que cero.")
+
+        coste = self._coste_escandallo_resumen(rid, raciones_finales)
+        plato = {
+            "id": nuevo_id("PLATO"),
+            "origen": "escandallo_existente",
+            "escandallo_id": rid,
+            "nombre": rid,
+            "usar_pax_evento": usar_pax,
+            "raciones": raciones_finales,
+            "servicio_id": servicio.id,
+            "pase_id": pase.id,
+            "observaciones": str(observaciones or "").strip(),
+            "ajustes_aprobados": str(ajustes_aprobados or "").strip(),
+            **coste,
+        }
+
+        pase.platos = [p for p in list(pase.platos or []) if isinstance(p, dict)]
+        pase.platos.append(plato)
+        if rid not in pase.recetas:
+            pase.recetas.append(rid)
+        self._persistir()
+        return evento
 
     def obtener_pase(self, evento_id: str, servicio_id: str, pase_id: str) -> Pase:
         servicio = self.obtener_servicio(evento_id, servicio_id)
@@ -446,18 +579,21 @@ class MotorEventos:
                 "duracion_min": servicio.duracion_min,
             })
             for pase in servicio.pases:
+                platos = self.listar_platos_pase(evento.id, servicio.id, pase.id)
                 linea.append({
                     "tipo": "pase", "hora": pase.hora_inicio,
                     "nombre": pase.nombre, "servicio": servicio.nombre,
                     "servicio_id": servicio.id, "pase_id": pase.id,
                     "duracion_min": pase.duracion_min,
                     "recetas": list(pase.recetas), "notas": pase.notas,
+                    "platos": platos,
                 })
         linea.sort(key=lambda item: (self._minutos(item.get("hora", "")), 0 if item["tipo"] == "servicio" else 1))
         totales = {
             "servicios": len(evento.servicios),
             "pases": sum(len(s.pases) for s in evento.servicios),
             "recetas_en_pases": sum(len(p.recetas) for s in evento.servicios for p in s.pases),
+            "platos_en_pases": sum(len(self.listar_platos_pase(evento.id, s.id, p.id)) for s in evento.servicios for p in s.pases),
         }
         return {
             "evento": evento.to_dict(),
@@ -468,13 +604,20 @@ class MotorEventos:
 
     def resumen_ejecutivo(self, evento_id: str) -> Dict[str, Any]:
         evento = self.obtener(evento_id)
-        recetas = [r for s in evento.servicios for p in s.pases for r in p.recetas]
+        recetas = []
+        for servicio in evento.servicios:
+            for pase in servicio.pases:
+                platos = self.listar_platos_pase(evento.id, servicio.id, pase.id)
+                if platos:
+                    recetas.extend([str(p.get("escandallo_id") or "") for p in platos if str(p.get("escandallo_id") or "").strip()])
+                else:
+                    recetas.extend([str(r) for r in pase.recetas])
         avisos = []
         if not evento.servicios:
             avisos.append("Faltan servicios.")
         if any(not s.pases for s in evento.servicios):
             avisos.append("Hay servicios sin pases.")
-        if any(not p.recetas for s in evento.servicios for p in s.pases):
+        if any(not self.listar_platos_pase(evento.id, s.id, p.id) for s in evento.servicios for p in s.pases):
             avisos.append("Hay pases sin recetas.")
         return {
             "evento": evento.to_dict(),

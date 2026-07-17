@@ -14,6 +14,59 @@ class MotorFake:
     def __init__(self):
         self.calls = []
         self.recomendacion = None
+        self.clasificacion = {
+            "resumen": {"criticas": 2, "largas": 1, "medias": 0, "rapidas": 1},
+            "detalle": [
+                {"tarea_id": "T1", "titulo": "Carrillera", "grupos": ["critica", "larga"], "resumen": "Carrillera — critica + larga", "razones": ["stock insuficiente", "duración estimada de varias horas"]},
+                {"tarea_id": "T2", "titulo": "Cortar verduras", "grupos": ["rapida"], "resumen": "Cortar verduras — rapida", "razones": ["duración estimada de 45 min"]},
+            ],
+            "total_elaboraciones": 2,
+        }
+        self.cuellos = {
+            "resumen": {"total": 1, "recursos": 1, "personal": 0, "dependencias": 0},
+            "detalle": [
+                {
+                    "tipo": "recurso",
+                    "titulo": "Posible cuello de botella en horno entre Carrillera y Costillar.",
+                    "momento": "Día 1 · 08:45-09:15",
+                    "riesgo": "demanda prevista 2 para capacidad disponible 1",
+                    "consecuencia": "existe riesgo de retrasar el servicio",
+                    "explicacion": [
+                        "ambas elaboraciones requieren horno",
+                        "coinciden temporalmente",
+                        "el recurso disponible es insuficiente (1)",
+                        "existe riesgo de retrasar el servicio",
+                    ],
+                }
+            ],
+        }
+        self.cronologia = {
+            "resumen": {"total_tramos": 2, "tramos_estimados": 2, "tramos_reales": 0, "tramos_indeterminados": 0, "precision_estimacion_min": 5},
+            "base_horaria": {"texto": "09:00 (estimado)", "tipo": "estimada_desde_plan"},
+            "alertas": [],
+            "tramos": [
+                {
+                    "tarea": "Carrillera",
+                    "fase": "Horno inicial",
+                    "recurso": "horno",
+                    "inicio": {"texto": "09:00 (estimado)", "tipo": "estimado"},
+                    "fin": {"texto": "10:00 (estimado)", "tipo": "estimado"},
+                    "inicio_razon": "Empieza aquí como estimación secuencial basada en la duración conocida del tramo anterior.",
+                    "informacion_real": [],
+                    "informacion_estimada": ["hora_inicio_estimada", "hora_fin_estimada", "duracion_min"],
+                },
+                {
+                    "tarea": "Carrillera",
+                    "fase": "Salseado final",
+                    "recurso": "fuego",
+                    "inicio": {"texto": "10:00 (estimado)", "tipo": "estimado"},
+                    "fin": {"texto": "10:20 (estimado)", "tipo": "estimado"},
+                    "inicio_razon": "Empieza aquí como estimación secuencial basada en la duración conocida del tramo anterior.",
+                    "informacion_real": [],
+                    "informacion_estimada": ["hora_inicio_estimada", "hora_fin_estimada", "duracion_min"],
+                },
+            ],
+        }
         self.plan = {
             "id": "P1", "nombre": "Boda sábado", "fecha": "2026-07-18", "estado": "en_produccion",
             "asignacion_recursos": {"asignaciones": [
@@ -67,6 +120,12 @@ class MotorFake:
     def obtener_plan(self, plan_id): return PlanFake(self.plan)
     def resumen_ejecucion(self, plan_id):
         return {"plan":"Boda sábado","estado_plan":"en_produccion","porcentaje_completado":25,"total_tareas":2,"tareas":self.tareas,"alertas":[],"tareas_pendientes":self.tareas}
+    def panel_produccion(self, plan_id):
+        return {
+            "clasificacion_jornada": self.clasificacion,
+            "cuellos_botella_previstos": self.cuellos,
+            "cronologia_operativa_prevista": self.cronologia,
+        }
     def iniciar_tarea(self,*a): self.calls.append(("iniciar",a)); return {"titulo":"x"}
     def pausar_tarea(self,*a): self.calls.append(("pausar",a)); return {"titulo":"x"}
     def reanudar_tarea(self,*a): self.calls.append(("reanudar",a)); return {"titulo":"x"}
@@ -95,6 +154,11 @@ def test_panel_humano_y_siguiente_accion():
     p = s.construir_panel("P1")
     assert p["siguiente_accion"]["codigo"] == "CONTINUAR"
     assert "Carrillera" in p["siguiente_accion"]["texto"]
+    assert p["resumen_jornada"] == {"criticas": 2, "largas": 1, "medias": 0, "rapidas": 1}
+    assert p["resumen_cuellos"] == {"total": 1, "recursos": 1, "personal": 0, "dependencias": 0}
+    assert p["resumen_cronologia"]["total_tramos"] == 2
+    assert p["cronologia_base_horaria"]["texto"] == "09:00 (estimado)"
+    assert p["cronologia_tramos"][0]["inicio"]["texto"].endswith("(estimado)")
     assert p["tareas"][0]["estado_texto"] == "🟠 En marcha"
     assert p["tareas"][0]["tiempo_restante_texto"] == "1 h 25 min"
     assert p["tareas"][0]["responsable_texto"] == "Cocinero 1"
@@ -198,6 +262,7 @@ def test_siguiente_movimiento_se_oculta_si_hay_produccion_critica_pendiente():
 def test_mientras_tanto_no_aparece_si_no_hay_compatibilidad():
     s, m = servicio()
     m.tareas[0]["estado_ejecucion"] = "pendiente"
+    m.tareas[0]["prioridad"] = 40
     m.recomendacion = {
         "codigo": "SUGERIDA",
         "tarea_id": "T2",
@@ -235,6 +300,32 @@ def test_fase_actual_no_aparece_si_no_hay_fase_operativa():
         fase["estado"] = "PENDIENTE"
     p = s.construir_panel("P1")
     assert p.get("fase_actual") == {}
+
+
+def test_clasificacion_detalle_se_expone_sin_cambiar_recomendacion_principal():
+    s, m = servicio()
+    m.tareas[0]["estado_ejecucion"] = "pendiente"
+    m.recomendacion = {
+        "codigo": "SUGERIDA",
+        "tarea_id": "T2",
+        "criterios": ["puede arrancarse ya sin esperar otras tareas"],
+    }
+    p = s.construir_panel("P1")
+    assert p["siguiente_accion"]["codigo"] == "INICIAR"
+    assert p["siguiente_accion"]["tarea_id"] == "T2"
+    assert p["resumen_jornada"]["criticas"] == 2
+    assert p["clasificacion_detalle"][0]["grupos"] == ["critica", "larga"]
+
+
+def test_cuellos_previstos_se_exponen_con_trazabilidad_real():
+    s, _ = servicio()
+    p = s.construir_panel("P1")
+    cuello = p["cuellos_detalle"][0]
+    assert cuello["tipo"] == "recurso"
+    assert "horno" in cuello["titulo"].lower()
+    assert "08:45-09:15" in cuello["momento"]
+    assert "capacidad disponible 1" in cuello["riesgo"]
+    assert "retrasar el servicio" in cuello["consecuencia"]
 
 
 def test_iniciar_tarea_con_fases_activa_primera_fase_y_muestra_fase_actual(tmp_path):

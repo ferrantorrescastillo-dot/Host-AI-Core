@@ -14,6 +14,7 @@ from typing import Dict, List, Any, Optional
 from MODELOS.produccion_real import FaseProduccionReal, TareaProduccionReal, BloqueProduccionReal, PlanProduccionReal
 from datetime import datetime
 import copy
+import json
 
 
 class MotorProduccionReal:
@@ -128,6 +129,10 @@ class MotorProduccionReal:
             cronograma=cronograma,
             avisos=avisos,
             estado="revisar" if avisos else "ok",
+            configuracion_planificacion={
+                "hora_inicio": str(hora_inicio or "08:00"),
+                "cocineros": int(equipo_cocina or 2),
+            },
         )
         self.planes[plan.id] = plan
         self._persistir()
@@ -948,6 +953,8 @@ class MotorProduccionReal:
         plan = self.obtener_plan(plan_id)
         resumen = self.resumen_ejecucion(plan_id)
         asignaciones = list((plan.asignacion_recursos or {}).get("asignaciones", []) or [])
+        clasificacion_jornada = self._clasificar_elaboraciones_abiertas(plan, resumen)
+        cuellos_botella_previstos = self._analizar_cuellos_botella_previstos(plan, resumen)
 
         tarea_por_id = {t.get("id"): t for t in resumen.get("tareas", [])}
         cocineros: Dict[str, Dict[str, Any]] = {}
@@ -1041,6 +1048,9 @@ class MotorProduccionReal:
             "tareas_pausadas": pausadas,
             "tareas_pendientes": resumen.get("tareas_pendientes", []),
             "alertas": resumen.get("alertas", []),
+            "clasificacion_jornada": clasificacion_jornada,
+            "cuellos_botella_previstos": cuellos_botella_previstos,
+            "cronologia_operativa_prevista": self._construir_cronologia_operativa(plan, resumen),
             "cocineros": sorted(cocineros.values(), key=lambda x: x["cocinero"]),
             "metricas_turno": {
                 "minutos_previstos": total_previsto,
@@ -1052,6 +1062,515 @@ class MotorProduccionReal:
             },
             "actualizado_en": self._ahora(),
         }
+
+    def _analizar_cuellos_botella_previstos(self, plan, resumen: Dict[str, Any]) -> Dict[str, Any]:
+        detalle: List[Dict[str, Any]] = []
+        detalle.extend(self._cuellos_recurso_previstos(plan, resumen))
+        detalle.extend(self._cuellos_personal_previstos(plan))
+        detalle.extend(self._cuellos_dependencia_previstos(plan, resumen))
+        detalle.sort(key=lambda item: (int(item.get("momento_min", 10**9) or 10**9), str(item.get("tipo") or ""), str(item.get("titulo") or "")))
+        return {
+            "resumen": {
+                "total": len(detalle),
+                "recursos": sum(1 for item in detalle if item.get("tipo") == "recurso"),
+                "personal": sum(1 for item in detalle if item.get("tipo") == "personal"),
+                "dependencias": sum(1 for item in detalle if item.get("tipo") == "dependencia"),
+            },
+            "detalle": detalle,
+        }
+
+    def _cuellos_recurso_previstos(self, plan, resumen: Dict[str, Any]) -> List[Dict[str, Any]]:
+        planificacion = dict(plan.planificacion_inteligente or {})
+        if not list(planificacion.get("bloques", []) or []):
+            return []
+        analisis = self._analizar_ocupacion_recursos(planificacion, self._capacidades_recursos_previstas(plan))
+        tareas_por_titulo = {str(t.get("titulo") or ""): t for t in (resumen.get("tareas") or [])}
+        detalle = []
+        for conflicto in analisis.get("conflictos", []):
+            tareas = [str(nombre or "").strip() for nombre in (conflicto.get("tareas") or []) if str(nombre or "").strip()]
+            if len(tareas) < 2:
+                continue
+            riesgo_servicio = any(self._tarea_compromete_servicio(tareas_por_titulo.get(nombre, {}), resumen) for nombre in tareas)
+            recurso = str(conflicto.get("recurso") or "recurso").replace("_", " ")
+            inicio_min = int(conflicto.get("inicio_min", 0) or 0)
+            fin_min = int(conflicto.get("fin_min", inicio_min) or inicio_min)
+            detalle.append({
+                "tipo": "recurso",
+                "recurso": recurso,
+                "tareas": tareas,
+                "momento": self._franja_jornada(conflicto.get("dia", 1), inicio_min, fin_min, plan),
+                "momento_min": self._momento_absoluto(conflicto.get("dia", 1), inicio_min, plan),
+                "titulo": f"Posible cuello de botella en {recurso} entre {' y '.join(tareas[:2])}.",
+                "riesgo": f"demanda prevista {int(conflicto.get('demanda', 0) or 0)} para capacidad disponible {int(conflicto.get('capacidad', 0) or 0)}",
+                "consecuencia": "existe riesgo de retrasar el servicio" if riesgo_servicio else "obligará a desplazar una de las elaboraciones previstas",
+                "explicacion": [
+                    f"ambas elaboraciones requieren {recurso}",
+                    "coinciden temporalmente",
+                    f"el recurso disponible es insuficiente ({int(conflicto.get('capacidad', 0) or 0)})",
+                    "existe riesgo de retrasar el servicio" if riesgo_servicio else "puede generar reordenación forzada del turno",
+                ],
+            })
+        return detalle
+
+    def _cuellos_personal_previstos(self, plan) -> List[Dict[str, Any]]:
+        asignacion = dict(plan.asignacion_recursos or {})
+        carga = dict(asignacion.get("carga_por_cocinero") or {})
+        resumen = dict(asignacion.get("resumen") or {})
+        asignaciones = list(asignacion.get("asignaciones") or [])
+        capacidad = int(resumen.get("capacidad_por_cocinero_min", 0) or 0)
+        if not carga or capacidad <= 0:
+            return []
+        detalle = []
+        for cocinero, minutos in carga.items():
+            minutos = int(minutos or 0)
+            if minutos <= capacidad:
+                continue
+            usos = [a for a in asignaciones if str(a.get("cocinero") or "") == str(cocinero)]
+            if not usos:
+                continue
+            tareas = [str(a.get("elaboracion") or a.get("nombre") or a.get("clave") or "").strip() for a in usos if str(a.get("elaboracion") or a.get("nombre") or a.get("clave") or "").strip()]
+            inicio_min = min(int(a.get("inicio_min", 0) or 0) for a in usos)
+            fin_min = max(int(a.get("fin_min", 0) or 0) for a in usos)
+            dia = min(int(a.get("dia", 1) or 1) for a in usos)
+            detalle.append({
+                "tipo": "personal",
+                "recurso": "personal",
+                "tareas": tareas,
+                "momento": self._franja_jornada(dia, inicio_min, fin_min, plan),
+                "momento_min": self._momento_absoluto(dia, inicio_min, plan),
+                "titulo": f"Posible cuello de botella de personal para {cocinero}.",
+                "riesgo": f"carga prevista de {minutos} min para una capacidad de {capacidad} min",
+                "consecuencia": "parte de la producción puede quedar fuera de jornada si no se redistribuye el trabajo",
+                "explicacion": [
+                    f"{cocinero} tiene más trabajo del que permite la jornada",
+                    f"carga prevista: {minutos} min",
+                    f"capacidad disponible: {capacidad} min",
+                    "si no se actúa, parte del trabajo se desplazará fuera de la franja prevista",
+                ],
+            })
+        return detalle
+
+    def _cuellos_dependencia_previstos(self, plan, resumen: Dict[str, Any]) -> List[Dict[str, Any]]:
+        planificacion = dict(plan.planificacion_inteligente or {})
+        bloques = [dict(b) for b in (planificacion.get("bloques") or []) if str(b.get("tipo_tiempo") or "") == "activo"]
+        if not bloques:
+            return []
+        dependientes_por_clave: Dict[str, List[Dict[str, Any]]] = {}
+        for bloque in bloques:
+            for dep in list(bloque.get("dependencias") or []):
+                dep_clave = str(dep or "").strip()
+                if dep_clave:
+                    dependientes_por_clave.setdefault(dep_clave, []).append(bloque)
+
+        tareas_por_id = {str(t.get("id") or ""): t for t in (resumen.get("tareas") or [])}
+        detalle = []
+        for clave, dependientes in dependientes_por_clave.items():
+            origen = next((b for b in bloques if str(b.get("clave") or "") == clave), None)
+            if not origen or not dependientes:
+                continue
+            tarea_origen = tareas_por_id.get(clave, {})
+            if self._normalizar_estado_ejecucion(tarea_origen.get("estado_ejecucion")) in {"finalizada", "cancelada"}:
+                continue
+            fin_origen = int(origen.get("fin_min", 0) or 0)
+            inicio_dependiente = min(int(b.get("inicio_min", fin_origen) or fin_origen) for b in dependientes)
+            if len(dependientes) < 2 and fin_origen < 90:
+                continue
+            nombres_dependientes = [str(b.get("nombre") or b.get("clave") or "").strip() for b in dependientes if str(b.get("nombre") or b.get("clave") or "").strip()]
+            riesgo_servicio = self._tarea_compromete_servicio(tarea_origen, resumen) or any(self._tarea_compromete_servicio(tareas_por_id.get(str(b.get("clave") or ""), {}), resumen) for b in dependientes)
+            detalle.append({
+                "tipo": "dependencia",
+                "recurso": "dependencia",
+                "tareas": [str(origen.get("nombre") or clave)] + nombres_dependientes,
+                "momento": self._franja_jornada(origen.get("dia", 1), fin_origen, inicio_dependiente, plan),
+                "momento_min": self._momento_absoluto(origen.get("dia", 1), fin_origen, plan),
+                "titulo": f"Posible cuello de botella por dependencia en {str(origen.get('nombre') or clave)}.",
+                "riesgo": f"{len(nombres_dependientes)} elaboración(es) dependen de que termine antes",
+                "consecuencia": "si se retrasa, arrastrará el servicio de sus dependientes" if riesgo_servicio else "si se retrasa, desplazará la cadena de elaboraciones dependientes",
+                "explicacion": [
+                    f"{str(origen.get('nombre') or clave)} debe terminar antes de {', '.join(nombres_dependientes)}",
+                    "las elaboraciones dependientes no pueden arrancar sin esa fase previa",
+                    "si la tarea origen no llega a tiempo, bloqueará la cadena posterior",
+                ],
+            })
+        return detalle
+
+    def _tarea_compromete_servicio(self, tarea: Dict[str, Any], resumen: Dict[str, Any]) -> bool:
+        if not tarea:
+            return False
+        if int(tarea.get("prioridad", 50) or 50) >= 90:
+            return True
+        return self._dependientes_abiertos_tarea(str(tarea.get("id") or ""), list(resumen.get("tareas") or [])) > 0
+
+    def _capacidades_recursos_previstas(self, plan) -> Dict[str, int]:
+        ruta = self.core.base_dir / "DATOS" / "config" / "recursos_cocina_556e2.json"
+        try:
+            data = json.loads(ruta.read_text(encoding="utf-8"))
+        except (FileNotFoundError, json.JSONDecodeError, OSError, TypeError, ValueError):
+            return {}
+        recursos = dict(data.get("recursos") or {}) if isinstance(data, dict) else {}
+        return {str(k): max(int(v or 0), 1) for k, v in recursos.items()}
+
+    @staticmethod
+    def _momento_absoluto(dia: int, inicio_min: int, plan) -> int:
+        jornada = int(float((plan.configuracion_planificacion or {}).get("jornada_horas", 7.5) or 7.5) * 60)
+        return max(0, (max(int(dia or 1), 1) - 1) * max(jornada, 1) + int(inicio_min or 0))
+
+    @staticmethod
+    def _franja_jornada(dia: int, inicio_min: int, fin_min: int, plan) -> str:
+        hora_inicio = str((plan.configuracion_planificacion or {}).get("hora_inicio", "08:00") or "08:00")
+        try:
+            hora_base, min_base = hora_inicio.split(":", 1)
+            base = int(hora_base) * 60 + int(min_base)
+        except (ValueError, TypeError):
+            base = 8 * 60
+
+        def _hora_local(minutos: int) -> str:
+            total = base + max(0, int(minutos or 0))
+            return f"{(total // 60) % 24:02d}:{total % 60:02d}"
+
+        dia_num = max(int(dia or 1), 1)
+        if int(fin_min or 0) <= int(inicio_min or 0):
+            return f"Día {dia_num} · {_hora_local(inicio_min)}"
+        return f"Día {dia_num} · {_hora_local(inicio_min)}-{_hora_local(fin_min)}"
+
+    def _construir_cronologia_operativa(self, plan, resumen: Dict[str, Any]) -> Dict[str, Any]:
+        tareas = list(resumen.get("tareas", []) or [])
+        base = self._base_horaria_cronologia(plan, tareas)
+        cursor_min = base.get("minutos")
+        tramos: List[Dict[str, Any]] = []
+        alertas: List[str] = []
+
+        for tarea in tareas:
+            titulo_tarea = str(tarea.get("titulo") or "").strip()
+            tarea_id = str(tarea.get("id") or "").strip()
+            fases = list(tarea.get("fases") or [])
+            if not fases:
+                continue
+
+            for fase in fases:
+                fase_id = str(fase.get("id") or "").strip()
+                nombre_fase = str(fase.get("nombre") or "").strip() or "Fase"
+                recurso = str(fase.get("recurso") or "").strip()
+                dependencia = str(fase.get("dependencia") or "").strip()
+                duracion_min = max(0, int(fase.get("duracion_min", 0) or 0))
+                duracion_activa = max(0, int(fase.get("duracion_activa_min", 0) or 0))
+                duracion_pasiva = max(0, int(fase.get("duracion_pasiva_min", 0) or 0))
+
+                inicio_real = self._minutos_desde_hora_texto(str(fase.get("hora_inicio_real") or ""))
+                fin_real = self._minutos_desde_hora_texto(str(fase.get("hora_fin_real") or ""))
+
+                if inicio_real is not None:
+                    inicio_min = inicio_real
+                    inicio_tipo = "real"
+                    inicio_razon = "Empieza en este momento porque existe hora real registrada de inicio de fase."
+                elif cursor_min is not None:
+                    inicio_min = cursor_min
+                    inicio_tipo = "estimado"
+                    inicio_razon = "Empieza aquí como estimación secuencial basada en la duración conocida del tramo anterior."
+                else:
+                    inicio_min = None
+                    inicio_tipo = "indeterminado"
+                    inicio_razon = "No hay hora de referencia suficiente para estimar este inicio sin inventar datos."
+
+                if fin_real is not None and fin_real >= 0:
+                    fin_min = fin_real
+                    fin_tipo = "real"
+                elif inicio_min is not None and duracion_min > 0:
+                    fin_min = inicio_min + duracion_min
+                    fin_tipo = "estimado"
+                else:
+                    fin_min = None
+                    fin_tipo = "indeterminado"
+
+                if duracion_min <= 0:
+                    alertas.append(f"{titulo_tarea} · {nombre_fase}: sin duración suficiente para estimar el tramo.")
+
+                tramos.append({
+                    "tarea_id": tarea_id,
+                    "tarea": titulo_tarea,
+                    "fase_id": fase_id,
+                    "fase": nombre_fase,
+                    "recurso": recurso,
+                    "dependencia": dependencia,
+                    "paralelo_potencial": bool(duracion_pasiva > 0 and not bool(fase.get("recurso_ocupado_en_pasiva", True))),
+                    "duracion_min": duracion_min,
+                    "duracion_activa_min": duracion_activa,
+                    "duracion_pasiva_min": duracion_pasiva,
+                    "inicio": self._marca_tiempo_cronologia(inicio_min, inicio_tipo),
+                    "fin": self._marca_tiempo_cronologia(fin_min, fin_tipo),
+                    "inicio_razon": inicio_razon,
+                    "sin_datos_duracion": duracion_min <= 0,
+                    "origen_tiempo": {
+                        "inicio_real": inicio_real is not None,
+                        "fin_real": fin_real is not None,
+                        "estimacion_desde_duraciones": inicio_real is None,
+                    },
+                    "informacion_real": [
+                        item for item in [
+                            "hora_inicio_real" if inicio_real is not None else "",
+                            "hora_fin_real" if fin_real is not None else "",
+                        ] if item
+                    ],
+                    "informacion_estimada": [
+                        item for item in [
+                            "hora_inicio_estimada" if inicio_real is None and inicio_min is not None else "",
+                            "hora_fin_estimada" if fin_real is None and fin_min is not None else "",
+                            "duracion_min" if duracion_min > 0 else "",
+                            "duracion_activa_min" if duracion_activa > 0 else "",
+                            "duracion_pasiva_min" if duracion_pasiva > 0 else "",
+                        ] if item
+                    ],
+                })
+
+                cursor_min = fin_min if fin_min is not None else None
+
+        return {
+            "resumen": {
+                "total_tramos": len(tramos),
+                "tramos_estimados": sum(1 for t in tramos if t.get("inicio", {}).get("tipo") == "estimado"),
+                "tramos_reales": sum(1 for t in tramos if t.get("inicio", {}).get("tipo") == "real"),
+                "tramos_indeterminados": sum(1 for t in tramos if t.get("inicio", {}).get("tipo") == "indeterminado"),
+                "precision_estimacion_min": 5,
+            },
+            "base_horaria": {
+                "texto": str(base.get("texto") or "sin referencia horaria"),
+                "tipo": str(base.get("tipo") or "indeterminada"),
+            },
+            "alertas": alertas,
+            "tramos": tramos,
+            "lectura_host_ai": "Cronología descriptiva del plan actual. No decide ni replanifica; solo explica el flujo previsto.",
+        }
+
+    def _base_horaria_cronologia(self, plan, tareas: List[Dict[str, Any]]) -> Dict[str, Any]:
+        inicio_plan = str((plan.configuracion_planificacion or {}).get("hora_inicio") or "").strip()
+        minutos_plan = self._minutos_desde_hora_texto(inicio_plan)
+        if minutos_plan is not None:
+            return {
+                "minutos": minutos_plan,
+                "texto": f"{self._hora_desde_minutos(minutos_plan)} (estimado)",
+                "tipo": "estimada_desde_plan",
+            }
+
+        for tarea in tareas:
+            for fase in list(tarea.get("fases") or []):
+                inicio_real = self._minutos_desde_hora_texto(str(fase.get("hora_inicio_real") or ""))
+                if inicio_real is not None:
+                    return {
+                        "minutos": inicio_real,
+                        "texto": self._hora_desde_minutos(inicio_real),
+                        "tipo": "real_registrada",
+                    }
+        return {"minutos": None, "texto": "sin referencia horaria", "tipo": "indeterminada"}
+
+    @staticmethod
+    def _minutos_desde_hora_texto(valor: str) -> Optional[int]:
+        texto = str(valor or "").strip()
+        if not texto:
+            return None
+        if "T" in texto:
+            texto = texto.split("T", 1)[1]
+        if " " in texto:
+            texto = texto.split(" ", 1)[0]
+        if len(texto) >= 5:
+            texto = texto[:5]
+        try:
+            h, m = texto.split(":", 1)
+            horas = int(h)
+            minutos = int(m)
+            if horas < 0 or minutos < 0 or minutos > 59:
+                return None
+            return horas * 60 + minutos
+        except (ValueError, TypeError):
+            return None
+
+    @staticmethod
+    def _hora_desde_minutos(minutos: int) -> str:
+        total = max(0, int(minutos or 0))
+        return f"{(total // 60) % 24:02d}:{total % 60:02d}"
+
+    def _marca_tiempo_cronologia(self, minutos: Optional[int], tipo: str) -> Dict[str, Any]:
+        tipo_normalizado = str(tipo or "indeterminado").strip().lower()
+        if minutos is None:
+            return {"tipo": "indeterminado", "texto": "sin hora suficiente", "minutos": None, "precision_min": None}
+        if tipo_normalizado == "real":
+            return {
+                "tipo": "real",
+                "texto": self._hora_desde_minutos(minutos),
+                "minutos": int(minutos),
+                "precision_min": 1,
+            }
+        if tipo_normalizado == "estimado":
+            redondeado = (int(minutos) // 5) * 5
+            return {
+                "tipo": "estimado",
+                "texto": f"{self._hora_desde_minutos(redondeado)} (estimado)",
+                "minutos": int(minutos),
+                "minutos_mostrados": redondeado,
+                "precision_min": 5,
+            }
+        return {"tipo": "indeterminado", "texto": "sin hora suficiente", "minutos": None, "precision_min": None}
+
+    def _clasificar_elaboraciones_abiertas(self, plan, resumen: Dict[str, Any]) -> Dict[str, Any]:
+        tareas = list(resumen.get("tareas", []) or [])
+        abiertas = [t for t in tareas if self._normalizar_estado_ejecucion(t.get("estado_ejecucion")) not in {"finalizada", "cancelada"}]
+        alertas_por_tarea: Dict[str, List[Dict[str, Any]]] = {}
+        for alerta in resumen.get("alertas", []) or []:
+            tarea_id = str(alerta.get("tarea_id") or "").strip()
+            if tarea_id:
+                alertas_por_tarea.setdefault(tarea_id, []).append(alerta)
+
+        detalle = []
+        conteo = {"criticas": 0, "largas": 0, "medias": 0, "rapidas": 0}
+        jornadas_min = int(float((plan.configuracion_planificacion or {}).get("jornada_horas", 0) or 0) * 60)
+
+        for tarea in abiertas:
+            if not self._es_elaboracion_culinaria(tarea):
+                continue
+
+            tarea_id = str(tarea.get("id") or "")
+            total, activo, pasivo = self._duraciones_tarea_clasificacion(tarea)
+            dependientes = self._dependientes_abiertos_tarea(tarea_id, abiertas)
+            razones_criticidad = self._razones_criticidad_tarea(
+                tarea,
+                alertas_por_tarea.get(tarea_id, []),
+                dependientes,
+            )
+            grupo_duracion, razones_duracion = self._clasificar_duracion_tarea(tarea, total, activo, pasivo, jornadas_min)
+
+            grupos = []
+            razones = []
+            if razones_criticidad:
+                grupos.append("critica")
+                razones.extend(razones_criticidad)
+                conteo["criticas"] += 1
+            if grupo_duracion == "larga":
+                grupos.append("larga")
+                razones.extend(razones_duracion)
+                conteo["largas"] += 1
+            elif grupo_duracion == "media":
+                grupos.append("media")
+                razones.extend(razones_duracion)
+                conteo["medias"] += 1
+            elif grupo_duracion == "rapida":
+                grupos.append("rapida")
+                razones.extend(razones_duracion)
+                conteo["rapidas"] += 1
+
+            if not grupos:
+                continue
+
+            detalle.append({
+                "tarea_id": tarea_id,
+                "titulo": str(tarea.get("titulo") or "").strip() or "Tarea",
+                "grupos": grupos,
+                "resumen": self._resumen_clasificacion_tarea(str(tarea.get("titulo") or "").strip() or "Tarea", grupos),
+                "razones": razones,
+                "duracion_total_min": total,
+                "duracion_activa_min": activo,
+                "duracion_pasiva_min": pasivo,
+                "bloqueo": str(tarea.get("bloqueo") or "").strip(),
+                "prioridad": int(tarea.get("prioridad", 50) or 50),
+            })
+
+        detalle.sort(key=lambda item: (
+            0 if "critica" in item.get("grupos", []) else 1,
+            0 if "larga" in item.get("grupos", []) else 1,
+            -int(item.get("prioridad", 50) or 50),
+            str(item.get("titulo") or ""),
+        ))
+        return {
+            "resumen": conteo,
+            "detalle": detalle,
+            "total_elaboraciones": len(detalle),
+        }
+
+    @staticmethod
+    def _es_elaboracion_culinaria(tarea: Dict[str, Any]) -> bool:
+        origen = str(tarea.get("origen") or "").strip().lower()
+        if origen in {"logistica", "cierre"}:
+            return False
+        tipos = {
+            str((fase or {}).get("tipo") or "").strip().lower()
+            for fase in (tarea.get("fases") or [])
+            if isinstance(fase, dict)
+        }
+        if tipos and tipos <= {"logistica", "cierre", "evento"}:
+            return False
+        return True
+
+    @staticmethod
+    def _duraciones_tarea_clasificacion(tarea: Dict[str, Any]) -> tuple[int | None, int, int]:
+        fases = [fase for fase in (tarea.get("fases") or []) if isinstance(fase, dict)]
+        if not fases:
+            total = tarea.get("tiempo_previsto_min")
+            total = int(total) if isinstance(total, (int, float)) and total > 0 else None
+            return total, 0 if total is None else total, 0
+
+        pasivos = {"reposo", "fermentacion", "fermentación", "enfriado", "abatido", "abatimiento", "descongelacion", "descongelación", "marinado", "espera", "coccion", "cocción", "coccion_lenta", "cocción_lenta"}
+        activo = 0
+        pasivo = 0
+        total = 0
+        for fase in fases:
+            minutos = int(fase.get("duracion_min", 0) or 0)
+            total += minutos
+            activo_fase = int(fase.get("duracion_activa_min", 0) or 0)
+            pasivo_fase = int(fase.get("duracion_pasiva_min", 0) or 0)
+            if activo_fase or pasivo_fase:
+                activo += activo_fase
+                pasivo += pasivo_fase
+                continue
+            if str(fase.get("tipo") or "").strip().lower() in pasivos:
+                pasivo += minutos
+            else:
+                activo += minutos
+        return (total or None), activo, pasivo
+
+    @staticmethod
+    def _dependientes_abiertos_tarea(tarea_id: str, tareas: List[Dict[str, Any]]) -> int:
+        total = 0
+        for tarea in tareas:
+            if str(tarea.get("id") or "") == str(tarea_id):
+                continue
+            for fase in (tarea.get("fases") or []):
+                if not isinstance(fase, dict):
+                    continue
+                if str(fase.get("dependencia") or "").strip() == str(tarea_id):
+                    total += 1
+                    break
+        return total
+
+    def _razones_criticidad_tarea(self, tarea: Dict[str, Any], alertas: List[Dict[str, Any]], dependientes: int) -> List[str]:
+        razones: List[str] = []
+        bloqueo = str(tarea.get("bloqueo") or "").strip()
+        if bloqueo:
+            razones.append(bloqueo)
+        if dependientes > 0:
+            razones.append("condiciona otras elaboraciones abiertas")
+        prioridad = int(tarea.get("prioridad", 50) or 50)
+        if prioridad >= 90:
+            razones.append("prioridad operativa muy urgente")
+        if any(str(a.get("tipo") or "") == "retraso" for a in alertas):
+            razones.append("acumula retraso operativo")
+        if any(str(a.get("tipo") or "") == "tiempo_excedido" for a in alertas):
+            razones.append("ya supera el tiempo previsto")
+        return razones
+
+    @staticmethod
+    def _clasificar_duracion_tarea(tarea: Dict[str, Any], total: int | None, activo: int, pasivo: int, jornada_min: int) -> tuple[str | None, List[str]]:
+        if total is None:
+            return None, []
+        dependencias = sum(1 for fase in (tarea.get("fases") or []) if isinstance(fase, dict) and str(fase.get("dependencia") or "").strip())
+        umbral_larga = max(180, int(jornada_min * 0.45)) if jornada_min > 0 else 180
+        if total >= umbral_larga or pasivo >= 120:
+            return "larga", [f"duración estimada de {total} min", "duración estimada de varias horas" if total >= 180 else f"tiempo pasivo relevante de {pasivo} min"]
+        if total <= 45 and pasivo < 45 and dependencias == 0:
+            return "rapida", [f"duración estimada de {total} min", "sin tiempo pasivo relevante", "sin dependencias importantes"]
+        return "media", [f"duración estimada de {total} min", "ejecutable dentro de la jornada sin ocuparla de forma dominante"]
+
+    @staticmethod
+    def _resumen_clasificacion_tarea(titulo: str, grupos: List[str]) -> str:
+        etiquetas = [g for g in ("critica", "larga", "media", "rapida") if g in grupos]
+        return f"{titulo} — {' + '.join(etiquetas)}"
 
     def estadisticas_turno(self, plan_id: str) -> Dict[str, Any]:
         """Resumen compacto reutilizable para cierre y futuras comparativas."""
