@@ -30,6 +30,7 @@ class InventarioRecursosProduccion:
     VERSION = "A2.1"
     VERSION_OCUPACION = "A2.2"
     VERSION_SIMULTANEIDAD = "A2.3"
+    VERSION_CONFLICTOS = "A2.4"
 
     ALIAS_FISICOS = {
         "horno": "horno",
@@ -301,6 +302,243 @@ class InventarioRecursosProduccion:
             "datos_reales_modificados": False,
         }
 
+    def construir_conflictos_plan(
+        self,
+        plan: Any,
+        cronologia: Dict[str, Any] | None = None,
+        ocupacion: Dict[str, Any] | None = None,
+        simultaneidad: Dict[str, Any] | None = None,
+        inventario: Dict[str, Any] | None = None,
+    ) -> Dict[str, Any]:
+        plan_dict = plan.to_dict() if hasattr(plan, "to_dict") else dict(plan or {})
+        inventario = dict(inventario or self.construir_inventario_plan(plan))
+        ocupacion = dict(ocupacion or self.construir_ocupacion_plan(plan, cronologia))
+        simultaneidad = dict(simultaneidad or self.construir_simultaneidad_plan(plan, cronologia, ocupacion))
+
+        capacidades = {
+            _texto(r.get("id_normalizado")): int(r.get("capacidad"))
+            for r in list(inventario.get("recursos_fisicos") or [])
+            if bool(r.get("capacidad_confirmada")) and isinstance(r.get("capacidad"), int)
+        }
+
+        recursos_conocidos = {_texto(r.get("id_normalizado")) for r in list(inventario.get("recursos_fisicos") or [])}
+        conflictos: List[Dict[str, Any]] = []
+        seq = 1
+
+        def nuevo(
+            tipo: str,
+            severidad: str,
+            *,
+            recurso: str = "",
+            responsable: str = "",
+            tareas: List[str] | None = None,
+            intervalo: str = "",
+            dia: int | None = None,
+            inicio_min: int | None = None,
+            fin_min: int | None = None,
+            descripcion: str = "",
+            origen: str = "simultaneidad",
+            origen_temporal: str = "indeterminada",
+            origenes_ocupacion: List[str] | None = None,
+            ocupaciones: List[Dict[str, Any]] | None = None,
+            datos_reales: bool | None = None,
+            datos_estimados: bool | None = None,
+        ) -> None:
+            nonlocal seq
+            conflictos.append({
+                "id": f"CFX-{seq:04d}",
+                "tipo": tipo,
+                "severidad": severidad,
+                "recurso": recurso,
+                "responsable": responsable,
+                "tareas_afectadas": sorted(set(tareas or [])),
+                "intervalo": intervalo,
+                "dia": dia,
+                "inicio_min": inicio_min,
+                "fin_min": fin_min,
+                "descripcion": descripcion,
+                "origen": origen,
+                "origen_temporal": origen_temporal,
+                "origenes_ocupacion": list(origenes_ocupacion or []),
+                "ocupaciones": list(ocupaciones or []),
+                "datos_reales": bool(datos_reales),
+                "datos_estimados": bool(datos_estimados),
+            })
+            seq += 1
+
+        for tramo in list(simultaneidad.get("tramos") or []):
+            ocupaciones = list(tramo.get("ocupaciones_activas") or [])
+            if not ocupaciones:
+                continue
+            intervalo = _texto(tramo.get("intervalo"))
+            dia = int(tramo.get("dia", 1) or 1)
+            inicio_min = int(tramo.get("inicio_min", 0) or 0)
+            fin_min = int(tramo.get("fin_min", 0) or 0)
+            origen_temporal = _texto(tramo.get("origen_temporal") or "indeterminada")
+            origenes_ocupacion = list(tramo.get("origenes_ocupacion") or [])
+            tareas = [
+                _texto(o.get("tarea"))
+                for o in ocupaciones
+                if _texto(o.get("tarea"))
+            ]
+
+            datos_reales = origen_temporal in {"real", "mixto"}
+            datos_estimados = origen_temporal in {"estimada", "mixto", "indeterminada"}
+
+            por_recurso: Dict[str, List[Dict[str, Any]]] = {}
+            for occ in ocupaciones:
+                recurso = _texto(occ.get("recurso"))
+                if recurso:
+                    por_recurso.setdefault(recurso, []).append(dict(occ))
+
+            for recurso, usos in sorted(por_recurso.items(), key=lambda item: item[0]):
+                if len(usos) > 1:
+                    nuevo(
+                        "doble_asignacion_recurso",
+                        "alta",
+                        recurso=recurso,
+                        tareas=tareas,
+                        intervalo=intervalo,
+                        dia=dia,
+                        inicio_min=inicio_min,
+                        fin_min=fin_min,
+                        descripcion=f"El recurso {recurso} aparece asignado simultáneamente a múltiples ocupaciones.",
+                        origen_temporal=origen_temporal,
+                        origenes_ocupacion=origenes_ocupacion,
+                        ocupaciones=usos,
+                        datos_reales=datos_reales,
+                        datos_estimados=datos_estimados,
+                    )
+                capacidad = capacidades.get(recurso)
+                if capacidad is not None and len(usos) > capacidad:
+                    severidad = "crítica" if len(usos) >= capacidad + 2 else "alta"
+                    nuevo(
+                        "capacidad_superada",
+                        severidad,
+                        recurso=recurso,
+                        tareas=tareas,
+                        intervalo=intervalo,
+                        dia=dia,
+                        inicio_min=inicio_min,
+                        fin_min=fin_min,
+                        descripcion=f"La demanda simultánea ({len(usos)}) supera la capacidad conocida ({capacidad}) de {recurso}.",
+                        origen_temporal=origen_temporal,
+                        origenes_ocupacion=origenes_ocupacion,
+                        ocupaciones=usos,
+                        datos_reales=datos_reales,
+                        datos_estimados=datos_estimados,
+                    )
+
+            por_responsable: Dict[str, List[Dict[str, Any]]] = {}
+            for occ in ocupaciones:
+                responsable = _texto(occ.get("responsable"))
+                if responsable:
+                    por_responsable.setdefault(responsable, []).append(dict(occ))
+            for responsable, usos in sorted(por_responsable.items(), key=lambda item: item[0]):
+                if len(usos) > 1:
+                    nuevo(
+                        "doble_asignacion_responsable",
+                        "alta",
+                        responsable=responsable,
+                        tareas=tareas,
+                        intervalo=intervalo,
+                        dia=dia,
+                        inicio_min=inicio_min,
+                        fin_min=fin_min,
+                        descripcion=f"El responsable {responsable} aparece asignado simultáneamente en más de una ocupación.",
+                        origen_temporal=origen_temporal,
+                        origenes_ocupacion=origenes_ocupacion,
+                        ocupaciones=usos,
+                        datos_reales=datos_reales,
+                        datos_estimados=datos_estimados,
+                    )
+
+            for recurso, usos in sorted(por_recurso.items(), key=lambda item: item[0]):
+                if recurso not in recursos_conocidos:
+                    nuevo(
+                        "recurso_desconocido",
+                        "media",
+                        recurso=recurso,
+                        tareas=tareas,
+                        intervalo=intervalo,
+                        dia=dia,
+                        inicio_min=inicio_min,
+                        fin_min=fin_min,
+                        descripcion=f"El recurso {recurso} aparece en ocupación pero no está disponible en el inventario del plan.",
+                        origen_temporal=origen_temporal,
+                        origenes_ocupacion=origenes_ocupacion,
+                        ocupaciones=usos,
+                        datos_reales=datos_reales,
+                        datos_estimados=datos_estimados,
+                    )
+
+        for dato in list(ocupacion.get("datos_incompletos") or []):
+            tipo = _texto(dato.get("tipo"))
+            if tipo in {"ocupacion_incompleta", "simultaneidad_intervalo_incompleto"}:
+                nuevo(
+                    "datos_incompletos",
+                    "baja",
+                    recurso=_texto(dato.get("recurso")),
+                    tareas=[_texto(dato.get("tarea"))] if _texto(dato.get("tarea")) else [],
+                    descripcion="Se detectaron datos de ocupación incompletos para evaluar simultaneidad con precisión.",
+                    origen="ocupacion",
+                    origen_temporal="indeterminada",
+                    datos_estimados=True,
+                )
+            elif tipo in {"simultaneidad_intervalo_invalido", "ocupacion_intervalo_invalido"}:
+                nuevo(
+                    "intervalo_invalido",
+                    "crítica",
+                    recurso=_texto(dato.get("recurso")),
+                    tareas=[_texto(dato.get("tarea"))] if _texto(dato.get("tarea")) else [],
+                    descripcion="Se detectó un intervalo inválido (fin <= inicio) en datos de ocupación.",
+                    origen="ocupacion",
+                    origen_temporal="indeterminada",
+                    datos_estimados=True,
+                )
+            elif tipo in {"ocupacion_recurso_no_clasificado", "recurso_no_clasificado"}:
+                nuevo(
+                    "recurso_sin_inventario",
+                    "media",
+                    recurso=_texto(dato.get("valor_original") or dato.get("recurso")),
+                    tareas=[_texto(dato.get("tarea"))] if _texto(dato.get("tarea")) else [],
+                    descripcion="El recurso no pudo normalizarse o no existe en inventario; requiere revisión de datos.",
+                    origen="inventario_ocupacion",
+                    origen_temporal="indeterminada",
+                    datos_estimados=True,
+                )
+
+        severidad_orden = {"crítica": 0, "alta": 1, "media": 2, "baja": 3}
+        conflictos = sorted(
+            conflictos,
+            key=lambda c: (
+                severidad_orden.get(_texto(c.get("severidad")).lower(), 9),
+                _texto(c.get("tipo")),
+                int(c.get("dia", 1) or 1),
+                int(c.get("inicio_min", 0) or 0),
+                _texto(c.get("recurso")),
+                _texto(c.get("responsable")),
+            ),
+        )
+        for idx, c in enumerate(conflictos, start=1):
+            c["id"] = f"CFX-{idx:04d}"
+
+        return {
+            "version": self.VERSION_CONFLICTOS,
+            "plan_id": _texto(plan_dict.get("id")),
+            "conflictos": conflictos,
+            "resumen": {
+                "total": len(conflictos),
+                "critica": sum(1 for c in conflictos if _texto(c.get("severidad")).lower() == "crítica"),
+                "alta": sum(1 for c in conflictos if _texto(c.get("severidad")).lower() == "alta"),
+                "media": sum(1 for c in conflictos if _texto(c.get("severidad")).lower() == "media"),
+                "baja": sum(1 for c in conflictos if _texto(c.get("severidad")).lower() == "baja"),
+                "por_tipo": self._contar_por_tipo(conflictos),
+            },
+            "solo_lectura": True,
+            "datos_reales_modificados": False,
+        }
+
     def simultaneidad_en_instante(self, simultaneidad: Dict[str, Any], instante_min: int, dia: int = 1) -> Dict[str, Any]:
         minuto = int(instante_min or 0)
         dia = max(1, int(dia or 1))
@@ -466,6 +704,14 @@ class InventarioRecursosProduccion:
                 if texto and texto not in salida:
                     salida.append(texto)
         return salida
+
+    @staticmethod
+    def _contar_por_tipo(conflictos: List[Dict[str, Any]]) -> Dict[str, int]:
+        conteo: Dict[str, int] = {}
+        for conflicto in conflictos:
+            tipo = _texto(conflicto.get("tipo")) or "desconocido"
+            conteo[tipo] = int(conteo.get(tipo, 0)) + 1
+        return dict(sorted(conteo.items(), key=lambda item: item[0]))
 
     def _indice_fases(self, plan_dict: Dict[str, Any]) -> Dict[tuple[str, str], Dict[str, Any]]:
         fases: Dict[tuple[str, str], Dict[str, Any]] = {}

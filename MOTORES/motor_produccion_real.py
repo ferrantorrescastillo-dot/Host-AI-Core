@@ -959,6 +959,13 @@ class MotorProduccionReal:
         cronologia_operativa_prevista = self._construir_cronologia_operativa(plan, resumen)
         ocupacion_temporal_recursos = self.ocupacion_temporal_recursos(plan_id, cronologia_operativa_prevista)
         simultaneidad_recursos = self.simultaneidad_recursos(plan_id, cronologia_operativa_prevista, ocupacion_temporal_recursos)
+        conflictos_recursos = self.conflictos_recursos(
+            plan_id,
+            cronologia=cronologia_operativa_prevista,
+            ocupacion=ocupacion_temporal_recursos,
+            simultaneidad=simultaneidad_recursos,
+            inventario=inventario_recursos,
+        )
 
         tarea_por_id = {t.get("id"): t for t in resumen.get("tareas", [])}
         cocineros: Dict[str, Dict[str, Any]] = {}
@@ -1056,6 +1063,7 @@ class MotorProduccionReal:
             "inventario_recursos": inventario_recursos,
             "ocupacion_temporal_recursos": ocupacion_temporal_recursos,
             "simultaneidad_recursos": simultaneidad_recursos,
+            "conflictos_recursos": conflictos_recursos,
             "cuellos_botella_previstos": cuellos_botella_previstos,
             "cronologia_operativa_prevista": cronologia_operativa_prevista,
             "cocineros": sorted(cocineros.values(), key=lambda x: x["cocinero"]),
@@ -1140,6 +1148,32 @@ class MotorProduccionReal:
     def tramos_simultaneidad_por_umbral(self, plan_id: str, minimo: int) -> List[Dict[str, Any]]:
         sim = self.simultaneidad_recursos(plan_id)
         return self.core.inventario_recursos_produccion.tramos_por_umbral(sim, minimo=minimo)
+
+    def conflictos_recursos(
+        self,
+        plan_id: str,
+        cronologia: Dict[str, Any] | None = None,
+        ocupacion: Dict[str, Any] | None = None,
+        simultaneidad: Dict[str, Any] | None = None,
+        inventario: Dict[str, Any] | None = None,
+    ) -> Dict[str, Any]:
+        plan = self.obtener_plan(plan_id)
+        if inventario is None:
+            inventario = self.inventario_recursos(plan_id)
+        if cronologia is None:
+            resumen = self.resumen_ejecucion(plan_id)
+            cronologia = self._construir_cronologia_operativa(plan, resumen)
+        if ocupacion is None:
+            ocupacion = self.ocupacion_temporal_recursos(plan_id, cronologia)
+        if simultaneidad is None:
+            simultaneidad = self.simultaneidad_recursos(plan_id, cronologia, ocupacion)
+        return self.core.inventario_recursos_produccion.construir_conflictos_plan(
+            plan,
+            cronologia=cronologia,
+            ocupacion=ocupacion,
+            simultaneidad=simultaneidad,
+            inventario=inventario,
+        )
 
     def _analizar_cuellos_botella_previstos(self, plan, resumen: Dict[str, Any]) -> Dict[str, Any]:
         detalle: List[Dict[str, Any]] = []
