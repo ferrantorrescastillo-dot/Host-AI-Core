@@ -49,7 +49,9 @@
       "id": "persona_marcelo",
       "nombre": "Marcelo",
       "rol": "rol_ayudante",
-      "partida": "partida_frio",
+      "partidas": [
+        "partida_frio"
+      ],
       "activo": true
     }
   ],

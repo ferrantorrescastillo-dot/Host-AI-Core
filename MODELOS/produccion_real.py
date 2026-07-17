@@ -79,6 +79,9 @@ class TareaProduccionReal:
     incidencias: List[Dict[str, Any]] = field(default_factory=list)
     mermas: List[Dict[str, Any]] = field(default_factory=list)
     checklist: List[Dict[str, Any]] = field(default_factory=list)
+    requisitos_recursos: Dict[str, Any] = field(default_factory=dict)
+    recursos_asignados: Dict[str, Any] = field(default_factory=dict)
+    diagnostico_recursos: Dict[str, Any] = field(default_factory=dict)
     id: str = ""
     def __post_init__(self):
         if not self.id: self.id = nuevo_id("TAREAPR")
@@ -110,6 +113,9 @@ class TareaProduccionReal:
             incidencias=list(d.get("incidencias",[]) or []),
             mermas=list(d.get("mermas",[]) or []),
             checklist=list(d.get("checklist",[]) or []),
+            requisitos_recursos=dict(d.get("requisitos_recursos",{}) or {}),
+            recursos_asignados=dict(d.get("recursos_asignados",{}) or {}),
+            diagnostico_recursos=dict(d.get("diagnostico_recursos",{}) or {}),
             id=str(d.get("id") or nuevo_id("TAREAPR")),
         )
 

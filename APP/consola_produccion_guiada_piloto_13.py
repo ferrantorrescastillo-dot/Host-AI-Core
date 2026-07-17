@@ -43,6 +43,7 @@ class ConsolaProduccionGuiadaPiloto13:
     def _trabajar_plan(self, plan_id: str, input_fn, print_fn) -> None:
         while True:
             panel = self.service.construir_panel(plan_id)
+            self._inyectar_nombres_recursos_panel(panel)
             self._mostrar_panel(panel, print_fn)
             print_fn("\n¿Qué acaba de pasar?")
             print_fn("ACCIONES HABITUALES")
@@ -55,6 +56,8 @@ class ConsolaProduccionGuiadaPiloto13:
             print_fn("5. Ha surgido un problema")
             print_fn("6. He resuelto un bloqueo")
             print_fn("8. Registrar merma")
+            print_fn("10. Configurar requisitos de recursos")
+            print_fn("11. Asignar recursos a tarea")
             print_fn("\nOTRAS OPCIONES")
             print_fn("A. Ver detalle de clasificación")
             print_fn("B. Ver detalle de cuellos previstos")
@@ -63,6 +66,7 @@ class ConsolaProduccionGuiadaPiloto13:
             print_fn("E. Ver ocupación de recursos")
             print_fn("F. Ver simultaneidad de recursos")
             print_fn("G. Ver conflictos de recursos")
+            print_fn("H. Ver diagnóstico R3 de recursos reales")
             print_fn("9. Actualizar la pantalla")
             print_fn("0. Volver")
             op = input_fn("Elige una opción: ").strip()
@@ -96,7 +100,11 @@ class ConsolaProduccionGuiadaPiloto13:
                 self._mostrar_conflictos_recursos(panel, print_fn)
                 input_fn("Pulsa Enter para volver al panel: ")
                 continue
-            if op not in {"1", "2", "3", "4", "5", "6", "7", "8"}:
+            if op.lower() == "h":
+                self._mostrar_diagnostico_recursos_reales(panel, print_fn)
+                input_fn("Pulsa Enter para volver al panel: ")
+                continue
+            if op not in {"1", "2", "3", "4", "5", "6", "7", "8", "10", "11"}:
                 print_fn("Opción no válida."); continue
             tarea = self._seleccionar_tarea(panel["tareas"], input_fn, print_fn)
             if not tarea: continue
@@ -178,6 +186,22 @@ class ConsolaProduccionGuiadaPiloto13:
                     motivo = input_fn("Motivo de merma (opcional): ").strip()
                     self.service.registrar_merma(plan_id, tarea["id"], cantidad, unidad, motivo=motivo)
                     print_fn("Merma registrada.")
+                elif op == "10":
+                    req = self._leer_requisitos_recursos(input_fn, print_fn, tarea)
+                    resultado = self.service.actualizar_requisitos_recursos_tarea(plan_id, tarea["id"], req)
+                    estado = (resultado.get("diagnostico") or {}).get("estado") or "sin_requisitos"
+                    print_fn(f"Requisitos actualizados. Estado de recursos: {estado}.")
+                elif op == "11":
+                    asignados = self._leer_asignacion_recursos(input_fn, print_fn, tarea)
+                    confirmar = input_fn("Si supera personas necesarias, ¿confirmar igualmente? (s/n): ").strip().lower() in {"s", "si", "sí"}
+                    resultado = self.service.actualizar_asignacion_recursos_tarea(
+                        plan_id,
+                        tarea["id"],
+                        asignados,
+                        confirmar_exceso_personas=confirmar,
+                    )
+                    estado = (resultado.get("diagnostico") or {}).get("estado") or "sin_requisitos"
+                    print_fn(f"Asignación actualizada. Estado de recursos: {estado}.")
             except Exception as exc:
                 print_fn(f"No se pudo completar la acción: {exc}")
 
@@ -257,11 +281,25 @@ class ConsolaProduccionGuiadaPiloto13:
             print_fn(f"- Reales: {int(resumen_cronologia.get('tramos_reales', 0) or 0)}")
             print_fn(f"- Indeterminados: {int(resumen_cronologia.get('tramos_indeterminados', 0) or 0)}")
         ConsolaProduccionGuiadaPiloto13._mostrar_resumen_recursos(panel, print_fn)
+        diag_r3 = dict(panel.get("diagnostico_recursos_reales") or {})
+        resumen_r3 = dict(diag_r3.get("resumen") or {})
+        if resumen_r3:
+            print_fn("\nR3 RECURSOS REALES")
+            print_fn(f"- Tareas: {int(resumen_r3.get('tareas_totales', 0) or 0)}")
+            print_fn(f"- Sin requisitos: {int(resumen_r3.get('sin_requisitos', 0) or 0)}")
+            print_fn(f"- Disponibles: {int(resumen_r3.get('disponibles', 0) or 0)}")
+            print_fn(f"- Con avisos: {int(resumen_r3.get('con_avisos', 0) or 0)}")
+            print_fn(f"- Bloqueadas por recursos: {int(resumen_r3.get('bloqueadas', 0) or 0)}")
         print_fn("\nSIGUIENTE TRABAJO")
         for i, t in enumerate(panel["tareas"], 1):
             print_fn(f"{i}. {t['estado_texto']} {t.get('titulo')} · {t['prioridad_texto']}")
             print_fn(f"   Queda: {t['tiempo_restante_texto']}")
             if t.get("bloqueo"): print_fn(f"   Bloqueo: {t['bloqueo']}")
+            if str(t.get("recursos_estado") or "").strip() and str(t.get("recursos_estado")) != "sin_requisitos":
+                print_fn(f"   Recursos R3: {t.get('recursos_estado')}")
+            resumen_recursos = ConsolaProduccionGuiadaPiloto13._resumen_recursos_tarea(t)
+            for linea in resumen_recursos:
+                print_fn(f"   {linea}")
 
     @staticmethod
     def _mostrar_resumen_recursos(panel: dict[str, Any], print_fn) -> None:
@@ -468,6 +506,351 @@ class ConsolaProduccionGuiadaPiloto13:
             print_fn(f"  Descripción: {conflicto.get('descripcion') or 'no indicado'}")
             print_fn(f"  Origen: {conflicto.get('origen') or 'no indicado'}")
             print_fn(f"  Carácter temporal: {temporal}")
+
+    def _leer_requisitos_recursos(self, input_fn, print_fn, tarea: dict[str, Any]) -> dict[str, Any]:
+        actuales = dict(tarea.get("requisitos_recursos") or {})
+        catalogos = self._catalogos_recursos()
+
+        partida_actual = self._nombre_por_id(actuales.get("partida_id", ""), catalogos["partidas"]) or "Sin partida"
+        equip_actual = self._nombres_por_ids(actuales.get("equipamiento_ids") or [], catalogos["equipamiento"]) or ["Ninguno"]
+        turno_actual = self._nombre_por_id(actuales.get("turno_id", ""), catalogos["turnos"]) or "Sin turno"
+
+        print_fn("Partida actual:")
+        print_fn(partida_actual)
+        partida_id = self._seleccionar_uno(
+            "PARTIDAS DISPONIBLES",
+            catalogos["partidas"],
+            "Sin partida",
+            "Selecciona una opción: ",
+            input_fn,
+            print_fn,
+            actual_id=str(actuales.get("partida_id") or ""),
+        )
+
+        print_fn("\nEquipamiento actual:")
+        print_fn(", ".join(equip_actual))
+        equipamiento_ids = self._seleccionar_varios(
+            "EQUIPAMIENTO DISPONIBLE",
+            catalogos["equipamiento"],
+            "Ninguno",
+            "Selecciona uno o varios separados por comas: ",
+            input_fn,
+            print_fn,
+            actual_ids=list(actuales.get("equipamiento_ids") or []),
+        )
+
+        personas = self._leer_entero_no_negativo(
+            "Personas necesarias: ",
+            input_fn,
+            print_fn,
+            default=int(actuales.get("personas_necesarias", 0) or 0),
+        )
+
+        print_fn("\nTurno actual:")
+        print_fn(turno_actual)
+        turno_id = self._seleccionar_uno(
+            "TURNOS DISPONIBLES",
+            catalogos["turnos"],
+            "Sin turno",
+            "Selecciona: ",
+            input_fn,
+            print_fn,
+            actual_id=str(actuales.get("turno_id") or ""),
+        )
+
+        duracion = self._leer_entero_no_negativo(
+            "Duración estimada (min): ",
+            input_fn,
+            print_fn,
+            default=actuales.get("duracion_minutos"),
+            permitir_vacio_default=True,
+        )
+
+        return {
+            "partida_id": partida_id,
+            "equipamiento_ids": equipamiento_ids,
+            "personas_necesarias": personas,
+            "turno_id": turno_id,
+            "duracion_minutos": duracion,
+        }
+
+    def _leer_asignacion_recursos(self, input_fn, print_fn, tarea: dict[str, Any]) -> dict[str, Any]:
+        actuales = dict(tarea.get("recursos_asignados") or {})
+        catalogos = self._catalogos_recursos()
+
+        personas_actual = self._nombres_por_ids(actuales.get("persona_ids") or [], catalogos["personas"]) or ["Ninguna"]
+        equip_actual = self._nombres_por_ids(actuales.get("equipamiento_ids") or [], catalogos["equipamiento"]) or ["Ninguno"]
+        partida_actual = self._nombre_por_id(actuales.get("partida_id", ""), catalogos["partidas"]) or "Sin partida"
+        turno_actual = self._nombre_por_id(actuales.get("turno_id", ""), catalogos["turnos"]) or "Sin turno"
+
+        print_fn("Personas actuales:")
+        print_fn(", ".join(personas_actual))
+        persona_ids = self._seleccionar_varios(
+            "PERSONAL DISPONIBLE",
+            catalogos["personas"],
+            "Ninguna",
+            "Selecciona una o varias personas separadas por comas: ",
+            input_fn,
+            print_fn,
+            actual_ids=list(actuales.get("persona_ids") or []),
+        )
+
+        print_fn("\nEquipamiento actual:")
+        print_fn(", ".join(equip_actual))
+        equipamiento_ids = self._seleccionar_varios(
+            "EQUIPAMIENTO DISPONIBLE",
+            catalogos["equipamiento"],
+            "Ninguno",
+            "Selecciona uno o varios separados por comas: ",
+            input_fn,
+            print_fn,
+            actual_ids=list(actuales.get("equipamiento_ids") or []),
+        )
+
+        print_fn("\nPartida actual:")
+        print_fn(partida_actual)
+        partida_id = self._seleccionar_uno(
+            "PARTIDAS DISPONIBLES",
+            catalogos["partidas"],
+            "Sin partida",
+            "Selecciona una opción: ",
+            input_fn,
+            print_fn,
+            actual_id=str(actuales.get("partida_id") or ""),
+        )
+
+        print_fn("\nTurno actual:")
+        print_fn(turno_actual)
+        turno_id = self._seleccionar_uno(
+            "TURNOS DISPONIBLES",
+            catalogos["turnos"],
+            "Sin turno",
+            "Selecciona: ",
+            input_fn,
+            print_fn,
+            actual_id=str(actuales.get("turno_id") or ""),
+        )
+
+        return {
+            "persona_ids": persona_ids,
+            "equipamiento_ids": equipamiento_ids,
+            "partida_id": partida_id,
+            "turno_id": turno_id,
+        }
+
+    def _catalogos_recursos(self) -> dict[str, list[dict[str, str]]]:
+        prr = getattr(self.service, "produccion_recursos_reales", None)
+        if prr is None:
+            return {"partidas": [], "equipamiento": [], "turnos": [], "personas": []}
+
+        cfg_r1 = prr.srv_r1.obtener_configuracion()
+        cfg_r2 = prr.srv_r2.obtener_configuracion()
+
+        partidas = [
+            {"id": str(x.get("id") or "").strip(), "nombre": str(x.get("nombre") or "").strip()}
+            for x in list(cfg_r1.get("partidas") or [])
+            if isinstance(x, dict) and str(x.get("id") or "").strip() and bool(x.get("activa", True))
+        ]
+        equipamiento = [
+            {"id": str(x.get("id") or "").strip(), "nombre": str(x.get("nombre") or "").strip()}
+            for x in list(cfg_r1.get("equipamiento") or [])
+            if isinstance(x, dict) and str(x.get("id") or "").strip() and bool(x.get("activo", True))
+        ]
+        turnos = [
+            {"id": str(x.get("id") or "").strip(), "nombre": str(x.get("nombre") or "").strip()}
+            for x in list(cfg_r2.get("turnos") or [])
+            if isinstance(x, dict) and str(x.get("id") or "").strip() and bool(x.get("activo", True))
+        ]
+        personas = [
+            {"id": str(x.get("id") or "").strip(), "nombre": str(x.get("nombre") or "").strip()}
+            for x in list(cfg_r2.get("personal") or [])
+            if isinstance(x, dict) and str(x.get("id") or "").strip() and bool(x.get("activo", True))
+        ]
+
+        return {
+            "partidas": partidas,
+            "equipamiento": equipamiento,
+            "turnos": turnos,
+            "personas": personas,
+        }
+
+    def _inyectar_nombres_recursos_panel(self, panel: dict[str, Any]) -> None:
+        catalogos = self._catalogos_recursos()
+        nombres_partida = {str(x.get("id") or ""): str(x.get("nombre") or "") for x in catalogos.get("partidas", [])}
+        nombres_equipamiento = {str(x.get("id") or ""): str(x.get("nombre") or "") for x in catalogos.get("equipamiento", [])}
+        nombres_turno = {str(x.get("id") or ""): str(x.get("nombre") or "") for x in catalogos.get("turnos", [])}
+        for tarea in list(panel.get("tareas") or []):
+            if not isinstance(tarea, dict):
+                continue
+            tarea["recursos_nombres_partida"] = dict(nombres_partida)
+            tarea["recursos_nombres_equipamiento"] = dict(nombres_equipamiento)
+            tarea["recursos_nombres_turno"] = dict(nombres_turno)
+
+    @staticmethod
+    def _nombre_por_id(value_id: str, catalogo: list[dict[str, str]]) -> str:
+        vid = str(value_id or "").strip().lower()
+        for item in catalogo:
+            if str(item.get("id") or "").strip().lower() == vid:
+                return str(item.get("nombre") or "").strip()
+        return ""
+
+    @staticmethod
+    def _nombres_por_ids(value_ids: list[str], catalogo: list[dict[str, str]]) -> list[str]:
+        ids = [str(x or "").strip().lower() for x in list(value_ids or []) if str(x or "").strip()]
+        out: list[str] = []
+        for item in catalogo:
+            if str(item.get("id") or "").strip().lower() in ids:
+                nombre = str(item.get("nombre") or "").strip()
+                if nombre:
+                    out.append(nombre)
+        return out
+
+    @staticmethod
+    def _seleccionar_uno(
+        titulo: str,
+        catalogo: list[dict[str, str]],
+        texto_cero: str,
+        prompt: str,
+        input_fn,
+        print_fn,
+        actual_id: str,
+    ) -> str:
+        while True:
+            print_fn(f"\n{titulo}")
+            for i, item in enumerate(catalogo, 1):
+                print_fn(f"{i}. {item.get('nombre')}")
+            print_fn(f"0. {texto_cero}")
+            valor = input_fn(prompt).strip()
+            if not valor:
+                return str(actual_id or "")
+            if not valor.isdigit():
+                print_fn("Selección no válida.")
+                continue
+            idx = int(valor)
+            if idx == 0:
+                return ""
+            if 1 <= idx <= len(catalogo):
+                return str(catalogo[idx - 1].get("id") or "")
+            print_fn("Selección no válida.")
+
+    @staticmethod
+    def _seleccionar_varios(
+        titulo: str,
+        catalogo: list[dict[str, str]],
+        texto_cero: str,
+        prompt: str,
+        input_fn,
+        print_fn,
+        actual_ids: list[str],
+    ) -> list[str]:
+        while True:
+            print_fn(f"\n{titulo}")
+            for i, item in enumerate(catalogo, 1):
+                print_fn(f"{i}. {item.get('nombre')}")
+            print_fn(f"0. {texto_cero}")
+            valor = input_fn(prompt).strip()
+            if not valor:
+                return [str(x or "") for x in list(actual_ids or []) if str(x or "").strip()]
+            tokens = [x.strip() for x in valor.split(",") if x.strip()]
+            if not tokens:
+                return [str(x or "") for x in list(actual_ids or []) if str(x or "").strip()]
+            if any(not tok.isdigit() for tok in tokens):
+                print_fn("Selección no válida.")
+                continue
+            nums = [int(tok) for tok in tokens]
+            if any(n < 0 or n > len(catalogo) for n in nums):
+                print_fn("Selección no válida.")
+                continue
+            if 0 in nums:
+                return []
+            seleccionados: list[str] = []
+            nums_set = set(nums)
+            for i, item in enumerate(catalogo, 1):
+                if i in nums_set:
+                    item_id = str(item.get("id") or "")
+                    if item_id and item_id not in seleccionados:
+                        seleccionados.append(item_id)
+            return seleccionados
+
+    @staticmethod
+    def _leer_entero_no_negativo(prompt: str, input_fn, print_fn, default: Any, permitir_vacio_default: bool = False) -> int | None:
+        while True:
+            valor = input_fn(prompt).strip()
+            if not valor:
+                if permitir_vacio_default:
+                    return default
+                if default in (None, ""):
+                    print_fn("Debes indicar un número entero.")
+                    continue
+                try:
+                    return int(default)
+                except (TypeError, ValueError):
+                    print_fn("Debes indicar un número entero.")
+                    continue
+            try:
+                numero = int(valor)
+            except ValueError:
+                print_fn("Debes indicar un número entero.")
+                continue
+            if numero < 0:
+                print_fn("El valor debe ser 0 o mayor.")
+                continue
+            return numero
+
+    @staticmethod
+    def _resumen_recursos_tarea(tarea: dict[str, Any]) -> list[str]:
+        req = dict(tarea.get("requisitos_recursos") or {})
+        if not req:
+            return []
+
+        nombres_partida = dict(tarea.get("recursos_nombres_partida") or {})
+        nombres_eq = dict(tarea.get("recursos_nombres_equipamiento") or {})
+        nombres_turno = dict(tarea.get("recursos_nombres_turno") or {})
+
+        partida_id = str(req.get("partida_id") or "")
+        equip_ids = [str(x or "") for x in list(req.get("equipamiento_ids") or []) if str(x or "").strip()]
+        turno_id = str(req.get("turno_id") or "")
+        personas = req.get("personas_necesarias")
+        duracion = req.get("duracion_minutos")
+
+        out: list[str] = ["RECURSOS"]
+        out.append(f"Partida: {nombres_partida.get(partida_id) or 'Sin partida'}")
+        if equip_ids:
+            out.append("Equipamiento: " + ", ".join([nombres_eq.get(x) or "Equipamiento" for x in equip_ids]))
+        else:
+            out.append("Equipamiento: Ninguno")
+        if personas not in (None, ""):
+            out.append(f"Personas necesarias: {int(personas)}")
+        out.append(f"Turno: {nombres_turno.get(turno_id) or 'Sin turno'}")
+        if duracion not in (None, ""):
+            out.append(f"Duración: {int(duracion)} minutos")
+        return out
+
+    @staticmethod
+    def _mostrar_diagnostico_recursos_reales(panel: dict[str, Any], print_fn) -> None:
+        diag = dict(panel.get("diagnostico_recursos_reales") or {})
+        resumen = dict(diag.get("resumen") or {})
+        print_fn("\nDIAGNÓSTICO R3 DE RECURSOS REALES")
+        if not diag:
+            print_fn("Sin diagnóstico R3 disponible.")
+            return
+        print_fn(f"- Tareas totales: {int(resumen.get('tareas_totales', 0) or 0)}")
+        print_fn(f"- Disponibles: {int(resumen.get('disponibles', 0) or 0)}")
+        print_fn(f"- Con avisos: {int(resumen.get('con_avisos', 0) or 0)}")
+        print_fn(f"- Sin requisitos: {int(resumen.get('sin_requisitos', 0) or 0)}")
+        print_fn(f"- Bloqueadas: {int(resumen.get('bloqueadas', 0) or 0)}")
+
+        bloqueantes = list(diag.get("problemas_bloqueantes") or [])
+        if bloqueantes:
+            print_fn("\nProblemas bloqueantes:")
+            for p in bloqueantes:
+                print_fn(f"- {p.get('tarea') or p.get('tarea_id')}: {p.get('problema')}")
+
+        avisos = list(diag.get("avisos") or [])
+        if avisos:
+            print_fn("\nAvisos:")
+            for a in avisos:
+                print_fn(f"- {a}")
 
     @staticmethod
     def _seleccionar_tarea(tareas, input_fn, print_fn):

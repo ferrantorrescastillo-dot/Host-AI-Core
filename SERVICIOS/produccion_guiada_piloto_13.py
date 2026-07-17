@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime
 from typing import Any
 
 from SERVICIOS.configuracion_restaurante import ServicioConfiguracionRestaurante
 from SERVICIOS.produccion_stock_piloto_14 import ProduccionStockPiloto14
+from SERVICIOS.produccion_recursos_reales import ServicioProduccionRecursosReales
 
 
 ESTADOS_TERMINADOS = {"finalizada", "completada", "cancelada"}
@@ -33,11 +35,13 @@ class ProduccionGuiadaPiloto13:
         self.core = core
         self.motor = core.produccion_real
         self.produccion_stock = ProduccionStockPiloto14(core) if hasattr(core, "stock") else None
+        self.produccion_recursos_reales = None
         self._estado_configuracion_restaurante = {"ok": True, "errores": []}
         base_dir = getattr(core, "base_dir", None)
         if base_dir:
             servicio_config = ServicioConfiguracionRestaurante(base_dir)
             self._estado_configuracion_restaurante = servicio_config.asegurar_configuracion_valida()
+            self.produccion_recursos_reales = ServicioProduccionRecursosReales(base_dir)
 
     def listar_planes_operativos(self) -> list[dict[str, Any]]:
         planes = list(self.motor.listar_planes())
@@ -49,6 +53,14 @@ class ProduccionGuiadaPiloto13:
         resumen = self.motor.resumen_ejecucion(plan_id)
         panel_motor = self.motor.panel_produccion(plan_id) if hasattr(self.motor, "panel_produccion") else {}
         tareas = [self._humanizar_tarea(t, plan) for t in resumen.get("tareas", [])]
+        diagnostico_recursos = self.diagnosticar_recursos_plan(plan_id)
+        diagnostico_tareas = dict(diagnostico_recursos.get("diagnostico_tareas") or {})
+        for tarea in tareas:
+            diag = dict(diagnostico_tareas.get(str(tarea.get("id") or "")) or {})
+            tarea["recursos_estado"] = str(diag.get("estado") or "sin_requisitos")
+            tarea["recursos_bloqueante"] = bool(diag.get("bloqueante", False))
+            tarea["recursos_problemas"] = list(diag.get("problemas") or [])
+            tarea["recursos_avisos"] = list(diag.get("avisos") or [])
         tareas.sort(key=lambda t: self._orden_tarea(t))
         siguiente = self._siguiente_accion(plan_id, tareas)
         recomendacion_motor = self._recomendacion_motor(plan_id, tareas)
@@ -61,6 +73,7 @@ class ProduccionGuiadaPiloto13:
         simultaneidad_recursos = dict((panel_motor or {}).get("simultaneidad_recursos") or {})
         conflictos_recursos = dict((panel_motor or {}).get("conflictos_recursos") or {})
         bloqueadas = [t for t in tareas if t.get("bloqueo")]
+        bloqueadas_recursos = [t for t in tareas if t.get("recursos_bloqueante")]
         activas = [t for t in tareas if t.get("estado_codigo") == "en_curso"]
         pendientes = [t for t in tareas if t.get("estado_codigo") not in ESTADOS_TERMINADOS]
         return {
@@ -74,6 +87,7 @@ class ProduccionGuiadaPiloto13:
             "pendientes": len(pendientes),
             "en_curso": len(activas),
             "bloqueadas": len(bloqueadas),
+            "bloqueadas_recursos": len(bloqueadas_recursos),
             "alertas": list(resumen.get("alertas", [])),
             "tareas": tareas,
             "siguiente_accion": siguiente.__dict__,
@@ -91,6 +105,7 @@ class ProduccionGuiadaPiloto13:
             "ocupacion_recursos": ocupacion_recursos,
             "simultaneidad_recursos": simultaneidad_recursos,
             "conflictos_recursos": conflictos_recursos,
+            "diagnostico_recursos_reales": diagnostico_recursos,
             "lectura": self._lectura_general(tareas, siguiente),
         }
 
@@ -127,6 +142,61 @@ class ProduccionGuiadaPiloto13:
 
     def resolver_bloqueo(self, plan_id: str, tarea_id: str, observacion: str = "") -> dict[str, Any]:
         return self.motor.resolver_bloqueo_tarea(plan_id, tarea_id, observacion)
+
+    def diagnosticar_recursos_plan(self, plan_id: str) -> dict[str, Any]:
+        if self.produccion_recursos_reales is None:
+            return {"resumen": {"tareas_totales": 0, "sin_requisitos": 0, "disponibles": 0, "con_avisos": 0, "bloqueadas": 0}, "diagnostico_tareas": {}, "problemas_bloqueantes": [], "avisos": [], "conflictos": []}
+        plan = self.motor.obtener_plan(plan_id).to_dict()
+        return self.produccion_recursos_reales.diagnosticar_recursos_plan(plan)
+
+    def diagnosticar_recursos_tarea(self, plan_id: str, tarea_id: str) -> dict[str, Any]:
+        if self.produccion_recursos_reales is None:
+            return {"estado": "sin_requisitos", "bloqueante": False, "problemas": [], "avisos": []}
+        plan = self.motor.obtener_plan(plan_id)
+        tarea = next((t for t in plan.tareas if t.id == tarea_id), None)
+        if not tarea:
+            raise ValueError(f"No existe tarea: {tarea_id}")
+        return self.produccion_recursos_reales.diagnosticar_recursos_tarea(tarea.to_dict())
+
+    def actualizar_requisitos_recursos_tarea(self, plan_id: str, tarea_id: str, requisitos: dict[str, Any]) -> dict[str, Any]:
+        if self.produccion_recursos_reales is None:
+            raise ValueError("Servicio de recursos reales no disponible en este entorno")
+        plan = self.motor.obtener_plan(plan_id)
+        tarea = next((t for t in plan.tareas if t.id == tarea_id), None)
+        if not tarea:
+            raise ValueError(f"No existe tarea: {tarea_id}")
+
+        req = self.produccion_recursos_reales.normalizar_requisitos_recursos(requisitos)
+        tarea.requisitos_recursos = req
+        diag = self.produccion_recursos_reales.diagnosticar_recursos_tarea(tarea.to_dict())
+        tarea.diagnostico_recursos = diag
+        plan.actualizado_en = datetime.now().isoformat(timespec="seconds")
+        self.motor._persistir()
+        return {"ok": True, "requisitos": req, "diagnostico": diag}
+
+    def actualizar_asignacion_recursos_tarea(self, plan_id: str, tarea_id: str, asignados: dict[str, Any], confirmar_exceso_personas: bool = False) -> dict[str, Any]:
+        if self.produccion_recursos_reales is None:
+            raise ValueError("Servicio de recursos reales no disponible en este entorno")
+        plan = self.motor.obtener_plan(plan_id)
+        tarea = next((t for t in plan.tareas if t.id == tarea_id), None)
+        if not tarea:
+            raise ValueError(f"No existe tarea: {tarea_id}")
+
+        validacion = self.produccion_recursos_reales.validar_asignacion_recursos(
+            plan.to_dict(),
+            tarea.to_dict(),
+            asignados,
+            confirmar_exceso_personas=confirmar_exceso_personas,
+        )
+        if not validacion.get("ok"):
+            raise ValueError("; ".join(validacion.get("problemas") or ["Asignacion invalida"]))
+
+        tarea.recursos_asignados = dict(validacion.get("asignados") or {})
+        diag = self.produccion_recursos_reales.diagnosticar_recursos_tarea(tarea.to_dict())
+        tarea.diagnostico_recursos = diag
+        plan.actualizado_en = datetime.now().isoformat(timespec="seconds")
+        self.motor._persistir()
+        return {"ok": True, "asignados": dict(tarea.recursos_asignados), "diagnostico": diag}
 
     def resumen_vivo(self, plan_id: str) -> dict[str, Any]:
         panel = self.construir_panel(plan_id)
