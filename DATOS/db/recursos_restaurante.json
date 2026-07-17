@@ -1,0 +1,61 @@
+{
+  "version": "R2",
+  "roles": [
+    {
+      "id": "rol_jefe_cocina",
+      "nombre": "Jefe de cocina",
+      "activo": true
+    },
+    {
+      "id": "rol_cocinero",
+      "nombre": "Cocinero",
+      "activo": true
+    },
+    {
+      "id": "rol_ayudante",
+      "nombre": "Ayudante",
+      "activo": true
+    },
+    {
+      "id": "rol_pastelero",
+      "nombre": "Pastelero",
+      "activo": true
+    },
+    {
+      "id": "rol_office",
+      "nombre": "Office",
+      "activo": true
+    }
+  ],
+  "turnos": [
+    {
+      "id": "turno_manana",
+      "nombre": "Manana",
+      "activo": true
+    },
+    {
+      "id": "turno_partido",
+      "nombre": "Partido",
+      "activo": true
+    },
+    {
+      "id": "turno_tarde",
+      "nombre": "Tarde",
+      "activo": true
+    }
+  ],
+  "personal": [
+    {
+      "id": "persona_marcelo",
+      "nombre": "Marcelo",
+      "rol": "rol_ayudante",
+      "partida": "partida_frio",
+      "activo": true
+    }
+  ],
+  "capacidades": {
+    "cocineros_simultaneos": 3,
+    "produccion_maxima_turno": 120,
+    "elaboraciones_simultaneas": 6
+  }
+}

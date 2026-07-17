@@ -4,12 +4,16 @@ from typing import Any
 import json
 
 from SERVICIOS.configuracion_restaurante import ServicioConfiguracionRestaurante
+from SERVICIOS.recursos_restaurante import ServicioRecursosRestaurante
 
 
 class ConsolaConfiguracionRestaurante:
     def __init__(self, base_dir: Any):
+        self.base_dir = base_dir
         self.servicio = ServicioConfiguracionRestaurante(base_dir)
+        self.servicio_recursos = ServicioRecursosRestaurante(base_dir)
         self.servicio.asegurar_configuracion_valida()
+        self.servicio_recursos.asegurar_configuracion_valida()
 
     def ejecutar(self) -> None:
         while True:
@@ -20,6 +24,7 @@ class ConsolaConfiguracionRestaurante:
             print("4. Partidas")
             print("5. Equipamiento")
             print("6. Almacenes")
+            print("7. Recursos Operativos")
             print("0. Volver")
             opcion = input("Elige una opcion: ").strip()
 
@@ -35,6 +40,8 @@ class ConsolaConfiguracionRestaurante:
                 self._editar_equipamiento()
             elif opcion == "6":
                 self._editar_almacenes()
+            elif opcion == "7":
+                self._menu_recursos_operativos()
             elif opcion == "0":
                 return
             else:
@@ -155,6 +162,11 @@ class ConsolaConfiguracionRestaurante:
                 indice = self._seleccionar_indice(items)
                 if indice is None:
                     continue
+                if clave == "partidas":
+                    partida_id = str(items[indice].get("id") or "")
+                    if self.servicio_recursos.esta_partida_en_uso(partida_id):
+                        print("No se puede eliminar la partida: esta asignada a personal en Recursos Operativos.")
+                        continue
                 borrado = items.pop(indice)
                 config[clave] = items
                 if self._guardar_configuracion(config):
@@ -253,6 +265,332 @@ class ConsolaConfiguracionRestaurante:
     def _guardar_configuracion(self, config: dict[str, Any]) -> bool:
         try:
             self.servicio.guardar_configuracion(config)
+            return True
+        except ValueError as exc:
+            print(str(exc))
+            print("No se han guardado cambios.")
+            return False
+
+    def _menu_recursos_operativos(self) -> None:
+        while True:
+            print("\nRECURSOS OPERATIVOS")
+            print("1. Personal")
+            print("2. Roles")
+            print("3. Turnos")
+            print("4. Capacidades")
+            print("0. Volver")
+            op = input("Elige una opcion: ").strip()
+            if op == "1":
+                self._menu_personal()
+            elif op == "2":
+                self._menu_roles()
+            elif op == "3":
+                self._menu_turnos()
+            elif op == "4":
+                self._menu_capacidades()
+            elif op == "0":
+                return
+            else:
+                print("Opcion no valida.")
+
+    def _menu_personal(self) -> None:
+        while True:
+            cfg = self.servicio_recursos.obtener_configuracion()
+            personal = list(cfg.get("personal") or [])
+            roles = {str(r.get("id") or ""): str(r.get("nombre") or "") for r in list(cfg.get("roles") or []) if isinstance(r, dict)}
+            partidas_cfg = list((self.servicio.obtener_configuracion().get("partidas") or []))
+            partidas = {str(p.get("id") or ""): str(p.get("nombre") or "") for p in partidas_cfg if isinstance(p, dict)}
+            print("\nPERSONAL")
+            if not personal:
+                print("(sin personal)")
+            for i, item in enumerate(personal, 1):
+                partidas_txt = ", ".join(partidas.get(str(pid), str(pid)) for pid in list(item.get("partidas") or []))
+                print(
+                    f"{i}. id={item.get('id')} | nombre={item.get('nombre')} | "
+                    f"rol={roles.get(str(item.get('rol') or ''), item.get('rol'))} | partidas={partidas_txt or '-'} | activo={item.get('activo')}"
+                )
+            print("A. Anadir")
+            print("E. Editar")
+            print("T. Activar/desactivar")
+            print("X. Eliminar")
+            print("0. Volver")
+            op = input("Elige una opcion: ").strip().lower()
+            if op == "0":
+                return
+            if op == "a":
+                nuevo = self._crear_persona(cfg)
+                if nuevo is None:
+                    continue
+                personal.append(nuevo)
+                cfg["personal"] = personal
+                if self._guardar_recursos(cfg):
+                    print("Persona anadida.")
+                continue
+            if op == "e":
+                idx = self._seleccionar_indice(personal)
+                if idx is None:
+                    continue
+                editado = self._editar_persona(cfg, personal[idx])
+                if editado is None:
+                    continue
+                personal[idx] = editado
+                cfg["personal"] = personal
+                if self._guardar_recursos(cfg):
+                    print("Persona actualizada.")
+                continue
+            if op == "t":
+                idx = self._seleccionar_indice(personal)
+                if idx is None:
+                    continue
+                personal[idx]["activo"] = not bool(personal[idx].get("activo", True))
+                cfg["personal"] = personal
+                if self._guardar_recursos(cfg):
+                    print("Estado actualizado.")
+                continue
+            if op == "x":
+                idx = self._seleccionar_indice(personal)
+                if idx is None:
+                    continue
+                borrada = personal.pop(idx)
+                cfg["personal"] = personal
+                if self._guardar_recursos(cfg):
+                    print(f"Persona eliminada: {borrada.get('nombre')}")
+                continue
+            print("Opcion no valida.")
+
+    def _menu_roles(self) -> None:
+        while True:
+            cfg = self.servicio_recursos.obtener_configuracion()
+            roles = list(cfg.get("roles") or [])
+            personal = list(cfg.get("personal") or [])
+            print("\nROLES")
+            for i, item in enumerate(roles, 1):
+                print(f"{i}. id={item.get('id')} | nombre={item.get('nombre')} | activo={item.get('activo')}")
+            print("A. Anadir")
+            print("E. Editar")
+            print("X. Eliminar")
+            print("0. Volver")
+            op = input("Elige una opcion: ").strip().lower()
+            if op == "0":
+                return
+            if op == "a":
+                nombre = input("Nombre del rol: ").strip()
+                if not nombre:
+                    print("El nombre es obligatorio.")
+                    continue
+                roles.append({"nombre": nombre, "activo": True})
+                cfg["roles"] = roles
+                if self._guardar_recursos(cfg):
+                    print("Rol anadido.")
+                continue
+            if op == "e":
+                idx = self._seleccionar_indice(roles)
+                if idx is None:
+                    continue
+                nombre = input(f"Nombre [{roles[idx].get('nombre')}]: ").strip()
+                if nombre:
+                    roles[idx]["nombre"] = nombre
+                cfg["roles"] = roles
+                if self._guardar_recursos(cfg):
+                    print("Rol actualizado.")
+                continue
+            if op == "x":
+                idx = self._seleccionar_indice(roles)
+                if idx is None:
+                    continue
+                rol_id = str(roles[idx].get("id") or "")
+                if any(str(p.get("rol") or "") == rol_id for p in personal):
+                    print("No se puede eliminar: el rol esta siendo utilizado por personal.")
+                    continue
+                eliminado = roles.pop(idx)
+                cfg["roles"] = roles
+                if self._guardar_recursos(cfg):
+                    print(f"Rol eliminado: {eliminado.get('nombre')}")
+                continue
+            print("Opcion no valida.")
+
+    def _menu_turnos(self) -> None:
+        while True:
+            cfg = self.servicio_recursos.obtener_configuracion()
+            turnos = list(cfg.get("turnos") or [])
+            print("\nTURNOS")
+            for i, item in enumerate(turnos, 1):
+                print(f"{i}. id={item.get('id')} | nombre={item.get('nombre')} | activo={item.get('activo')}")
+            print("A. Anadir")
+            print("E. Editar")
+            print("X. Eliminar")
+            print("0. Volver")
+            op = input("Elige una opcion: ").strip().lower()
+            if op == "0":
+                return
+            if op == "a":
+                nombre = input("Nombre del turno: ").strip()
+                if not nombre:
+                    print("El nombre es obligatorio.")
+                    continue
+                turnos.append({"nombre": nombre, "activo": True})
+                cfg["turnos"] = turnos
+                if self._guardar_recursos(cfg):
+                    print("Turno anadido.")
+                continue
+            if op == "e":
+                idx = self._seleccionar_indice(turnos)
+                if idx is None:
+                    continue
+                nombre = input(f"Nombre [{turnos[idx].get('nombre')}]: ").strip()
+                if nombre:
+                    turnos[idx]["nombre"] = nombre
+                cfg["turnos"] = turnos
+                if self._guardar_recursos(cfg):
+                    print("Turno actualizado.")
+                continue
+            if op == "x":
+                idx = self._seleccionar_indice(turnos)
+                if idx is None:
+                    continue
+                eliminado = turnos.pop(idx)
+                cfg["turnos"] = turnos
+                if self._guardar_recursos(cfg):
+                    print(f"Turno eliminado: {eliminado.get('nombre')}")
+                continue
+            print("Opcion no valida.")
+
+    def _menu_capacidades(self) -> None:
+        cfg = self.servicio_recursos.obtener_configuracion()
+        capacidades = dict(cfg.get("capacidades") or {})
+        print("\nCAPACIDADES")
+        for campo in [
+            "cocineros_simultaneos",
+            "produccion_maxima_turno",
+            "elaboraciones_simultaneas",
+        ]:
+            actual = capacidades.get(campo)
+            valor = input(f"{campo} [{actual}]: ").strip()
+            if not valor:
+                continue
+            try:
+                numero = float(valor)
+                capacidades[campo] = int(numero) if int(numero) == numero else numero
+            except ValueError:
+                capacidades[campo] = valor
+        cfg["capacidades"] = capacidades
+        if self._guardar_recursos(cfg):
+            print("Capacidades actualizadas.")
+
+    def _crear_persona(self, cfg: dict[str, Any]) -> dict[str, Any] | None:
+        nombre = input("Nombre: ").strip()
+        if not nombre:
+            print("El nombre es obligatorio.")
+            return None
+        rol_id = self._seleccionar_rol(cfg)
+        if not rol_id:
+            return None
+        partidas_ids = self._seleccionar_partidas_multiples()
+        if not partidas_ids:
+            return None
+        return {
+            "nombre": nombre,
+            "rol": rol_id,
+            "partidas": partidas_ids,
+            "activo": True,
+        }
+
+    def _editar_persona(self, cfg: dict[str, Any], actual: dict[str, Any]) -> dict[str, Any] | None:
+        out = dict(actual)
+        nombre = input(f"Nombre [{out.get('nombre')}]: ").strip()
+        if nombre:
+            out["nombre"] = nombre
+
+        cambiar_rol = input("Cambiar rol? (s/n) [n]: ").strip().lower()
+        if cambiar_rol in {"s", "si", "sí"}:
+            rol_id = self._seleccionar_rol(cfg)
+            if not rol_id:
+                return None
+            out["rol"] = rol_id
+
+        cambiar_partidas = input("Cambiar partidas? (s/n) [n]: ").strip().lower()
+        if cambiar_partidas in {"s", "si", "sí"}:
+            partidas_ids = self._seleccionar_partidas_multiples()
+            if not partidas_ids:
+                return None
+            out["partidas"] = partidas_ids
+        return out
+
+    def _seleccionar_rol(self, cfg: dict[str, Any]) -> str | None:
+        roles = list(cfg.get("roles") or [])
+        if not roles:
+            print("No hay roles configurados.")
+            return None
+        print("Roles disponibles:")
+        for i, rol in enumerate(roles, 1):
+            print(f"{i}. {rol.get('nombre')} ({rol.get('id')})")
+        idx = self._seleccionar_indice(roles, "Indice de rol")
+        if idx is None:
+            return None
+        return str(roles[idx].get("id") or "")
+
+    def _seleccionar_partida(self) -> str | None:
+        cfg = self.servicio.obtener_configuracion()
+        partidas = list(cfg.get("partidas") or [])
+        if not partidas:
+            print("No hay partidas configuradas en R1.")
+            return None
+        print("Partidas disponibles:")
+        for i, partida in enumerate(partidas, 1):
+            print(f"{i}. {partida.get('nombre')} ({partida.get('id')})")
+        idx = self._seleccionar_indice(partidas, "Indice de partida")
+        if idx is None:
+            return None
+        return str(partidas[idx].get("id") or "")
+
+    def _seleccionar_partidas_multiples(self) -> list[str] | None:
+        cfg = self.servicio.obtener_configuracion()
+        partidas = list(cfg.get("partidas") or [])
+        if not partidas:
+            print("No hay partidas configuradas en R1.")
+            return None
+        print("\nPARTIDAS DISPONIBLES")
+        for i, partida in enumerate(partidas, 1):
+            print(f"{i}. {partida.get('nombre')}")
+        print("A. Todas")
+        print("Selecciona una o varias partidas separadas por comas.")
+        print("Ejemplo: 1,2")
+        bruto = input("Seleccion: ").strip()
+        if not bruto:
+            print("Debes seleccionar al menos una partida.")
+            return None
+
+        if bruto.lower() == "a":
+            return [str(p.get("id") or "") for p in partidas if str(p.get("id") or "")]
+
+        tokens = [t.strip() for t in bruto.split(",") if t.strip()]
+        if not tokens:
+            print("Debes seleccionar al menos una partida.")
+            return None
+
+        seleccion: list[str] = []
+        vistos: set[str] = set()
+        for token in tokens:
+            if not token.isdigit():
+                print(f"Seleccion invalida: {token}")
+                return None
+            idx = int(token)
+            if not 1 <= idx <= len(partidas):
+                print(f"Seleccion fuera de rango: {token}")
+                return None
+            partida_id = str(partidas[idx - 1].get("id") or "")
+            if partida_id and partida_id not in vistos:
+                vistos.add(partida_id)
+                seleccion.append(partida_id)
+
+        if not seleccion:
+            print("Debes seleccionar al menos una partida.")
+            return None
+        return seleccion
+
+    def _guardar_recursos(self, config: dict[str, Any]) -> bool:
+        try:
+            self.servicio_recursos.guardar_configuracion(config)
             return True
         except ValueError as exc:
             print(str(exc))
