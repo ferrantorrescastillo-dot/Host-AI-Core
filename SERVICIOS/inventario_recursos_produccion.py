@@ -29,6 +29,7 @@ class InventarioRecursosProduccion:
 
     VERSION = "A2.1"
     VERSION_OCUPACION = "A2.2"
+    VERSION_SIMULTANEIDAD = "A2.3"
 
     ALIAS_FISICOS = {
         "horno": "horno",
@@ -228,6 +229,151 @@ class InventarioRecursosProduccion:
             "datos_reales_modificados": False,
         }
 
+    def construir_simultaneidad_plan(
+        self,
+        plan: Any,
+        cronologia: Dict[str, Any] | None = None,
+        ocupacion: Dict[str, Any] | None = None,
+    ) -> Dict[str, Any]:
+        plan_dict = plan.to_dict() if hasattr(plan, "to_dict") else dict(plan or {})
+        ocupacion = dict(ocupacion or self.construir_ocupacion_plan(plan, cronologia))
+        tramos: List[Dict[str, Any]] = []
+        datos_incompletos = list(ocupacion.get("datos_incompletos") or [])
+
+        bloques_validos = []
+        for bloque in list(ocupacion.get("bloques") or []):
+            inicio = bloque.get("inicio_min")
+            fin = bloque.get("fin_min")
+            if not isinstance(inicio, int) or not isinstance(fin, int):
+                datos_incompletos.append({
+                    "tipo": "simultaneidad_intervalo_incompleto",
+                    "bloque": {
+                        "tarea": _texto(bloque.get("tarea")),
+                        "fase": _texto(bloque.get("fase")),
+                        "recurso": _texto(bloque.get("recurso")),
+                    },
+                })
+                continue
+            if fin <= inicio:
+                datos_incompletos.append({
+                    "tipo": "simultaneidad_intervalo_invalido",
+                    "bloque": {
+                        "tarea": _texto(bloque.get("tarea")),
+                        "fase": _texto(bloque.get("fase")),
+                        "recurso": _texto(bloque.get("recurso")),
+                        "inicio_min": inicio,
+                        "fin_min": fin,
+                    },
+                })
+                continue
+            bloques_validos.append(dict(bloque))
+
+        por_dia: Dict[int, List[Dict[str, Any]]] = {}
+        for bloque in bloques_validos:
+            dia = max(1, int(bloque.get("dia", 1) or 1))
+            por_dia.setdefault(dia, []).append(bloque)
+
+        for dia, bloques_dia in sorted(por_dia.items(), key=lambda item: item[0]):
+            puntos = sorted({int(b["inicio_min"]) for b in bloques_dia} | {int(b["fin_min"]) for b in bloques_dia})
+            for inicio, fin in zip(puntos, puntos[1:]):
+                activos = [b for b in bloques_dia if int(b["inicio_min"]) < fin and int(b["fin_min"]) > inicio]
+                if not activos:
+                    continue
+                tramos.append(self._construir_tramo_simultaneidad(dia, inicio, fin, activos))
+
+        tramos = sorted(tramos, key=lambda t: (int(t.get("dia", 1) or 1), int(t.get("inicio_min", 0) or 0), int(t.get("fin_min", 0) or 0)))
+        maximo = max((int(t.get("cantidad_total_ocupaciones", 0) or 0) for t in tramos), default=0)
+        return {
+            "version": self.VERSION_SIMULTANEIDAD,
+            "plan_id": _texto(plan_dict.get("id")),
+            "base_horaria": dict((ocupacion or {}).get("base_horaria") or {}),
+            "tramos": tramos,
+            "resumen": {
+                "total_tramos": len(tramos),
+                "maximo_nivel_simultaneidad": maximo,
+                "tramos_reales": sum(1 for t in tramos if t.get("origen_temporal") == "real"),
+                "tramos_estimados": sum(1 for t in tramos if t.get("origen_temporal") == "estimada"),
+                "tramos_mixtos": sum(1 for t in tramos if t.get("origen_temporal") == "mixto"),
+                "tramos_indeterminados": sum(1 for t in tramos if t.get("origen_temporal") == "indeterminada"),
+            },
+            "datos_incompletos": datos_incompletos,
+            "solo_lectura": True,
+            "datos_reales_modificados": False,
+        }
+
+    def simultaneidad_en_instante(self, simultaneidad: Dict[str, Any], instante_min: int, dia: int = 1) -> Dict[str, Any]:
+        minuto = int(instante_min or 0)
+        dia = max(1, int(dia or 1))
+        tramos = [
+            t for t in list(simultaneidad.get("tramos") or [])
+            if int(t.get("dia", 1) or 1) == dia and int(t.get("inicio_min", 0) or 0) <= minuto < int(t.get("fin_min", 0) or 0)
+        ]
+        return {
+            "dia": dia,
+            "instante_min": minuto,
+            "tramos": tramos,
+            "cantidad_tramos": len(tramos),
+            "recursos_activos": self._lista_unica(tramos, "recursos_fisicos_activos"),
+            "tareas_activas": self._lista_unica(tramos, "tareas_activas"),
+            "responsables_activos": self._lista_unica(tramos, "responsables_activos"),
+        }
+
+    def simultaneidad_en_intervalo(self, simultaneidad: Dict[str, Any], inicio_min: int, fin_min: int, dia: int = 1) -> Dict[str, Any]:
+        inicio = int(inicio_min or 0)
+        fin = int(fin_min or 0)
+        dia = max(1, int(dia or 1))
+        if fin <= inicio:
+            return {
+                "dia": dia,
+                "inicio_min": inicio,
+                "fin_min": fin,
+                "tramos": [],
+                "cantidad_tramos": 0,
+                "recursos_activos": [],
+                "tareas_activas": [],
+                "responsables_activos": [],
+            }
+        tramos = [
+            t for t in list(simultaneidad.get("tramos") or [])
+            if int(t.get("dia", 1) or 1) == dia and int(t.get("inicio_min", 0) or 0) < fin and int(t.get("fin_min", 0) or 0) > inicio
+        ]
+        return {
+            "dia": dia,
+            "inicio_min": inicio,
+            "fin_min": fin,
+            "tramos": tramos,
+            "cantidad_tramos": len(tramos),
+            "recursos_activos": self._lista_unica(tramos, "recursos_fisicos_activos"),
+            "tareas_activas": self._lista_unica(tramos, "tareas_activas"),
+            "responsables_activos": self._lista_unica(tramos, "responsables_activos"),
+        }
+
+    def recursos_activos_simultaneos(self, simultaneidad: Dict[str, Any], instante_min: int | None = None, dia: int = 1, inicio_min: int | None = None, fin_min: int | None = None) -> List[str]:
+        consulta = self._resolver_consulta_temporal(simultaneidad, instante_min=instante_min, dia=dia, inicio_min=inicio_min, fin_min=fin_min)
+        return list(consulta.get("recursos_activos") or [])
+
+    def tareas_activas_simultaneas(self, simultaneidad: Dict[str, Any], instante_min: int | None = None, dia: int = 1, inicio_min: int | None = None, fin_min: int | None = None) -> List[str]:
+        consulta = self._resolver_consulta_temporal(simultaneidad, instante_min=instante_min, dia=dia, inicio_min=inicio_min, fin_min=fin_min)
+        return list(consulta.get("tareas_activas") or [])
+
+    def responsables_activos_simultaneos(self, simultaneidad: Dict[str, Any], instante_min: int | None = None, dia: int = 1, inicio_min: int | None = None, fin_min: int | None = None) -> List[str]:
+        consulta = self._resolver_consulta_temporal(simultaneidad, instante_min=instante_min, dia=dia, inicio_min=inicio_min, fin_min=fin_min)
+        return list(consulta.get("responsables_activos") or [])
+
+    @staticmethod
+    def maximo_nivel_simultaneidad(simultaneidad: Dict[str, Any]) -> int:
+        tramos = list(simultaneidad.get("tramos") or [])
+        return max((int(t.get("cantidad_total_ocupaciones", 0) or 0) for t in tramos), default=0)
+
+    @staticmethod
+    def tramos_por_umbral(simultaneidad: Dict[str, Any], minimo: int) -> List[Dict[str, Any]]:
+        umbral = max(0, int(minimo or 0))
+        tramos = [
+            dict(t) for t in list(simultaneidad.get("tramos") or [])
+            if int(t.get("cantidad_total_ocupaciones", 0) or 0) >= umbral
+        ]
+        return sorted(tramos, key=lambda t: (int(t.get("dia", 1) or 1), int(t.get("inicio_min", 0) or 0), int(t.get("fin_min", 0) or 0)))
+
     def _leer_capacidades_confirmadas(self) -> Dict[str, int]:
         recursos = {}
         config = self.motor_556e2.config if isinstance(self.motor_556e2.config, dict) else {}
@@ -238,6 +384,88 @@ class InventarioRecursosProduccion:
             except (TypeError, ValueError):
                 continue
         return recursos
+
+    def _construir_tramo_simultaneidad(self, dia: int, inicio: int, fin: int, activos: List[Dict[str, Any]]) -> Dict[str, Any]:
+        ocupaciones = [
+            {
+                "tarea_id": _texto(b.get("tarea_id")),
+                "tarea": _texto(b.get("tarea")),
+                "fase_id": _texto(b.get("fase_id")),
+                "fase": _texto(b.get("fase")),
+                "recurso": _texto(b.get("recurso")),
+                "recurso_original": _texto(b.get("recurso_original")),
+                "responsable": _texto(b.get("responsable")),
+                "origen_dato": _texto(b.get("origen_dato")),
+            }
+            for b in activos
+        ]
+        ocupaciones.sort(key=lambda x: (x["recurso"], x["tarea"], x["fase"], x["responsable"]))
+        origenes = {o.get("origen_dato") for o in ocupaciones if o.get("origen_dato")}
+        origen_temporal = self._clasificar_origen_temporal(origenes)
+        origen_tramo = self._clasificar_origen_tramo(origen_temporal)
+        return {
+            "dia": int(dia),
+            "inicio_min": int(inicio),
+            "fin_min": int(fin),
+            "duracion_min": int(fin - inicio),
+            "inicio": self._marca_ocupacion(int(dia), int(inicio), "ejecucion_real" if origen_temporal == "real" else "calculo_interno"),
+            "fin": self._marca_ocupacion(int(dia), int(fin), "ejecucion_real" if origen_temporal == "real" else "calculo_interno"),
+            "ocupaciones_activas": ocupaciones,
+            "cantidad_total_ocupaciones": len(ocupaciones),
+            "recursos_fisicos_activos": sorted({o["recurso"] for o in ocupaciones if o.get("recurso")}),
+            "recursos_humanos_activos": sorted({self._normalizar_humano(o.get("responsable")) for o in ocupaciones if self._normalizar_humano(o.get("responsable"))}),
+            "tareas_activas": sorted({o["tarea"] for o in ocupaciones if o.get("tarea")}),
+            "fases_activas": sorted({o["fase"] for o in ocupaciones if o.get("fase")}),
+            "responsables_activos": sorted({o["responsable"] for o in ocupaciones if o.get("responsable")}),
+            "origenes_ocupacion": sorted(origenes),
+            "origen_temporal": origen_temporal,
+            "origen_tramo": origen_tramo,
+            "intervalo": f"Día {int(dia)} · {self._hora_desde_minutos(int(inicio))}-{self._hora_desde_minutos(int(fin))}",
+        }
+
+    @staticmethod
+    def _clasificar_origen_temporal(origenes: set[str]) -> str:
+        if not origenes:
+            return "indeterminada"
+        real = "ejecucion_real" in origenes
+        estimada = bool(origenes & {"planificacion_estimada", "calculo_interno"})
+        if real and estimada:
+            return "mixto"
+        if real:
+            return "real"
+        if estimada:
+            return "estimada"
+        return "indeterminada"
+
+    @staticmethod
+    def _clasificar_origen_tramo(origen_temporal: str) -> str:
+        if origen_temporal == "real":
+            return "ejecucion_real"
+        if origen_temporal == "estimada":
+            return "planificacion_estimada"
+        if origen_temporal == "mixto":
+            return "mixto"
+        return "indeterminado"
+
+    def _resolver_consulta_temporal(self, simultaneidad: Dict[str, Any], instante_min: int | None = None, dia: int = 1, inicio_min: int | None = None, fin_min: int | None = None) -> Dict[str, Any]:
+        if instante_min is not None:
+            return self.simultaneidad_en_instante(simultaneidad, instante_min=instante_min, dia=dia)
+        return self.simultaneidad_en_intervalo(
+            simultaneidad,
+            inicio_min=0 if inicio_min is None else int(inicio_min),
+            fin_min=0 if fin_min is None else int(fin_min),
+            dia=dia,
+        )
+
+    @staticmethod
+    def _lista_unica(tramos: List[Dict[str, Any]], clave: str) -> List[str]:
+        salida: List[str] = []
+        for tramo in tramos:
+            for valor in list(tramo.get(clave) or []):
+                texto = _texto(valor)
+                if texto and texto not in salida:
+                    salida.append(texto)
+        return salida
 
     def _indice_fases(self, plan_dict: Dict[str, Any]) -> Dict[tuple[str, str], Dict[str, Any]]:
         fases: Dict[tuple[str, str], Dict[str, Any]] = {}

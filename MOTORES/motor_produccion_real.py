@@ -958,6 +958,7 @@ class MotorProduccionReal:
         inventario_recursos = self.inventario_recursos(plan_id)
         cronologia_operativa_prevista = self._construir_cronologia_operativa(plan, resumen)
         ocupacion_temporal_recursos = self.ocupacion_temporal_recursos(plan_id, cronologia_operativa_prevista)
+        simultaneidad_recursos = self.simultaneidad_recursos(plan_id, cronologia_operativa_prevista, ocupacion_temporal_recursos)
 
         tarea_por_id = {t.get("id"): t for t in resumen.get("tareas", [])}
         cocineros: Dict[str, Dict[str, Any]] = {}
@@ -1054,6 +1055,7 @@ class MotorProduccionReal:
             "clasificacion_jornada": clasificacion_jornada,
             "inventario_recursos": inventario_recursos,
             "ocupacion_temporal_recursos": ocupacion_temporal_recursos,
+            "simultaneidad_recursos": simultaneidad_recursos,
             "cuellos_botella_previstos": cuellos_botella_previstos,
             "cronologia_operativa_prevista": cronologia_operativa_prevista,
             "cocineros": sorted(cocineros.values(), key=lambda x: x["cocinero"]),
@@ -1078,6 +1080,66 @@ class MotorProduccionReal:
             resumen = self.resumen_ejecucion(plan_id)
             cronologia = self._construir_cronologia_operativa(plan, resumen)
         return self.core.inventario_recursos_produccion.construir_ocupacion_plan(plan, cronologia)
+
+    def simultaneidad_recursos(
+        self,
+        plan_id: str,
+        cronologia: Dict[str, Any] | None = None,
+        ocupacion: Dict[str, Any] | None = None,
+    ) -> Dict[str, Any]:
+        plan = self.obtener_plan(plan_id)
+        if cronologia is None:
+            resumen = self.resumen_ejecucion(plan_id)
+            cronologia = self._construir_cronologia_operativa(plan, resumen)
+        if ocupacion is None:
+            ocupacion = self.ocupacion_temporal_recursos(plan_id, cronologia)
+        return self.core.inventario_recursos_produccion.construir_simultaneidad_plan(plan, cronologia, ocupacion)
+
+    def simultaneidad_recursos_en_instante(self, plan_id: str, instante_min: int, dia: int = 1) -> Dict[str, Any]:
+        sim = self.simultaneidad_recursos(plan_id)
+        return self.core.inventario_recursos_produccion.simultaneidad_en_instante(sim, instante_min=instante_min, dia=dia)
+
+    def simultaneidad_recursos_en_intervalo(self, plan_id: str, inicio_min: int, fin_min: int, dia: int = 1) -> Dict[str, Any]:
+        sim = self.simultaneidad_recursos(plan_id)
+        return self.core.inventario_recursos_produccion.simultaneidad_en_intervalo(sim, inicio_min=inicio_min, fin_min=fin_min, dia=dia)
+
+    def recursos_activos_simultaneos(self, plan_id: str, instante_min: int | None = None, dia: int = 1, inicio_min: int | None = None, fin_min: int | None = None) -> List[str]:
+        sim = self.simultaneidad_recursos(plan_id)
+        return self.core.inventario_recursos_produccion.recursos_activos_simultaneos(
+            sim,
+            instante_min=instante_min,
+            dia=dia,
+            inicio_min=inicio_min,
+            fin_min=fin_min,
+        )
+
+    def tareas_activas_simultaneas(self, plan_id: str, instante_min: int | None = None, dia: int = 1, inicio_min: int | None = None, fin_min: int | None = None) -> List[str]:
+        sim = self.simultaneidad_recursos(plan_id)
+        return self.core.inventario_recursos_produccion.tareas_activas_simultaneas(
+            sim,
+            instante_min=instante_min,
+            dia=dia,
+            inicio_min=inicio_min,
+            fin_min=fin_min,
+        )
+
+    def responsables_activos_simultaneos(self, plan_id: str, instante_min: int | None = None, dia: int = 1, inicio_min: int | None = None, fin_min: int | None = None) -> List[str]:
+        sim = self.simultaneidad_recursos(plan_id)
+        return self.core.inventario_recursos_produccion.responsables_activos_simultaneos(
+            sim,
+            instante_min=instante_min,
+            dia=dia,
+            inicio_min=inicio_min,
+            fin_min=fin_min,
+        )
+
+    def maximo_nivel_simultaneidad(self, plan_id: str) -> int:
+        sim = self.simultaneidad_recursos(plan_id)
+        return self.core.inventario_recursos_produccion.maximo_nivel_simultaneidad(sim)
+
+    def tramos_simultaneidad_por_umbral(self, plan_id: str, minimo: int) -> List[Dict[str, Any]]:
+        sim = self.simultaneidad_recursos(plan_id)
+        return self.core.inventario_recursos_produccion.tramos_por_umbral(sim, minimo=minimo)
 
     def _analizar_cuellos_botella_previstos(self, plan, resumen: Dict[str, Any]) -> Dict[str, Any]:
         detalle: List[Dict[str, Any]] = []
