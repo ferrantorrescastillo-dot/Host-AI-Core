@@ -59,6 +59,10 @@ class ConsolaProduccionGuiadaPiloto13:
             print_fn("A. Ver detalle de clasificación")
             print_fn("B. Ver detalle de cuellos previstos")
             print_fn("C. Ver detalle de cronología prevista")
+            print_fn("D. Ver inventario de recursos")
+            print_fn("E. Ver ocupación de recursos")
+            print_fn("F. Ver simultaneidad de recursos")
+            print_fn("G. Ver conflictos de recursos")
             print_fn("9. Actualizar la pantalla")
             print_fn("0. Volver")
             op = input_fn("Elige una opción: ").strip()
@@ -74,6 +78,22 @@ class ConsolaProduccionGuiadaPiloto13:
                 continue
             if op.lower() == "c":
                 self._mostrar_detalle_cronologia(panel, print_fn)
+                input_fn("Pulsa Enter para volver al panel: ")
+                continue
+            if op.lower() == "d":
+                self._mostrar_inventario_recursos(panel, print_fn)
+                input_fn("Pulsa Enter para volver al panel: ")
+                continue
+            if op.lower() == "e":
+                self._mostrar_ocupacion_recursos(panel, print_fn)
+                input_fn("Pulsa Enter para volver al panel: ")
+                continue
+            if op.lower() == "f":
+                self._mostrar_simultaneidad_recursos(panel, print_fn)
+                input_fn("Pulsa Enter para volver al panel: ")
+                continue
+            if op.lower() == "g":
+                self._mostrar_conflictos_recursos(panel, print_fn)
                 input_fn("Pulsa Enter para volver al panel: ")
                 continue
             if op not in {"1", "2", "3", "4", "5", "6", "7", "8"}:
@@ -236,11 +256,35 @@ class ConsolaProduccionGuiadaPiloto13:
             print_fn(f"- Estimados: {int(resumen_cronologia.get('tramos_estimados', 0) or 0)}")
             print_fn(f"- Reales: {int(resumen_cronologia.get('tramos_reales', 0) or 0)}")
             print_fn(f"- Indeterminados: {int(resumen_cronologia.get('tramos_indeterminados', 0) or 0)}")
+        ConsolaProduccionGuiadaPiloto13._mostrar_resumen_recursos(panel, print_fn)
         print_fn("\nSIGUIENTE TRABAJO")
         for i, t in enumerate(panel["tareas"], 1):
             print_fn(f"{i}. {t['estado_texto']} {t.get('titulo')} · {t['prioridad_texto']}")
             print_fn(f"   Queda: {t['tiempo_restante_texto']}")
             if t.get("bloqueo"): print_fn(f"   Bloqueo: {t['bloqueo']}")
+
+    @staticmethod
+    def _mostrar_resumen_recursos(panel: dict[str, Any], print_fn) -> None:
+        inventario = dict(panel.get("inventario_recursos") or {})
+        ocupacion = dict(panel.get("ocupacion_recursos") or panel.get("ocupacion_temporal_recursos") or {})
+        simultaneidad = dict(panel.get("simultaneidad_recursos") or {})
+        conflictos = dict(panel.get("conflictos_recursos") or {})
+
+        hay_datos = any(bool(x) for x in (inventario, ocupacion, simultaneidad, conflictos))
+        print_fn("\nDIAGNÓSTICO DE RECURSOS")
+        if not hay_datos:
+            print_fn("- Sin información de recursos disponible")
+            return
+
+        recursos_conocidos = len(list(inventario.get("recursos_fisicos") or []))
+        ocupaciones_registradas = int((ocupacion.get("resumen") or {}).get("total_bloques", len(list(ocupacion.get("bloques") or []))) or 0)
+        maxima_simultaneidad = int((simultaneidad.get("resumen") or {}).get("maximo_nivel_simultaneidad", 0) or 0)
+        conflictos_detectados = int((conflictos.get("resumen") or {}).get("total", len(list(conflictos.get("conflictos") or []))) or 0)
+
+        print_fn(f"- Recursos conocidos: {recursos_conocidos}")
+        print_fn(f"- Ocupaciones registradas: {ocupaciones_registradas}")
+        print_fn(f"- Máxima simultaneidad: {maxima_simultaneidad}")
+        print_fn(f"- Conflictos detectados: {conflictos_detectados}")
 
     @staticmethod
     def _mostrar_detalle_clasificacion(panel: dict[str, Any], print_fn) -> None:
@@ -297,6 +341,133 @@ class ConsolaProduccionGuiadaPiloto13:
             print_fn("\nAvisos de cronología:")
             for alerta in alertas:
                 print_fn(f"- {alerta}")
+
+    @staticmethod
+    def _mostrar_inventario_recursos(panel: dict[str, Any], print_fn) -> None:
+        inventario = dict(panel.get("inventario_recursos") or {})
+        recursos = list(inventario.get("recursos_fisicos") or [])
+        print_fn("\nDETALLE DE INVENTARIO DE RECURSOS")
+        if not inventario:
+            print_fn("Sin información de inventario disponible.")
+            return
+        if not recursos:
+            print_fn("No hay recursos en inventario para mostrar.")
+        for item in recursos:
+            nombre = str(item.get("nombre") or item.get("id_normalizado") or "recurso sin identificar")
+            print_fn(f"- Recurso: {nombre}")
+            print_fn(f"  Tipo: {item.get('tipo') or 'no indicado'}")
+            capacidad = item.get("capacidad")
+            print_fn(f"  Capacidad: {capacidad if capacidad not in (None, '') else 'no indicado'}")
+            unidad = item.get("unidad") or item.get("capacidad_unidad") or "no indicado"
+            print_fn(f"  Unidad: {unidad}")
+            origen = item.get("capacidad_origen") or ("real" if item.get("capacidad_confirmada") else "estimada")
+            print_fn(f"  Origen: {origen}")
+            nombres_origen = ", ".join(list(item.get("nombres_origen") or []))
+            if nombres_origen:
+                print_fn(f"  Observaciones: variantes detectadas -> {nombres_origen}")
+        incompletos = list(inventario.get("datos_incompletos") or [])
+        if incompletos:
+            print_fn("\nDatos incompletos en inventario:")
+            for dato in incompletos:
+                print_fn(f"- {dato.get('tipo') or 'dato_incompleto'}")
+
+    @staticmethod
+    def _mostrar_ocupacion_recursos(panel: dict[str, Any], print_fn) -> None:
+        ocupacion = dict(panel.get("ocupacion_recursos") or panel.get("ocupacion_temporal_recursos") or {})
+        bloques = list(ocupacion.get("bloques") or [])
+        print_fn("\nDETALLE DE OCUPACIÓN DE RECURSOS")
+        if not ocupacion:
+            print_fn("Sin información de ocupación disponible.")
+            return
+        if not bloques:
+            print_fn("No hay ocupaciones registradas.")
+        bloques_ordenados = sorted(
+            [dict(b) for b in bloques],
+            key=lambda b: (
+                int(b.get("dia", 1) or 1),
+                int(b.get("inicio_min", 0) or 0),
+                str(b.get("recurso") or ""),
+                str(b.get("tarea") or ""),
+            ),
+        )
+        for bloque in bloques_ordenados:
+            recurso = bloque.get("recurso") or "recurso no indicado"
+            tarea = bloque.get("tarea") or "tarea no indicada"
+            responsable = bloque.get("responsable") or "no indicado"
+            inicio = (bloque.get("inicio") or {}).get("texto") or f"{bloque.get('inicio_min', 'no indicado')} min"
+            fin = (bloque.get("fin") or {}).get("texto") or f"{bloque.get('fin_min', 'no indicado')} min"
+            inicio_min = bloque.get("inicio_min")
+            fin_min = bloque.get("fin_min")
+            if isinstance(inicio_min, int) and isinstance(fin_min, int) and fin_min > inicio_min:
+                duracion = str(fin_min - inicio_min)
+            else:
+                duracion = "información incompleta"
+            origen = bloque.get("origen_dato") or "no indicado"
+            estado = bloque.get("estado") or "no indicado"
+            print_fn(f"- {recurso} | {tarea}")
+            print_fn(f"  Responsable: {responsable}")
+            print_fn(f"  Inicio: {inicio} | Fin: {fin} | Duración: {duracion}")
+            print_fn(f"  Carácter: {origen} | Estado: {estado}")
+        incompletos = list(ocupacion.get("datos_incompletos") or [])
+        if incompletos:
+            print_fn("\nIncidencias de datos de ocupación:")
+            for dato in incompletos:
+                print_fn(f"- {dato.get('tipo') or 'dato_incompleto'}")
+
+    @staticmethod
+    def _mostrar_simultaneidad_recursos(panel: dict[str, Any], print_fn) -> None:
+        simultaneidad = dict(panel.get("simultaneidad_recursos") or {})
+        tramos = list(simultaneidad.get("tramos") or [])
+        print_fn("\nDETALLE DE SIMULTANEIDAD DE RECURSOS")
+        if not simultaneidad:
+            print_fn("Sin información de simultaneidad disponible.")
+            return
+        if not tramos:
+            print_fn("No hay tramos de simultaneidad registrados.")
+        for tramo in tramos:
+            recurso = ", ".join(list(tramo.get("recursos_fisicos_activos") or [])) or "no indicado"
+            intervalo = tramo.get("intervalo") or "intervalo no indicado"
+            cantidad = int(tramo.get("cantidad_total_ocupaciones", 0) or 0)
+            tareas = ", ".join(list(tramo.get("tareas_activas") or [])) or "no indicado"
+            responsables = ", ".join(list(tramo.get("responsables_activos") or [])) or "no indicado"
+            capacidad = tramo.get("capacidad")
+            umbral = capacidad if capacidad not in (None, "") else "no indicado"
+            print_fn(f"- Recurso(s): {recurso}")
+            print_fn(f"  Intervalo: {intervalo}")
+            print_fn(f"  Ocupaciones simultáneas: {cantidad}")
+            print_fn(f"  Tareas implicadas: {tareas}")
+            print_fn(f"  Responsables implicados: {responsables}")
+            print_fn(f"  Umbral/capacidad: {umbral}")
+            print_fn("  Nota: simultaneidad detectada; no implica conflicto confirmado por sí sola.")
+        incompletos = list(simultaneidad.get("datos_incompletos") or [])
+        if incompletos:
+            print_fn("\nIncidencias de datos de simultaneidad:")
+            for dato in incompletos:
+                print_fn(f"- {dato.get('tipo') or 'dato_incompleto'}")
+
+    @staticmethod
+    def _mostrar_conflictos_recursos(panel: dict[str, Any], print_fn) -> None:
+        conflictos = dict(panel.get("conflictos_recursos") or {})
+        items = list(conflictos.get("conflictos") or [])
+        print_fn("\nDETALLE DE CONFLICTOS DE RECURSOS")
+        if not conflictos:
+            print_fn("Sin información de conflictos disponible.")
+            return
+        if not items:
+            print_fn("No se detectan conflictos de recursos en este plan.")
+            return
+        for conflicto in items:
+            tareas = ", ".join(list(conflicto.get("tareas_afectadas") or [])) or "no indicado"
+            temporal = "real" if conflicto.get("datos_reales") else ("estimado" if conflicto.get("datos_estimados") else "no indicado")
+            print_fn(f"- ID: {conflicto.get('id') or 'no indicado'}")
+            print_fn(f"  Severidad: {conflicto.get('severidad') or 'no indicado'}")
+            print_fn(f"  Recurso: {conflicto.get('recurso') or 'no indicado'}")
+            print_fn(f"  Responsable: {conflicto.get('responsable') or 'no indicado'}")
+            print_fn(f"  Tareas: {tareas}")
+            print_fn(f"  Intervalo: {conflicto.get('intervalo') or 'no indicado'}")
+            print_fn(f"  Descripción: {conflicto.get('descripcion') or 'no indicado'}")
+            print_fn(f"  Origen: {conflicto.get('origen') or 'no indicado'}")
+            print_fn(f"  Carácter temporal: {temporal}")
 
     @staticmethod
     def _seleccionar_tarea(tareas, input_fn, print_fn):

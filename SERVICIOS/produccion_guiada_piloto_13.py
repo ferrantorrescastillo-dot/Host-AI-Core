@@ -50,6 +50,10 @@ class ProduccionGuiadaPiloto13:
         clasificacion_jornada = dict((panel_motor or {}).get("clasificacion_jornada") or {})
         cuellos_previstos = dict((panel_motor or {}).get("cuellos_botella_previstos") or {})
         cronologia_prevista = dict((panel_motor or {}).get("cronologia_operativa_prevista") or {})
+        inventario_recursos = dict((panel_motor or {}).get("inventario_recursos") or {})
+        ocupacion_recursos = dict((panel_motor or {}).get("ocupacion_temporal_recursos") or {})
+        simultaneidad_recursos = dict((panel_motor or {}).get("simultaneidad_recursos") or {})
+        conflictos_recursos = dict((panel_motor or {}).get("conflictos_recursos") or {})
         bloqueadas = [t for t in tareas if t.get("bloqueo")]
         activas = [t for t in tareas if t.get("estado_codigo") == "en_curso"]
         pendientes = [t for t in tareas if t.get("estado_codigo") not in ESTADOS_TERMINADOS]
@@ -77,6 +81,10 @@ class ProduccionGuiadaPiloto13:
             "cronologia_base_horaria": dict(cronologia_prevista.get("base_horaria") or {}),
             "cronologia_alertas": list(cronologia_prevista.get("alertas") or []),
             "cronologia_tramos": list(cronologia_prevista.get("tramos") or []),
+            "inventario_recursos": inventario_recursos,
+            "ocupacion_recursos": ocupacion_recursos,
+            "simultaneidad_recursos": simultaneidad_recursos,
+            "conflictos_recursos": conflictos_recursos,
             "lectura": self._lectura_general(tareas, siguiente),
         }
 
