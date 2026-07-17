@@ -955,6 +955,7 @@ class MotorProduccionReal:
         asignaciones = list((plan.asignacion_recursos or {}).get("asignaciones", []) or [])
         clasificacion_jornada = self._clasificar_elaboraciones_abiertas(plan, resumen)
         cuellos_botella_previstos = self._analizar_cuellos_botella_previstos(plan, resumen)
+        inventario_recursos = self.inventario_recursos(plan_id)
 
         tarea_por_id = {t.get("id"): t for t in resumen.get("tareas", [])}
         cocineros: Dict[str, Dict[str, Any]] = {}
@@ -1049,6 +1050,7 @@ class MotorProduccionReal:
             "tareas_pendientes": resumen.get("tareas_pendientes", []),
             "alertas": resumen.get("alertas", []),
             "clasificacion_jornada": clasificacion_jornada,
+            "inventario_recursos": inventario_recursos,
             "cuellos_botella_previstos": cuellos_botella_previstos,
             "cronologia_operativa_prevista": self._construir_cronologia_operativa(plan, resumen),
             "cocineros": sorted(cocineros.values(), key=lambda x: x["cocinero"]),
@@ -1062,6 +1064,10 @@ class MotorProduccionReal:
             },
             "actualizado_en": self._ahora(),
         }
+
+    def inventario_recursos(self, plan_id: str) -> Dict[str, Any]:
+        plan = self.obtener_plan(plan_id)
+        return self.core.inventario_recursos_produccion.construir_inventario_plan(plan)
 
     def _analizar_cuellos_botella_previstos(self, plan, resumen: Dict[str, Any]) -> Dict[str, Any]:
         detalle: List[Dict[str, Any]] = []

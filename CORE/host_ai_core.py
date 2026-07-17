@@ -92,6 +92,7 @@ from SERVICIOS.optimizador_stock import OptimizadorStock
 from SERVICIOS.stock_por_ubicaciones import StockPorUbicaciones
 from SERVICIOS.cierre_gestion_inteligente_stock import CierreGestionInteligenteStock
 from SERVICIOS.analizador_inteligente_produccion import AnalizadorInteligenteProduccion
+from SERVICIOS.inventario_recursos_produccion import InventarioRecursosProduccion
 from SERVICIOS.motor_alertas_produccion import MotorAlertasProduccion
 from SERVICIOS.planificador_inteligente_produccion import PlanificadorInteligenteProduccion
 from SERVICIOS.asignador_recursos_produccion import AsignadorRecursosProduccion
@@ -390,6 +391,7 @@ class HostAICore:
         self.stock_por_ubicaciones = StockPorUbicaciones(self)
         self.cierre_gestion_inteligente_stock = CierreGestionInteligenteStock(self)
         self.analizador_inteligente_produccion = AnalizadorInteligenteProduccion(self)
+        self.inventario_recursos_produccion = InventarioRecursosProduccion(self)
         self.motor_alertas_produccion = MotorAlertasProduccion(self)
         self.planificador_inteligente_produccion = PlanificadorInteligenteProduccion(self)
         self.asignador_recursos_produccion = AsignadorRecursosProduccion(self)
