@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
+from SERVICIOS.configuracion_restaurante import ServicioConfiguracionRestaurante
 from SERVICIOS.produccion_stock_piloto_14 import ProduccionStockPiloto14
 
 
@@ -32,6 +33,11 @@ class ProduccionGuiadaPiloto13:
         self.core = core
         self.motor = core.produccion_real
         self.produccion_stock = ProduccionStockPiloto14(core) if hasattr(core, "stock") else None
+        self._estado_configuracion_restaurante = {"ok": True, "errores": []}
+        base_dir = getattr(core, "base_dir", None)
+        if base_dir:
+            servicio_config = ServicioConfiguracionRestaurante(base_dir)
+            self._estado_configuracion_restaurante = servicio_config.asegurar_configuracion_valida()
 
     def listar_planes_operativos(self) -> list[dict[str, Any]]:
         planes = list(self.motor.listar_planes())

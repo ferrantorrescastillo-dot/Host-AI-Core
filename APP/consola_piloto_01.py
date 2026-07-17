@@ -37,6 +37,9 @@ class ConsolaPiloto01:
                 self.app._menu_costes()
             elif opcion == "8":
                 self.app._hablar_host_ai()
+            elif opcion == "9":
+                from APP.consola_configuracion_restaurante import ConsolaConfiguracionRestaurante
+                ConsolaConfiguracionRestaurante(self.app.core.base_dir).ejecutar()
             elif opcion == "0":
                 print("Saliendo del modo piloto.")
                 return
@@ -61,6 +64,7 @@ class ConsolaPiloto01:
         print("6. Stock")
         print("7. Costes y rentabilidad")
         print("8. Hablar con Host AI")
+        print("9. Configuracion del Restaurante")
         print("0. Volver")
 
 

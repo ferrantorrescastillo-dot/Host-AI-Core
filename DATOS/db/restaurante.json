@@ -1,0 +1,130 @@
+{
+  "version": "R1",
+  "datos_generales": {
+    "nombre_restaurante": "Mas Boronat",
+    "direccion": "Salomó",
+    "telefono": "",
+    "correo_electronico": "",
+    "horario_general": "9:00-21:30"
+  },
+  "servicios": [
+    {
+      "id": "servicio_desayuno",
+      "nombre": "Desayuno",
+      "hora_inicio": "",
+      "hora_fin": "",
+      "activo": true
+    },
+    {
+      "id": "servicio_comida",
+      "nombre": "Comida",
+      "hora_inicio": "",
+      "hora_fin": "",
+      "activo": true
+    },
+    {
+      "id": "servicio_cena",
+      "nombre": "Cena",
+      "hora_inicio": "",
+      "hora_fin": "",
+      "activo": true
+    }
+  ],
+  "partidas": [
+    {
+      "id": "partida_frio",
+      "nombre": "Frio",
+      "orden": 1,
+      "activa": true
+    },
+    {
+      "id": "partida_caliente",
+      "nombre": "Caliente",
+      "orden": 2,
+      "activa": true
+    },
+    {
+      "id": "partida_postres",
+      "nombre": "Postres",
+      "orden": 3,
+      "activa": true
+    }
+  ],
+  "equipamiento": [
+    {
+      "id": "eq_horno_rational",
+      "nombre": "Horno Rational",
+      "tipo": "coccion",
+      "activo": true
+    },
+    {
+      "id": "eq_freidora",
+      "nombre": "Freidora",
+      "tipo": "coccion",
+      "activo": true
+    },
+    {
+      "id": "eq_plancha",
+      "nombre": "Plancha",
+      "tipo": "coccion",
+      "activo": true
+    },
+    {
+      "id": "eq_cocina",
+      "nombre": "Cocina",
+      "tipo": "coccion",
+      "activo": true
+    },
+    {
+      "id": "eq_abatidor",
+      "nombre": "Abatidor",
+      "tipo": "frio",
+      "activo": true
+    },
+    {
+      "id": "eq_camara_positiva",
+      "nombre": "Camara positiva",
+      "tipo": "almacen_frio",
+      "activo": true
+    },
+    {
+      "id": "eq_camara_negativa",
+      "nombre": "Camara negativa",
+      "tipo": "almacen_congelado",
+      "activo": true
+    },
+    {
+      "id": "eq_thermomix",
+      "nombre": "Thermomix",
+      "tipo": "general",
+      "activo": true
+    }
+  ],
+  "almacenes": [
+    {
+      "id": "almacen_principal",
+      "nombre": "Principal",
+      "activo": true
+    },
+    {
+      "id": "almacen_camara_positiva",
+      "nombre": "Camara positiva",
+      "activo": true
+    },
+    {
+      "id": "almacen_camara_negativa",
+      "nombre": "Camara negativa",
+      "activo": true
+    },
+    {
+      "id": "almacen_bodega",
+      "nombre": "Bodega",
+      "activo": true
+    },
+    {
+      "id": "almacen_almacen_seco",
+      "nombre": "Almacen seco",
+      "activo": true
+    }
+  ]
+}
