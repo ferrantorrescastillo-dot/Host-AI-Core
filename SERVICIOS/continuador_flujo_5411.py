@@ -4,6 +4,8 @@ import re
 import unicodedata
 from typing import Any, Dict, List, Optional
 
+from SERVICIOS.modelo_flujo_operativo import seleccionar_paso
+
 
 def _normalizar(texto: str) -> str:
     t = (texto or "").strip().lower()
@@ -12,6 +14,17 @@ def _normalizar(texto: str) -> str:
 
 
 def acciones_seleccionables(contexto: Dict[str, Any]) -> List[Dict[str, Any]]:
+    flujo = contexto.get("flujo") if isinstance(contexto, dict) else None
+    if isinstance(flujo, dict):
+        pasos = list(flujo.get("pasos") or [])
+        acciones = []
+        for paso in pasos:
+            estado = str(paso.get("estado") or "")
+            if estado in {"completado", "cancelado", "rechazado", "error", "preparado_modo_seguro"}:
+                continue
+            acciones.append(paso)
+        if acciones:
+            return acciones
     confirmaciones = contexto.get("confirmaciones") or {}
     return list(confirmaciones.get("acciones_con_confirmacion") or [])
 
@@ -54,6 +67,52 @@ def ejecutar_accion_seleccionada_modo_seguro(accion: Dict[str, Any], contexto: D
     return {"ok": True, "estado": estado, "accion": accion, "detalle": detalle, "modifico_datos_reales": False}
 
 
+def seleccionar_accion_en_flujo_5411(texto: str, flujo: Dict[str, Any]) -> Dict[str, Any]:
+    acciones = acciones_seleccionables({"flujo": flujo})
+    seleccion = interpretar_seleccion(texto, acciones)
+    if not seleccion.get("ok"):
+        estado = str(seleccion.get("tipo") or "no_entendida")
+        return {
+            "ok": False,
+            "estado": estado,
+            "mensaje": "No se pudo seleccionar una acción del flujo activo.",
+            "flujo": flujo,
+            "seleccion": seleccion,
+        }
+
+    if seleccion.get("tipo") == "cancelar_seleccion":
+        copia = dict(flujo)
+        copia["estado"] = "esperando_seleccion"
+        return {
+            "ok": True,
+            "estado": "seleccion_cancelada",
+            "mensaje": "Selección cancelada. Flujo en espera de una nueva selección.",
+            "flujo": copia,
+            "seleccion": seleccion,
+        }
+
+    accion = dict(seleccion.get("accion") or {})
+    id_o_codigo = str(accion.get("id_paso") or accion.get("codigo") or "")
+    actualizado = seleccionar_paso(flujo, id_o_codigo, origen="continuador_5411")
+    if not actualizado.get("ok"):
+        return {
+            "ok": False,
+            "estado": actualizado.get("estado", "seleccion_error"),
+            "mensaje": actualizado.get("mensaje", "No se pudo seleccionar el paso."),
+            "flujo": actualizado.get("flujo", flujo),
+            "paso": actualizado.get("paso"),
+            "seleccion": seleccion,
+        }
+    return {
+        "ok": True,
+        "estado": actualizado.get("estado", "paso_seleccionado"),
+        "mensaje": "Paso seleccionado en el flujo operativo.",
+        "flujo": actualizado.get("flujo", flujo),
+        "paso": actualizado.get("paso"),
+        "seleccion": seleccion,
+    }
+
+
 def formatear_resultado_seleccion(resultado: Dict[str, Any], evento: Dict[str, Any]) -> str:
     accion = resultado.get("accion") or {}
     lineas = [
@@ -76,4 +135,10 @@ def formatear_resultado_seleccion(resultado: Dict[str, Any], evento: Dict[str, A
     return "\n".join(lineas)
 
 
-__all__ = ["acciones_seleccionables", "interpretar_seleccion", "ejecutar_accion_seleccionada_modo_seguro", "formatear_resultado_seleccion"]
+__all__ = [
+    "acciones_seleccionables",
+    "interpretar_seleccion",
+    "ejecutar_accion_seleccionada_modo_seguro",
+    "seleccionar_accion_en_flujo_5411",
+    "formatear_resultado_seleccion",
+]

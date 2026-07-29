@@ -124,6 +124,7 @@ class MotorProduccionReal:
         plan = PlanProduccionReal(
             evento_id=evento_id,
             evento=evento.get("nombre", ""),
+            fecha=str(evento.get("fecha", "") or ""),
             pax=int(evento.get("pax", 0) or 0),
             tareas=tareas,
             cronograma=cronograma,

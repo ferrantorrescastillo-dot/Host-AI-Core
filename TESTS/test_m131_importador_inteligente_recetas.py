@@ -1,6 +1,6 @@
 from pathlib import Path
 import json,tempfile
-from docx import Document
+import pytest
 from openpyxl import Workbook
 from SERVICIOS.importador_inteligente_recetas_m131 import ImportadorInteligenteRecetasM131,clasificar_prefijo_articulo
 
@@ -38,6 +38,8 @@ def test_payload_solo_sin_bloqueos():
   assert p['raciones_base']==10 and p['ingredientes'][0]['articulo_id']=='M.P-PAT'
 
 def test_docx():
+ docx = pytest.importorskip('docx', reason='python-docx es opcional y solo necesario para importar .docx')
+ Document = docx.Document
  with tempfile.TemporaryDirectory() as d:
   p=Path(d);a=preparar(p);f=p/'r.docx';doc=Document();[doc.add_paragraph(x) for x in texto().splitlines()];doc.save(f)
   b=ImportadorInteligenteRecetasM131(a).desde_archivo(f);assert b.origen_tipo=='WORD' and not b.bloqueos

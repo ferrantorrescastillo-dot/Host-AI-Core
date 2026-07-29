@@ -3,7 +3,12 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional
 
-from SERVICIOS.motor_planificacion_recetas_reales_556e31 import MotorPlanificacionRecetasReales556E31, formatear_plan_real_556e31
+from SERVICIOS.motor_planificacion_recetas_reales_556e31 import (
+    MotorPlanificacionRecetasReales556E31,
+    _hora,
+    _minutos_hora,
+    formatear_plan_real_556e31,
+)
 
 
 class MotorRepartoCocineros556E3:
@@ -40,4 +45,4 @@ def formatear_reparto_556e3(resultado: Dict[str, Any]) -> str:
     return formatear_plan_real_556e31(resultado)
 
 
-__all__ = ["MotorRepartoCocineros556E3", "formatear_reparto_556e3"]
+__all__ = ["MotorRepartoCocineros556E3", "formatear_reparto_556e3", "_hora", "_minutos_hora"]

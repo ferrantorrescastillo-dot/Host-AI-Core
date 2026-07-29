@@ -9,6 +9,7 @@ class BaseDatosLocal:
         "eventos", "stock_lotes", "stock_movimientos",
         "compras_necesidades", "compras_pedidos",
         "compras_proveedores", "compras_propuestas", "compras_registros",
+        "compras_producto_proveedor", "compras_recepciones", "compras_incidencias",
         "escandallos", "precios", "planes_produccion",
         "ideas_culinarias", "historial_chat", "historial_escandallos_costes",
         "historial_costes_eventos", "historial_rentabilidad",

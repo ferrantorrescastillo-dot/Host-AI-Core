@@ -7,7 +7,10 @@ entrada, manteniendo la compatibilidad con las intenciones actuales.
 
 from __future__ import annotations
 from dataclasses import dataclass, asdict
+from pathlib import Path
 from typing import Dict, Any, List
+
+from SERVICIOS.host_ai_engine import HostAIEngine
 
 @dataclass
 class SolicitudHostAI:
@@ -32,6 +35,8 @@ class OrquestadorHostAI:
 
     def __init__(self, core):
         self.core = core
+        base_dir = Path(getattr(core, "base_dir", Path.cwd())).resolve()
+        self.host_ai_engine = HostAIEngine(base_dir)
 
     @staticmethod
     def _normalizar_intencion(intencion: str) -> str:
@@ -48,6 +53,45 @@ class OrquestadorHostAI:
         intencion = self._normalizar_intencion(solicitud.intencion)
         p = self._normalizar_parametros(solicitud.parametros)
         try:
+            if intencion == "host_ai_engine_health":
+                return self._responder(
+                    RespuestaHostAI(
+                        True,
+                        intencion,
+                        "HOST AI ENGINE operativo.",
+                        self.host_ai_engine.healthcheck(),
+                        ["Usar host_ai_engine_consulta para enrutar futuras peticiones IA."],
+                    )
+                )
+
+            if intencion == "host_ai_engine_consulta":
+                usar_director = bool(p.get("usar_director"))
+                resultado_engine = self.host_ai_engine.consultar(
+                    origen=str(p.get("origen") or "HOST_AI"),
+                    modulo=str(p.get("modulo") or "general"),
+                    tipo_peticion=str(p.get("tipo_peticion") or "consulta_generica"),
+                    datos_enviados=dict(p.get("datos_enviados") or {}),
+                    proveedor_preferido=str(p.get("proveedor_preferido") or "SIMULADO"),
+                    formato_entrada=str(p.get("formato_entrada") or "texto"),
+                    usar_director=usar_director,
+                    usuario=str(p.get("usuario") or "sistema"),
+                    texto_original=str(p.get("texto_original") or ""),
+                    nivel_de_autonomia=str(p.get("nivel_de_autonomia") or "CONSULTAR"),
+                    contexto=dict(p.get("contexto") or {}),
+                    confirmaciones_recibidas=list(p.get("confirmaciones_recibidas") or []),
+                    version_del_contrato=str(p.get("version_del_contrato") or "1.0"),
+                )
+                ok_engine = str(resultado_engine.get("estado") or "").startswith("OK") or bool(resultado_engine.get("estado") in {"COMPLETADA", "COMPLETADA_CON_INCIDENCIAS", "ESPERANDO_CONFIRMACION", "CANCELADA"})
+                return self._responder(
+                    RespuestaHostAI(
+                        ok_engine,
+                        intencion,
+                        "Consulta gestionada por HOST AI ENGINE." if not usar_director else "Solicitud funcional gestionada por HOST AI ENGINE.",
+                        {"host_ai_engine": resultado_engine},
+                        ["Sustituir proveedor simulado cuando se autorice IA real."],
+                    )
+                )
+
             if intencion == "memoria_limpiar":
                 self.core.memoria.limpiar_memoria()
                 return RespuestaHostAI(True, intencion, "Memoria operacional limpiada.", {}, [])
@@ -113,6 +157,17 @@ class OrquestadorHostAI:
                     "desactivar_proveedor_compra": "desactivar_proveedor",
                     "asociar_producto_proveedor_compra": "asociar_producto_proveedor",
                     "preparar_onboarding_proveedor_detectado": "preparar_onboarding_proveedor_detectado",
+                    "listar_proveedores_producto_compra": "listar_proveedores_producto",
+                    "listar_productos_proveedor_compra": "listar_productos_proveedor",
+                    "marcar_proveedor_preferente_compra": "marcar_proveedor_preferente",
+                    "desactivar_asociacion_producto_proveedor_compra": "desactivar_asociacion_producto_proveedor",
+                    "editar_asociacion_producto_proveedor_compra": "editar_asociacion_producto_proveedor",
+                    "editar_condiciones_proveedor_compra": "editar_condiciones_proveedor",
+                    "recomendar_proveedor_compra": "recomendar_proveedor",
+                    "recomendacion_proveedor_propuesta_compra": "recomendacion_propuesta",
+                    "comparar_proveedores_producto_compra": "comparar_proveedores_producto",
+                    "comparar_proveedores_propuesta_compra": "comparar_proveedores_propuesta",
+                    "agrupar_propuestas_por_proveedor_compra": "agrupar_propuestas_por_proveedor",
                 },
                 "produccion_completa": {
                     "analizar_produccion_completa_evento": "analizar_evento",

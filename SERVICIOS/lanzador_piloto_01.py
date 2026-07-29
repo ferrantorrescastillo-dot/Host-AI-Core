@@ -24,7 +24,11 @@ from SERVICIOS.certificador_piloto_01 import CertificadorPiloto01
 
 
 class LanzadorPiloto01:
-    """Punto de entrada único y estable de Host AI para el piloto privado."""
+    """Punto de entrada oficial de Host AI Core 1.0 para uso operativo.
+
+    Freeze-A1 clasifica este lanzador como la única ruta oficial de arranque
+    cuando se inicia desde main.py.
+    """
 
     def __init__(self, base_dir: Optional[Path] = None):
         """Inicializa el lanzador y asegura que `base_dir` esté en `sys.path`.
@@ -43,6 +47,7 @@ class LanzadorPiloto01:
         Se importa localmente `HostAICore` y `ConsolaPiloto01` para evitar
         sobrecargar el import en el módulo y mantener el comportamiento.
         """
+        # RUTA OFICIAL (operativa diaria)
         auditoria = AuditorArranquePiloto01(self.base_dir).ejecutar(importar_modulos=False)
         if not auditoria["ok"]:
             raise RuntimeError("La línea base requiere revisión antes de abrir el modo piloto.")
@@ -53,6 +58,7 @@ class LanzadorPiloto01:
         ConsolaPiloto01(HostAICore(self.base_dir)).ejecutar()
 
     def abrir_modo_desarrollo(self) -> None:
+        # RUTA DE DESARROLLO (no oficial para congelación Core 1.0)
         from SERVICIOS.host_ai_launcher import HostAILauncher
 
         HostAILauncher(self.base_dir).ejecutar()
@@ -110,8 +116,10 @@ class LanzadorPiloto01:
                 elif opcion == "2":
                     self.abrir_modo_desarrollo()
                 elif opcion == "8":
+                    # RUTA QA (auditoría)
                     self.mostrar_auditoria(print_fn)
                 elif opcion == "9":
+                    # RUTA QA (certificación)
                     self.certificar(print_fn)
                 elif opcion == "0":
                     print_fn("Saliendo de Host AI.")

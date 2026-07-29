@@ -57,6 +57,10 @@ class ImportadorInteligenteRecetasM131:
 
     M1.3.1 crea un borrador y lo entrega al ResolutorRecetasM13. No resuelve
     todavía artículos inexistentes de forma anidada (M1.3.2).
+
+    Dependencias opcionales:
+    - Word (.docx): requiere python-docx.
+    - PDF (.pdf): requiere pypdf.
     """
 
     UNIDADES = {
@@ -174,7 +178,10 @@ class ImportadorInteligenteRecetasM131:
 
     @staticmethod
     def _leer_docx(p: Path) -> str:
-        from docx import Document
+        try:
+            from docx import Document
+        except ImportError as exc:
+            raise RuntimeError('Falta python-docx para importar archivos Word (.docx).') from exc
         d=Document(p); partes=[x.text for x in d.paragraphs]
         for t in d.tables:
             for row in t.rows: partes.append(' '.join(c.text.strip() for c in row.cells if c.text.strip()))
@@ -191,11 +198,15 @@ class ImportadorInteligenteRecetasM131:
     @staticmethod
     def _leer_excel(p: Path, hoja: str | None) -> str:
         from openpyxl import load_workbook
-        wb=load_workbook(p,data_only=True,read_only=True);ws=wb[hoja] if hoja else wb[wb.sheetnames[0]]
-        filas=[]
-        for row in ws.iter_rows(values_only=True):
-            vals=[str(v).strip() for v in row if v not in (None,'')]
-            if vals: filas.append(' '.join(vals))
-        return '\n'.join(filas)
+        wb=load_workbook(p,data_only=True,read_only=True)
+        try:
+            ws=wb[hoja] if hoja else wb[wb.sheetnames[0]]
+            filas=[]
+            for row in ws.iter_rows(values_only=True):
+                vals=[str(v).strip() for v in row if v not in (None,'')]
+                if vals: filas.append(' '.join(vals))
+            return '\n'.join(filas)
+        finally:
+            wb.close()
 
 __all__=['ImportadorInteligenteRecetasM131','BorradorRecetaM131','IngredienteDetectado','clasificar_prefijo_articulo']

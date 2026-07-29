@@ -4,6 +4,8 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 
 from SERVICIOS.gestor_datos_minimos_52 import GestorDatosMinimos52
+from SERVICIOS.gestor_contexto_permanente_5410 import GestorContextoPermanente5410
+from SERVICIOS.orquestador_flujo_operativo import OrquestadorFlujoOperativo
 from SERVICIOS.orquestador_inteligente_51 import OrquestadorInteligente51
 from SERVICIOS.confirmacion_inteligente_534 import interpretar_confirmacion
 
@@ -23,14 +25,22 @@ class OrquestadorInteligente52:
 
     def __init__(self, base_dir: Optional[Path] = None):
         self.base_dir = Path(base_dir or Path.cwd()).resolve()
+        # Compatibilidad legacy: atributo mantenido, sin instancia local activa.
+        self.host_ai_engine = None
+        self.orquestador_flujo = OrquestadorFlujoOperativo(self.base_dir)
         self.gestor_datos = GestorDatosMinimos52()
         self.orquestador_51 = OrquestadorInteligente51(self.base_dir)
-        self.contexto_activo_549: Dict[str, Any] = {}
+        self.gestor_contexto_5410 = GestorContextoPermanente5410()
+        self.contexto_activo_549: Dict[str, Any] = self.gestor_contexto_5410.contexto
         self.contexto_ingesta_receta_556e32: Dict[str, Any] = {}
         self.contexto_post_ficha_556e33: Dict[str, Any] = {}
 
     def procesar(self, texto: str) -> Dict[str, Any]:
         texto = (texto or "").strip()
+
+        continuidad = self._procesar_continuidad_541x(texto)
+        if continuidad is not None:
+            return continuidad
 
         # 5.5.6E.3.3: continuidad tras guardar una ficha y planificación guiada.
         gestion_post_ficha = self._procesar_post_ficha_556e33(texto)
@@ -99,6 +109,130 @@ class OrquestadorInteligente52:
         respuesta = self.orquestador_51.procesar(texto)
         respuesta["version"] = self.VERSION
         return respuesta
+
+    def _procesar_continuidad_541x(self, texto: str) -> Optional[Dict[str, Any]]:
+        contexto = self.gestor_contexto_5410.contexto
+        if not bool(contexto.get("activo")):
+            return None
+
+        self.contexto_activo_549 = contexto
+        from SERVICIOS.confirmaciones_inteligentes_5412 import (
+            interpretar_confirmacion_contextual_5412,
+            mensaje_confirmacion_especifica_5412,
+            registrar_confirmacion_accion_5412,
+        )
+        from SERVICIOS.continuador_flujo_5411 import (
+            acciones_seleccionables,
+            ejecutar_accion_seleccionada_modo_seguro,
+            interpretar_seleccion,
+        )
+        from SERVICIOS.conversacion_natural_5413 import (
+            formatear_pendientes_5413,
+            resolver_referencia_natural_5413,
+        )
+
+        acciones = acciones_seleccionables(contexto)
+        estado = self.gestor_contexto_5410.estado()
+
+        interpretada = interpretar_confirmacion_contextual_5412(texto, contexto)
+        if interpretada.get("gestionado") and interpretada.get("tipo") in {"seleccionar_y_confirmar"}:
+            accion = interpretada.get("accion")
+            if accion:
+                resultado = ejecutar_accion_seleccionada_modo_seguro(accion, contexto)
+                registro = registrar_confirmacion_accion_5412(contexto, accion, True)
+                self.gestor_contexto_5410.cambiar_estado(
+                    "accion_confirmada_modo_seguro",
+                    confirmaciones_especificas=registro,
+                    accion_seleccionada=accion,
+                )
+                self.contexto_activo_549 = self.gestor_contexto_5410.contexto
+                return {
+                    "ok": True,
+                    "version": self.VERSION,
+                    "intencion": "confirmacion_flujo",
+                    "estado": "accion_confirmada_modo_seguro",
+                    "mensaje": resultado.get("detalle", "Acción confirmada en modo seguro."),
+                    "datos": {"resultado": resultado, "accion": accion},
+                    "pasos": self.contexto_activo_549.get("flujo", {}).get("pasos", []),
+                }
+
+        if estado == "esperando_confirmacion_especifica":
+            interpretada_confirm = interpretar_confirmacion_contextual_5412(texto, contexto)
+            if interpretada_confirm.get("gestionado") and interpretada_confirm.get("tipo") in {"confirmar_accion", "seleccionar_y_confirmar"}:
+                accion = interpretada_confirm.get("accion") or contexto.get("accion_seleccionada")
+                if accion:
+                    resultado = ejecutar_accion_seleccionada_modo_seguro(accion, contexto)
+                    registro = registrar_confirmacion_accion_5412(contexto, accion, True)
+                    self.gestor_contexto_5410.cambiar_estado(
+                        "accion_confirmada_modo_seguro",
+                        confirmaciones_especificas=registro,
+                        accion_seleccionada=accion,
+                    )
+                    self.contexto_activo_549 = self.gestor_contexto_5410.contexto
+                    return {
+                        "ok": True,
+                        "version": self.VERSION,
+                        "intencion": "confirmacion_flujo",
+                        "estado": "accion_confirmada_modo_seguro",
+                        "mensaje": resultado.get("detalle", "Acción confirmada en modo seguro."),
+                        "datos": {"resultado": resultado, "accion": accion},
+                        "pasos": self.contexto_activo_549.get("flujo", {}).get("pasos", []),
+                    }
+
+        referencia = resolver_referencia_natural_5413(texto, contexto)
+        if referencia.get("gestionado"):
+            tipo = referencia.get("tipo")
+            if tipo == "consultar_pendientes":
+                self.gestor_contexto_5410.cambiar_estado("pendientes_mostrados")
+                self.contexto_activo_549 = self.gestor_contexto_5410.contexto
+                return {
+                    "ok": True,
+                    "version": self.VERSION,
+                    "intencion": "continuidad_flujo",
+                    "estado": "pendientes_mostrados",
+                    "mensaje": formatear_pendientes_5413(list(referencia.get("acciones") or [])),
+                    "datos": {"acciones": list(referencia.get("acciones") or [])},
+                    "pasos": self.contexto_activo_549.get("flujo", {}).get("pasos", []),
+                }
+
+            if tipo in {"referencia_ordinal", "otra_accion", "referencia_ultima_accion"}:
+                accion = referencia.get("accion")
+                if accion:
+                    self.gestor_contexto_5410.cambiar_estado(
+                        "esperando_confirmacion_especifica",
+                        accion_seleccionada=accion,
+                    )
+                    self.contexto_activo_549 = self.gestor_contexto_5410.contexto
+                    return {
+                        "ok": True,
+                        "version": self.VERSION,
+                        "intencion": "seleccion_flujo",
+                        "estado": "esperando_confirmacion_especifica",
+                        "mensaje": mensaje_confirmacion_especifica_5412(accion),
+                        "datos": {"accion": accion},
+                        "pasos": self.contexto_activo_549.get("flujo", {}).get("pasos", []),
+                    }
+
+        if estado == "esperando_seleccion_accion":
+            seleccion = interpretar_seleccion(texto, acciones)
+            if seleccion.get("ok") and seleccion.get("tipo") == "accion":
+                accion = seleccion.get("accion")
+                self.gestor_contexto_5410.cambiar_estado(
+                    "esperando_confirmacion_especifica",
+                    accion_seleccionada=accion,
+                )
+                self.contexto_activo_549 = self.gestor_contexto_5410.contexto
+                return {
+                    "ok": True,
+                    "version": self.VERSION,
+                    "intencion": "seleccion_flujo",
+                    "estado": "esperando_confirmacion_especifica",
+                    "mensaje": mensaje_confirmacion_especifica_5412(accion),
+                    "datos": {"accion": accion},
+                    "pasos": self.contexto_activo_549.get("flujo", {}).get("pasos", []),
+                }
+
+        return None
 
     def _procesar_ingesta_receta_556e32(self, texto: str) -> Optional[Dict[str, Any]]:
         from SERVICIOS.ingesta_recetas_lenguaje_natural_556e32 import AnalizadorRecetasLenguajeNatural556E32
@@ -241,15 +375,29 @@ class OrquestadorInteligente52:
         }
 
     def _procesar_evento_completo(self, datos_evento: Dict[str, Any]) -> Dict[str, Any]:
-        from SERVICIOS.generador_flujo_operativo_531 import generar_flujo_operativo_evento
-        from SERVICIOS.ejecutor_flujo_operativo_532 import ejecutar_flujo_operativo
         from SERVICIOS.respuesta_ejecutiva_533 import generar_respuesta_ejecutiva_evento
         from SERVICIOS.confirmacion_inteligente_534 import analizar_confirmaciones_flujo
 
         evento = datos_evento.get("evento") or {}
         datos_flujo = self._normalizar_evento_para_flujo(evento)
-        flujo = generar_flujo_operativo_evento(datos_flujo)
-        ejecucion = ejecutar_flujo_operativo(flujo, confirmar=False)
+        inicio = self.orquestador_flujo.iniciar_flujo_operativo(datos_flujo)
+        if not inicio.get("ok"):
+            return {
+                "ok": False,
+                "version": self.VERSION,
+                "intencion": "evento",
+                "estado": inicio.get("estado", "flujo_no_generado"),
+                "mensaje": inicio.get("mensaje", "No se pudo preparar el flujo operativo."),
+                "datos": {
+                    "datos_minimos": datos_evento,
+                    "flujo": inicio.get("flujo"),
+                    "contexto_activo": False,
+                },
+                "pasos": list(inicio.get("pasos") or []),
+            }
+
+        flujo = dict(inicio.get("flujo") or {})
+        ejecucion = self.orquestador_flujo.ejecutar_flujo_seguro(flujo, confirmar=False)
         respuesta_ejecutiva = generar_respuesta_ejecutiva_evento(flujo, ejecucion)
         confirmaciones = analizar_confirmaciones_flujo(flujo, ejecucion)
 
@@ -294,6 +442,8 @@ class OrquestadorInteligente52:
 
         if tipo == "cancelar":
             evento = self.contexto_activo_549.get("datos_flujo", {})
+            flujo = self.contexto_activo_549.get("flujo") or {}
+            _ = self.orquestador_flujo.cancelar_flujo_operativo(flujo, motivo="cancelado_por_confirmacion_52")
             self.contexto_activo_549.clear()
             return {
                 "ok": True,
@@ -330,11 +480,12 @@ class OrquestadorInteligente52:
         }
 
     def _continuar_flujo_confirmado(self, confirmacion: Dict[str, Any]) -> Dict[str, Any]:
-        from SERVICIOS.ejecutor_flujo_operativo_532 import ejecutar_flujo_operativo
-
         flujo = self.contexto_activo_549.get("flujo") or {}
         datos_flujo = self.contexto_activo_549.get("datos_flujo") or {}
-        ejecucion = ejecutar_flujo_operativo(flujo, confirmar=True)
+        ejecucion = self.orquestador_flujo.ejecutar_flujo_seguro(
+            flujo,
+            confirmar=True,
+        )
 
         mensaje = self._mensaje_flujo_confirmado(datos_flujo, flujo, ejecucion)
         self.contexto_activo_549.clear()

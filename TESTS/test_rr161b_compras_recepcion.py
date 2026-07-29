@@ -52,6 +52,33 @@ def test_rr161b_recepcion_devuelve_datos_planos_y_guarda_precio(tmp_path: Path):
     assert core.compras.obtener(necesidad.id).estado == "comprada"
 
 
+def test_rr161b_recepcion_registra_historial_y_persistencia(tmp_path: Path):
+    core = HostAICore(tmp_path)
+    _, pedido_id = _crear_pedido(core)
+
+    resultado = core.compras.recibir_pedido(pedido_id, core.stock, ubicacion="seco")
+    recepcion = resultado["recepcion"]
+
+    recepciones = core.compras.listar_recepciones(pedido_id)
+    incidencias = core.compras.listar_incidencias(pedido_id)
+
+    assert recepcion["pedido_id"] == pedido_id
+    assert recepcion["stock_aplicado"] is True
+    assert recepciones and recepciones[0]["id"] == recepcion["id"]
+    assert incidencias == []
+    assert core.db.cargar("compras_recepciones")[0]["pedido_id"] == pedido_id
+
+
+def test_rr161b_confirmacion_manual_marcar_fecha_al_preparar_pedido(tmp_path: Path):
+    core = HostAICore(tmp_path)
+    _, pedido_id = _crear_pedido(core)
+
+    pedido = core.compras.cambiar_estado_pedido(pedido_id, "preparado")
+
+    assert pedido.confirmado_en
+    assert pedido.estado == "preparado"
+
+
 def test_rr161b_consola_propone_ultimo_coste_y_muestra_resumen(monkeypatch, capsys, tmp_path: Path):
     core = HostAICore(tmp_path)
     core.stock.registrar_entrada(

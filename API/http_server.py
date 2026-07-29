@@ -1,0 +1,142 @@
+from __future__ import annotations
+
+import os
+from pathlib import Path
+from typing import Any
+from uuid import uuid4
+
+from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+
+from API.app import HostAIPlatformAPI
+from API.contracts.http_models import ApiRequest, ApiResponse
+from API.infra.response_envelope import build_error_payload
+
+
+def _base_dir_from_env() -> Path:
+    raw = str(os.getenv("HOST_AI_BASE_DIR", "")).strip()
+    if raw:
+        return Path(raw).resolve()
+    return Path(__file__).resolve().parent.parent
+
+
+def _parse_query(request: Request) -> dict[str, Any]:
+    out: dict[str, Any] = {}
+    for key, value in request.query_params.multi_items():
+        if key in out:
+            prev = out[key]
+            if isinstance(prev, list):
+                prev.append(value)
+            else:
+                out[key] = [prev, value]
+        else:
+            out[key] = value
+    return out
+
+
+def _parse_allowed_origins() -> list[str]:
+    raw = str(os.getenv("HOST_AI_API_CORS_ALLOWED_ORIGINS", "http://localhost:5173")).strip()
+    values = [item.strip() for item in raw.split(",") if item.strip()]
+    env_name = str(os.getenv("HOST_AI_API_ENV", "development")).strip().lower()
+    allow_wildcard = str(os.getenv("HOST_AI_API_ALLOW_WILDCARD_CORS", "false")).strip().lower() in {
+        "1",
+        "true",
+        "yes",
+    }
+
+    safe_values: list[str] = []
+    for origin in values:
+        if origin == "*":
+            if env_name == "development" and allow_wildcard:
+                safe_values.append(origin)
+            continue
+        safe_values.append(origin)
+
+    if not safe_values:
+        safe_values = ["http://localhost:5173"]
+    return safe_values
+
+
+def _build_json_response(result: ApiResponse) -> JSONResponse:
+    return JSONResponse(status_code=int(result.status_code), content=dict(result.payload or {}))
+
+
+def create_app(platform_api: HostAIPlatformAPI | None = None) -> FastAPI:
+    api = platform_api or HostAIPlatformAPI(base_dir=_base_dir_from_env())
+
+    app = FastAPI(title="Host AI Platform API", version="1.0")
+
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=_parse_allowed_origins(),
+        allow_credentials=False,
+        allow_methods=["GET", "POST", "OPTIONS"],
+        allow_headers=["Content-Type", "X-Request-ID"],
+        expose_headers=["X-Request-ID"],
+    )
+
+    async def _delegate(request: Request, body: dict[str, Any] | None = None) -> JSONResponse:
+        request_id = str(request.headers.get("x-request-id") or "").strip()
+        payload_body = dict(body or {})
+        if not request_id:
+            request_id = str(payload_body.get("request_id") or "").strip()
+        if not request_id:
+            request_id = str(uuid4())
+
+        api_request = ApiRequest(
+            method=str(request.method or "GET").upper(),
+            path=str(request.url.path or ""),
+            request_id=request_id,
+            query=_parse_query(request),
+            headers={k.lower(): v for k, v in request.headers.items()},
+            body=payload_body,
+        )
+
+        try:
+            result = api.handle(api_request)
+            return _build_json_response(result)
+        except Exception:
+            payload = build_error_payload(
+                request_id=request_id,
+                status_code=500,
+                code="internal_error",
+                message="No se pudo procesar la solicitud.",
+            )
+            return JSONResponse(status_code=500, content=payload)
+
+    @app.get("/api/v1/health")
+    async def get_health(request: Request) -> JSONResponse:
+        return await _delegate(request)
+
+    @app.get("/api/v1/version")
+    async def get_version(request: Request) -> JSONResponse:
+        return await _delegate(request)
+
+    @app.get("/api/v1/executive")
+    async def get_executive(request: Request) -> JSONResponse:
+        return await _delegate(request)
+
+    @app.get("/api/v1/dashboard")
+    async def get_dashboard(request: Request) -> JSONResponse:
+        return await _delegate(request)
+
+    @app.post("/api/v1/chat")
+    async def post_chat(request: Request) -> JSONResponse:
+        parsed: dict[str, Any] = {}
+        try:
+            maybe_json = await request.json()
+            if isinstance(maybe_json, dict):
+                parsed = maybe_json
+        except Exception:
+            parsed = {}
+        return await _delegate(request, body=parsed)
+
+    @app.api_route("/{full_path:path}", methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"])
+    async def fallback(full_path: str, request: Request) -> JSONResponse:
+        return await _delegate(request)
+
+    return app
+
+
+app = create_app()

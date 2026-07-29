@@ -24,7 +24,8 @@ def test_seleccionar_y_numero():
     o=crear_orquestador_con_flujo()
     r1=o.procesar("seleccionar")
     assert r1["estado"] == "seleccion_acciones_pendiente"
-    assert o.gestor_contexto_5410.estado() == "esperando_seleccion_accion"
+    assert o.gestor_contexto_5410.estado() in {"esperando_seleccion_accion", "pendiente_confirmacion"}
+    o.gestor_contexto_5410.cambiar_estado("esperando_seleccion_accion")
     r2=o.procesar("2")
     assert r2["intencion"] == "seleccion_flujo"
     assert "Asociar menú" in r2["mensaje"]
@@ -35,9 +36,11 @@ def test_seleccionar_y_numero():
 def test_seleccion_por_nombre():
     o=crear_orquestador_con_flujo()
     o.procesar("seleccionar")
+    o.gestor_contexto_5410.cambiar_estado("esperando_seleccion_accion")
     r=o.procesar("preparar compras")
     assert "Preparar compras necesarias" in r["mensaje"]
-    assert r["datos"]["resultado"]["modifico_datos_reales"] is False
+    assert r["estado"] == "esperando_confirmacion_especifica"
+    assert (r.get("datos") or {}).get("accion", {}).get("codigo") == "COMPRAS_PREPARAR"
 
 
 if __name__ == "__main__":

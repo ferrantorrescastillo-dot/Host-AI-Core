@@ -40,12 +40,30 @@ from SERVICIOS.diagnostico_correccion_inteligente_i13442 import (
 )
 from SERVICIOS.importador_definitivo_menus_i1343 import ImportadorDefinitivoMenusI1343
 from SERVICIOS.certificador_final_importador_i135 import CertificadorFinalImportadorI135, formatear_certificacion_i135
+from SERVICIOS.host_ai_executive import (
+    EXEC_INTENCION_BLOQUEO_PRODUCCION,
+    EXEC_INTENCION_DESBLOQUEO,
+    EXEC_INTENCION_IMPACTO_COMPRAS,
+    EXEC_INTENCION_IMPACTO_GENERAL,
+    EXEC_INTENCION_IMPACTO_PRODUCCION,
+    EXEC_INTENCION_MOTIVO_PRIORIDAD,
+    EXEC_INTENCION_PLAN_DIA,
+    EXEC_INTENCION_PLAN_OPERATIVO,
+    HostAIExecutive,
+    EXEC_INTENCION_RESTAURANTE,
+    detectar_intencion_executive,
+    formatear_respuesta_executive_conversacional,
+    presentar_accion_ejecutiva,
+)
 from SERVICIOS.produccion_stock_piloto_14 import ProduccionStockPiloto14
 
 
 class AppConsolaHostAI:
     """
     App Base Ejecutable Host AI 3.0.0.
+
+    Freeze-A1: esta consola no define una ruta de arranque independiente.
+    Se reutiliza desde `ConsolaPiloto01` y lanzadores de compatibilidad.
 
     Primera capa de uso real por terminal.
     No sustituye la futura interfaz gráfica, pero permite usar Host AI como programa.
@@ -54,7 +72,8 @@ class AppConsolaHostAI:
     def __init__(self, core):
         self.core = core
         self._contexto_global = ContextoGlobalRR161A(getattr(core, "base_dir", None))
-        self._produccion_stock = ProduccionStockPiloto14(core)
+        # Permite inicializar la consola con cores parciales usados en tests.
+        self._produccion_stock = ProduccionStockPiloto14(core) if hasattr(core, "produccion_real") else None
 
     @property
     def ultimo_evento_id(self):
@@ -182,6 +201,8 @@ class AppConsolaHostAI:
                 self._menu_excel()
             elif opcion == "11":
                 self._probar_comprension_ia11()
+            elif opcion == "12":
+                self._menu_escandallos_recetas()
             elif opcion == "0":
                 print("Saliendo de Host AI.")
                 break
@@ -206,6 +227,7 @@ class AppConsolaHostAI:
         print("9. Base de datos local")
         print("10. Excel / importaciones")
         print("11. RR1.6.1-D IA contextual (comprender y preparar, no ejecutar)")
+        print("12. Escandallos y recetas")
         if self.ultimo_evento_id:
             try:
                 evento = self.core.eventos.obtener(self.ultimo_evento_id)
@@ -220,10 +242,58 @@ class AppConsolaHostAI:
     # ------------------------------------------------------------------
     def _hablar_host_ai(self):
         print("\nHabla con Host AI. Escribe 'salir' para volver.")
+        self._mostrar_resumen_proactivo_host_ai()
         while True:
             texto = input("Tú: ").strip()
             if texto.lower() in {"salir", "volver", "0"}:
                 break
+
+            intencion_exec = detectar_intencion_executive(texto)
+            if intencion_exec is not None:
+                executive = HostAIExecutive(getattr(self.core, "base_dir", None))
+                intenciones_focus = {
+                    EXEC_INTENCION_IMPACTO_GENERAL,
+                    EXEC_INTENCION_IMPACTO_PRODUCCION,
+                    EXEC_INTENCION_IMPACTO_COMPRAS,
+                    EXEC_INTENCION_BLOQUEO_PRODUCCION,
+                    EXEC_INTENCION_DESBLOQUEO,
+                    EXEC_INTENCION_MOTIVO_PRIORIDAD,
+                }
+                intenciones_plan = {
+                    EXEC_INTENCION_PLAN_OPERATIVO,
+                    EXEC_INTENCION_PLAN_DIA,
+                }
+                if intencion_exec == EXEC_INTENCION_RESTAURANTE:
+                    resultado_exec = executive.analizar_restaurante(core=self.core)
+                elif intencion_exec in intenciones_plan:
+                    if intencion_exec == EXEC_INTENCION_PLAN_DIA:
+                        resultado_exec = executive.analizar_restaurante(core=self.core)
+                        tipo_plan = "restaurante"
+                    else:
+                        evento_plan = self._evento_activo_para_executive()
+                        if evento_plan:
+                            resultado_exec = executive.analizar_evento_para_plan(evento_plan, core=self.core)
+                            tipo_plan = "evento"
+                        else:
+                            resultado_exec = executive.analizar_restaurante(core=self.core)
+                            tipo_plan = "restaurante"
+                    resultado_exec = dict(resultado_exec)
+                    resultado_exec["plan_operativo"] = executive.generar_plan_operativo(resultado_exec, tipo_plan=tipo_plan)
+                elif intencion_exec in intenciones_focus:
+                    evento_focus = self._evento_activo_para_executive()
+                    if evento_focus:
+                        resultado_exec = executive.analizar_evento(evento_focus)
+                    else:
+                        resultado_exec = executive.analizar_restaurante(core=self.core)
+                else:
+                    evento = self._evento_activo_para_executive()
+                    if not evento:
+                        print("Host AI: Necesito un evento activo para generar el resumen ejecutivo. Selecciona primero un evento.")
+                        continue
+                    resultado_exec = executive.analizar_evento(evento)
+                print("Host AI:")
+                print(formatear_respuesta_executive_conversacional(resultado_exec, intencion_exec))
+                continue
 
             contexto = {}
             if self.ultimo_evento_id:
@@ -242,6 +312,77 @@ class AppConsolaHostAI:
                 print(f"Evento activo: {self.ultimo_evento_id}")
             except Exception:
                 pass
+
+    def _mostrar_resumen_proactivo_host_ai(self) -> None:
+        evento = self._obtener_evento_activo()
+        if not evento:
+            return
+
+        try:
+            evento_id = getattr(evento, "id", "")
+            nombre = getattr(evento, "nombre", "evento activo") or "evento activo"
+            resumen = self.core.eventos.resumen_ejecutivo(evento_id)
+            avisos = list((resumen or {}).get("avisos") or [])
+        except Exception:
+            return
+
+        tareas: list[str] = []
+        if any(a in {"Faltan servicios.", "Hay servicios sin pases.", "Hay pases sin recetas."} for a in avisos):
+            tareas.append(presentar_accion_ejecutiva("MENU_ASOCIAR"))
+
+        if not self.ultimo_plan_produccion_id:
+            tareas.append(presentar_accion_ejecutiva("PRODUCCION_PLAN"))
+        if not self.ultimo_pedido_compra_id:
+            tareas.append(presentar_accion_ejecutiva("COMPRAS_PREPARAR"))
+
+        dedup = []
+        for t in tareas:
+            if t not in dedup:
+                dedup.append(t)
+        tareas = dedup[:3]
+
+        print("Host AI:")
+        print(f"He revisado el evento activo \"{nombre}\".")
+        if tareas:
+            print("")
+            print("Quedan estas tareas:")
+            for t in tareas:
+                print(f"• {t}.")
+
+            prioridad = tareas[0]
+            motivo = "porque desbloquea Producción y Compras" if "menú" in prioridad.lower() or "menu" in prioridad.lower() else "porque desbloquea el siguiente bloque operativo"
+            print("")
+            print(f"La prioridad ahora es {prioridad.lower()} {motivo}.")
+        else:
+            print("")
+            print("No detecto tareas operativas urgentes en este momento.")
+
+        print("")
+        print("Puedes preguntarme:")
+        print("- qué falta;")
+        print("- qué es lo más urgente;")
+        print("- qué riesgos hay;")
+        print("- qué me recomiendas.")
+        print("")
+        print("Modo seguro activado.")
+
+    def _evento_activo_para_executive(self):
+        evento = self._obtener_evento_activo()
+        if not evento:
+            return {}
+        return {
+            "id": getattr(evento, "id", ""),
+            "nombre": getattr(evento, "nombre", ""),
+            "tipo": getattr(evento, "tipo", "evento"),
+            "personas": getattr(evento, "pax", None),
+            "pax": getattr(evento, "pax", None),
+            "fecha": getattr(evento, "fecha", ""),
+            "hora_servicio": getattr(evento, "hora_inicio", "") or "12:00",
+            "menu": getattr(evento, "tipo_menu", "") or "menu operativo",
+            "lugar": getattr(evento, "lugar", "") or "lugar operativo",
+            "restricciones": "sin restricciones",
+            "objetivo": "flujo completo",
+        }
 
     def _probar_comprension_ia11(self):
         print("\nRR1.6.1-D — IA CONTEXTUAL, PROPUESTA SEGURA")
@@ -281,6 +422,11 @@ class AppConsolaHostAI:
                 confirmacion = "sí" if resultado.get("requiere_confirmacion") else "no"
                 print(f"Propuesta validada | Riesgo: {resultado['riesgo']} | Requiere confirmación: {confirmacion}")
             print("Modo seguro RR1.6.1-D: no se han ejecutado motores ni modificado datos.")
+
+    def _menu_escandallos_recetas(self):
+        from SERVICIOS.escandallos_recetas_601 import ModuloEscandallosRecetas601
+
+        ModuloEscandallosRecetas601(getattr(self.core, "base_dir", None)).ejecutar()
 
     # ------------------------------------------------------------------
     # EVENTOS
@@ -1982,6 +2128,8 @@ class AppConsolaHostAI:
             print("2. Generar compra manual")
             print("3. Proveedores")
             print("4. Historial de compras")
+            print("5. Proveedores habituales por producto")
+            print("6. Propuestas agrupadas por proveedor")
             print("0. Volver")
             op = input("Elige una opción: ").strip()
 
@@ -1995,6 +2143,10 @@ class AppConsolaHostAI:
                 self._menu_proveedores_r41()
             elif op == "4":
                 self._mostrar_historial_compras_r41()
+            elif op == "5":
+                self._menu_proveedores_habituales_producto_r42()
+            elif op == "6":
+                self._ver_propuestas_agrupadas_proveedor_r42()
             else:
                 print("Opción no válida.")
 
@@ -2006,6 +2158,8 @@ class AppConsolaHostAI:
             print("2. Ver propuestas pendientes")
             print("3. Confirmar propuesta")
             print("4. Cancelar propuesta")
+            print("5. Ver recomendación de proveedor")
+            print("6. Comparar proveedores para una propuesta")
             print("0. Volver")
             op = input("Elige una opción: ").strip()
 
@@ -2025,6 +2179,10 @@ class AppConsolaHostAI:
                 self._confirmar_propuesta_compra_r41()
             elif op == "4":
                 self._cancelar_propuesta_compra_r41()
+            elif op == "5":
+                self._ver_recomendacion_proveedor_propuesta_r42()
+            elif op == "6":
+                self._comparar_proveedores_propuesta_r43()
             else:
                 print("Opción no válida.")
 
@@ -2033,12 +2191,15 @@ class AppConsolaHostAI:
             print("No hay propuestas pendientes.")
             return
         for i, p in enumerate(propuestas, 1):
+            proveedor = p.get("proveedor_sugerido", "") or "Sin recomendación"
+            motivo = p.get("motivo_proveedor_sugerido", "")
             print(
                 f"{i}. [{p.get('estado', 'pendiente').upper()}] {p.get('producto', '-')} | "
                 f"comprar {p.get('comprar', 0)} {p.get('unidad', 'u')} | "
                 f"prioridad {p.get('prioridad', 'Normal')}"
             )
-            print(f"   ID: {p.get('id', '-')} | Origen: {p.get('origen', 'Host AI')}")
+            print(f"   Origen: {p.get('origen', 'Host AI')}")
+            print(f"   Proveedor recomendado: {proveedor}" + (f" | Motivo: {motivo}" if motivo else ""))
 
     def _seleccionar_propuesta_compra_r41(self):
         propuestas = self.core.compras.listar_propuestas_compra(solo_pendientes=True)
@@ -2046,21 +2207,97 @@ class AppConsolaHostAI:
             print("No hay propuestas pendientes.")
             return None
         self._imprimir_propuestas_compra_r41(propuestas)
-        elegido = input("Selecciona propuesta (número o ID): ").strip()
+        elegido = input("Selecciona propuesta (número): ").strip()
         if elegido.isdigit() and 1 <= int(elegido) <= len(propuestas):
             return propuestas[int(elegido) - 1]
-        for p in propuestas:
-            if str(p.get("id", "")).lower() == elegido.lower():
-                return p
         print("Selección no válida.")
         return None
 
-    def _confirmar_propuesta_compra_r41(self):
-        propuesta = self._seleccionar_propuesta_compra_r41()
+    def _seleccionar_proveedor_activo_r42(self, texto=""):
+        proveedores = self.core.compras.listar_proveedores(incluir_inactivos=False, texto=texto)
+        if not proveedores:
+            print("No hay proveedores activos para ese filtro.")
+            return None
+        print("\nPROVEEDORES ACTIVOS")
+        for i, p in enumerate(proveedores, 1):
+            print(f"{i}. {p.get('nombre', '-')}")
+        elegido = input("Selecciona proveedor (número): ").strip()
+        if elegido.isdigit() and 1 <= int(elegido) <= len(proveedores):
+            return proveedores[int(elegido) - 1]
+        print("Selección no válida.")
+        return None
+
+    def _crear_proveedor_manual_rapido_r42(self):
+        nombre = input("Nombre proveedor: ").strip()
+        if not nombre:
+            print("Creación cancelada.")
+            return ""
+        r = self.core.orquestador.resolver(
+            SolicitudHostAI(
+                "crear_proveedor_manual",
+                {
+                    "nombre": nombre,
+                    "cif": input("CIF (opcional): ").strip(),
+                    "telefono": input("Teléfono (opcional): ").strip(),
+                    "email": input("Email (opcional): ").strip(),
+                    "direccion": input("Dirección (opcional): ").strip(),
+                    "comercial": input("Comercial (opcional): ").strip(),
+                    "observaciones": input("Observaciones (opcional): ").strip(),
+                },
+            )
+        )
+        print(r.mensaje)
+        return r.datos.get("proveedor", {}).get("nombre", "") if r.ok else ""
+
+    def _resolver_proveedor_compra_r42(self, producto, recomendado="", familia=""):
+        print("\nPROVEEDOR RECOMENDADO")
+        print(f"Producto: {producto}")
+        print(f"Proveedor recomendado: {recomendado or 'Sin recomendación'}")
+        print("1. Confirmar recomendado")
+        print("2. Elegir otro proveedor")
+        print("3. Crear proveedor manualmente")
+        print("4. Continuar sin proveedor")
+        print("0. Cancelar")
+        while True:
+            op = input("Opción: ").strip()
+            if op == "1":
+                if recomendado:
+                    return recomendado
+                print("No hay proveedor recomendado. Elige otra opción.")
+                continue
+            if op == "2":
+                texto = input("Buscar proveedor por texto: ").strip()
+                seleccionado = self._seleccionar_proveedor_activo_r42(texto)
+                if seleccionado:
+                    return seleccionado.get("nombre", "")
+                continue
+            if op == "3":
+                creado = self._crear_proveedor_manual_rapido_r42()
+                if creado:
+                    return creado
+                continue
+            if op == "4":
+                return ""
+            if op == "0":
+                return None
+            print("Opción no válida.")
+
+    def _confirmar_propuesta_compra_r41(self, propuesta=None):
+        propuesta = propuesta or self._seleccionar_propuesta_compra_r41()
         if not propuesta:
             return
-        prov_def = propuesta.get("proveedor_sugerido", "")
-        proveedor = input(f"Proveedor [{prov_def or 'Sin proveedor'}]: ").strip() or prov_def
+        rec = self.core.orquestador.resolver(
+            SolicitudHostAI("recomendacion_proveedor_propuesta_compra", {"propuesta_id": propuesta["id"]})
+        )
+        recomendado = rec.datos.get("proveedor_recomendado", "") if rec.ok else propuesta.get("proveedor_sugerido", "")
+        if recomendado == "Sin recomendación":
+            recomendado = ""
+        if rec.ok:
+            print(f"Motivo: {rec.datos.get('motivo', 'Sin historial suficiente.')}")
+        proveedor = self._resolver_proveedor_compra_r42(propuesta.get("producto", ""), recomendado)
+        if proveedor is None:
+            print("Confirmación cancelada.")
+            return
         observaciones = input("Observaciones (opcional): ").strip()
         r = self.core.orquestador.resolver(
             SolicitudHostAI(
@@ -2097,7 +2334,16 @@ class AppConsolaHostAI:
             print("La cantidad debe ser mayor que cero.")
             return
         unidad = input("Unidad [u]: ").strip() or "u"
-        proveedor = input("Proveedor [Sin proveedor]: ").strip() or "Sin proveedor"
+        rec = self.core.orquestador.resolver(
+            SolicitudHostAI("recomendar_proveedor_compra", {"producto": producto})
+        )
+        recomendado = rec.datos.get("proveedor_nombre", "") if rec.ok else ""
+        if rec.ok:
+            print(f"Motivo recomendación: {rec.datos.get('motivo', 'Sin historial suficiente.')}")
+        proveedor = self._resolver_proveedor_compra_r42(producto, recomendado)
+        if proveedor is None:
+            print("Compra cancelada.")
+            return
         prioridad = input("Prioridad [Normal]: ").strip() or "Normal"
         observaciones = input("Observaciones (opcional): ").strip()
         r = self.core.orquestador.resolver(
@@ -2115,6 +2361,164 @@ class AppConsolaHostAI:
         )
         print(r.mensaje)
 
+    def _ver_recomendacion_proveedor_propuesta_r42(self):
+        propuesta = self._seleccionar_propuesta_compra_r41()
+        if not propuesta:
+            return
+        r = self.core.orquestador.resolver(
+            SolicitudHostAI("recomendacion_proveedor_propuesta_compra", {"propuesta_id": propuesta["id"]})
+        )
+        if not r.ok:
+            print(r.mensaje)
+            return
+        print("\nRECOMENDACIÓN DE PROVEEDOR")
+        print(f"Producto: {r.datos.get('producto', propuesta.get('producto', '-'))}")
+        print(f"Proveedor recomendado: {r.datos.get('proveedor_recomendado', 'Sin recomendación')}")
+        print(f"Motivo: {r.datos.get('motivo', 'Sin historial suficiente.')}")
+
+    def _menu_proveedores_habituales_producto_r42(self):
+        producto = input("Producto a gestionar: ").strip()
+        if not producto:
+            print("Producto obligatorio.")
+            return
+        while True:
+            r = self.core.orquestador.resolver(
+                SolicitudHostAI("listar_proveedores_producto_compra", {"producto": producto, "solo_activos": False})
+            )
+            asociaciones = r.datos.get("asociaciones", []) if r.ok else []
+            print("\nPROVEEDORES HABITUALES DEL PRODUCTO")
+            print(f"Producto: {producto}")
+            if not asociaciones:
+                print("Sin asociaciones registradas.")
+            else:
+                for i, a in enumerate(asociaciones, 1):
+                    etiqueta = "Preferente" if a.get("preferente") else "Secundario"
+                    estado = "Activo" if a.get("activo", True) else "Inactivo"
+                    print(f"{i}. {a.get('proveedor_nombre', '-')} — {etiqueta} — {a.get('veces_usado', 0)} compras — {estado}")
+            print("1. Marcar preferente")
+            print("2. Añadir proveedor")
+            print("3. Desactivar asociación")
+            print("4. Editar condiciones comerciales de una asociación")
+            print("5. Comparar proveedores para este producto")
+            print("0. Volver")
+            op = input("Opción: ").strip()
+            if op == "0":
+                return
+            if op == "1":
+                if not asociaciones:
+                    print("No hay asociaciones para marcar preferente.")
+                    continue
+                sel = input("Selecciona proveedor (número): ").strip()
+                if not sel.isdigit() or not (1 <= int(sel) <= len(asociaciones)):
+                    print("Selección no válida.")
+                    continue
+                elegido = asociaciones[int(sel) - 1]
+                rr = self.core.orquestador.resolver(
+                    SolicitudHostAI(
+                        "marcar_proveedor_preferente_compra",
+                        {"producto": producto, "proveedor_id": elegido.get("proveedor_id", "")},
+                    )
+                )
+                print(rr.mensaje)
+                continue
+            if op == "2":
+                texto = input("Buscar proveedor (texto): ").strip()
+                prov = self._seleccionar_proveedor_activo_r42(texto)
+                if not prov:
+                    continue
+                rr = self.core.orquestador.resolver(
+                    SolicitudHostAI(
+                        "asociar_producto_proveedor_compra",
+                        {"proveedor_id": prov.get("id", ""), "producto": producto},
+                    )
+                )
+                print(rr.mensaje)
+                continue
+            if op == "3":
+                if not asociaciones:
+                    print("No hay asociaciones para desactivar.")
+                    continue
+                sel = input("Selecciona asociación (número): ").strip()
+                if not sel.isdigit() or not (1 <= int(sel) <= len(asociaciones)):
+                    print("Selección no válida.")
+                    continue
+                elegido = asociaciones[int(sel) - 1]
+                rr = self.core.orquestador.resolver(
+                    SolicitudHostAI(
+                        "desactivar_asociacion_producto_proveedor_compra",
+                        {"asociacion_id": elegido.get("id", "")},
+                    )
+                )
+                print(rr.mensaje)
+                continue
+            if op == "4":
+                if not asociaciones:
+                    print("No hay asociaciones para editar.")
+                    continue
+                self._editar_condiciones_asociacion_producto_r43(producto, asociaciones)
+                continue
+            if op == "5":
+                self._comparar_proveedores_producto_r43(producto)
+                continue
+            print("Opción no válida.")
+
+    def _ver_propuestas_agrupadas_proveedor_r42(self):
+        r = self.core.orquestador.resolver(SolicitudHostAI("agrupar_propuestas_por_proveedor_compra", {}))
+        if not r.ok:
+            print(r.mensaje)
+            return
+        grupos = r.datos.get("grupos", [])
+        print("\nPROPUESTAS AGRUPADAS POR PROVEEDOR")
+        if not grupos:
+            print("No hay propuestas pendientes.")
+            return
+        for i, grupo in enumerate(grupos, 1):
+            print(f"\n{i}. {grupo.get('proveedor', 'Sin proveedor recomendado')}")
+            for item in grupo.get("propuestas", []):
+                print(f"- {item.get('producto', '-')} — {item.get('cantidad', 0)} {item.get('unidad', 'u')}")
+
+        print("\nOpciones")
+        print("1. Revisar y confirmar individualmente por proveedor")
+        print("0. Volver")
+        op = input("Opción: ").strip()
+        if op != "1":
+            return
+        sel = input("Selecciona proveedor (número): ").strip()
+        if not sel.isdigit() or not (1 <= int(sel) <= len(grupos)):
+            print("Selección no válida.")
+            return
+        grupo = grupos[int(sel) - 1]
+        propuestas = grupo.get("propuestas", [])
+        if not propuestas:
+            print("No hay propuestas en este grupo.")
+            return
+        while True:
+            print(f"\nProveedor: {grupo.get('proveedor', '-')}")
+            for i, item in enumerate(propuestas, 1):
+                print(f"{i}. {item.get('producto', '-')} — {item.get('cantidad', 0)} {item.get('unidad', 'u')}")
+            print("0. Volver")
+            ele = input("Selecciona propuesta a confirmar (número): ").strip()
+            if ele == "0":
+                return
+            if not ele.isdigit() or not (1 <= int(ele) <= len(propuestas)):
+                print("Selección no válida.")
+                continue
+            propuesta_id = propuestas[int(ele) - 1].get("id", "")
+            propuesta_sel = next((p for p in self.core.compras.listar_propuestas_compra(solo_pendientes=True) if p.get("id") == propuesta_id), None)
+            if not propuesta_sel:
+                print("La propuesta ya no está pendiente.")
+                return
+            self._confirmar_propuesta_compra_r41(propuesta_sel)
+            r = self.core.orquestador.resolver(SolicitudHostAI("agrupar_propuestas_por_proveedor_compra", {}))
+            grupos = r.datos.get("grupos", []) if r.ok else []
+            if not grupos:
+                return
+            grupo = next((g for g in grupos if g.get("proveedor") == grupo.get("proveedor")), {"propuestas": []})
+            propuestas = grupo.get("propuestas", [])
+            if not propuestas:
+                print("No quedan propuestas pendientes en este proveedor.")
+                return
+
     def _menu_proveedores_r41(self):
         while True:
             print("\nPROVEEDORES")
@@ -2124,6 +2528,7 @@ class AppConsolaHostAI:
             print("4. Desactivar proveedor")
             print("5. Asociar producto habitual")
             print("6. Preparar onboarding detectado (sin OCR)")
+            print("7. Editar condiciones comerciales")
             print("0. Volver")
             op = input("Elige una opción: ").strip()
             if op == "0":
@@ -2140,8 +2545,151 @@ class AppConsolaHostAI:
                 self._asociar_producto_proveedor_r41()
             elif op == "6":
                 self._onboarding_proveedor_detectado_r41()
+            elif op == "7":
+                self._editar_condiciones_comerciales_proveedor_r43()
             else:
                 print("Opción no válida.")
+
+    @staticmethod
+    def _parse_float_opcional(texto):
+        valor = str(texto or "").strip()
+        if not valor:
+            return None
+        return float(valor.replace(",", "."))
+
+    @staticmethod
+    def _parse_int_opcional(texto):
+        valor = str(texto or "").strip()
+        if not valor:
+            return None
+        return int(valor)
+
+    def _comparar_proveedores_propuesta_r43(self):
+        propuesta = self._seleccionar_propuesta_compra_r41()
+        if not propuesta:
+            return
+        r = self.core.orquestador.resolver(
+            SolicitudHostAI("comparar_proveedores_propuesta_compra", {"propuesta_id": propuesta["id"]})
+        )
+        if not r.ok:
+            print(r.mensaje)
+            return
+        print("\nCOMPARATIVA DE PROVEEDORES (PROPUESTA)")
+        print(f"Producto: {r.datos.get('producto', propuesta.get('producto', '-'))}")
+        print(f"Proveedor recomendado: {r.datos.get('proveedor_recomendado', 'Sin recomendación')}")
+        print(f"Motivo principal: {r.datos.get('motivo', 'Sin historial suficiente.')}")
+        comparativa = r.datos.get("comparativa", [])
+        if not comparativa:
+            print("Sin proveedores evaluables para esta propuesta.")
+            return
+        for i, item in enumerate(comparativa[:10], 1):
+            total = item.get("coste_total_estimado")
+            total_txt = f"{float(total):.2f} €" if total is not None else "desconocido"
+            plazo = item.get("dias_entrega_estimados")
+            plazo_txt = str(plazo) if plazo is not None else "desconocido"
+            print(
+                f"{i}. {item.get('proveedor_nombre', '-')} | puntuación {item.get('puntuacion', 0)} | "
+                f"coste total {total_txt} | plazo {plazo_txt} días"
+            )
+            if item.get("advertencias"):
+                print(f"   Advertencias: {'; '.join(item.get('advertencias', [])[:3])}")
+
+    def _comparar_proveedores_producto_r43(self, producto):
+        try:
+            cantidad = self._parse_float_opcional(input("Cantidad [1]: ").strip())
+            cantidad = 1.0 if cantidad is None else float(cantidad)
+        except ValueError:
+            print("Cantidad no válida.")
+            return
+        unidad = input("Unidad [u]: ").strip() or "u"
+        prioridad = input("Prioridad [Normal]: ").strip() or "Normal"
+        fecha_necesaria = input("Fecha necesaria ISO (opcional, ej 2026-07-20): ").strip()
+        r = self.core.orquestador.resolver(
+            SolicitudHostAI(
+                "comparar_proveedores_producto_compra",
+                {
+                    "producto": producto,
+                    "cantidad": cantidad,
+                    "unidad": unidad,
+                    "prioridad": prioridad,
+                    "fecha_necesaria": fecha_necesaria,
+                },
+            )
+        )
+        if not r.ok:
+            print(r.mensaje)
+            return
+        comparativa = r.datos.get("comparativa", [])
+        print("\nCOMPARATIVA DE PROVEEDORES (PRODUCTO)")
+        print(f"Producto: {producto} | Cantidad: {cantidad} {unidad}")
+        if not comparativa:
+            print("Sin proveedores evaluables para este producto.")
+            return
+        for i, item in enumerate(comparativa[:10], 1):
+            total = item.get("coste_total_estimado")
+            total_txt = f"{float(total):.2f} €" if total is not None else "desconocido"
+            print(
+                f"{i}. {item.get('proveedor_nombre', '-')} | puntuación {item.get('puntuacion', 0)} | "
+                f"coste total {total_txt} | mínimo {'sí' if item.get('cumple_pedido_minimo') else 'no'}"
+            )
+            if item.get("advertencias"):
+                print(f"   Advertencias: {'; '.join(item.get('advertencias', [])[:3])}")
+
+    def _editar_condiciones_asociacion_producto_r43(self, producto, asociaciones):
+        sel = input("Selecciona asociación (número): ").strip()
+        if not sel.isdigit() or not (1 <= int(sel) <= len(asociaciones)):
+            print("Selección no válida.")
+            return
+        elegido = asociaciones[int(sel) - 1]
+        print("Pulsa Enter para mantener el valor actual.")
+        try:
+            precio_habitual = self._parse_float_opcional(input(f"Precio habitual [{elegido.get('precio_habitual', '')}]: ").strip())
+            cantidad_minima = self._parse_float_opcional(input(f"Cantidad mínima producto [{elegido.get('cantidad_minima_producto', '')}]: ").strip())
+            plazo = self._parse_int_opcional(input(f"Plazo entrega días [{elegido.get('plazo_entrega_dias', '')}]: ").strip())
+        except ValueError:
+            print("Valor numérico no válido.")
+            return
+        unidad_precio = input(f"Unidad precio [{elegido.get('unidad_precio', '')}]: ").strip()
+        observaciones = input(f"Observaciones [{elegido.get('observaciones', '')}]: ").strip()
+        payload = {
+            "asociacion_id": elegido.get("id", ""),
+            "precio_habitual": precio_habitual,
+            "cantidad_minima_producto": cantidad_minima,
+            "plazo_entrega_dias": plazo,
+            "unidad_precio": unidad_precio if unidad_precio else None,
+            "observaciones": observaciones if observaciones else None,
+        }
+        rr = self.core.orquestador.resolver(SolicitudHostAI("editar_asociacion_producto_proveedor_compra", payload))
+        print(rr.mensaje)
+        if rr.ok:
+            self._comparar_proveedores_producto_r43(producto)
+
+    def _editar_condiciones_comerciales_proveedor_r43(self):
+        prov = self._seleccionar_proveedor_r41()
+        if not prov:
+            return
+        print("Pulsa Enter para mantener el valor actual.")
+        try:
+            pedido_minimo_importe = self._parse_float_opcional(input(f"Pedido mínimo € [{prov.get('pedido_minimo_importe', '')}]: ").strip())
+            portes = self._parse_float_opcional(input(f"Portes € [{prov.get('portes', '')}]: ").strip())
+            portes_gratis_desde = self._parse_float_opcional(input(f"Portes gratis desde € [{prov.get('portes_gratis_desde', '')}]: ").strip())
+            plazo_entrega_general_dias = self._parse_int_opcional(input(f"Plazo entrega general días [{prov.get('plazo_entrega_general_dias', '')}]: ").strip())
+        except ValueError:
+            print("Valor numérico no válido.")
+            return
+        dias_reparto_txt = input(f"Días de reparto (coma) [{', '.join(prov.get('dias_reparto', []) or [])}]: ").strip()
+        observaciones_comerciales = input(f"Observaciones comerciales [{prov.get('observaciones_comerciales', '')}]: ").strip()
+        payload = {
+            "proveedor_id": prov.get("id", ""),
+            "pedido_minimo_importe": pedido_minimo_importe,
+            "portes": portes,
+            "portes_gratis_desde": portes_gratis_desde,
+            "plazo_entrega_general_dias": plazo_entrega_general_dias,
+            "dias_reparto": [x.strip() for x in dias_reparto_txt.split(",") if x.strip()] if dias_reparto_txt else None,
+            "observaciones_comerciales": observaciones_comerciales if observaciones_comerciales else None,
+        }
+        r = self.core.orquestador.resolver(SolicitudHostAI("editar_condiciones_proveedor_compra", payload))
+        print(r.mensaje)
 
     def _listar_proveedores_r41(self):
         texto = input("Filtro (nombre/cif/email, opcional): ").strip()

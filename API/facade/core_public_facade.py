@@ -1,0 +1,28 @@
+from __future__ import annotations
+
+from typing import Any, Protocol
+
+
+class CorePublicFacade(Protocol):
+    """Contrato de acceso permitido desde API a Core.
+
+    Regla API-01:
+    - La API no llama directamente a Produccion, Compras, Stock o Eventos.
+    - La API solo consume Executive, Workflow y servicios publicos certificados.
+    """
+
+    def health(self) -> dict[str, Any]: ...
+
+    def version(self) -> dict[str, Any]: ...
+
+    def executive(self, query: dict[str, Any]) -> dict[str, Any]: ...
+
+    def dashboard(self, query: dict[str, Any]) -> dict[str, Any]: ...
+
+    def eventos(self, query: dict[str, Any]) -> dict[str, Any]: ...
+
+    def workflow(self, query: dict[str, Any]) -> dict[str, Any]: ...
+
+    def plan(self, query: dict[str, Any]) -> dict[str, Any]: ...
+
+    def chat(self, body: dict[str, Any]) -> dict[str, Any]: ...

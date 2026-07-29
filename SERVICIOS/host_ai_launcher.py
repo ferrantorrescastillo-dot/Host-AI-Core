@@ -8,9 +8,10 @@ from typing import Optional
 
 class HostAILauncher:
     """
-    Lanzador oficial de Host AI 6.x.
+    Lanzador secundario de desarrollo y compatibilidad.
 
-    Separa:
+    Freeze-A1: esta ruta NO es la ruta oficial de arranque de Core 1.0.
+    Se mantiene para:
     - el uso diario manual del restaurante,
     - la conversación,
     - y las herramientas técnicas heredadas.
@@ -72,7 +73,7 @@ class HostAILauncher:
     def abrir_herramientas_tecnicas(self) -> None:
         """
         Mantiene íntegro el bootloader 5.2 para auditorías,
-        tests, QA y utilidades de desarrollo.
+        tests, QA y utilidades de desarrollo (ruta QA/desarrollo).
         """
         self._asegurar_pythonpath()
         try:
@@ -87,7 +88,7 @@ class HostAILauncher:
     def imprimir_cabecera() -> None:
         print("=" * 70)
         print("HOST AI 6.0")
-        print("Lanzador oficial")
+        print("Lanzador de desarrollo y compatibilidad")
         print("=" * 70)
 
     @staticmethod

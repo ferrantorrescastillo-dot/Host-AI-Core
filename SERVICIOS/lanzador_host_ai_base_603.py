@@ -14,7 +14,10 @@ class EstadoArranque603:
 
 
 class LanzadorHostAIBase603:
-    """Punto de entrada de producto para Host AI Base 6.0.3.
+    """Punto de entrada de compatibilidad legacy para Host AI Base 6.0.3.
+
+    Freeze-A1: esta ruta se conserva por compatibilidad histórica y QA.
+    No sustituye la ruta oficial de arranque de Core 1.0.
 
     Separa la operativa diaria del restaurante de las herramientas técnicas.
     No contiene lógica de negocio: únicamente crea el core y dirige al usuario

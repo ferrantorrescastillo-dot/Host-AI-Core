@@ -18,6 +18,10 @@ class PipelineCompras(BasePipeline):
         "registrar_compra_manual", "listar_historial_compras",
         "listar_proveedores", "crear_proveedor_manual", "editar_proveedor", "desactivar_proveedor",
         "asociar_producto_proveedor", "preparar_onboarding_proveedor_detectado",
+        "listar_proveedores_producto", "listar_productos_proveedor", "marcar_proveedor_preferente",
+        "desactivar_asociacion_producto_proveedor", "editar_asociacion_producto_proveedor", "recomendar_proveedor",
+        "recomendacion_propuesta", "agrupar_propuestas_por_proveedor",
+        "editar_condiciones_proveedor", "comparar_proveedores_producto", "comparar_proveedores_propuesta",
     ]
 
     def _ejecutar(self, solicitud: SolicitudPipeline) -> ResultadoPipeline:
@@ -207,6 +211,102 @@ class PipelineCompras(BasePipeline):
             )
             return ResultadoPipeline(ok=True, pipeline=self.nombre, accion=solicitud.accion,
                 mensaje=datos.get("mensaje", "Onboarding preparado."), datos=datos)
+
+        if solicitud.accion == "listar_proveedores_producto":
+            datos = self.core.compras.listar_proveedores_producto(
+                p.get("producto", ""),
+                solo_activos=bool(p.get("solo_activos", True)),
+            )
+            return ResultadoPipeline(ok=True, pipeline=self.nombre, accion=solicitud.accion,
+                mensaje=f"Proveedores del producto: {len(datos)}.", datos={"asociaciones": datos})
+
+        if solicitud.accion == "listar_productos_proveedor":
+            datos = self.core.compras.listar_productos_habituales_proveedor(p["proveedor_id"])
+            return ResultadoPipeline(ok=True, pipeline=self.nombre, accion=solicitud.accion,
+                mensaje=f"Productos asociados al proveedor: {len(datos)}.", datos={"asociaciones": datos})
+
+        if solicitud.accion == "marcar_proveedor_preferente":
+            aso = self.core.compras.marcar_proveedor_preferente_producto(p["producto"], p["proveedor_id"])
+            return ResultadoPipeline(ok=True, pipeline=self.nombre, accion=solicitud.accion,
+                mensaje="Proveedor preferente actualizado.", datos={"asociacion": aso.to_dict()}, requiere_aprobacion=True)
+
+        if solicitud.accion == "desactivar_asociacion_producto_proveedor":
+            aso = self.core.compras.desactivar_asociacion_producto_proveedor(p["asociacion_id"])
+            return ResultadoPipeline(ok=True, pipeline=self.nombre, accion=solicitud.accion,
+                mensaje="Asociación desactivada.", datos={"asociacion": aso.to_dict()}, requiere_aprobacion=True)
+
+        if solicitud.accion == "editar_asociacion_producto_proveedor":
+            aso = self.core.compras.editar_asociacion_producto_proveedor(
+                p["asociacion_id"],
+                preferente=p.get("preferente", None),
+                activo=p.get("activo", None),
+                precio_habitual=p.get("precio_habitual", None),
+                unidad_precio=p.get("unidad_precio", None),
+                cantidad_minima_producto=p.get("cantidad_minima_producto", None),
+                plazo_entrega_dias=p.get("plazo_entrega_dias", None),
+                observaciones=p.get("observaciones", None),
+            )
+            return ResultadoPipeline(ok=True, pipeline=self.nombre, accion=solicitud.accion,
+                mensaje="Asociación actualizada.", datos={"asociacion": aso.to_dict()}, requiere_aprobacion=True)
+
+        if solicitud.accion == "editar_condiciones_proveedor":
+            proveedor = self.core.compras.editar_condiciones_proveedor(
+                p["proveedor_id"],
+                pedido_minimo_importe=p.get("pedido_minimo_importe", None),
+                portes=p.get("portes", None),
+                portes_gratis_desde=p.get("portes_gratis_desde", None),
+                plazo_entrega_general_dias=p.get("plazo_entrega_general_dias", None),
+                dias_reparto=p.get("dias_reparto", None),
+                observaciones_comerciales=p.get("observaciones_comerciales", None),
+            )
+            return ResultadoPipeline(ok=True, pipeline=self.nombre, accion=solicitud.accion,
+                mensaje="Condiciones comerciales del proveedor actualizadas.", datos={"proveedor": proveedor.to_dict()}, requiere_aprobacion=True)
+
+        if solicitud.accion == "recomendar_proveedor":
+            datos = self.core.compras.recomendar_proveedor(
+                producto=p.get("producto", ""),
+                proveedor_sugerido=p.get("proveedor_sugerido", ""),
+                familia=p.get("familia", ""),
+            )
+            mensaje = f"Proveedor recomendado: {datos.get('proveedor_nombre') or 'Sin recomendación'}."
+            return ResultadoPipeline(ok=True, pipeline=self.nombre, accion=solicitud.accion,
+                mensaje=mensaje, datos=datos)
+
+        if solicitud.accion == "recomendacion_propuesta":
+            datos = self.core.compras.recomendar_proveedor_para_propuesta(p["propuesta_id"])
+            return ResultadoPipeline(ok=True, pipeline=self.nombre, accion=solicitud.accion,
+                mensaje=f"Proveedor recomendado: {datos.get('proveedor_recomendado', 'Sin recomendación')}", datos=datos)
+
+        if solicitud.accion == "comparar_proveedores_propuesta":
+            datos = self.core.compras.recomendar_proveedor_para_propuesta(p["propuesta_id"])
+            return ResultadoPipeline(ok=True, pipeline=self.nombre, accion=solicitud.accion,
+                mensaje=f"Comparativa generada para propuesta {datos.get('propuesta_id', '')}.", datos=datos)
+
+        if solicitud.accion == "comparar_proveedores_producto":
+            comparativa = self.core.compras.evaluar_proveedores_producto(
+                producto=p.get("producto", ""),
+                cantidad=float(p.get("cantidad", 1) or 1),
+                unidad=p.get("unidad", "u"),
+                prioridad=p.get("prioridad", "Normal"),
+                fecha_necesaria=p.get("fecha_necesaria", ""),
+                proveedor_sugerido=p.get("proveedor_sugerido", ""),
+                familia=p.get("familia", ""),
+            )
+            mejor = comparativa[0] if comparativa else {}
+            return ResultadoPipeline(ok=True, pipeline=self.nombre, accion=solicitud.accion,
+                mensaje=f"Comparativa generada: {len(comparativa)} proveedor(es) evaluado(s).",
+                datos={
+                    "producto": p.get("producto", ""),
+                    "cantidad": float(p.get("cantidad", 1) or 1),
+                    "unidad": p.get("unidad", "u"),
+                    "comparativa": comparativa,
+                    "mejor_opcion": mejor,
+                })
+
+        if solicitud.accion == "agrupar_propuestas_por_proveedor":
+            datos = self.core.compras.agrupar_propuestas_por_proveedor_recomendado()
+            return ResultadoPipeline(ok=True, pipeline=self.nombre, accion=solicitud.accion,
+                mensaje=f"Agrupación generada con {datos.get('total_grupos', 0)} grupo(s).", datos=datos)
 
         return ResultadoPipeline(ok=False, pipeline=self.nombre, accion=solicitud.accion,
             mensaje="Acción no implementada.", errores=[f"Acción no implementada: {solicitud.accion}"])

@@ -8,6 +8,8 @@ from __future__ import annotations
 from dataclasses import dataclass, asdict
 from typing import Any, Dict, List
 
+from SERVICIOS.modelo_flujo_operativo import crear_flujo, crear_paso
+
 
 @dataclass
 class PasoFlujo:
@@ -23,7 +25,7 @@ class PasoFlujo:
 PASOS_FLUJO_COMPLETO = [
     PasoFlujo(1, "EVENTO_CREAR", "Crear o localizar evento", "4.7.1", "crear_evento", True, True),
     PasoFlujo(2, "MENU_ASOCIAR", "Asociar menú del evento", "4.7.2", "asociar_menu", True, True),
-    PasoFlujo(3, "PRODUCCION_PLAN", "Generar producción del evento", "4.7.3 / 4.6", "planificar_produccion", False, False),
+    PasoFlujo(3, "PRODUCCION_PLAN", "Generar producción del evento", "4.7.3 / 4.6", "planificar_produccion", True, False),
     PasoFlujo(4, "RECURSOS_REVISAR", "Revisar recursos y personal", "4.6.5 / 4.7.5", "revisar_recursos", False, False),
     PasoFlujo(5, "STOCK_REVISAR", "Consultar stock disponible", "4.3", "consultar_stock", False, False),
     PasoFlujo(6, "COMPRAS_PREPARAR", "Preparar compras necesarias", "4.7.4", "preparar_compras", True, False),
@@ -79,11 +81,31 @@ def generar_flujo_operativo_evento(datos_evento: Dict[str, Any]) -> Dict[str, An
     else:
         pasos = PASOS_FLUJO_COMPLETO
 
+    pasos_unificados = [
+        crear_paso(
+            orden=int(p.orden),
+            codigo=str(p.codigo),
+            nombre=str(p.nombre),
+            modulo=str(p.modulo),
+            accion=str(p.accion),
+            requiere_confirmacion=bool(p.requiere_confirmacion),
+            modifica_datos=bool(p.modifica_datos),
+        )
+        for p in pasos
+    ]
+    flujo_unificado = crear_flujo(
+        tipo_flujo="evento",
+        pasos=pasos_unificados,
+        datos=validacion["datos"],
+        origen="host_ai_531",
+    )
+
     return {
         "ok": True,
         "estado": "flujo_generado",
         "datos": validacion["datos"],
-        "pasos": [asdict(p) for p in pasos],
+        "pasos": list(flujo_unificado.get("pasos") or [asdict(p) for p in pasos]),
+        "flujo": flujo_unificado,
         "modifica_datos_directamente": False,
         "requiere_confirmacion": any(p.requiere_confirmacion for p in pasos),
         "mensaje": "Flujo operativo generado. No se han modificado datos reales.",
