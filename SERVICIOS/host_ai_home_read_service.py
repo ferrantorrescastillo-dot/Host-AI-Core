@@ -218,7 +218,11 @@ class HostAIHomeReadService:
         return self._pack_items(items)
 
     def _leer_compras_abiertas(self) -> dict[str, Any]:
-        necesidades = list(getattr(self.core.compras, "listar_necesidades")(solo_pendientes=True) or [])
+        compras = self.core.compras
+        necesidades = list(getattr(compras, "listar_necesidades")(solo_pendientes=True) or [])
+        propuestas = list(getattr(compras, "listar_propuestas_compra")(solo_pendientes=True) or [])
+        proveedores = list(getattr(compras, "listar_proveedores")(incluir_inactivos=False) or [])
+        historial = list(getattr(compras, "listar_historial_compras")() or [])
         items = [
             {
                 "id": str(n.get("id") or ""),
@@ -229,7 +233,54 @@ class HostAIHomeReadService:
             }
             for n in necesidades
         ]
-        return self._pack_items(items)
+        modulo = self._pack_items(items)
+        if propuestas or proveedores or historial:
+            modulo["estado"] = ESTADO_DATOS
+        modulo.update(
+            {
+                "necesidades_pendientes": len(necesidades),
+                "propuestas_pendientes": len(propuestas),
+                "propuestas": [
+                    {
+                        "id": str(p.get("id") or ""),
+                        "producto": str(p.get("producto") or ""),
+                        "comprar": float(p.get("comprar") or 0),
+                        "unidad": str(p.get("unidad") or ""),
+                        "prioridad": str(p.get("prioridad") or ""),
+                        "proveedor_sugerido": str(p.get("proveedor_sugerido") or ""),
+                        "estado": str(p.get("estado") or ""),
+                        "creado_en": str(p.get("creado_en") or ""),
+                    }
+                    for p in propuestas
+                ],
+                "proveedores": [
+                    {
+                        "id": str(p.get("id") or ""),
+                        "nombre": str(p.get("nombre") or ""),
+                        "estado": str(p.get("estado") or ""),
+                        "telefono": str(p.get("telefono") or ""),
+                        "email": str(p.get("email") or ""),
+                    }
+                    for p in proveedores
+                ],
+                "historial": [
+                    {
+                        "id": str(c.get("id") or ""),
+                        "producto": str(c.get("producto") or ""),
+                        "cantidad": float(c.get("cantidad") or 0),
+                        "unidad": str(c.get("unidad") or ""),
+                        "proveedor": str(c.get("proveedor") or ""),
+                        "estado": str(c.get("estado") or ""),
+                        "creado_en": str(c.get("creado_en") or ""),
+                    }
+                    for c in historial
+                ],
+                "total_propuestas": len(propuestas),
+                "total_proveedores": len(proveedores),
+                "total_historial": len(historial),
+            }
+        )
+        return modulo
 
     def _leer_alertas_stock(self) -> dict[str, Any]:
         diag = dict(getattr(self.core.stock, "diagnosticar_stock")() or {})

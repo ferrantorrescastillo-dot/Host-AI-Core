@@ -94,6 +94,14 @@ class CorePublicApi02Facade:
                 }
 
             executive_result = dict(executive_payload.get("executive") or {})
+            home_result = dict(
+                HostAIHomeReadService(
+                    HostAICore(self.base_dir),
+                ).cargar_home() or {}
+            )
+            compras = dict(
+                (home_result.get("modulos") or {}).get("compras") or {}
+            )
             evento_activo = dict((executive_result.get("evento") or {}))
             if not evento_activo:
                 evento_activo = dict((executive_result.get("resumen_restaurante") or {}).get("eventos") or {})
@@ -111,6 +119,9 @@ class CorePublicApi02Facade:
                     "recomendaciones": executive_result.get("recomendaciones") or executive_result.get("recomendaciones_operativas") or [],
                     "evento_activo": evento_activo,
                     "workflows": executive_result.get("workflows_priorizados") or executive_result.get("workflows_ejecutados") or [],
+                    "modulos": {
+                        "compras": compras,
+                    },
                 },
             }
             return payload

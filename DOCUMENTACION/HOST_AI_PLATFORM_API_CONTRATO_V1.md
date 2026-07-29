@@ -67,6 +67,28 @@ Restricciones:
 - No devolver rutas internas.
 - No devolver detalles tecnicos sensibles.
 
+### 3.4 Compras en dashboard
+
+`GET /api/v1/dashboard` expone el resumen de Compras en
+`dashboard.modulos.compras`:
+
+- `estado`: estado normalizado del modulo.
+- `total`: numero de necesidades pendientes.
+- `items`: necesidades pendientes.
+- `necesidades_pendientes`: alias numerico de `total`.
+- `propuestas_pendientes`: numero de propuestas pendientes.
+- `propuestas`: propuestas de compra pendientes.
+- `total_propuestas`: numero de propuestas pendientes.
+- `proveedores`: proveedores activos.
+- `total_proveedores`: numero de proveedores activos.
+- `historial`: compras registradas, ordenadas por el servicio de Compras.
+- `total_historial`: numero de compras registradas.
+- `mensaje`: detalle opcional cuando el modulo no esta disponible.
+
+Las colecciones se devuelven vacias cuando no hay datos. Si falla la lectura
+de Compras, el agregador conserva el contrato general del dashboard y marca
+el modulo con `estado=error_parcial`.
+
 ## 4. Codigos de estado
 
 - 200: respuesta valida (incluye respuestas funcionales de endpoint).

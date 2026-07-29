@@ -7,6 +7,41 @@ from API.app import HostAIPlatformAPI
 from API.contracts.http_models import ApiRequest
 
 
+def _write_compras_fixture(base_dir: Path) -> None:
+    db_dir = base_dir / "DATOS" / "db"
+    db_dir.mkdir(parents=True, exist_ok=True)
+    fixtures = {
+        "compras_propuestas.json": [
+            {
+                "id": "PROP-1",
+                "producto": "Tomate",
+                "necesario": 8,
+                "disponible": 3,
+                "comprar": 5,
+                "unidad": "kg",
+                "origen": "Test",
+                "prioridad": "Alta",
+                "estado": "pendiente",
+            }
+        ],
+        "compras_proveedores.json": [
+            {"id": "PROV-1", "nombre": "Proveedor Uno", "estado": "activo"}
+        ],
+        "compras_registros.json": [
+            {
+                "id": "COMPRA-1",
+                "producto": "Tomate",
+                "cantidad": 5,
+                "unidad": "kg",
+                "proveedor": "Proveedor Uno",
+                "estado": "registrada",
+            }
+        ],
+    }
+    for name, content in fixtures.items():
+        (db_dir / name).write_text(json.dumps(content), encoding="utf-8")
+
+
 def test_get_api_v1_dashboard_devuelve_http_200_y_json_valido(tmp_path: Path) -> None:
     api = HostAIPlatformAPI(base_dir=tmp_path)
 
@@ -70,6 +105,23 @@ def test_get_api_v1_dashboard_reutiliza_flujo_executive(monkeypatch, tmp_path: P
     assert payload.get("datos_reales_modificados") is False
     assert payload.get("dashboard", {}).get("estado_general") == "estable"
     assert payload.get("dashboard", {}).get("evento_activo", {}).get("id") == "EVT-1"
+
+
+def test_get_api_v1_dashboard_expone_resumen_compras_real(tmp_path: Path) -> None:
+    _write_compras_fixture(tmp_path)
+
+    api = HostAIPlatformAPI(base_dir=tmp_path)
+    response = api.handle(ApiRequest(method="GET", path="/api/v1/dashboard"))
+
+    compras = response.payload["dashboard"]["modulos"]["compras"]
+    assert compras["necesidades_pendientes"] == 0
+    assert compras["propuestas_pendientes"] == 1
+    assert compras["total_propuestas"] == 1
+    assert compras["total_proveedores"] == 1
+    assert compras["total_historial"] == 1
+    assert compras["propuestas"][0]["id"] == "PROP-1"
+    assert compras["proveedores"][0]["id"] == "PROV-1"
+    assert compras["historial"][0]["id"] == "COMPRA-1"
 
 
 def test_get_api_v1_dashboard_error_homogeneo_sin_traceback(monkeypatch, tmp_path: Path) -> None:

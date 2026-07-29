@@ -59,6 +59,26 @@ def test_http_dashboard(tmp_path: Path) -> None:
     assert payload.get("datos_reales_modificados") is False
 
 
+def test_http_dashboard_expone_contrato_compras(tmp_path: Path) -> None:
+    db_dir = tmp_path / "DATOS" / "db"
+    db_dir.mkdir(parents=True, exist_ok=True)
+    (db_dir / "compras_proveedores.json").write_text(
+        json.dumps([{"id": "PROV-HTTP", "nombre": "Proveedor HTTP", "estado": "activo"}]),
+        encoding="utf-8",
+    )
+
+    response = _make_client(tmp_path).get("/api/v1/dashboard")
+
+    assert response.status_code == 200
+    compras = response.json()["dashboard"]["modulos"]["compras"]
+    assert compras["estado"] == "datos_disponibles"
+    assert compras["necesidades_pendientes"] == 0
+    assert compras["propuestas_pendientes"] == 0
+    assert compras["total_proveedores"] == 1
+    assert compras["proveedores"][0]["id"] == "PROV-HTTP"
+    assert compras["propuestas"] == []
+    assert compras["historial"] == []
+
 def test_http_chat(monkeypatch, tmp_path: Path) -> None:
     from API.facade.core_public_api02 import CorePublicApi02Facade
 

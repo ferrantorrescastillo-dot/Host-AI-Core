@@ -1,5 +1,6 @@
 # Python
 __pycache__/
+**/__pycache__/
 *.py[cod]
 *.pyo
 
@@ -33,6 +34,12 @@ Thumbs.db
 .DS_Store
 # AI_CORE generated output
 TEMP/
+
+# Frontend generado
+HOST_AI_WEB/node_modules/
+HOST_AI_WEB/dist/
+*.tsbuildinfo
+.vite/
 
 # Documentación personal
 Documentos/AI.docx
