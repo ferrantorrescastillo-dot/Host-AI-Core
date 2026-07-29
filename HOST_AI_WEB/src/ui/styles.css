@@ -329,6 +329,68 @@ textarea {
   gap: 10px;
 }
 
+.eventos-list {
+  display: grid;
+  gap: 14px;
+}
+
+.evento-card {
+  border: 1px solid #dce5e8;
+  border-radius: 12px;
+  padding: 16px;
+  background: #fafcfd;
+}
+
+.evento-card > header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.evento-card h3 {
+  margin: 0;
+}
+
+.evento-status {
+  border-radius: 999px;
+  padding: 5px 9px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.85rem;
+}
+
+.evento-details {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin: 16px 0 0;
+}
+
+.evento-details dt {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.evento-details dd {
+  margin: 3px 0 0;
+  font-weight: 600;
+}
+
+.evento-alerts {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid #dce5e8;
+}
+
+.evento-alerts h4 {
+  margin: 0 0 8px;
+}
+
+.evento-alerts li {
+  color: var(--danger);
+}
+
 .compras-list {
   gap: 10px;
 }
@@ -410,6 +472,14 @@ textarea {
   .dashboard-header {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .evento-card > header {
+    flex-direction: column;
+  }
+
+  .evento-details {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .compra-item {

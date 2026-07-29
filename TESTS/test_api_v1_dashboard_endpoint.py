@@ -42,6 +42,35 @@ def _write_compras_fixture(base_dir: Path) -> None:
         (db_dir / name).write_text(json.dumps(content), encoding="utf-8")
 
 
+def _write_eventos_fixture(base_dir: Path) -> None:
+    db_dir = base_dir / "DATOS" / "db"
+    db_dir.mkdir(parents=True, exist_ok=True)
+    (db_dir / "eventos.json").write_text(
+        json.dumps(
+            [
+                {
+                    "id": "EVT-WEB-1",
+                    "nombre": "Boda Web",
+                    "fecha": "2099-08-02",
+                    "pax": 120,
+                    "estado": "confirmado",
+                    "servicios": [
+                        {
+                            "id": "SERV-WEB-1",
+                            "nombre": "Cena",
+                            "tipo": "cena",
+                            "hora_inicio": "20:00",
+                            "duracion_min": 240,
+                            "pases": [],
+                        }
+                    ],
+                }
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+
 def test_get_api_v1_dashboard_devuelve_http_200_y_json_valido(tmp_path: Path) -> None:
     api = HostAIPlatformAPI(base_dir=tmp_path)
 
@@ -122,6 +151,24 @@ def test_get_api_v1_dashboard_expone_resumen_compras_real(tmp_path: Path) -> Non
     assert compras["propuestas"][0]["id"] == "PROP-1"
     assert compras["proveedores"][0]["id"] == "PROV-1"
     assert compras["historial"][0]["id"] == "COMPRA-1"
+
+
+def test_get_api_v1_dashboard_expone_resumen_eventos_real(tmp_path: Path) -> None:
+    _write_eventos_fixture(tmp_path)
+
+    api = HostAIPlatformAPI(base_dir=tmp_path)
+    response = api.handle(ApiRequest(method="GET", path="/api/v1/dashboard"))
+
+    eventos = response.payload["dashboard"]["modulos"]["eventos"]
+    assert eventos["estado"] == "datos_disponibles"
+    assert eventos["total"] == 1
+    assert eventos["eventos_activos"] == 1
+    assert eventos["total_servicios"] == 1
+    assert eventos["total_avisos"] == 1
+    assert eventos["resumen"]["pax_total"] == 120
+    assert eventos["items"][0]["id"] == "EVT-WEB-1"
+    assert eventos["items"][0]["estado"] == "confirmado"
+    assert eventos["items"][0]["avisos"] == ["Hay servicios sin pases."]
 
 
 def test_get_api_v1_dashboard_error_homogeneo_sin_traceback(monkeypatch, tmp_path: Path) -> None:

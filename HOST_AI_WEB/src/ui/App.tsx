@@ -3,6 +3,7 @@ import { AppLayout } from "./layout/AppLayout";
 import { ChatPage } from "./pages/ChatPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { HomePage } from "./pages/HomePage";
+import { EventosPage } from "./pages/EventosPage";
 import { ComprasPage } from "./pages/ComprasPage";
 import { NotFoundPage } from "./pages/NotFoundPage";
 import { PlaceholderPage } from "./pages/PlaceholderPage";
@@ -14,7 +15,7 @@ export function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/chat" element={<ChatPage />} />
-        <Route path="/eventos" element={<PlaceholderPage modulo="Eventos" />} />
+        <Route path="/eventos" element={<EventosPage />} />
         <Route path="/produccion" element={<PlaceholderPage modulo="Produccion" />} />
         <Route path="/compras" element={<ComprasPage />} />
         <Route path="/stock" element={<PlaceholderPage modulo="Stock" />} />

@@ -79,6 +79,36 @@ def test_http_dashboard_expone_contrato_compras(tmp_path: Path) -> None:
     assert compras["propuestas"] == []
     assert compras["historial"] == []
 
+
+def test_http_dashboard_expone_contrato_eventos(tmp_path: Path) -> None:
+    db_dir = tmp_path / "DATOS" / "db"
+    db_dir.mkdir(parents=True, exist_ok=True)
+    (db_dir / "eventos.json").write_text(
+        json.dumps(
+            [
+                {
+                    "id": "EVT-HTTP",
+                    "nombre": "Evento HTTP",
+                    "fecha": "2099-09-10",
+                    "pax": 45,
+                    "estado": "pendiente",
+                    "servicios": [],
+                }
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    response = _make_client(tmp_path).get("/api/v1/dashboard")
+
+    assert response.status_code == 200
+    eventos = response.json()["dashboard"]["modulos"]["eventos"]
+    assert eventos["total"] == 1
+    assert eventos["resumen"]["pax_total"] == 45
+    assert eventos["items"][0]["id"] == "EVT-HTTP"
+    assert eventos["items"][0]["avisos"] == ["Faltan servicios."]
+
+
 def test_http_chat(monkeypatch, tmp_path: Path) -> None:
     from API.facade.core_public_api02 import CorePublicApi02Facade
 

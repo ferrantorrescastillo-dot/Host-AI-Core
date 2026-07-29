@@ -22,9 +22,41 @@ export type DashboardPayload = {
   evento_activo?: unknown;
   workflows?: unknown[];
   modulos?: {
+    eventos?: EventosModule;
     compras?: ComprasModule;
     [key: string]: unknown;
   };
+};
+
+export type EventoListItem = {
+  id?: string;
+  nombre?: string;
+  fecha?: string;
+  pax?: number;
+  estado?: string;
+  dias?: number;
+  servicios?: number | unknown[];
+  avisos?: string[];
+  riesgos?: string[];
+  estado_operativo?: string;
+};
+
+export type EventosResumen = {
+  eventos_activos?: number;
+  pax_total?: number;
+  servicios?: number;
+  avisos?: number;
+};
+
+export type EventosModule = {
+  estado?: string;
+  total?: number;
+  items?: EventoListItem[];
+  eventos_activos?: number;
+  total_servicios?: number;
+  total_avisos?: number;
+  resumen?: EventosResumen;
+  mensaje?: string;
 };
 
 export type CompraListItem = {

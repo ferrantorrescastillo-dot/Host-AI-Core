@@ -102,6 +102,9 @@ class CorePublicApi02Facade:
             compras = dict(
                 (home_result.get("modulos") or {}).get("compras") or {}
             )
+            eventos = dict(
+                (home_result.get("modulos") or {}).get("eventos") or {}
+            )
             evento_activo = dict((executive_result.get("evento") or {}))
             if not evento_activo:
                 evento_activo = dict((executive_result.get("resumen_restaurante") or {}).get("eventos") or {})
@@ -121,6 +124,7 @@ class CorePublicApi02Facade:
                     "workflows": executive_result.get("workflows_priorizados") or executive_result.get("workflows_ejecutados") or [],
                     "modulos": {
                         "compras": compras,
+                        "eventos": eventos,
                     },
                 },
             }

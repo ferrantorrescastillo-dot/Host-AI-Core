@@ -163,18 +163,53 @@ class HostAIHomeReadService:
             dias = self._dias_hasta(fecha_txt, hoy)
             if dias is not None and dias < 0:
                 continue
+            resumen = dict(
+                getattr(self.core.eventos, "resumen_ejecutivo")(
+                    str(evt.get("id") or "")
+                )
+                or {}
+            )
+            avisos = [str(aviso) for aviso in list(resumen.get("avisos") or [])]
             items.append(
                 {
                     "id": str(evt.get("id") or ""),
                     "nombre": str(evt.get("nombre") or ""),
                     "fecha": fecha_txt,
                     "pax": int(evt.get("pax") or 0),
+                    "estado": str(evt.get("estado") or ""),
                     "dias": dias if dias is not None else 999,
                     "servicios": len(list(evt.get("servicios") or [])),
+                    "avisos": avisos,
+                    "riesgos": avisos,
+                    "estado_operativo": str(
+                        resumen.get("estado_operativo") or ""
+                    ),
                 }
             )
         items.sort(key=lambda x: (x.get("dias", 999), x.get("fecha", ""), x.get("nombre", "")))
-        return self._pack_items(items)
+        modulo = self._pack_items(items)
+        modulo.update(
+            {
+                "eventos_activos": len(items),
+                "total_servicios": sum(
+                    int(item.get("servicios") or 0) for item in items
+                ),
+                "total_avisos": sum(
+                    len(list(item.get("avisos") or [])) for item in items
+                ),
+                "resumen": {
+                    "eventos_activos": len(items),
+                    "pax_total": sum(int(item.get("pax") or 0) for item in items),
+                    "servicios": sum(
+                        int(item.get("servicios") or 0) for item in items
+                    ),
+                    "avisos": sum(
+                        len(list(item.get("avisos") or [])) for item in items
+                    ),
+                },
+            }
+        )
+        return modulo
 
     def _leer_recetas_pendientes(self) -> dict[str, Any]:
         items = [

@@ -89,6 +89,24 @@ Las colecciones se devuelven vacias cuando no hay datos. Si falla la lectura
 de Compras, el agregador conserva el contrato general del dashboard y marca
 el modulo con `estado=error_parcial`.
 
+### 3.5 Eventos en dashboard
+
+`GET /api/v1/dashboard` expone el resumen de Eventos en
+`dashboard.modulos.eventos`:
+
+- `estado`: estado normalizado del modulo.
+- `total`: numero de eventos activos o proximos.
+- `items`: eventos ordenados por proximidad.
+- `eventos_activos`: alias numerico de `total`.
+- `total_servicios`: servicios asociados a los eventos mostrados.
+- `total_avisos`: avisos operativos detectados por el motor de Eventos.
+- `resumen`: totales de eventos, pax, servicios y avisos.
+
+Cada elemento de `items` conserva `id`, `nombre`, `fecha`, `pax`, `estado`,
+`dias` y `servicios`, y puede incluir `avisos`, `riesgos` y
+`estado_operativo`. Los avisos proceden de `MotorEventos.resumen_ejecutivo`;
+la fachada no recalcula reglas de negocio.
+
 ## 4. Codigos de estado
 
 - 200: respuesta valida (incluye respuestas funcionales de endpoint).

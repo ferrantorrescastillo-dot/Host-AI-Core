@@ -99,6 +99,90 @@ def test_home_fallo_parcial_no_bloquea_total(tmp_path: Path, monkeypatch):
     assert data["modulos"]["eventos"]["estado"] in {"datos_disponibles", "sin_datos"}
 
 
+def test_home_eventos_expone_resumen_y_avisos_reales(tmp_path: Path):
+    core = HostAICore(tmp_path)
+    fecha = (date.today() + timedelta(days=2)).isoformat()
+    evento = core.eventos.crear_evento(
+        "Boda Eventos Web",
+        fecha,
+        120,
+        estado="confirmado",
+    )
+    core.eventos.agregar_servicio(
+        evento.id,
+        "Cena",
+        "cena",
+        "20:00",
+        240,
+    )
+
+    modulo = HostAIHomeReadService(core)._leer_eventos_proximos()
+
+    assert modulo["estado"] == "datos_disponibles"
+    assert modulo["total"] == 1
+    assert modulo["eventos_activos"] == 1
+    assert modulo["total_servicios"] == 1
+    assert modulo["total_avisos"] == 1
+    assert modulo["resumen"] == {
+        "eventos_activos": 1,
+        "pax_total": 120,
+        "servicios": 1,
+        "avisos": 1,
+    }
+    assert modulo["items"][0]["estado"] == "confirmado"
+    assert modulo["items"][0]["avisos"] == ["Hay servicios sin pases."]
+    assert modulo["items"][0]["riesgos"] == ["Hay servicios sin pases."]
+    assert modulo["items"][0]["estado_operativo"] == "revisar"
+
+
+def test_home_eventos_sin_datos_conserva_contrato(tmp_path: Path):
+    modulo = HostAIHomeReadService(
+        HostAICore(tmp_path)
+    )._leer_eventos_proximos()
+
+    assert modulo == {
+        "estado": "sin_datos",
+        "total": 0,
+        "items": [],
+        "eventos_activos": 0,
+        "total_servicios": 0,
+        "total_avisos": 0,
+        "resumen": {
+            "eventos_activos": 0,
+            "pax_total": 0,
+            "servicios": 0,
+            "avisos": 0,
+        },
+    }
+
+
+def test_home_eventos_error_controlado_no_bloquea_dashboard(
+    tmp_path: Path,
+    monkeypatch,
+):
+    core = HostAICore(tmp_path)
+    core.eventos.crear_evento(
+        "Evento con error",
+        (date.today() + timedelta(days=1)).isoformat(),
+        20,
+    )
+    monkeypatch.setattr(
+        core.eventos,
+        "resumen_ejecutivo",
+        lambda evento_id: (_ for _ in ()).throw(RuntimeError("error eventos")),
+    )
+
+    data = HostAIHomeReadService(core).cargar_home()
+
+    assert data["modulos"]["eventos"] == {
+        "estado": "error_parcial",
+        "total": 0,
+        "items": [],
+        "mensaje": "Error de lectura del modulo.",
+    }
+    assert {"modulo": "eventos", "error": "error eventos"} in data["errores"]
+
+
 def test_bandeja_determinista_y_prioridad_reproducible(tmp_path: Path):
     core = HostAICore(tmp_path)
     _seed_datos(core)
