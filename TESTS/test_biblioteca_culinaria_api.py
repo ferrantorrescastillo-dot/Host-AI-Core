@@ -116,7 +116,9 @@ def test_biblioteca_resumen_listado_busqueda_filtros_y_detalle(tmp_path: Path) -
     assert listed["total"] == 1
     assert listed["items"][0]["tipo"] == "Elaboración"
     detail = service.detalle("REC601-000001")["elaboracion"]
-    assert detail["escandallo"]["coste_por_racion"] == 0.85
+    assert detail["escandallo"]["coste_por_racion"] == 0.801
+    assert detail["escandallo"]["coste_total"] == 8.01
+    assert detail["escandallo"]["lineas"][0]["origen_precio"] == "catalogo_articulos"
     assert detail["receta"]["ingredientes"][0]["articulo_id"] == "ART-001"
     assert detail["documentos"][0]["tipo"] == "pdf"
     assert "AP" not in json.dumps(detail, ensure_ascii=False)
@@ -161,24 +163,26 @@ def test_biblioteca_detalle_canonico_es_estable_parcial_y_enlaza_articulo_real(t
     assert first["tiene_escandallo"] is True
     assert first["tiene_ficha_tecnica"] is False
     assert first["receta"]["procedimiento"] is None
-    assert first["receta"]["ingredientes"][0] == {
-        "articulo_id": "ART-001",
-        "codigo": "ART-001",
-        "nombre_original": "Tomate pera",
-        "cantidad_texto": "2 kg",
-        "cantidad": 2.0,
-        "unidad": "kg",
-        "merma": 5.0,
-        "cantidad_neta": None,
-        "coste_unitario": 4.0,
-        "coste_linea": None,
-        "observaciones": None,
-        "estado_relacion": "relacionado",
-    }
+    assert first["receta"]["ingredientes"][0]["articulo_id"] == "ART-001"
+    assert first["receta"]["ingredientes"][0]["codigo"] == "ART-001"
+    assert first["receta"]["ingredientes"][0]["nombre_articulo"] == "Tomate pera"
+    assert first["receta"]["ingredientes"][0]["unidad_base"] == "kg"
+    assert first["receta"]["ingredientes"][0]["cantidad"] == 2.0
+    assert first["receta"]["ingredientes"][0]["estado_relacion"] == "relacionado"
     assert first["receta"]["ingredientes"][1]["estado_relacion"] == "sin_relacionar"
-    assert first["escandallo"]["lineas"] == first["receta"]["ingredientes"]
+    assert [
+        line["nombre_original"] for line in first["escandallo"]["lineas"]
+    ] == [
+        line["nombre_original"] for line in first["receta"]["ingredientes"]
+    ]
     assert first["escandallo"]["ingredientes_sin_coste"] == 1
+    assert first["escandallo"]["ingredientes_sin_conversion"] == 0
     assert first["escandallo"]["estado_coste"] == "PARCIAL"
+    assert first["escandallo"]["coste_total"] is None
+    assert first["escandallo"]["coste_total_parcial"] == 8.421053
+    assert first["escandallo"]["lineas"][0]["origen_precio"] == "catalogo_articulos"
+    assert first["escandallo"]["lineas"][0]["coste_linea"] == 8.421053
+    assert first["escandallo"]["lineas"][1]["motivo_sin_coste"] == "Artículo sin relacionar"
     assert first["ficha_tecnica"]["persistida"] is False
     assert first["ficha_tecnica"]["origen"] == "proyeccion_datos_existentes"
     assert first["ficha_tecnica"]["estado"] == "EN_CONSTRUCCION"
@@ -204,6 +208,56 @@ def test_biblioteca_detalle_canonico_es_estable_parcial_y_enlaza_articulo_real(t
     assert first["tiene_relaciones_menu_evento"] is False
     assert "Ficha técnica en construcción." in first["avisos"]
     assert "A.P" not in json.dumps(first, ensure_ascii=False)
+
+
+def test_biblioteca_escandallo_reutiliza_precios_conversiones_y_no_extrae_textos(
+    tmp_path: Path,
+) -> None:
+    _write_canonical_fixture(tmp_path)
+    db = tmp_path / "DATOS" / "db"
+    canonical = json.loads((db / "escandallos_canonicos.json").read_text(encoding="utf-8"))
+    canonical["escandallos"][0]["receta"]["ingredientes"] = [
+        {"articulo_id": "ART-KG", "nombre": "Harina", "cantidad": 500, "unidad": "g"},
+        {"articulo_id": "ART-PACK", "nombre": "Huevos paquete 99,99 €", "cantidad": 1, "unidad": "u"},
+        {"articulo_id": "ART-ENV", "nombre": "Mayonesa envase", "cantidad": 0.05, "unidad": "kg"},
+        {"articulo_id": "ART-NOUNIT", "nombre": "Producto sin unidad 7,50 €", "cantidad": 1, "unidad": "kg"},
+        {"articulo_id": "ART-UNIT", "nombre": "Producto incompatible", "cantidad": 1, "unidad": "kg"},
+        {"nombre": "Artículo no relacionado", "cantidad": 1, "unidad": "u"},
+    ]
+    (db / "escandallos_canonicos.json").write_text(
+        json.dumps(canonical, ensure_ascii=False), encoding="utf-8",
+    )
+    articles = [
+        {"codigo": "ART-KG", "nombre": "Harina", "precio": 2, "unidad": "kg",
+         "catalogo_maestro": {"fecha_precio": "2026-07-24"}},
+        {"codigo": "ART-PACK", "nombre": "Huevos paquete 99,99 €", "precio": 12, "unidad": "u",
+         "catalogo_maestro": {"unidad_compra": "paquete", "cantidad_formato": "6", "unidad_base": "u", "fecha_precio": "2026-07-24"}},
+        {"codigo": "ART-ENV", "nombre": "Mayonesa envase", "precio": 11, "unidad": "kg",
+         "catalogo_maestro": {"unidad_compra": "envase", "cantidad_formato": "2.2", "unidad_base": "kg", "fecha_precio": "2026-07-24"}},
+        {"codigo": "ART-NOUNIT", "nombre": "Producto sin unidad 7,50 €", "precio": 7.5},
+        {"codigo": "ART-UNIT", "nombre": "Producto incompatible", "precio": 3, "unidad": "u"},
+    ]
+    (db / "articulos.json").write_text(json.dumps(articles, ensure_ascii=False), encoding="utf-8")
+
+    esc = BibliotecaCulinariaReadService(tmp_path).detalle("REC-SALSA-ROMESCO")["elaboracion"]["escandallo"]
+    lines = esc["lineas"]
+    assert lines[0]["precio_unitario"] == 2
+    assert lines[0]["factor_conversion"] == 0.001
+    assert lines[0]["coste_linea"] == 1
+    assert lines[0]["fecha_precio"] == "2026-07-24"
+    assert lines[1]["precio_unitario"] == 2
+    assert lines[1]["coste_linea"] == 2
+    assert lines[2]["precio_unitario"] == 5
+    assert lines[2]["coste_linea"] == 0.25
+    assert lines[3]["precio_unitario"] is None
+    assert lines[3]["motivo_sin_coste"] == "Sin precio vigente"
+    assert lines[4]["coste_linea"] is None
+    assert lines[4]["motivo_sin_coste"] == "Conversión no disponible"
+    assert lines[5]["estado_coste"] == "ARTICULO_SIN_RELACIONAR"
+    assert esc["coste_total"] is None
+    assert esc["coste_total_parcial"] == 3.25
+    assert esc["coste_por_racion"] is None
+    assert esc["ingredientes_sin_conversion"] == 1
 
 
 def test_biblioteca_detalle_sin_receta_no_inventa_contenido(tmp_path: Path) -> None:

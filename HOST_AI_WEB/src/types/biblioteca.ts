@@ -51,6 +51,8 @@ export type ElaboracionesResponse = ApiEnvelope & {
 export type IngredienteReceta = {
   articulo_id?: string | null;
   codigo?: string | null;
+  nombre_articulo?: string | null;
+  unidad_base?: string | null;
   nombre_original: string;
   cantidad_texto?: string | null;
   cantidad?: number | null;
@@ -59,6 +61,16 @@ export type IngredienteReceta = {
   cantidad_neta?: number | null;
   coste_unitario?: number | null;
   coste_linea?: number | null;
+  unidad_precio?: string | null;
+  origen_precio?: string | null;
+  proveedor_precio?: string | null;
+  fecha_precio?: string | null;
+  factor_conversion?: number | null;
+  cantidad_utilizada?: number | null;
+  cantidad_con_merma?: number | null;
+  coste_con_merma?: number | null;
+  estado_coste?: string | null;
+  motivo_sin_coste?: string | null;
   observaciones?: string | null;
   estado_relacion: "relacionado" | "sin_relacionar" | "coincidencia_dudosa";
 };
@@ -69,8 +81,10 @@ export type EscandalloElaboracion = {
   estado_coste: string;
   lineas: IngredienteReceta[];
   coste_ingredientes?: number | null;
+  coste_ingredientes_parcial?: number | null;
   otros_costes?: number | null;
   coste_total?: number | null;
+  coste_total_parcial?: number | null;
   rendimiento?: number | null;
   coste_por_racion?: number | null;
   precio_objetivo?: number | null;
@@ -78,6 +92,7 @@ export type EscandalloElaboracion = {
   fecha_calculo?: string | null;
   desactualizado: boolean;
   ingredientes_sin_coste: number;
+  ingredientes_sin_conversion: number;
   incidencias: Record<string, unknown>[];
 };
 

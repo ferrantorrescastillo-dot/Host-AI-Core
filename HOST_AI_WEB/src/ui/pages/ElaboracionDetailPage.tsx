@@ -122,13 +122,16 @@ function Costing({ item }: { item: ElaboracionDetalle }) {
     <IngredientsTable ingredients={esc.lineas} costing />
     <dl className="detail-grid">
       <dt>Otros costes</dt><dd>{money(esc.otros_costes, "No informados")}</dd>
-      <dt>Coste total</dt><dd>{money(esc.coste_total, "Coste no disponible")}</dd>
+      <dt>Coste total</dt><dd>{esc.coste_total == null
+        ? (esc.coste_total_parcial == null ? "Coste no disponible" : `Coste incompleto · ${money(esc.coste_total_parcial, "")} calculados`)
+        : money(esc.coste_total, "Coste no disponible")}</dd>
       <dt>Rendimiento</dt><dd>{esc.rendimiento ?? "No informado"}</dd>
       <dt>Coste por ración</dt><dd>{money(esc.coste_por_racion, "Sin coste por ración")}</dd>
       <dt>Precio objetivo</dt><dd>{money(esc.precio_objetivo, "No informado")}</dd>
       <dt>Margen</dt><dd>{esc.margen == null ? "No informado" : `${esc.margen}%`}</dd>
       <dt>Fecha de cálculo</dt><dd>{dateText(esc.fecha_calculo)}</dd>
       <dt>Ingredientes sin precio</dt><dd>{esc.ingredientes_sin_coste}</dd>
+      <dt>Ingredientes sin conversión</dt><dd>{esc.ingredientes_sin_conversion}</dd>
     </dl>
     {esc.incidencias.length ? <ul>{esc.incidencias.map((value, index) => <li key={index}>{displayValue(value)}</li>)}</ul> : null}
   </Section>;
@@ -209,13 +212,18 @@ function History({ item }: { item: ElaboracionDetalle }) {
 function IngredientsTable({ ingredients, costing }: { ingredients: IngredienteReceta[]; costing: boolean }) {
   if (!ingredients.length) return <p>No hay ingredientes registrados.</p>;
   return <div className="catalog-table-wrap"><table className="catalog-table">
-    <thead><tr><th>Ingrediente</th><th>Cantidad</th><th>Unidad</th><th>Merma</th>{costing ? <><th>Coste unitario</th><th>Coste de línea</th></> : null}<th>Relación</th></tr></thead>
+    <thead><tr><th>Ingrediente</th><th>Cantidad</th><th>Unidad</th><th>Merma</th>{costing ? <><th>Precio aplicado</th><th>Coste de línea</th></> : null}<th>Relación</th></tr></thead>
     <tbody>{ingredients.map((ingredient, index) => <tr key={`${ingredient.nombre_original}-${index}`}>
       <td>{ingredient.articulo_id ? <Link to={`/articulos/${encodeURIComponent(ingredient.articulo_id)}`}>{ingredient.nombre_original}</Link> : ingredient.nombre_original}</td>
       <td>{ingredient.cantidad ?? ingredient.cantidad_texto ?? "No informada"}</td>
       <td>{ingredient.unidad || "No informada"}</td>
       <td>{ingredient.merma == null ? "Sin merma registrada" : `${ingredient.merma}%`}</td>
-      {costing ? <><td>{money(ingredient.coste_unitario, "Sin precio")}</td><td>{money(ingredient.coste_linea, "Sin coste")}</td></> : null}
+      {costing ? <>
+        <td>{ingredient.coste_unitario == null
+          ? (ingredient.motivo_sin_coste || "Sin precio vigente")
+          : <>{money(ingredient.coste_unitario, "")}{ingredient.unidad_precio ? ` / ${ingredient.unidad_precio}` : ""}<small>{priceOrigin(ingredient.origen_precio)}{ingredient.fecha_precio ? ` · ${dateText(ingredient.fecha_precio)}` : ""}</small></>}</td>
+        <td>{ingredient.coste_linea == null ? (ingredient.motivo_sin_coste || "Sin coste") : money(ingredient.coste_linea, "")}</td>
+      </> : null}
       <td>{relationLabel(ingredient.estado_relacion)}</td>
     </tr>)}</tbody>
   </table></div>;
@@ -244,6 +252,15 @@ function statusLabel(value?: string | null) {
 }
 function relationLabel(value: IngredienteReceta["estado_relacion"]) {
   return value === "relacionado" ? "Relacionado" : value === "coincidencia_dudosa" ? "Coincidencia dudosa" : "Sin relacionar";
+}
+function priceOrigin(value?: string | null) {
+  const labels: Record<string, string> = {
+    tarifa_proveedor: "Tarifa de proveedor",
+    historico_compras: "Histórico de compras",
+    catalogo_articulos: "Catálogo de Artículos",
+    no_disponible: "Origen no disponible",
+  };
+  return labels[value || ""] || value || "Origen no disponible";
 }
 function tabLabel(value: string) {
   const labels: Record<string, string> = {

@@ -121,6 +121,29 @@ nomenclatura técnica heredada nunca se presenta al usuario.
 Una futura capa de IA podrá proponer contenido documental, pero el backend
 deberá validarlo y el usuario confirmarlo antes de cualquier persistencia.
 
+### Precios del escandallo público
+
+`GET /api/v1/biblioteca/elaboraciones/{elaboracion_id}` calcula su vista
+económica en memoria mediante `MotorCalculoEscandallos601`. El servicio no
+persiste el resultado y no interpreta importes incluidos en nombres.
+
+Solo se valora una línea si su relación con Artículos es estable. El motor
+mantiene su prioridad vigente: proveedor forzado o preferente, tarifa de la
+asociación preferente, histórico de compras y, como último recurso, precio
+estructurado del catálogo. La respuesta identifica el origen y conserva
+proveedor y fecha cuando existen.
+
+Cada línea puede exponer `precio_unitario`, `unidad_precio`, `origen_precio`,
+`proveedor_precio`, `fecha_precio`, `factor_conversion`, `cantidad_utilizada`,
+`cantidad_con_merma`, `coste_linea`, `estado_coste` y
+`motivo_sin_coste`. El motor reutilizado convierte kg/g, l/ml, unidades y
+formatos con cantidad neta estructurada.
+
+Un precio sin unidad, una relación dudosa o una conversión incompatible no se
+calcula. En esos casos los costes desconocidos son `null`, el total completo
+también es `null` y `coste_total_parcial` informa únicamente la suma verificable.
+Así se distingue un coste desconocido de un coste real igual a cero.
+
 Menús, documentos e importaciones disponen de espacios públicos preparados,
 pero no simulan capacidades. La escritura web queda aplazada hasta incorporar
 confirmación y auditoría pública. En una fase posterior, las recetas podrán

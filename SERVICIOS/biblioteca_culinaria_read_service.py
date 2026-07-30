@@ -10,6 +10,7 @@ from typing import Any
 from SERVICIOS.biblioteca_escandallos_601 import RepositorioBibliotecaEscandallos601
 from SERVICIOS.biblioteca_recetas_601 import RepositorioBibliotecaRecetas601
 from SERVICIOS.lector_modelo_canonico_555b72 import LectorModeloCanonico555B72
+from SERVICIOS.motor_calculo_escandallos_601 import MotorCalculoEscandallos601
 from SERVICIOS.repositorio_productos_maestro_601 import RepositorioProductosMaestro601
 
 
@@ -27,6 +28,7 @@ class BibliotecaCulinariaReadService:
         self.recetas = RepositorioBibliotecaRecetas601(base_dir)
         self.escandallos = RepositorioBibliotecaEscandallos601(base_dir)
         self.articulos = RepositorioProductosMaestro601(base_dir)
+        self.motor_escandallos = MotorCalculoEscandallos601(self.articulos)
         self.modelo_canonico = LectorModeloCanonico555B72(base_dir)
 
     @staticmethod
@@ -333,7 +335,7 @@ class BibliotecaCulinariaReadService:
             return self._error("elaboration_not_found", "Elaboración no encontrada.", 404)
         esc = self._escandallo_for(receta)
         ingredients = self._ingredients(receta, esc)
-        public_escandallo = self._public_escandallo(esc, ingredients)
+        public_escandallo = self._costing(receta, esc, ingredients)
         documents = self._documents(receta)
         production = self._production(receta)
         menus = list(receta.get("menus_utilizacion") or [])
@@ -343,6 +345,9 @@ class BibliotecaCulinariaReadService:
             receta, ingredients, public_escandallo, documents, production, pending,
         )
         summary = self._summary(receta)
+        if public_escandallo:
+            summary["coste_total"] = public_escandallo.get("coste_total")
+            summary["coste_por_racion"] = public_escandallo.get("coste_por_racion")
         detail = {
             **summary,
             "receta": {
@@ -515,7 +520,9 @@ class BibliotecaCulinariaReadService:
             linked = matches[0] if len(matches) == 1 else None
             output.append({
                 "articulo_id": str(linked.get("codigo")) if linked else None,
-                "codigo": source_code or (str(linked.get("codigo")) if linked else None),
+                "codigo": str(linked.get("codigo")) if linked else (source_code or None),
+                "nombre_articulo": self._public_text(linked.get("nombre")) if linked else None,
+                "unidad_base": linked.get("unidad_base") or linked.get("unidad") or None if linked else None,
                 "nombre_original": self._public_text(name),
                 "cantidad_texto": str(amounts[index]) if index < len(amounts) else None,
                 "cantidad": self._number(line.get("cantidad_neta") or line.get("cantidad")),
@@ -529,39 +536,179 @@ class BibliotecaCulinariaReadService:
             })
         return output
 
-    def _public_escandallo(
+    def _costing(
         self,
+        receta: dict[str, Any],
         esc: dict[str, Any] | None,
-        ingredients: list[dict[str, Any]] | None = None,
+        ingredients: list[dict[str, Any]],
     ) -> dict[str, Any] | None:
         if not esc:
             return None
-        lines = list(ingredients or [])
-        missing_cost = sum(
-            item.get("coste_unitario") in (None, 0, 0.0)
-            for item in lines
+        calculation = self.motor_escandallos.calcular(
+            nombre_escandallo=str(receta.get("nombre") or "Escandallo"),
+            numero_raciones=float(
+                receta.get("numero_raciones")
+                or receta.get("rendimiento")
+                or (esc or {}).get("numero_raciones")
+                or (esc or {}).get("rendimiento_total")
+                or 0
+            ),
+            lineas_entrada=[
+                {
+                    # El motor solo recibe una identidad cuando la relación pública
+                    # ya es estable; nunca se le permite enlazar por parecido.
+                    "producto_codigo": (
+                        item.get("articulo_id")
+                        if item.get("estado_relacion") == "relacionado"
+                        else f"__SIN_RELACION_{index}"
+                    ),
+                    "nombre_mostrado": (
+                        item.get("nombre_original")
+                        if item.get("estado_relacion") == "relacionado"
+                        else ""
+                    ),
+                    "cantidad_neta": item.get("cantidad_neta") or item.get("cantidad"),
+                    "cantidad_texto": item.get("cantidad_texto"),
+                    "unidad_receta": item.get("unidad"),
+                    "merma_especifica": item.get("merma"),
+                    "dato_manual": False,
+                }
+                for index, item in enumerate(ingredients)
+            ],
+            precio_venta_por_racion=float((esc or {}).get("precio_venta_por_racion") or 0),
+            receta_asociada={
+                "id": str(receta.get("id") or ""),
+                "codigo": str(receta.get("codigo") or ""),
+                "nombre": str(receta.get("nombre") or ""),
+            },
+        )
+        calculated_lines = list(calculation.get("lineas") or [])
+        public_lines = [
+            self._cost_line(item, calculated_lines[index] if index < len(calculated_lines) else {})
+            for index, item in enumerate(ingredients)
+        ]
+        missing_price = sum(line.get("precio_unitario") is None for line in public_lines)
+        missing_conversion = sum(
+            line.get("estado_coste") == "CONVERSION_NO_DISPONIBLE"
+            for line in public_lines
+        )
+        complete = bool(public_lines) and not missing_price and not missing_conversion
+        partial_total = round(
+            sum(float(line.get("coste_linea") or 0) for line in public_lines),
+            6,
+        )
+        rendimiento = self._number(
+            receta.get("numero_raciones")
+            or receta.get("rendimiento")
+            or esc.get("numero_raciones")
+            or esc.get("rendimiento_total")
         )
         return {
             "id": esc.get("id"),
             "estado": esc.get("estado"),
-            "estado_coste": (
-                "SIN_COSTE"
-                if lines and missing_cost == len(lines)
-                else ("PARCIAL" if missing_cost else "DISPONIBLE")
-            ),
-            "lineas": lines,
-            "coste_ingredientes": self._number(esc.get("coste_ingredientes")),
+            "estado_coste": "DISPONIBLE" if complete else ("PARCIAL" if partial_total else "SIN_COSTE"),
+            "lineas": public_lines,
+            "coste_ingredientes": partial_total if complete else None,
+            "coste_ingredientes_parcial": partial_total if not complete and partial_total else None,
             "otros_costes": self._number(esc.get("otros_costes")),
-            "coste_total": self._number(esc.get("coste_total")),
-            "rendimiento": self._number(esc.get("rendimiento_total") or esc.get("numero_raciones")),
-            "coste_por_racion": self._number(esc.get("coste_por_racion")),
+            "coste_total": (
+                round(partial_total + float(self._number(esc.get("otros_costes")) or 0), 6)
+                if complete else None
+            ),
+            "coste_total_parcial": partial_total if not complete and partial_total else None,
+            "rendimiento": rendimiento,
+            "coste_por_racion": (
+                round(
+                    (partial_total + float(self._number(esc.get("otros_costes")) or 0))
+                    / float(rendimiento),
+                    6,
+                )
+                if complete and rendimiento and rendimiento > 0 else None
+            ),
             "precio_objetivo": self._number(esc.get("precio_venta_por_racion")),
             "margen": self._number(esc.get("margen_porcentual") or esc.get("margen")),
-            "fecha_calculo": esc.get("fecha_ultimo_calculo") or esc.get("fecha_calculo") or None,
+            "fecha_calculo": calculation.get("fecha_calculo"),
             "desactualizado": str(esc.get("estado") or "").upper() == "DESACTUALIZADO",
-            "ingredientes_sin_coste": missing_cost,
-            "incidencias": list(esc.get("incidencias") or []),
+            "ingredientes_sin_coste": missing_price,
+            "ingredientes_sin_conversion": missing_conversion,
+            "incidencias": [
+                incidence
+                for incidence in list(calculation.get("incidencias") or [])
+                if incidence.get("tipo") not in {"PRECIO_VENTA_IGUAL_A_CERO", "RECETA_SIN_RACIONES"}
+            ],
         }
+
+    def _cost_line(
+        self,
+        ingredient: dict[str, Any],
+        calculated: dict[str, Any],
+    ) -> dict[str, Any]:
+        output = dict(ingredient)
+        if ingredient.get("estado_relacion") != "relacionado":
+            output.update({
+                "precio_unitario": None,
+                "unidad_precio": None,
+                "origen_precio": "no_disponible",
+                "fecha_precio": None,
+                "factor_conversion": None,
+                "cantidad_utilizada": ingredient.get("cantidad"),
+                "cantidad_con_merma": None,
+                "coste_linea": None,
+                "coste_con_merma": None,
+                "estado_coste": (
+                    "RELACION_DUDOSA"
+                    if ingredient.get("estado_relacion") == "coincidencia_dudosa"
+                    else "ARTICULO_SIN_RELACIONAR"
+                ),
+                "motivo_sin_coste": (
+                    "Relación dudosa"
+                    if ingredient.get("estado_relacion") == "coincidencia_dudosa"
+                    else "Artículo sin relacionar"
+                ),
+            })
+            return output
+
+        incidence_types = {
+            str(item.get("tipo") or "")
+            for item in list(calculated.get("incidencias") or [])
+        }
+        price = self._number(calculated.get("precio_compra_utilizado"))
+        factor = self._number(calculated.get("factor_conversion"))
+        if "PRODUCTO_SIN_PRECIO" in incidence_types:
+            state, reason = "SIN_PRECIO", "Sin precio vigente"
+        elif incidence_types & {"CONVERSION_INEXISTENTE", "UNIDAD_INCOMPATIBLE"}:
+            state, reason = "CONVERSION_NO_DISPONIBLE", "Conversión no disponible"
+        elif price is None:
+            state, reason = "SIN_PRECIO", "Sin precio vigente"
+        else:
+            state, reason = "DISPONIBLE", None
+        reference = dict(calculated.get("precio_referencia") or {})
+        origin = {
+            "asociacion": "tarifa_proveedor",
+            "historico": "historico_compras",
+            "catalogo_producto": "catalogo_articulos",
+        }.get(str(reference.get("fuente") or ""), "no_disponible")
+        output.update({
+            "precio_unitario": price,
+            "unidad_precio": calculated.get("unidad_precio") or None,
+            "origen_precio": origin if price is not None else "no_disponible",
+            "proveedor_precio": calculated.get("proveedor_precio") or None,
+            "fecha_precio": calculated.get("fecha_precio") or None,
+            "factor_conversion": factor,
+            "cantidad_utilizada": self._number(calculated.get("cantidad_neta")),
+            "cantidad_con_merma": self._number(calculated.get("cantidad_bruta")),
+            "coste_linea": (
+                self._number(calculated.get("coste_linea"))
+                if state == "DISPONIBLE" else None
+            ),
+            "coste_con_merma": (
+                self._number(calculated.get("coste_linea"))
+                if state == "DISPONIBLE" else None
+            ),
+            "estado_coste": state,
+            "motivo_sin_coste": reason,
+        })
+        return output
 
     @staticmethod
     def _capabilities() -> dict[str, bool]:
