@@ -145,6 +145,18 @@ Cada línea puede exponer `precio_unitario`, `unidad_precio`, `origen_precio`,
 `motivo_sin_coste`. El motor reutilizado convierte kg/g, l/ml, unidades y
 formatos con cantidad neta estructurada.
 
+Todo coste publicado debe ser auditable. Además de los alias anteriores, una
+línea puede diferenciar `precio_original`, `unidad_precio_original`,
+`precio_aplicado`, `unidad_precio_aplicado`, `tipo_conversion`,
+`factor_conversion`, `origen_precio` y `fecha_precio`. La fecha permanece
+ausente cuando la fuente no la conserva. React presenta estos valores y nunca
+reconstruye el precio a partir del coste.
+
+Un coste calculado nunca se presenta como precio ausente. Si existe
+`coste_linea`, la respuesta contiene también `precio_aplicado` y su unidad. Los
+estados sin precio y sin conversión se reservan para ausencias reales y
+mantienen el precio original visible cuando este sí está disponible.
+
 Por compatibilidad con el catálogo legado 5.5.5B, si el enlace por código es
 exacto y el artículo no conserva ninguna unidad, se mantiene la regla existente
 del enriquecedor: la unidad declarada en la línea de receta se usa como unidad

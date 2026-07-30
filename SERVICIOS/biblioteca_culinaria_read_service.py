@@ -662,6 +662,15 @@ class BibliotecaCulinariaReadService:
                 self.motor_escandallos.precio_catalogo_normalizado(product)
             )
             recipe_unit = ingredient.get("unidad") or ""
+            original_unit = (
+                article.get("unidad_compra")
+                or article.get("unidad")
+                or article.get("unidad_base")
+                or ""
+            )
+            inherited_unit = not bool(original_unit)
+            purchase_unit = str(article.get("unidad_compra") or "")
+            format_quantity = self._number(article.get("cantidad_formato"))
             prices[code] = {
                 "precio_neto_unidad_base": (
                     normalized_price if normalized_price is not None else price
@@ -681,6 +690,15 @@ class BibliotecaCulinariaReadService:
                 "provisional": False,
                 "precio_incluye_iva": bool(article.get("precio_incluye_iva", False)),
                 "fuente": "catalogo_articulos_publico",
+                "precio_original": price,
+                "unidad_precio_original": original_unit or None,
+                "normalizacion": (
+                    "heredada"
+                    if inherited_unit
+                    else "envase"
+                    if purchase_unit and format_quantity and normalized_price != price
+                    else "ninguna"
+                ),
             }
         return prices
 
@@ -692,10 +710,20 @@ class BibliotecaCulinariaReadService:
         output = dict(ingredient)
         if ingredient.get("estado_relacion") != "relacionado":
             output.update({
+                "articulo_codigo": ingredient.get("articulo_id"),
+                "articulo_nombre": ingredient.get("nombre_articulo") or ingredient.get("nombre_original"),
+                "cantidad_receta": ingredient.get("cantidad"),
+                "unidad_receta": ingredient.get("unidad"),
+                "precio_original": None,
+                "unidad_precio_original": None,
+                "precio_aplicado": None,
+                "unidad_precio_aplicado": None,
                 "precio_unitario": None,
+                "coste_unitario": None,
                 "unidad_precio": None,
                 "origen_precio": "no_disponible",
                 "fecha_precio": None,
+                "tipo_conversion": "no_disponible",
                 "factor_conversion": None,
                 "cantidad_utilizada": ingredient.get("cantidad"),
                 "cantidad_con_merma": None,
@@ -729,6 +757,19 @@ class BibliotecaCulinariaReadService:
         else:
             state, reason = "DISPONIBLE", None
         reference = dict(calculated.get("precio_referencia") or {})
+        price_unit = calculated.get("unidad_precio") or None
+        recipe_unit = calculated.get("unidad_receta") or ingredient.get("unidad") or None
+        normalization = str(reference.get("normalizacion") or "")
+        if normalization == "heredada":
+            conversion_type = "normalizacion_heredada"
+        elif normalization == "envase":
+            conversion_type = "envase"
+        elif factor is None:
+            conversion_type = "no_disponible"
+        elif factor == 1:
+            conversion_type = "directa"
+        else:
+            conversion_type = "metrica"
         origin = {
             "asociacion": "tarifa_proveedor",
             "historico": "historico_compras",
@@ -737,12 +778,21 @@ class BibliotecaCulinariaReadService:
         }.get(str(reference.get("fuente") or ""), "no_disponible")
         output.update({
             "articulo_codigo": ingredient.get("articulo_id"),
+            "articulo_nombre": ingredient.get("nombre_articulo") or ingredient.get("nombre_original"),
+            "cantidad_receta": self._number(calculated.get("cantidad_neta")),
+            "unidad_receta": recipe_unit,
+            "precio_original": self._number(reference.get("precio_original")),
+            "unidad_precio_original": reference.get("unidad_precio_original") or None,
+            "precio_aplicado": price,
+            "unidad_precio_aplicado": price_unit,
             "precio_unitario": price,
-            "unidad_precio": calculated.get("unidad_precio") or None,
+            "coste_unitario": price,
+            "unidad_precio": price_unit,
             "origen_precio": origin if price is not None else "no_disponible",
             "proveedor_precio": calculated.get("proveedor_precio") or None,
             "fecha_precio": calculated.get("fecha_precio") or None,
             "factor_conversion": factor,
+            "tipo_conversion": conversion_type,
             "cantidad_utilizada": self._number(calculated.get("cantidad_neta")),
             "cantidad_con_merma": self._number(calculated.get("cantidad_bruta")),
             "coste_linea": (

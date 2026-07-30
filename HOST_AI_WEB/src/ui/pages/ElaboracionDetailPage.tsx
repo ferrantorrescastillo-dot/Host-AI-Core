@@ -212,21 +212,46 @@ function History({ item }: { item: ElaboracionDetalle }) {
 function IngredientsTable({ ingredients, costing }: { ingredients: IngredienteReceta[]; costing: boolean }) {
   if (!ingredients.length) return <p>No hay ingredientes registrados.</p>;
   return <div className="catalog-table-wrap"><table className="catalog-table">
-    <thead><tr><th>Ingrediente</th><th>Cantidad</th><th>Unidad</th><th>Merma</th>{costing ? <><th>Precio aplicado</th><th>Coste de línea</th></> : null}<th>Relación</th></tr></thead>
+    <thead><tr><th>Ingrediente</th><th>Cantidad</th><th>Unidad</th><th>Merma</th>{costing ? <><th>Precio aplicado</th><th>Origen</th><th>Coste de línea</th></> : null}<th>Relación</th></tr></thead>
     <tbody>{ingredients.map((ingredient, index) => <tr key={`${ingredient.nombre_original}-${index}`}>
       <td>{ingredient.articulo_id ? <Link to={`/articulos/${encodeURIComponent(ingredient.articulo_id)}`}>{ingredient.nombre_original}</Link> : ingredient.nombre_original}</td>
       <td>{ingredient.cantidad ?? ingredient.cantidad_texto ?? "No informada"}</td>
       <td>{ingredient.unidad || "No informada"}</td>
       <td>{ingredient.merma == null ? "Sin merma registrada" : `${ingredient.merma}%`}</td>
       {costing ? <>
-        <td>{ingredient.coste_unitario == null
-          ? (ingredient.motivo_sin_coste || "Sin precio vigente")
-          : <>{money(ingredient.coste_unitario, "")}{ingredient.unidad_precio ? ` / ${ingredient.unidad_precio}` : ""}<small>{priceOrigin(ingredient.origen_precio)}{ingredient.fecha_precio ? ` · ${dateText(ingredient.fecha_precio)}` : ""}</small></>}</td>
-        <td>{ingredient.coste_linea == null ? (ingredient.motivo_sin_coste || "Sin coste") : <>{money(ingredient.coste_linea, "")}{ingredient.factor_conversion != null && ingredient.factor_conversion !== 1 ? <small>Conversión × {ingredient.factor_conversion}</small> : null}</>}</td>
+        <PriceCell ingredient={ingredient} />
+        <td>{priceOrigin(ingredient.origen_precio)}
+          {ingredient.fecha_precio ? <small>{dateText(ingredient.fecha_precio)}</small> : null}
+          {ingredient.tipo_conversion && ingredient.tipo_conversion !== "no_disponible"
+            ? <small>{conversionLabel(ingredient.tipo_conversion, ingredient.unidad_receta || ingredient.unidad, ingredient.unidad_precio_aplicado || ingredient.unidad_precio, ingredient.factor_conversion)}</small>
+            : null}
+        </td>
+        <td>{ingredient.coste_linea == null ? (ingredient.motivo_sin_coste || "No disponible") : money(ingredient.coste_linea, "")}</td>
       </> : null}
       <td>{relationLabel(ingredient.estado_relacion)}</td>
     </tr>)}</tbody>
   </table></div>;
+}
+
+function PriceCell({ ingredient }: { ingredient: IngredienteReceta }) {
+  const applied = ingredient.precio_aplicado ?? ingredient.precio_unitario ?? ingredient.coste_unitario;
+  const appliedUnit = ingredient.unidad_precio_aplicado ?? ingredient.unidad_precio;
+  if (applied == null) return <td>No disponible</td>;
+  const showOriginal = ingredient.precio_original != null && (
+    ingredient.precio_original !== applied
+    || ingredient.unidad_precio_original !== appliedUnit
+  );
+  return <td>{money(applied, "")}{appliedUnit ? ` / ${appliedUnit}` : ""}
+    {showOriginal ? <small>Original: {money(ingredient.precio_original, "")}{ingredient.unidad_precio_original ? ` / ${ingredient.unidad_precio_original}` : " · unidad no registrada"}</small> : null}
+  </td>;
+}
+
+function conversionLabel(type: string, from?: string | null, to?: string | null, factor?: number | null) {
+  if (type === "normalizacion_heredada") return "Normalización heredada";
+  if (type === "envase") return `Envase → ${to || "unidad base"}`;
+  if (type === "metrica") return `Métrica ${from || "origen"} → ${to || "destino"}${factor == null ? "" : ` · factor ${factor}`}`;
+  if (type === "directa") return `Directa ${from || to || "unidad"} → ${to || from || "unidad"}`;
+  return "Sin conversión disponible";
 }
 
 function RelationList({ title, values, empty = "Sin registros." }: { title: string; values: unknown[]; empty?: string }) {
@@ -258,9 +283,9 @@ function priceOrigin(value?: string | null) {
     tarifa_proveedor: "Tarifa de proveedor",
     historico_compras: "Histórico de compras",
     catalogo_articulos: "Catálogo de Artículos",
-    no_disponible: "Origen no disponible",
+    no_disponible: "Sistema",
   };
-  return labels[value || ""] || value || "Origen no disponible";
+  return labels[value || ""] || value || "Sistema";
 }
 function tabLabel(value: string) {
   const labels: Record<string, string> = {

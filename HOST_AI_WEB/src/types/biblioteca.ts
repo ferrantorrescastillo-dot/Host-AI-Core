@@ -51,6 +51,7 @@ export type ElaboracionesResponse = ApiEnvelope & {
 export type IngredienteReceta = {
   articulo_id?: string | null;
   articulo_codigo?: string | null;
+  articulo_nombre?: string | null;
   codigo?: string | null;
   nombre_articulo?: string | null;
   unidad_base?: string | null;
@@ -60,13 +61,21 @@ export type IngredienteReceta = {
   unidad?: string | null;
   merma?: number | null;
   cantidad_neta?: number | null;
+  cantidad_receta?: number | null;
+  unidad_receta?: string | null;
   coste_unitario?: number | null;
+  precio_unitario?: number | null;
+  precio_original?: number | null;
+  unidad_precio_original?: string | null;
+  precio_aplicado?: number | null;
+  unidad_precio_aplicado?: string | null;
   coste_linea?: number | null;
   unidad_precio?: string | null;
   origen_precio?: string | null;
   proveedor_precio?: string | null;
   fecha_precio?: string | null;
   factor_conversion?: number | null;
+  tipo_conversion?: "directa" | "metrica" | "envase" | "normalizacion_heredada" | "no_disponible" | string | null;
   cantidad_utilizada?: number | null;
   cantidad_con_merma?: number | null;
   coste_con_merma?: number | null;

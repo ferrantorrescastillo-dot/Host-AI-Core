@@ -249,10 +249,19 @@ def test_biblioteca_escandallo_reutiliza_precios_conversiones_y_no_extrae_textos
     esc = BibliotecaCulinariaReadService(tmp_path).detalle("REC-SALSA-ROMESCO")["elaboracion"]["escandallo"]
     lines = esc["lineas"]
     assert lines[0]["precio_unitario"] == 2
+    assert lines[0]["precio_original"] == 2
+    assert lines[0]["precio_aplicado"] == 2
+    assert lines[0]["unidad_precio_original"] == "kg"
+    assert lines[0]["unidad_precio_aplicado"] == "kg"
+    assert lines[0]["tipo_conversion"] == "metrica"
+    assert lines[0]["origen_precio"] == "catalogo_articulos"
     assert lines[0]["factor_conversion"] == 0.001
     assert lines[0]["coste_linea"] == 1
     assert lines[0]["fecha_precio"] == "2026-07-24"
     assert lines[1]["precio_unitario"] == 2
+    assert lines[1]["precio_original"] == 12
+    assert lines[1]["unidad_precio_original"] == "paquete"
+    assert lines[1]["tipo_conversion"] == "envase"
     assert lines[1]["coste_linea"] == 2
     assert lines[2]["precio_unitario"] == 5
     assert lines[2]["coste_linea"] == 0.25
@@ -260,10 +269,15 @@ def test_biblioteca_escandallo_reutiliza_precios_conversiones_y_no_extrae_textos
     assert lines[3]["precio_unitario"] == public_article["precio"] == 7.5
     assert lines[3]["origen_precio"] == "catalogo_articulos"
     assert lines[3]["unidad_precio"] == "kg"
+    assert lines[3]["unidad_precio_original"] is None
+    assert lines[3]["tipo_conversion"] == "normalizacion_heredada"
     assert lines[3]["factor_conversion"] == 1
     assert lines[3]["coste_linea"] == 7.5
     assert lines[3]["motivo_sin_coste"] is None
     assert lines[4]["coste_linea"] is None
+    assert lines[4]["precio_aplicado"] == 3
+    assert lines[4]["unidad_precio_aplicado"] == "u"
+    assert lines[4]["tipo_conversion"] == "no_disponible"
     assert lines[4]["motivo_sin_coste"] == "Conversión no disponible"
     assert lines[5]["factor_conversion"] == 1
     assert lines[5]["coste_linea"] == 6
@@ -273,6 +287,12 @@ def test_biblioteca_escandallo_reutiliza_precios_conversiones_y_no_extrae_textos
     assert lines[7]["coste_linea"] == 0
     assert lines[7]["estado_coste"] == "DISPONIBLE"
     assert lines[8]["estado_coste"] == "ARTICULO_SIN_RELACIONAR"
+    for line in lines:
+        if line["coste_linea"] is not None:
+            assert line["precio_aplicado"] is not None
+            assert line["unidad_precio_aplicado"]
+            assert line["estado_coste"] == "DISPONIBLE"
+            assert line["motivo_sin_coste"] is None
     assert esc["coste_total"] is None
     assert esc["coste_total_parcial"] == 17.25
     assert esc["coste_por_racion"] is None
