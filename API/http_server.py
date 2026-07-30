@@ -53,6 +53,15 @@ def _parse_allowed_origins() -> list[str]:
             continue
         safe_values.append(origin)
 
+    if env_name == "development":
+        safe_values.extend(
+            [
+                "http://localhost:5176",
+                "http://127.0.0.1:5176",
+            ]
+        )
+
+    safe_values = list(dict.fromkeys(safe_values))
     if not safe_values:
         safe_values = ["http://localhost:5173"]
     return safe_values

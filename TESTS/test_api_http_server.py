@@ -178,18 +178,30 @@ def test_http_error_interno_sin_traceback(tmp_path: Path) -> None:
     assert "C:\\\\" not in serialized
 
 
-def test_http_cors_local(tmp_path: Path) -> None:
+def test_http_cors_host_ai_web_en_articulos_y_dashboard(tmp_path: Path) -> None:
     client = _make_client(tmp_path)
-    response = client.options(
-        "/api/v1/health",
-        headers={
-            "Origin": "http://localhost:5173",
-            "Access-Control-Request-Method": "GET",
-        },
+    origins = (
+        "http://localhost:5173",
+        "http://localhost:5176",
+        "http://127.0.0.1:5176",
     )
+    endpoints = ("/api/v1/articulos", "/api/v1/dashboard")
 
-    assert response.status_code in (200, 204)
-    assert response.headers.get("access-control-allow-origin") == "http://localhost:5173"
+    for origin in origins:
+        for endpoint in endpoints:
+            preflight = client.options(
+                endpoint,
+                headers={
+                    "Origin": origin,
+                    "Access-Control-Request-Method": "GET",
+                },
+            )
+            assert preflight.status_code in (200, 204)
+            assert preflight.headers.get("access-control-allow-origin") == origin
+
+            response = client.get(endpoint, headers={"Origin": origin})
+            assert response.status_code == 200
+            assert response.headers.get("access-control-allow-origin") == origin
 
 
 def test_http_datos_reales_modificados_false_en_endpoints_versionados(monkeypatch, tmp_path: Path) -> None:
