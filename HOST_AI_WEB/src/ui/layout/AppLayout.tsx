@@ -4,12 +4,12 @@ import type { PropsWithChildren } from "react";
 const LINKS = [
   { to: "/", label: "Inicio" },
   { to: "/dashboard", label: "Dashboard" },
-  { to: "/executive", label: "Executive" },
   { to: "/chat", label: "Chat" },
   { to: "/eventos", label: "Eventos" },
   { to: "/produccion", label: "Produccion" },
   { to: "/compras", label: "Compras" },
   { to: "/stock", label: "Stock" },
+  { to: "/executive", label: "Executive" },
   { to: "/configuracion", label: "Configuracion" },
 ];
 

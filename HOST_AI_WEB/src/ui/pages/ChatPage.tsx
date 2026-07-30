@@ -1,4 +1,5 @@
 import { FormEvent, KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import { HostAiApiError } from "../../api/client";
 import { chatService } from "../../services/chatService";
 import type { ApiEnvelopeBase, ChatResponse } from "../../types/api";
@@ -8,6 +9,7 @@ type ChatItem = {
   role: "usuario" | "host_ai";
   text: string;
   requestId?: string;
+  navigation?: { to: string; label: string };
 };
 
 type ChatUiError = {
@@ -29,6 +31,24 @@ function getSafeStatus(payload: ApiEnvelopeBase) {
     modoSeguro: payload.modo_seguro,
     datosRealesModificados: payload.datos_reales_modificados,
   };
+}
+
+const MODULE_ROUTES: Record<string, { to: string; label: string }> = {
+  COMPRAS: { to: "/compras", label: "Abrir Compras" },
+  EVENTOS: { to: "/eventos", label: "Abrir Eventos" },
+  PRODUCCION: { to: "/produccion", label: "Abrir Producción" },
+  STOCK: { to: "/stock", label: "Abrir Stock" },
+  EXECUTIVE: { to: "/executive", label: "Abrir Executive" },
+  HOME: { to: "/dashboard", label: "Abrir Dashboard" },
+};
+
+function getNavigation(payload: ChatResponse) {
+  const data = payload.chat?.datos;
+  if (!data || typeof data !== "object") return undefined;
+  const request = (data as Record<string, unknown>).navigation_request;
+  if (!request || typeof request !== "object") return undefined;
+  const target = (request as Record<string, unknown>).target_module;
+  return typeof target === "string" ? MODULE_ROUTES[target.toUpperCase()] : undefined;
 }
 
 export function ChatPage() {
@@ -73,6 +93,7 @@ export function ChatPage() {
           role: "host_ai",
           text: getResponseText(response),
           requestId: response.request_id,
+          navigation: getNavigation(response),
         },
       ]);
     } catch (err: unknown) {
@@ -186,6 +207,11 @@ export function ChatPage() {
         {items.map((item) => (
           <article key={item.id} className={`chat-item chat-item-${item.role}`}>
             <p>{item.text}</p>
+            {item.navigation ? (
+              <Link className="button-link-secondary" to={item.navigation.to}>
+                {item.navigation.label}
+              </Link>
+            ) : null}
             {item.requestId ? <small>Request ID: {item.requestId}</small> : null}
           </article>
         ))}

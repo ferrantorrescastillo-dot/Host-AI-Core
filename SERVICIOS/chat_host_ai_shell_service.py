@@ -145,7 +145,10 @@ class ServicioChatHostAIShell:
             engine = self._consultar_engine_simulado(contenido, contexto)
             if str(engine.get("estado") or "") == "ERROR":
                 # Executive conversacional no depende de proveedor generativo; mantener ruta determinista local.
-                if detectar_intencion_executive(contenido) is not None:
+                if (
+                    detectar_intencion_executive(contenido) is not None
+                    or self._es_consulta_modulos(contenido)
+                ):
                     engine = {"estado": "OK", "proveedor": "SIMULADO", "respuesta": {}, "errores": []}
                 else:
                     msg = self._mensaje_engine(engine)
@@ -184,6 +187,10 @@ class ServicioChatHostAIShell:
         return dict(self.tool_registry.stats())
 
     def _resolver_intencion(self, texto: str, contexto: dict[str, Any], engine: dict[str, Any]) -> dict[str, Any]:
+        consulta_modulos = self._resolver_consulta_modulos(texto, engine)
+        if consulta_modulos is not None:
+            return consulta_modulos
+
         ejecutivo = self._resolver_host_ai_executive(texto, contexto, engine)
         if ejecutivo is not None:
             return ejecutivo
@@ -332,6 +339,164 @@ class ServicioChatHostAIShell:
             "mensaje": "Todavia no puedo interpretar esa peticion. Puedo buscar recetas, mostrar incidencias, consultar eventos proximos o abrir modulos.",
             "datos": {"engine": engine, "intent": match.to_dict()},
         }
+
+    def _resolver_consulta_modulos(
+        self,
+        texto: str,
+        engine: dict[str, Any],
+    ) -> dict[str, Any] | None:
+        consulta = self._detectar_consulta_modulos(texto)
+        if consulta is None:
+            return None
+        if self.home_read_service is None:
+            return {
+                "tipo_mensaje": TIPO_ADVERTENCIA,
+                "mensaje": "La información operativa no está disponible en este momento.",
+                "datos": {"engine": engine, "informativa": True},
+            }
+
+        home = dict(self.home_read_service.cargar_home() or {})
+        modulos = dict(home.get("modulos") or {})
+        modulo, target = consulta
+        mensaje = self._formatear_consulta_modulos(modulo, modulos)
+        navigation = NavigationRequest(
+            target_module=target,
+            source="chat_host_ai",
+            message="Abrir la pantalla manual relacionada.",
+        ).to_dict()
+        return {
+            "tipo_mensaje": TIPO_RESULTADO,
+            "mensaje": f"Consulta informativa. {mensaje}",
+            "datos": {
+                "engine": engine,
+                "informativa": True,
+                "modo_lectura": True,
+                "modulos_consultados": (
+                    ["compras", "eventos", "produccion", "stock"]
+                    if modulo == "operacion"
+                    else [modulo]
+                ),
+                "navigation_request": navigation,
+            },
+        }
+
+    @classmethod
+    def _es_consulta_modulos(cls, texto: str) -> bool:
+        return cls._detectar_consulta_modulos(texto) is not None
+
+    @classmethod
+    def _detectar_consulta_modulos(
+        cls,
+        texto: str,
+    ) -> tuple[str, str] | None:
+        normalized = cls._normalizar_texto(texto)
+        if "proveedor" in normalized:
+            return "proveedores", "COMPRAS"
+        if "compra" in normalized and any(
+            term in normalized for term in ("pendiente", "necesidad", "propuesta")
+        ):
+            return "compras", "COMPRAS"
+        if "evento" in normalized and any(
+            term in normalized for term in ("proximo", "activo", "tengo", "hay")
+        ):
+            return "eventos", "EVENTOS"
+        if "produccion" in normalized and any(
+            term in normalized for term in ("curso", "activa", "pendiente", "estado")
+        ):
+            return "produccion", "PRODUCCION"
+        if "stock" in normalized and any(
+            term in normalized for term in ("critic", "alerta", "minimo", "riesgo")
+        ):
+            return "stock", "STOCK"
+        if "estado general" in normalized or "estado de la operacion" in normalized:
+            return "operacion", "EXECUTIVE"
+        return None
+
+    @staticmethod
+    def _formatear_consulta_modulos(
+        consulta: str,
+        modulos: dict[str, Any],
+    ) -> str:
+        compras = dict(modulos.get("compras") or {})
+        eventos = dict(modulos.get("eventos") or {})
+        produccion = dict(modulos.get("produccion") or {})
+        stock = dict(modulos.get("stock") or {})
+
+        if consulta == "compras":
+            necesidades = int(compras.get("necesidades_pendientes") or 0)
+            propuestas = int(compras.get("propuestas_pendientes") or 0)
+            nombres = [
+                str(item.get("nombre") or item.get("producto") or "")
+                for item in (
+                    list(compras.get("items") or [])
+                    + list(compras.get("propuestas") or [])
+                )
+                if isinstance(item, dict)
+            ]
+            return ServicioChatHostAIShell._resumen_con_nombres(
+                f"Hay {necesidades} necesidades y {propuestas} propuestas de compra pendientes",
+                nombres,
+            )
+        if consulta == "proveedores":
+            proveedores = list(compras.get("proveedores") or [])
+            nombres = [
+                str(item.get("nombre") or "")
+                for item in proveedores
+                if isinstance(item, dict)
+            ]
+            return ServicioChatHostAIShell._resumen_con_nombres(
+                f"Hay {len(proveedores)} proveedores activos",
+                nombres,
+            )
+        if consulta == "eventos":
+            items = list(eventos.get("items") or [])
+            nombres = [
+                str(item.get("nombre") or "")
+                for item in items
+                if isinstance(item, dict)
+            ]
+            pax = int(dict(eventos.get("resumen") or {}).get("pax_total") or 0)
+            return ServicioChatHostAIShell._resumen_con_nombres(
+                f"Hay {len(items)} eventos próximos con {pax} PAX",
+                nombres,
+            )
+        if consulta == "produccion":
+            planes = list(produccion.get("items") or [])
+            nombres = [
+                str(item.get("nombre") or "")
+                for item in planes
+                if isinstance(item, dict)
+            ]
+            en_curso = int(produccion.get("tareas_en_curso") or 0)
+            return ServicioChatHostAIShell._resumen_con_nombres(
+                f"Hay {len(planes)} planes activos y {en_curso} tareas en curso",
+                nombres,
+            )
+        if consulta == "stock":
+            alertas = list(stock.get("alertas") or stock.get("items") or [])
+            mensajes = [
+                str(item.get("mensaje") or item.get("tipo") or "")
+                for item in alertas
+                if isinstance(item, dict)
+            ]
+            return ServicioChatHostAIShell._resumen_con_nombres(
+                f"Hay {len(alertas)} alertas de stock",
+                mensajes,
+            )
+        return (
+            "Estado general: "
+            f"{len(list(eventos.get('items') or []))} eventos próximos, "
+            f"{int(produccion.get('tareas_en_curso') or 0)} tareas de producción en curso, "
+            f"{int(compras.get('necesidades_pendientes') or 0) + int(compras.get('propuestas_pendientes') or 0)} compras pendientes "
+            f"y {len(list(stock.get('alertas') or stock.get('items') or []))} alertas de stock."
+        )
+
+    @staticmethod
+    def _resumen_con_nombres(resumen: str, nombres: list[str]) -> str:
+        disponibles = [nombre for nombre in nombres if nombre]
+        if not disponibles:
+            return f"{resumen}."
+        return f"{resumen}: {', '.join(disponibles[:5])}."
 
     def _resolver_host_ai_executive(self, texto: str, contexto: dict[str, Any], engine: dict[str, Any]) -> dict[str, Any] | None:
         intencion_exec = detectar_intencion_executive(texto)
