@@ -2,11 +2,13 @@ from __future__ import annotations
 
 import base64
 import json
+import logging
 from pathlib import Path
 
 from fastapi.testclient import TestClient
 
 from API.app import HostAIPlatformAPI
+from API.facade.catalog_public_facade import CatalogPublicFacade
 from API.http_server import create_app
 from MODELOS.importador_inteligente_biblioteca import DocumentType
 from SERVICIOS.importador_inteligente_biblioteca import (
@@ -30,6 +32,14 @@ def _payload(name: str = "salsa-verde.txt", text: str = RECIPE_TEXT) -> dict:
         "tipo_mime": "text/plain",
         "contenido_base64": base64.b64encode(text.encode("utf-8")).decode("ascii"),
         "texto": text,
+    }
+
+
+def _word_payload(name: str = "receta-cocido.docx") -> dict:
+    return {
+        "nombre": name,
+        "tipo_mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "contenido_base64": base64.b64encode(b"PK-docx-preview").decode("ascii"),
     }
 
 
@@ -103,3 +113,46 @@ def test_http_importacion_biblioteca_post_get_y_propuestas(tmp_path: Path) -> No
 
     missing = client.get("/api/v1/biblioteca/importaciones/NO-EXISTE")
     assert missing.status_code == 404
+
+
+def test_http_word_genera_sesion_clasificacion_y_propuestas_sin_escribir(
+    tmp_path: Path,
+) -> None:
+    client = TestClient(create_app(HostAIPlatformAPI(base_dir=tmp_path)))
+
+    response = client.post("/api/v1/biblioteca/importaciones", json=_word_payload())
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["ok"] is True
+    assert body["datos_reales_modificados"] is False
+    session = body["importacion"]
+    assert session["documento"]["origen"] == "WORD"
+    assert session["documento"]["clasificacion"]["tipo"] == "RECETA"
+    assert session["documento"]["contenido_almacenado"] is False
+    assert session["propuestas"]
+    assert session["solo_previsualizacion"] is True
+    assert session["confirmacion_disponible"] is False
+
+
+def test_fachada_registra_y_expone_excepcion_real_solo_en_desarrollo(
+    tmp_path: Path,
+    monkeypatch,
+    caplog,
+) -> None:
+    class FailingImportService:
+        @staticmethod
+        def import_document(_payload: dict) -> dict:
+            raise RuntimeError("fallo reproducible del importador")
+
+    facade = CatalogPublicFacade(base_dir=tmp_path)
+    facade._biblioteca_import_service = FailingImportService()
+    monkeypatch.setenv("HOST_AI_API_ENV", "development")
+
+    with caplog.at_level(logging.ERROR):
+        result = facade.crear_importacion_biblioteca(_word_payload())
+
+    assert result["ok"] is False
+    assert result["error"]["code"] == "library_import_failed"
+    assert result["error"]["message"] == "RuntimeError: fallo reproducible del importador"
+    assert "Error al crear una importación de Biblioteca." in caplog.text

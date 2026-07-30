@@ -295,9 +295,9 @@ class ImportDocumentService:
         interpreted = self.interpreter.interpret(
             filename=filename, content=content, text=text
         )
-        if not text and interpreted.text:
+        if not text and interpreted.texto:
             document_type, classification = self.classifier.classify(
-                filename=filename, text=interpreted.text
+                filename=filename, text=interpreted.texto
             )
         sections, entities, context = self.extractor.extract(interpreted, document_type)
         import_id = f"IMPWEB-{uuid4().hex[:12].upper()}"

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import logging
+import os
 from pathlib import Path
 from typing import Any
 
@@ -7,6 +9,9 @@ from API.facade.core_public_api02 import CorePublicApi02Facade
 from SERVICIOS.articulos_catalog_read_service import ArticulosCatalogReadService
 from SERVICIOS.biblioteca_culinaria_read_service import BibliotecaCulinariaReadService
 from SERVICIOS.importador_inteligente_biblioteca import ImportDocumentService
+
+
+logger = logging.getLogger(__name__)
 
 
 class CatalogPublicFacade(CorePublicApi02Facade):
@@ -67,24 +72,46 @@ class CatalogPublicFacade(CorePublicApi02Facade):
 
     def crear_importacion_biblioteca(self, body: dict[str, Any]) -> dict[str, Any]:
         return self._library_call(
-            self._get_biblioteca_import_service().import_document, dict(body or {})
+            self._get_biblioteca_import_service().import_document,
+            dict(body or {}),
+            error_code="library_import_failed",
+            operation_name="crear una importación de Biblioteca",
         )
 
     def importacion_biblioteca(self, importacion_id: str) -> dict[str, Any]:
         return self._library_call(
-            self._get_biblioteca_import_service().get_import, importacion_id
+            self._get_biblioteca_import_service().get_import,
+            importacion_id,
+            error_code="library_import_failed",
+            operation_name="consultar una importación de Biblioteca",
         )
 
     def propuestas_importacion_biblioteca(self, importacion_id: str) -> dict[str, Any]:
         return self._library_call(
-            self._get_biblioteca_import_service().get_proposals, importacion_id
+            self._get_biblioteca_import_service().get_proposals,
+            importacion_id,
+            error_code="library_import_failed",
+            operation_name="consultar propuestas de una importación de Biblioteca",
         )
 
-    def _library_call(self, operation: Any, *args: Any) -> dict[str, Any]:
+    def _library_call(
+        self,
+        operation: Any,
+        *args: Any,
+        error_code: str = "library_unavailable",
+        operation_name: str = "consultar la Biblioteca",
+    ) -> dict[str, Any]:
         try:
             return {**self._base_payload(), **operation(*args)}
-        except Exception:
+        except Exception as exc:
+            logger.exception("Error al %s.", operation_name)
+            env_name = str(os.getenv("HOST_AI_API_ENV", "development")).strip().lower()
+            message = (
+                f"{type(exc).__name__}: {exc}"
+                if env_name == "development"
+                else "No se pudo consultar la Biblioteca Culinaria."
+            )
             return self._error_payload(
-                code="library_unavailable",
-                message="No se pudo consultar la Biblioteca Culinaria.",
+                code=error_code,
+                message=message,
             )
