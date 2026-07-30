@@ -145,6 +145,14 @@ Cada línea puede exponer `precio_unitario`, `unidad_precio`, `origen_precio`,
 `motivo_sin_coste`. El motor reutilizado convierte kg/g, l/ml, unidades y
 formatos con cantidad neta estructurada.
 
+Por compatibilidad con el catálogo legado 5.5.5B, si el enlace por código es
+exacto y el artículo no conserva ninguna unidad, se mantiene la regla existente
+del enriquecedor: la unidad declarada en la línea de receta se usa como unidad
+del precio. Así se resuelven directamente kg/kg, l/l y u/u; las conversiones
+métricas g/kg y ml/l continúan delegadas al motor. Si el catálogo declara una
+unidad comercial distinta, esta compatibilidad no sustituye el contenido o
+factor de formato requerido.
+
 Un precio sin unidad, una relación dudosa o una conversión incompatible no se
 oculta: se expone el importe público, pero no se calcula su coste de línea. En
 esos casos los costes desconocidos son `null`, el total completo

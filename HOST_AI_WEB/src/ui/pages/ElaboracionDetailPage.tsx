@@ -222,7 +222,7 @@ function IngredientsTable({ ingredients, costing }: { ingredients: IngredienteRe
         <td>{ingredient.coste_unitario == null
           ? (ingredient.motivo_sin_coste || "Sin precio vigente")
           : <>{money(ingredient.coste_unitario, "")}{ingredient.unidad_precio ? ` / ${ingredient.unidad_precio}` : ""}<small>{priceOrigin(ingredient.origen_precio)}{ingredient.fecha_precio ? ` · ${dateText(ingredient.fecha_precio)}` : ""}</small></>}</td>
-        <td>{ingredient.coste_linea == null ? (ingredient.motivo_sin_coste || "Sin coste") : money(ingredient.coste_linea, "")}</td>
+        <td>{ingredient.coste_linea == null ? (ingredient.motivo_sin_coste || "Sin coste") : <>{money(ingredient.coste_linea, "")}{ingredient.factor_conversion != null && ingredient.factor_conversion !== 1 ? <small>Conversión × {ingredient.factor_conversion}</small> : null}</>}</td>
       </> : null}
       <td>{relationLabel(ingredient.estado_relacion)}</td>
     </tr>)}</tbody>

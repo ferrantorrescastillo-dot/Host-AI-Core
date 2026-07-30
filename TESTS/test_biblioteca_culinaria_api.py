@@ -223,6 +223,8 @@ def test_biblioteca_escandallo_reutiliza_precios_conversiones_y_no_extrae_textos
         {"articulo_id": "ART-ENV", "nombre": "Mayonesa envase", "cantidad": 0.05, "unidad": "kg"},
         {"articulo_id": "ART-NOUNIT", "nombre": "Producto sin unidad 7,50 €", "cantidad": 1, "unidad": "kg"},
         {"articulo_id": "ART-UNIT", "nombre": "Producto incompatible", "cantidad": 1, "unidad": "kg"},
+        {"articulo_id": "ART-L", "nombre": "Aceite", "cantidad": 2, "unidad": "l"},
+        {"articulo_id": "ART-ML", "nombre": "Leche", "cantidad": 250, "unidad": "ml"},
         {"articulo_id": "ART-ZERO", "nombre": "Artículo promocional", "cantidad": 1, "unidad": "u"},
         {"nombre": "Artículo no relacionado", "cantidad": 1, "unidad": "u"},
     ]
@@ -238,6 +240,8 @@ def test_biblioteca_escandallo_reutiliza_precios_conversiones_y_no_extrae_textos
          "catalogo_maestro": {"unidad_compra": "envase", "cantidad_formato": "2.2", "unidad_base": "kg", "fecha_precio": "2026-07-24"}},
         {"codigo": "ART-NOUNIT", "nombre": "Producto sin unidad 7,50 €", "precio": 7.5},
         {"codigo": "ART-UNIT", "nombre": "Producto incompatible", "precio": 3, "unidad": "u"},
+        {"codigo": "ART-L", "nombre": "Aceite", "precio": 3, "unidad": "l"},
+        {"codigo": "ART-ML", "nombre": "Leche", "precio": 2, "unidad": "l"},
         {"codigo": "ART-ZERO", "nombre": "Artículo promocional", "precio": 0, "unidad": "u"},
     ]
     (db / "articulos.json").write_text(json.dumps(articles, ensure_ascii=False), encoding="utf-8")
@@ -255,18 +259,24 @@ def test_biblioteca_escandallo_reutiliza_precios_conversiones_y_no_extrae_textos
     public_article = ArticulosCatalogReadService(tmp_path).obtener("ART-NOUNIT")["articulo"]
     assert lines[3]["precio_unitario"] == public_article["precio"] == 7.5
     assert lines[3]["origen_precio"] == "catalogo_articulos"
-    assert lines[3]["coste_linea"] is None
-    assert lines[3]["motivo_sin_coste"] == "Conversión no disponible"
+    assert lines[3]["unidad_precio"] == "kg"
+    assert lines[3]["factor_conversion"] == 1
+    assert lines[3]["coste_linea"] == 7.5
+    assert lines[3]["motivo_sin_coste"] is None
     assert lines[4]["coste_linea"] is None
     assert lines[4]["motivo_sin_coste"] == "Conversión no disponible"
-    assert lines[5]["precio_unitario"] == 0
-    assert lines[5]["coste_linea"] == 0
-    assert lines[5]["estado_coste"] == "DISPONIBLE"
-    assert lines[6]["estado_coste"] == "ARTICULO_SIN_RELACIONAR"
+    assert lines[5]["factor_conversion"] == 1
+    assert lines[5]["coste_linea"] == 6
+    assert lines[6]["factor_conversion"] == 0.001
+    assert lines[6]["coste_linea"] == 0.5
+    assert lines[7]["precio_unitario"] == 0
+    assert lines[7]["coste_linea"] == 0
+    assert lines[7]["estado_coste"] == "DISPONIBLE"
+    assert lines[8]["estado_coste"] == "ARTICULO_SIN_RELACIONAR"
     assert esc["coste_total"] is None
-    assert esc["coste_total_parcial"] == 3.25
+    assert esc["coste_total_parcial"] == 17.25
     assert esc["coste_por_racion"] is None
-    assert esc["ingredientes_sin_conversion"] == 2
+    assert esc["ingredientes_sin_conversion"] == 1
 
 
 def test_biblioteca_detalle_sin_receta_no_inventa_contenido(tmp_path: Path) -> None:

@@ -6,7 +6,7 @@ import { App } from "../ui/App";
 const base = { ok: true, version: "1.0", api_version: "1.0", request_id: "LIB-1", modo_seguro: true, datos_reales_modificados: false };
 const item = { id: "REC601-1", codigo: "SALSA", nombre: "Salsa de tomate", categoria: "Salsas", tipo: "Elaboración", estado: "PENDIENTE_DE_COMPLETAR", rendimiento: 10, unidad_rendimiento: "raciones", raciones: 10, coste_total: 8.5, coste_por_racion: 0.85, tiene_receta: true, tiene_escandallo: true, tiene_ficha_tecnica: false, tiene_fotografia: false, tiene_documentos: false, tiene_produccion: false, tiene_relaciones_menu_evento: false, completitud: 80 };
 const list = { ...base, elaboraciones: { items: [item], page: 1, page_size: 20, total: 1, total_pages: 1, filters: { estados: ["OPERATIVA"], categorias: ["Salsas"] }, capabilities: {} } };
-const ingredient = { articulo_id: "ART-001", codigo: "ART-001", nombre_articulo: "Tomate pera", unidad_base: "kg", nombre_original: "Tomate pera", cantidad_texto: "2 kg", cantidad: 2, unidad: "kg", merma: 5, coste_unitario: 4, unidad_precio: "kg", origen_precio: "historico_compras", fecha_precio: "2026-07-24", factor_conversion: 1, cantidad_utilizada: 2, cantidad_con_merma: 2.1, coste_linea: 8, coste_con_merma: 8, estado_coste: "DISPONIBLE", motivo_sin_coste: null, estado_relacion: "relacionado" };
+const ingredient = { articulo_id: "ART-001", codigo: "ART-001", nombre_articulo: "Tomate pera", unidad_base: "kg", nombre_original: "Tomate pera", cantidad_texto: "500 g", cantidad: 500, unidad: "g", merma: 5, coste_unitario: 4, unidad_precio: "kg", origen_precio: "historico_compras", fecha_precio: "2026-07-24", factor_conversion: 0.001, cantidad_utilizada: 500, cantidad_con_merma: 525, coste_linea: 2, coste_con_merma: 2, estado_coste: "DISPONIBLE", motivo_sin_coste: null, estado_relacion: "relacionado" };
 const ingredientWithoutPrice = { articulo_id: "ART-002", codigo: "ART-002", nombre_articulo: "Sal", unidad_base: null, nombre_original: "Sal", cantidad_texto: "20 g", cantidad: 20, unidad: "g", merma: 0, coste_unitario: null, unidad_precio: null, origen_precio: "no_disponible", fecha_precio: null, factor_conversion: null, cantidad_utilizada: 20, cantidad_con_merma: null, coste_linea: null, coste_con_merma: null, estado_coste: "SIN_PRECIO", motivo_sin_coste: "Sin precio vigente", estado_relacion: "relacionado" };
 const ingredientWithoutConversion = { articulo_id: "ART-003", articulo_codigo: "ART-003", codigo: "ART-003", nombre_articulo: "Gamba paella", unidad_base: null, nombre_original: "Gamba paella", cantidad_texto: "0.19 kg", cantidad: 0.19, unidad: "kg", merma: 0, coste_unitario: 10.5, unidad_precio: null, origen_precio: "catalogo_articulos", fecha_precio: null, factor_conversion: null, cantidad_utilizada: 0.19, cantidad_con_merma: 0.19, coste_linea: null, coste_con_merma: null, estado_coste: "CONVERSION_NO_DISPONIBLE", motivo_sin_coste: "Conversión no disponible", estado_relacion: "relacionado" };
 const detail = {
@@ -61,11 +61,12 @@ describe("Biblioteca Culinaria", () => {
     expect(screen.getByText("Sin procedimiento estructurado.")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Escandallo" }));
     expect(screen.getByText("Sin coste por ración")).toBeInTheDocument();
-    expect(screen.getByText("8.00 €")).toBeInTheDocument();
+    expect(screen.getByText(/Coste incompleto · 8.00 € calculados/)).toBeInTheDocument();
     expect(screen.getByText(/Histórico de compras/)).toBeInTheDocument();
     expect(screen.getAllByText("Sin precio vigente")).toHaveLength(2);
     expect(screen.getByText("10.50 €")).toBeInTheDocument();
     expect(screen.getByText("Conversión no disponible")).toBeInTheDocument();
+    expect(screen.getByText("Conversión × 0.001")).toBeInTheDocument();
     expect(screen.getByText(/Coste incompleto/)).toBeInTheDocument();
     expect(screen.queryByText("0.00 €")).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Ficha técnica" }));

@@ -661,6 +661,7 @@ class BibliotecaCulinariaReadService:
             normalized_price, normalized_unit, _ = (
                 self.motor_escandallos.precio_catalogo_normalizado(product)
             )
+            recipe_unit = ingredient.get("unidad") or ""
             prices[code] = {
                 "precio_neto_unidad_base": (
                     normalized_price if normalized_price is not None else price
@@ -669,6 +670,10 @@ class BibliotecaCulinariaReadService:
                     normalized_unit
                     or article.get("unidad")
                     or article.get("unidad_base")
+                    # Compatibilidad con el catálogo legado: el enriquecedor
+                    # 5.5.5B usa la unidad de la línea cuando el enlace por
+                    # código es exacto y el artículo no conserva unidad.
+                    or recipe_unit
                     or ""
                 ),
                 "proveedor": article.get("proveedor") or "",
