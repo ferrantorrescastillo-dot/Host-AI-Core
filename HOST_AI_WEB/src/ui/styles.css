@@ -391,6 +391,63 @@ textarea {
   color: var(--danger);
 }
 
+.produccion-list {
+  display: grid;
+  gap: 14px;
+}
+
+.produccion-card {
+  border: 1px solid #dce5e8;
+  border-radius: 12px;
+  padding: 16px;
+  background: #fafcfd;
+}
+
+.produccion-card > header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.produccion-card h3,
+.produccion-card p {
+  margin-top: 0;
+}
+
+.produccion-details {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.produccion-details dt {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.produccion-details dd {
+  margin: 3px 0 0;
+  font-weight: 600;
+}
+
+.produccion-tasks {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+
+.produccion-tasks li {
+  border-top: 1px solid #dce5e8;
+  padding-top: 10px;
+}
+
+.produccion-alert {
+  color: var(--danger);
+  margin-bottom: 0;
+}
+
 .compras-list {
   gap: 10px;
 }
@@ -479,6 +536,14 @@ textarea {
   }
 
   .evento-details {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .produccion-card > header {
+    flex-direction: column;
+  }
+
+  .produccion-details {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 

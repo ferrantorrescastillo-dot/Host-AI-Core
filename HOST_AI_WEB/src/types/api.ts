@@ -24,8 +24,37 @@ export type DashboardPayload = {
   modulos?: {
     eventos?: EventosModule;
     compras?: ComprasModule;
+    produccion?: ProduccionModule;
     [key: string]: unknown;
   };
+};
+
+export type ProduccionTareaListItem = {
+  id?: string; titulo?: string; estado?: string; prioridad?: string;
+  cantidad?: number; unidad?: string; responsable?: string; bloqueo?: string;
+  retraso_min?: number; progreso?: number; duracion_total_min?: number;
+  incidencias?: unknown[];
+};
+
+export type ProduccionPlanListItem = {
+  id?: string; nombre?: string; evento_id?: string; evento?: string;
+  fecha?: string; responsable?: string; estado?: string; pax?: number;
+  duracion_total_min?: number; total_tareas?: number; pendientes?: number;
+  en_curso?: number; bloqueadas?: number; pausadas?: number; finalizadas?: number;
+  porcentaje_completado?: number; avisos?: unknown[]; alertas?: unknown[];
+  tareas?: ProduccionTareaListItem[];
+};
+
+export type ProduccionResumen = {
+  planes_activos?: number; tareas?: number; pendientes?: number;
+  en_curso?: number; bloqueadas?: number; pausadas?: number; alertas?: number;
+};
+
+export type ProduccionModule = {
+  estado?: string; total?: number; items?: ProduccionPlanListItem[];
+  planes_activos?: number; total_tareas?: number; tareas_pendientes?: number;
+  tareas_en_curso?: number; tareas_bloqueadas?: number; tareas_pausadas?: number;
+  total_alertas?: number; resumen?: ProduccionResumen; mensaje?: string;
 };
 
 export type EventoListItem = {

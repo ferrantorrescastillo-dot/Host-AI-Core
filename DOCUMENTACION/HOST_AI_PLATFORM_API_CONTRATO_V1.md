@@ -107,6 +107,26 @@ Cada elemento de `items` conserva `id`, `nombre`, `fecha`, `pax`, `estado`,
 `estado_operativo`. Los avisos proceden de `MotorEventos.resumen_ejecutivo`;
 la fachada no recalcula reglas de negocio.
 
+### 3.6 Produccion en dashboard
+
+`GET /api/v1/dashboard` expone el resumen operativo de Produccion en
+`dashboard.modulos.produccion`, construido por el agregador de lectura a
+partir de `MotorProduccionReal`:
+
+- `estado`, `total` e `items`: contrato base compatible del modulo.
+- `planes_activos`: alias numerico de `total`.
+- `total_tareas`, `tareas_pendientes`, `tareas_en_curso`,
+  `tareas_bloqueadas` y `tareas_pausadas`: contadores procedentes del
+  resumen de ejecucion del motor.
+- `total_alertas`: avisos del plan y alertas operativas del motor.
+- `resumen`: los mismos totales agrupados para consumidores de interfaz.
+
+Cada plan de `items` conserva identificacion, evento, fecha, pax,
+responsable, estado, duracion y porcentaje completado. Tambien incluye sus
+tareas con estado, prioridad, cantidad, unidad, bloqueo, retraso, progreso e
+incidencias. Solo se publican planes con tareas no finalizadas. La lectura no
+modifica datos reales y no introduce reglas de produccion en la fachada HTTP.
+
 ## 4. Codigos de estado
 
 - 200: respuesta valida (incluye respuestas funcionales de endpoint).

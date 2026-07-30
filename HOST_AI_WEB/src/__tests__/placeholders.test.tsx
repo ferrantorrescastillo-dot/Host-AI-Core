@@ -3,7 +3,7 @@ import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 import { App } from "../ui/App";
 
-const ROUTES = ["/produccion", "/stock", "/configuracion"];
+const ROUTES = ["/stock", "/configuracion"];
 
 describe("placeholders de modulos futuros", () => {
   it.each(ROUTES)("muestra placeholder en %s", (route) => {

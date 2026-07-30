@@ -331,23 +331,83 @@ class HostAIHomeReadService:
         return self._pack_items(items)
 
     def _leer_produccion_pendiente(self) -> dict[str, Any]:
-        planes = list(getattr(self.core.produccion_real, "listar_planes")() or [])
+        motor = self.core.produccion_real
+        planes = list(getattr(motor, "listar_planes")() or [])
         items: list[dict[str, Any]] = []
         for p in planes:
-            tareas = list(p.get("tareas") or [])
-            bloqueadas = [t for t in tareas if str(t.get("estado_ejecucion") or "").lower() == "bloqueada"]
-            pendientes = [t for t in tareas if str(t.get("estado_ejecucion") or "").lower() in {"pendiente", "lista", "en_espera"}]
-            if bloqueadas or pendientes:
-                items.append(
-                    {
-                        "id": str(p.get("id") or ""),
-                        "nombre": str(p.get("nombre") or ""),
-                        "estado": str(p.get("estado") or ""),
-                        "bloqueadas": len(bloqueadas),
-                        "pendientes": len(pendientes),
-                    }
-                )
-        return self._pack_items(items)
+            plan_id = str(p.get("id") or "")
+            if not plan_id:
+                continue
+            resumen = dict(getattr(motor, "resumen_ejecucion")(plan_id) or {})
+            tareas = list(resumen.get("tareas") or [])
+            estados = dict(resumen.get("estados") or {})
+            pendientes = list(resumen.get("tareas_pendientes") or [])
+            if not pendientes:
+                continue
+            items.append(
+                {
+                    "id": plan_id,
+                    "nombre": str(p.get("nombre") or resumen.get("plan") or ""),
+                    "evento_id": str(p.get("evento_id") or ""),
+                    "evento": str(p.get("evento") or ""),
+                    "fecha": str(p.get("fecha") or ""),
+                    "responsable": str(p.get("responsable") or ""),
+                    "estado": str(p.get("estado") or resumen.get("estado_plan") or ""),
+                    "pax": int(p.get("pax") or 0),
+                    "duracion_total_min": float(p.get("duracion_total_min") or 0),
+                    "total_tareas": int(resumen.get("total_tareas") or len(tareas)),
+                    "pendientes": int(estados.get("pendiente") or 0)
+                    + int(estados.get("lista") or 0),
+                    "en_curso": int(estados.get("en_curso") or 0),
+                    "bloqueadas": int(estados.get("bloqueada") or 0),
+                    "pausadas": int(estados.get("pausada") or 0),
+                    "finalizadas": int(estados.get("finalizada") or 0),
+                    "porcentaje_completado": float(resumen.get("porcentaje_completado") or 0),
+                    "avisos": list(p.get("avisos") or []),
+                    "alertas": list(resumen.get("alertas") or []),
+                    "tareas": [
+                        {
+                            "id": str(t.get("id") or ""),
+                            "titulo": str(t.get("titulo") or ""),
+                            "estado": str(t.get("estado_ejecucion") or ""),
+                            "prioridad": str(t.get("prioridad") or ""),
+                            "cantidad": float(t.get("cantidad") or 0),
+                            "unidad": str(t.get("unidad") or ""),
+                            "responsable": str(t.get("responsable") or ""),
+                            "bloqueo": str(t.get("bloqueo") or ""),
+                            "retraso_min": int(t.get("retraso_min") or 0),
+                            "progreso": float(t.get("porcentaje_avance") or 0),
+                            "duracion_total_min": float(t.get("duracion_total_min") or 0),
+                            "incidencias": list(t.get("incidencias") or []),
+                        }
+                        for t in tareas
+                    ],
+                }
+            )
+        modulo = self._pack_items(items)
+        modulo.update(
+            {
+                "planes_activos": len(items),
+                "total_tareas": sum(int(item["total_tareas"]) for item in items),
+                "tareas_pendientes": sum(int(item["pendientes"]) for item in items),
+                "tareas_en_curso": sum(int(item["en_curso"]) for item in items),
+                "tareas_bloqueadas": sum(int(item["bloqueadas"]) for item in items),
+                "tareas_pausadas": sum(int(item["pausadas"]) for item in items),
+                "total_alertas": sum(
+                    len(item["avisos"]) + len(item["alertas"]) for item in items
+                ),
+            }
+        )
+        modulo["resumen"] = {
+            "planes_activos": modulo["planes_activos"],
+            "tareas": modulo["total_tareas"],
+            "pendientes": modulo["tareas_pendientes"],
+            "en_curso": modulo["tareas_en_curso"],
+            "bloqueadas": modulo["tareas_bloqueadas"],
+            "pausadas": modulo["tareas_pausadas"],
+            "alertas": modulo["total_alertas"],
+        }
+        return modulo
 
     def _leer_menus_desactualizados(self) -> dict[str, Any]:
         res = self.servicio_menus.menus_con_incidencias()
