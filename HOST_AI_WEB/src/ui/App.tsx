@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { AppLayout } from "./layout/AppLayout";
 import { ChatPage } from "./pages/ChatPage";
 import { DashboardPage } from "./pages/DashboardPage";
+import { ExecutiveDashboardPage } from "./pages/ExecutiveDashboardPage";
 import { HomePage } from "./pages/HomePage";
 import { EventosPage } from "./pages/EventosPage";
 import { ComprasPage } from "./pages/ComprasPage";
@@ -16,6 +17,7 @@ export function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/executive" element={<ExecutiveDashboardPage />} />
         <Route path="/chat" element={<ChatPage />} />
         <Route path="/eventos" element={<EventosPage />} />
         <Route path="/produccion" element={<ProduccionPage />} />

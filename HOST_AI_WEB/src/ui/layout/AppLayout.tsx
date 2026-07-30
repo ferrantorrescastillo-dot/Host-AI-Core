@@ -4,6 +4,7 @@ import type { PropsWithChildren } from "react";
 const LINKS = [
   { to: "/", label: "Inicio" },
   { to: "/dashboard", label: "Dashboard" },
+  { to: "/executive", label: "Executive" },
   { to: "/chat", label: "Chat" },
   { to: "/eventos", label: "Eventos" },
   { to: "/produccion", label: "Produccion" },
