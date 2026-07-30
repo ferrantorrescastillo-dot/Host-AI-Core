@@ -15,7 +15,10 @@ describe("Catálogo de artículos", () => {
     expect(await screen.findByText("Tomate pera")).toBeInTheDocument();
     fireEvent.change(screen.getByLabelText("Buscar artículos"), { target: { value: "tomate" } });
     await waitFor(() => expect(global.fetch).toHaveBeenLastCalledWith(expect.stringContaining("q=tomate"), expect.objectContaining({ method: "GET" })), { timeout: 1000 });
-    expect(global.fetch).toHaveBeenLastCalledWith(expect.stringContaining("/api/v1/articulos"), expect.anything());
+    expect(global.fetch).toHaveBeenLastCalledWith(
+      "http://127.0.0.1:8000/api/v1/articulos?q=tomate&orden=nombre&direccion=asc&page=1&page_size=20",
+      expect.objectContaining({ method: "GET" }),
+    );
   });
 
   it("abre la ficha contextual y muestra ausencias sin inventar relaciones", async () => {
