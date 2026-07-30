@@ -27,6 +27,11 @@ from SERVICIOS.centro_importacion_601 import (
     LectorTexto601,
 )
 from SERVICIOS.extractor_recetas_word import WordRecipeExtractor
+from SERVICIOS.borrador_importacion_biblioteca import (
+    DraftConflictError,
+    DraftValidationError,
+    ImportDraftService,
+)
 from SERVICIOS.lector_word_documentos import WordDocumentReadError, WordDocumentReader
 
 
@@ -354,6 +359,7 @@ class ImportDocumentService:
         self.interpreter = interpreter or ExistingReadersDocumentInterpreter()
         self.extractor = extractor or ExistingFlowKnowledgeExtractor(base_dir)
         self.proposal_builder = proposal_builder or ReviewOnlyProposalBuilder()
+        self.drafts = ImportDraftService(base_dir)
         self._sessions: dict[str, dict[str, Any]] = {}
 
     def import_document(self, payload: dict[str, Any]) -> dict[str, Any]:
@@ -470,6 +476,12 @@ class ImportDocumentService:
                 "Los documentos ambiguos requieren revisión humana.",
             ],
         }
+        session["borrador"] = self.drafts.build(
+            import_id=import_id,
+            classification=document_type.value,
+            confidence=classification.value,
+            recipes=list(context.get("recetas") or []),
+        )
         logger.info(
             "Importación interpretada: lector=%s tipo=%s secciones=%d entidades=%d propuestas=%d advertencias=%d",
             interpreted.origen,
@@ -499,6 +511,45 @@ class ImportDocumentService:
             "propuestas": proposals,
             "total": len(proposals),
             "solo_previsualizacion": True,
+        }
+
+    def get_draft(self, import_id: str) -> dict[str, Any]:
+        session = self._sessions.get(str(import_id or ""))
+        if session is None:
+            return self._error("import_not_found", "Importación no encontrada.", 404)
+        return {
+            "ok": True,
+            "importacion_id": import_id,
+            "borrador": session["borrador"],
+            "datos_reales_modificados": False,
+        }
+
+    def update_draft(self, import_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+        session = self._sessions.get(str(import_id or ""))
+        if session is None:
+            return self._error("import_not_found", "Importación no encontrada.", 404)
+        try:
+            updated = self.drafts.update(session["borrador"], dict(payload or {}))
+        except DraftConflictError as exc:
+            return {
+                "ok": False,
+                "error": {
+                    "code": "draft_version_conflict",
+                    "message": "El borrador fue actualizado en otra revisión.",
+                    "status": 409,
+                    "current_version": exc.current_version,
+                },
+            }
+        except DraftValidationError as exc:
+            return self._error("invalid_draft", str(exc), 400)
+        session["borrador"] = updated
+        return {
+            "ok": True,
+            "importacion_id": import_id,
+            "borrador": updated,
+            "solo_previsualizacion": True,
+            "confirmacion_disponible": False,
+            "datos_reales_modificados": False,
         }
 
     @staticmethod

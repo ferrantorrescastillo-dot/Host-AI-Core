@@ -4,6 +4,7 @@ import type { ArticuloResponse, CatalogoResponse } from "../types/articulos";
 import type {
   BibliotecaImportProposalsResponse,
   BibliotecaImportResponse,
+  BibliotecaDraftResponse,
   BibliotecaResponse,
   ElaboracionResponse,
   ElaboracionesResponse,
@@ -141,6 +142,23 @@ export const hostAiApiClient = {
     return request<BibliotecaImportProposalsResponse>(
       `/api/v1/biblioteca/importaciones/${encodeURIComponent(id)}/propuestas`,
       { method: "GET" },
+    );
+  },
+
+  getBibliotecaImportDraft(id: string): Promise<BibliotecaDraftResponse> {
+    return request<BibliotecaDraftResponse>(
+      `/api/v1/biblioteca/importaciones/${encodeURIComponent(id)}/borrador`,
+      { method: "GET" },
+    );
+  },
+
+  updateBibliotecaImportDraft(
+    id: string,
+    input: { draft_version: number; recipes: unknown[] },
+  ): Promise<BibliotecaDraftResponse> {
+    return request<BibliotecaDraftResponse>(
+      `/api/v1/biblioteca/importaciones/${encodeURIComponent(id)}/borrador`,
+      { method: "PATCH", body: JSON.stringify(input) },
     );
   },
 

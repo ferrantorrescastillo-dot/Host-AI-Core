@@ -227,3 +227,39 @@ podrá interpretar esos casos sin cambiar el contrato del lector.
 La regla de seguridad se mantiene: cada receta e ingrediente produce propuestas
 independientes y explicables, pero ninguna propuesta modifica la Biblioteca ni
 los datos maestros.
+
+#### Revisión editable y normalización culinaria
+
+Cada importación genera también un borrador estructurado y versionado. El
+borrador vive temporalmente en la sesión de importación y conserva el texto
+original de cada ingrediente. El usuario puede decidir si una sección es una
+elaboración principal, una subelaboración, un componente, una sección
+informativa o contenido que debe ignorarse. Las subelaboraciones pueden
+vincularse a una elaboración principal sin cambiar todavía la Biblioteca.
+
+Las cantidades inequívocas se normalizan usando las unidades canónicas ya
+existentes. Se admiten enteros, decimales con punto o coma y fracciones comunes.
+Los rangos, cantidades aproximadas y secuencias ambiguas como `2 3` conservan el
+valor original y muestran una advertencia: Host AI nunca elige silenciosamente
+entre `2/3`, `2,3` o `2-3`.
+
+El nombre del ingrediente se separa de observaciones entre paréntesis o contexto
+operativo posterior cuando la regla es explícita. La relación con Artículos
+reutiliza el catálogo maestro: una coincidencia exacta única se propone, pero
+los nombres parecidos solo se presentan como candidatos explicados. Los alias
+se derivan de nombres y variantes ya presentes; no se guardan equivalencias
+nuevas ni se crean Artículos automáticamente.
+
+Contrato público de esta fase:
+
+- `GET /api/v1/biblioteca/importaciones/{id}/borrador`
+- `PATCH /api/v1/biblioteca/importaciones/{id}/borrador`
+
+La actualización exige `draft_version`. Una versión obsoleta devuelve conflicto
+HTTP 409. Los errores y advertencias no impiden guardar un borrador parcial,
+pero quedan visibles para una futura confirmación. Las sesiones siguen en
+memoria y se pierden al reiniciar el backend.
+
+No existe todavía una operación pública para aplicar el borrador. La siguiente
+fase será la validación final y confirmación transaccional, con vista previa,
+trazabilidad y rollback.

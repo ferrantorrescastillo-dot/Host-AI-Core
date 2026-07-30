@@ -17,6 +17,10 @@ from SERVICIOS.importador_inteligente_biblioteca import (
     ImportDocumentService,
     RuleBasedDocumentClassifier,
 )
+from SERVICIOS.borrador_importacion_biblioteca import (
+    CulinaryQuantityParser,
+    IngredientTextNormalizer,
+)
 
 
 RECIPE_TEXT = """Receta: Salsa verde
@@ -311,6 +315,122 @@ def test_python_docx_disponible_y_previsualizacion_no_escribe_datos(
     assert result["ok"] is True
     assert before == after
     assert all(not item["persistida"] for item in result["importacion"]["propuestas"])
+
+
+def test_borrador_normaliza_cantidades_y_observaciones_sin_corregir_ambiguedad() -> None:
+    parser = CulinaryQuantityParser()
+    assert parser.parse("1/2")[0] == 0.5
+    assert parser.parse("½")[0] == 0.5
+    assert parser.parse("2,3")[0] == 2.3
+    assert parser.parse("2 3")[0] is None
+    assert parser.parse("2 3")[1][0].code == "CANTIDAD_AMBIGUA"
+    assert parser.parse("2-3")[0] is None
+
+    normalizer = IngredientTextNormalizer()
+    assert normalizer.split("azúcar para un kilo de miso") == (
+        "azúcar", "para un kilo de miso"
+    )
+    assert normalizer.split("hueso jamón(previamente blanqueado 3 veces)") == (
+        "hueso de jamón", "previamente blanqueado 3 veces"
+    )
+
+
+def test_borrador_editable_jerarquia_ingrediente_y_version_optimista(
+    tmp_path: Path,
+) -> None:
+    service = ImportDocumentService(tmp_path)
+    created = service.import_document(_word_payload(recipes=2))
+    import_id = created["importacion"]["documento"]["id"]
+    draft = service.get_draft(import_id)["borrador"]
+    assert len(draft["recipes"]) == 2
+    first, second = draft["recipes"]
+    ingredient = second["ingredients"][0]
+
+    updated = service.update_draft(import_id, {
+        "draft_version": draft["version"],
+        "recipes": [
+            {**first, "title": "Elaboración principal", "entity_type": "PRINCIPAL"},
+            {
+                **second,
+                "entity_type": "SUBELABORACION",
+                "parent_recipe_id": first["id"],
+                "proposed_action": "CREAR_SUBELABORACION",
+                "ingredients": [{
+                    **ingredient,
+                    "quantity_raw": "2 3",
+                    "unit_raw": "l",
+                    "name_raw": "nata",
+                    "observations": "para terminar la salsa",
+                    "relation_status": "SIN_RELACIONAR",
+                    "article_id": None,
+                }],
+            },
+        ],
+    })
+    assert updated["ok"] is True
+    saved = updated["borrador"]
+    assert saved["version"] == 2
+    assert saved["recipes"][0]["title"] == "Elaboración principal"
+    assert saved["recipes"][1]["parent_recipe_id"] == first["id"]
+    assert saved["recipes"][1]["ingredients"][0]["quantity"] is None
+    assert saved["recipes"][1]["ingredients"][0]["validation_errors"][0]["code"] == "CANTIDAD_AMBIGUA"
+
+    conflict = service.update_draft(import_id, {
+        "draft_version": 1,
+        "recipes": saved["recipes"],
+    })
+    assert conflict["error"]["status"] == 409
+    assert conflict["error"]["code"] == "draft_version_conflict"
+
+
+def test_borrador_articulos_exactos_candidatos_y_sin_candidato(tmp_path: Path) -> None:
+    db = tmp_path / "DATOS" / "db"
+    db.mkdir(parents=True)
+    (db / "articulos.json").write_text(json.dumps([
+        {"codigo": "ART-PAT", "nombre": "Patata", "unidad": "kg", "precio": 1.2},
+        {"codigo": "ART-NATA", "nombre": "Nata culinaria", "unidad": "l", "precio": 4.5},
+        {"codigo": "ART-MANT", "nombre": "Mantequilla", "unidad": "kg", "precio": 8},
+    ]), encoding="utf-8")
+    service = ImportDocumentService(tmp_path)
+    created = service.import_document(_word_payload())
+    ingredients = created["importacion"]["borrador"]["recipes"][0]["ingredients"]
+    patata, mantequilla = ingredients
+    assert patata["relation_status"] == "COINCIDENCIA_EXACTA_PROPUESTA"
+    assert patata["article_id"] == "ART-PAT"
+    assert patata["article_candidates"][0]["motivo"]
+    assert mantequilla["article_id"] == "ART-MANT"
+
+    candidate = service.drafts.articles.find("nata", "l")
+    assert candidate["status"] == "REVISAR_COINCIDENCIA"
+    assert candidate["candidates"][0]["articulo_id"] == "ART-NATA"
+    assert service.drafts.articles.find("ingrediente inexistente", "kg")["status"] == "SIN_RELACIONAR"
+
+
+def test_http_borrador_get_patch_conflicto_y_sin_escritura(tmp_path: Path) -> None:
+    client = TestClient(create_app(HostAIPlatformAPI(base_dir=tmp_path)))
+    created = client.post("/api/v1/biblioteca/importaciones", json=_word_payload()).json()
+    import_id = created["importacion"]["documento"]["id"]
+    draft_response = client.get(
+        f"/api/v1/biblioteca/importaciones/{import_id}/borrador"
+    )
+    assert draft_response.status_code == 200
+    draft = draft_response.json()["borrador"]
+    recipe = {**draft["recipes"][0], "entity_type": "DESCARTAR", "proposed_action": "IGNORAR"}
+
+    saved = client.patch(
+        f"/api/v1/biblioteca/importaciones/{import_id}/borrador",
+        json={"draft_version": draft["version"], "recipes": [recipe]},
+    )
+    assert saved.status_code == 200
+    assert saved.json()["borrador"]["recipes"][0]["entity_type"] == "DESCARTAR"
+    assert saved.json()["datos_reales_modificados"] is False
+
+    stale = client.patch(
+        f"/api/v1/biblioteca/importaciones/{import_id}/borrador",
+        json={"draft_version": draft["version"], "recipes": [recipe]},
+    )
+    assert stale.status_code == 409
+    assert stale.json()["error"]["code"] == "draft_version_conflict"
 
 
 def test_fachada_registra_y_expone_excepcion_real_solo_en_desarrollo(

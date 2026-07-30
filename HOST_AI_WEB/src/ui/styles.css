@@ -660,3 +660,64 @@ textarea {
     width: 100%;
   }
 }
+.draft-review {
+  margin-top: 2rem;
+}
+
+.draft-review-layout {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(12rem, 17rem) minmax(0, 1fr);
+  margin: 1rem 0;
+}
+
+.draft-review-layout aside {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+.draft-review-layout aside button {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.draft-review-layout aside button.active {
+  outline: 2px solid var(--accent, #476a54);
+}
+
+.draft-editor,
+.draft-ingredient,
+.draft-ingredient-fields {
+  display: grid;
+  gap: .75rem;
+}
+
+.draft-ingredient {
+  border: 1px solid var(--border, #d8d4c8);
+  border-radius: .5rem;
+  padding: .9rem;
+}
+
+.draft-ingredient-fields {
+  grid-template-columns: minmax(5rem, .6fr) minmax(5rem, .6fr) minmax(10rem, 2fr);
+}
+
+.draft-editor label,
+.draft-ingredient label {
+  display: grid;
+  gap: .3rem;
+}
+
+.draft-warning {
+  color: #8a4b13;
+}
+
+@media (max-width: 760px) {
+  .draft-review-layout,
+  .draft-ingredient-fields {
+    grid-template-columns: 1fr;
+  }
+}

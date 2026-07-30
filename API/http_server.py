@@ -84,7 +84,7 @@ def create_app(platform_api: HostAIPlatformAPI | None = None) -> FastAPI:
         CORSMiddleware,
         allow_origins=_parse_allowed_origins(),
         allow_credentials=False,
-        allow_methods=["GET", "POST", "OPTIONS"],
+        allow_methods=["GET", "POST", "PATCH", "OPTIONS"],
         allow_headers=["Content-Type", "X-Request-ID"],
         expose_headers=["X-Request-ID"],
     )
@@ -174,6 +174,25 @@ def create_app(platform_api: HostAIPlatformAPI | None = None) -> FastAPI:
         importacion_id: str, request: Request
     ) -> JSONResponse:
         return await _delegate(request)
+
+    @app.get("/api/v1/biblioteca/importaciones/{importacion_id}/borrador")
+    async def get_biblioteca_importacion_borrador(
+        importacion_id: str, request: Request
+    ) -> JSONResponse:
+        return await _delegate(request)
+
+    @app.patch("/api/v1/biblioteca/importaciones/{importacion_id}/borrador")
+    async def patch_biblioteca_importacion_borrador(
+        importacion_id: str, request: Request
+    ) -> JSONResponse:
+        parsed: dict[str, Any] = {}
+        try:
+            maybe_json = await request.json()
+            if isinstance(maybe_json, dict):
+                parsed = maybe_json
+        except Exception:
+            parsed = {}
+        return await _delegate(request, body=parsed)
 
     @app.post("/api/v1/chat")
     async def post_chat(request: Request) -> JSONResponse:

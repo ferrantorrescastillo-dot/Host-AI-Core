@@ -190,11 +190,11 @@ class WordRecipeExtractor:
         match = self.INGREDIENT_RE.match(text)
         if not match:
             return None
-        quantity_text = match.group("quantity").replace(",", ".")
+        quantity_text = match.group("quantity")
         quantity = None
-        if " " not in quantity_text:
+        if " " not in quantity_text and re.fullmatch(r"\d+(?:[.,]\d+)?", quantity_text):
             try:
-                quantity = float(quantity_text)
+                quantity = float(quantity_text.replace(",", "."))
             except ValueError:
                 quantity = None
         unit = self.UNIT_MAP.get(self._norm(match.group("unit")), self._norm(match.group("unit")))

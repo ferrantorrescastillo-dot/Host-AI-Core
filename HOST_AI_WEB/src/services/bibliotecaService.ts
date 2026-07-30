@@ -44,4 +44,9 @@ export const bibliotecaService = {
   },
   importDetail: (id: string) => hostAiApiClient.getBibliotecaImport(id),
   importProposals: (id: string) => hostAiApiClient.getBibliotecaImportProposals(id),
+  importDraft: (id: string) => hostAiApiClient.getBibliotecaImportDraft(id),
+  updateImportDraft: (
+    id: string,
+    draft: { draft_version: number; recipes: unknown[] },
+  ) => hostAiApiClient.updateBibliotecaImportDraft(id, draft),
 };

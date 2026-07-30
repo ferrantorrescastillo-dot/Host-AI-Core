@@ -267,6 +267,7 @@ export type BibliotecaImportSession = {
   solo_previsualizacion: true;
   confirmacion_disponible: false;
   limitaciones: string[];
+  borrador: ImportDraft;
 };
 
 export type BibliotecaImportResponse = ApiEnvelope & {
@@ -278,4 +279,84 @@ export type BibliotecaImportProposalsResponse = ApiEnvelope & {
   propuestas: ImportProposal[];
   total: number;
   solo_previsualizacion: true;
+};
+
+export type DraftIssue = {
+  code: string;
+  level: "ERROR" | "ADVERTENCIA" | "SUGERENCIA";
+  message: string;
+  field: string;
+};
+
+export type ArticleCandidate = {
+  articulo_id: string;
+  codigo: string;
+  nombre: string;
+  categoria: string;
+  unidad?: string | null;
+  precio?: number | null;
+  nivel_coincidencia: number;
+  motivo: string;
+  unidad_compatible: boolean;
+};
+
+export type IngredientDraft = {
+  id: string;
+  original_text: string;
+  quantity_raw: string;
+  quantity?: number | null;
+  unit_raw: string;
+  unit?: string | null;
+  name_raw: string;
+  normalized_name: string;
+  observations: string;
+  article_id?: string | null;
+  article_candidates: ArticleCandidate[];
+  relation_status: "RELACIONADO" | "COINCIDENCIA_EXACTA_PROPUESTA" | "REVISAR_COINCIDENCIA" | "SIN_RELACIONAR" | "CREAR_ARTICULO_PROPUESTO" | "IGNORADO";
+  confidence: number;
+  validation_errors: DraftIssue[];
+};
+
+export type RecipeDraft = {
+  id: string;
+  title: string;
+  entity_type: "PRINCIPAL" | "SUBELABORACION" | "COMPONENTE" | "SECCION" | "DESCARTAR";
+  parent_recipe_id?: string | null;
+  order: number;
+  description: string;
+  ingredients: IngredientDraft[];
+  procedure: string[];
+  yield_value?: number | null;
+  servings?: number | null;
+  times: Record<string, unknown>;
+  temperatures: unknown[];
+  notes: string;
+  source_blocks: string[];
+  confidence: number;
+  proposed_action: string;
+  duplicate_candidates: Array<Record<string, unknown>>;
+  validation_errors: DraftIssue[];
+};
+
+export type ImportDraft = {
+  id: string;
+  document_id: string;
+  status: "PENDIENTE_REVISION" | "EN_REVISION";
+  classification: string;
+  confidence: number;
+  recipes: RecipeDraft[];
+  warnings: DraftIssue[];
+  conflicts: DraftIssue[];
+  version: number;
+  draft_version: number;
+  created_at: string;
+  updated_at: string;
+  persisted: false;
+  confirmation_available: false;
+};
+
+export type BibliotecaDraftResponse = ApiEnvelope & {
+  importacion_id: string;
+  borrador: ImportDraft;
+  datos_reales_modificados: false;
 };

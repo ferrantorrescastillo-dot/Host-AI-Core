@@ -53,12 +53,13 @@ class ApiRouter:
             handler = articulos.detail_handle
         if handler is None and key[0] == "GET" and key[1].startswith("/api/v1/biblioteca/elaboraciones/"):
             handler = biblioteca.detail_handle
-        if handler is None and key[0] == "GET" and key[1].startswith("/api/v1/biblioteca/importaciones/"):
-            handler = (
-                biblioteca.import_proposals_handle
-                if key[1].endswith("/propuestas")
-                else biblioteca.import_detail_handle
-            )
+        if handler is None and key[0] in {"GET", "PATCH"} and key[1].startswith("/api/v1/biblioteca/importaciones/"):
+            if key[1].endswith("/borrador"):
+                handler = biblioteca.import_draft_handle
+            elif key[0] == "GET" and key[1].endswith("/propuestas"):
+                handler = biblioteca.import_proposals_handle
+            elif key[0] == "GET":
+                handler = biblioteca.import_detail_handle
         if handler is None:
             return ApiResponse(
                 status_code=404,

@@ -31,6 +31,15 @@ def import_proposals_handle(request: ApiRequest, facade: CorePublicFacade) -> Ap
     return _response(facade.propuestas_importacion_biblioteca(import_id))
 
 
+def import_draft_handle(request: ApiRequest, facade: CorePublicFacade) -> ApiResponse:
+    import_id = str(request.path or "").split("/importaciones/", 1)[-1].split("/", 1)[0]
+    if str(request.method or "").upper() == "PATCH":
+        return _response(facade.actualizar_borrador_importacion_biblioteca(
+            import_id, request.body
+        ))
+    return _response(facade.borrador_importacion_biblioteca(import_id))
+
+
 def _response(payload: dict) -> ApiResponse:
     status = 200 if payload.get("ok") else int((payload.get("error") or {}).get("status") or 500)
     return ApiResponse(status_code=status, payload=payload)

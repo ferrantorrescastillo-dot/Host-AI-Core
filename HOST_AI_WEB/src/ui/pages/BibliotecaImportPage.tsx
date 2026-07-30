@@ -1,7 +1,12 @@
 import { useRef, useState } from "react";
 import { HostAiApiError } from "../../api/client";
 import { bibliotecaService } from "../../services/bibliotecaService";
-import type { BibliotecaImportSession } from "../../types/biblioteca";
+import type {
+  BibliotecaImportSession,
+  ImportDraft,
+  IngredientDraft,
+  RecipeDraft,
+} from "../../types/biblioteca";
 import { BibliotecaNav } from "../components/BibliotecaNav";
 import { ErrorState } from "../components/ErrorState";
 import { LoadingState } from "../components/LoadingState";
@@ -95,6 +100,7 @@ function ImportPreview({ session }: { session: BibliotecaImportSession }) {
         </li>)}
       </ul> : <p>Sin ingredientes estructurados.</p>}
     </li>)}</ul> : <p>No se detectaron recetas con estructura suficiente.</p>}
+    <DraftReview initialDraft={session.borrador} />
     <h3>Propuestas detectadas</h3>
     <ul className="operational-checks">{propuestas.map((proposal) => <li key={proposal.id}>
       <strong>{proposal.titulo || proposalLabel(proposal.tipo)}</strong>
@@ -104,6 +110,245 @@ function ImportPreview({ session }: { session: BibliotecaImportSession }) {
     {session.limitaciones.length ? <><h4>Limitaciones</h4><ul>{session.limitaciones.map((item) => <li key={item}>{item}</li>)}</ul></> : null}
     <p><strong>Pendiente de implementar:</strong> revisión, edición y confirmación. Ninguna propuesta ha sido aplicada.</p>
   </section>;
+}
+
+function DraftReview({ initialDraft }: { initialDraft: ImportDraft }) {
+  const [draft, setDraft] = useState(initialDraft);
+  const [selectedId, setSelectedId] = useState(initialDraft.recipes[0]?.id ?? "");
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState("");
+  const selected = draft.recipes.find((recipe) => recipe.id === selectedId);
+
+  function updateRecipe(id: string, changes: Partial<RecipeDraft>) {
+    setDraft((current) => ({
+      ...current,
+      recipes: current.recipes.map((recipe) => recipe.id === id ? { ...recipe, ...changes } : recipe),
+    }));
+  }
+
+  function updateIngredient(recipeId: string, ingredientId: string, changes: Partial<IngredientDraft>) {
+    setDraft((current) => ({
+      ...current,
+      recipes: current.recipes.map((recipe) => recipe.id !== recipeId ? recipe : {
+        ...recipe,
+        ingredients: recipe.ingredients.map((ingredient) =>
+          ingredient.id === ingredientId ? { ...ingredient, ...changes } : ingredient
+        ),
+      }),
+    }));
+  }
+
+  async function save() {
+    setSaving(true);
+    setMessage("");
+    try {
+      const response = await bibliotecaService.updateImportDraft(draft.document_id, {
+        draft_version: draft.version,
+        recipes: draft.recipes,
+      });
+      setDraft(response.borrador);
+      setMessage("Borrador guardado. Ningún dato de la Biblioteca ha sido modificado.");
+    } catch (reason) {
+      const error = reason as HostAiApiError;
+      setMessage(error.statusCode === 409
+        ? "El borrador cambió en otra revisión. Vuelve a cargarlo antes de guardar."
+        : error.message);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return <section className="draft-review">
+    <h3>Revisar borrador</h3>
+    <p>Host AI propone la estructura. Tú decides qué es principal, subelaboración, componente o información que debe ignorarse.</p>
+    <div className="draft-review-layout">
+      <aside aria-label="Secciones detectadas">
+        {draft.recipes.map((recipe) => <button
+          className={recipe.id === selectedId ? "active" : ""}
+          key={recipe.id}
+          onClick={() => setSelectedId(recipe.id)}
+          type="button"
+        >
+          <strong>{recipe.title || "Sin título"}</strong>
+          <span>{entityLabel(recipe.entity_type)} · {recipe.ingredients.length} ingredientes</span>
+          {issueCount(recipe) ? <small>{issueCount(recipe)} avisos</small> : null}
+        </button>)}
+      </aside>
+      {selected ? <div className="draft-editor">
+        <label>Título
+          <input
+            aria-label="Título de la sección"
+            value={selected.title}
+            onChange={(event) => updateRecipe(selected.id, { title: event.target.value })}
+          />
+        </label>
+        <label>Tipo culinario
+          <select
+            aria-label="Tipo culinario"
+            value={selected.entity_type}
+            onChange={(event) => updateRecipe(selected.id, {
+              entity_type: event.target.value as RecipeDraft["entity_type"],
+            })}
+          >
+            <option value="PRINCIPAL">Elaboración principal</option>
+            <option value="SUBELABORACION">Subelaboración</option>
+            <option value="COMPONENTE">Componente</option>
+            <option value="SECCION">Sección informativa</option>
+            <option value="DESCARTAR">Ignorar</option>
+          </select>
+        </label>
+        {selected.entity_type === "SUBELABORACION" ? <label>Elaboración principal
+          <select
+            aria-label="Elaboración principal"
+            value={selected.parent_recipe_id ?? ""}
+            onChange={(event) => updateRecipe(selected.id, {
+              parent_recipe_id: event.target.value || null,
+            })}
+          >
+            <option value="">Seleccionar...</option>
+            {draft.recipes.filter((recipe) =>
+              recipe.id !== selected.id && recipe.entity_type === "PRINCIPAL"
+            ).map((recipe) => <option key={recipe.id} value={recipe.id}>{recipe.title}</option>)}
+          </select>
+        </label> : null}
+        <label>Acción propuesta
+          <select
+            aria-label="Acción propuesta"
+            value={selected.proposed_action}
+            onChange={(event) => updateRecipe(selected.id, { proposed_action: event.target.value })}
+          >
+            <option value="CREAR_ELABORACION">Crear elaboración</option>
+            <option value="CREAR_RECETA">Crear receta</option>
+            <option value="ACTUALIZAR_ELABORACION">Actualizar elaboración existente</option>
+            <option value="ACTUALIZAR_RECETA">Actualizar receta existente</option>
+            <option value="CREAR_SUBELABORACION">Crear como subelaboración</option>
+            <option value="MANTENER_COMPONENTE">Mantener como componente</option>
+            <option value="IGNORAR">Ignorar</option>
+          </select>
+        </label>
+        {selected.duplicate_candidates.length ? <p className="draft-warning">Hay posibles duplicados. Revísalos antes de crear una elaboración nueva.</p> : null}
+        <h4>Ingredientes</h4>
+        <div className="draft-ingredients">{selected.ingredients.map((ingredient) =>
+          <IngredientEditor
+            ingredient={ingredient}
+            key={ingredient.id}
+            onChange={(changes) => updateIngredient(selected.id, ingredient.id, changes)}
+          />
+        )}</div>
+        <label>Procedimiento
+          <textarea
+            aria-label="Procedimiento"
+            rows={5}
+            value={selected.procedure.join("\n")}
+            onChange={(event) => updateRecipe(selected.id, {
+              procedure: event.target.value.split("\n"),
+            })}
+          />
+        </label>
+        <label>Observaciones
+          <textarea
+            aria-label="Observaciones de la sección"
+            rows={3}
+            value={selected.notes}
+            onChange={(event) => updateRecipe(selected.id, { notes: event.target.value })}
+          />
+        </label>
+        {[...selected.validation_errors, ...selected.ingredients.flatMap((item) => item.validation_errors)]
+          .map((issue, index) => <p className="draft-warning" key={`${issue.code}-${index}`}>{issue.message}</p>)}
+      </div> : <p>No hay secciones editables.</p>}
+    </div>
+    <button disabled={saving} type="button" onClick={() => void save()}>
+      {saving ? "Guardando..." : "Guardar borrador"}
+    </button>
+    {message ? <p role="status">{message}</p> : null}
+    <p><strong>Modo seguro:</strong> guardar este borrador no aplica ninguna propuesta.</p>
+  </section>;
+}
+
+function IngredientEditor({
+  ingredient,
+  onChange,
+}: {
+  ingredient: IngredientDraft;
+  onChange: (changes: Partial<IngredientDraft>) => void;
+}) {
+  return <article className="draft-ingredient">
+    <small>Texto original: {ingredient.original_text}</small>
+    <div className="draft-ingredient-fields">
+      <label>Cantidad
+        <input
+          aria-label={`Cantidad ${ingredient.name_raw}`}
+          value={ingredient.quantity_raw}
+          onChange={(event) => onChange({ quantity_raw: event.target.value })}
+        />
+      </label>
+      <label>Unidad
+        <input
+          aria-label={`Unidad ${ingredient.name_raw}`}
+          value={ingredient.unit_raw}
+          onChange={(event) => onChange({ unit_raw: event.target.value })}
+        />
+      </label>
+      <label>Ingrediente
+        <input
+          aria-label={`Ingrediente ${ingredient.name_raw}`}
+          value={ingredient.name_raw}
+          onChange={(event) => onChange({ name_raw: event.target.value })}
+        />
+      </label>
+    </div>
+    <label>Observaciones
+      <input
+        aria-label={`Observaciones ${ingredient.name_raw}`}
+        value={ingredient.observations}
+        onChange={(event) => onChange({ observations: event.target.value })}
+      />
+    </label>
+    <label>Relación con Artículos
+      <select
+        aria-label={`Relación ${ingredient.name_raw}`}
+        value={ingredient.article_id ?? ingredient.relation_status}
+        onChange={(event) => {
+          const candidate = ingredient.article_candidates.find((item) => item.articulo_id === event.target.value);
+          onChange(candidate
+            ? { article_id: candidate.articulo_id, relation_status: "RELACIONADO" }
+            : { article_id: null, relation_status: event.target.value as IngredientDraft["relation_status"] });
+        }}
+      >
+        <option value="SIN_RELACIONAR">Sin relacionar</option>
+        <option value="CREAR_ARTICULO_PROPUESTO">Proponer crear artículo</option>
+        <option value="IGNORADO">Ignorar</option>
+        {ingredient.article_candidates.map((candidate) => <option
+          key={candidate.articulo_id}
+          value={candidate.articulo_id}
+        >{candidate.nombre} · {candidate.motivo}</option>)}
+      </select>
+    </label>
+    {ingredient.article_candidates.length ? <ul>
+      {ingredient.article_candidates.map((candidate) => <li key={candidate.articulo_id}>
+        {candidate.nombre} · {candidate.codigo} · {candidate.unidad || "unidad no indicada"}
+        {candidate.precio == null ? "" : ` · ${candidate.precio} €`} · {candidate.motivo}
+      </li>)}
+    </ul> : <p>Sin candidatos en el Catálogo de Artículos.</p>}
+    {ingredient.validation_errors.map((issue) =>
+      <p className="draft-warning" key={issue.code}>{issue.message}</p>
+    )}
+  </article>;
+}
+
+function issueCount(recipe: RecipeDraft) {
+  return recipe.validation_errors.length
+    + recipe.ingredients.reduce((total, ingredient) => total + ingredient.validation_errors.length, 0);
+}
+
+function entityLabel(value: RecipeDraft["entity_type"]) {
+  return {
+    PRINCIPAL: "Elaboración principal",
+    SUBELABORACION: "Subelaboración",
+    COMPONENTE: "Componente",
+    SECCION: "Sección informativa",
+    DESCARTAR: "Ignorado",
+  }[value];
 }
 
 function relationLabel(value: string) {
