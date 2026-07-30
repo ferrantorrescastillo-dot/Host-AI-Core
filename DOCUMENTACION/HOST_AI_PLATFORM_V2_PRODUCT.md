@@ -88,6 +88,39 @@ compatibilidad. No se realizan emparejamientos aproximados silenciosos. La
 nomenclatura interna heredada se conserva en origen, pero se traduce a
 «Elaboración» en el contrato y la interfaz públicos.
 
+### Detalle operativo de elaboración
+
+El detalle de elaboración es el centro operativo culinario de lectura. Su única
+respuesta reúne identificación, completitud, Receta, Escandallo, Ficha técnica,
+Producción, Documentos, Menús, Eventos e Historial sin crear endpoints por
+sección.
+
+La Receta representa qué contiene y cómo se realiza una elaboración. El
+Escandallo representa sus cantidades y datos económicos calculados en backend.
+La Ficha técnica es una proyección estructurada y viva que reutiliza ambas
+fuentes junto con Artículos, producción, documentos y relaciones verificadas;
+no es simplemente un PDF.
+
+La ficha declara `persistida` y `origen`. Cuando no existe una ficha persistida,
+el backend devuelve una proyección `proyeccion_datos_existentes` en estado
+`EN_CONSTRUCCION`. Solo se considera completa si existe una ficha persistida y
+la regla de completitud del repositorio 6.0.1 no mantiene campos obligatorios
+pendientes. No se calcula un porcentaje alternativo para datos canónicos.
+
+Los campos ausentes permanecen opcionales o se representan mediante colecciones
+vacías. `campos_pendientes` se deriva exclusivamente de ausencias comprobables:
+descripción, procedimiento, tiempo, conservación, información de alérgenos y
+coste por ración. No se inventan alérgenos, caducidad, regeneración,
+presentación, utensilios, costes ni relaciones.
+
+Los estados internos se conservan en el contrato por compatibilidad, pero React
+los traduce a etiquetas legibles. Las vistas globales de Recetas, Escandallos y
+Fichas técnicas enlazan a la pestaña correspondiente del mismo detalle. La
+nomenclatura técnica heredada nunca se presenta al usuario.
+
+Una futura capa de IA podrá proponer contenido documental, pero el backend
+deberá validarlo y el usuario confirmarlo antes de cualquier persistencia.
+
 Menús, documentos e importaciones disponen de espacios públicos preparados,
 pero no simulan capacidades. La escritura web queda aplazada hasta incorporar
 confirmación y auditoría pública. En una fase posterior, las recetas podrán

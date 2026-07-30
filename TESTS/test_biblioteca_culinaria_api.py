@@ -176,11 +176,49 @@ def test_biblioteca_detalle_canonico_es_estable_parcial_y_enlaza_articulo_real(t
         "estado_relacion": "relacionado",
     }
     assert first["receta"]["ingredientes"][1]["estado_relacion"] == "sin_relacionar"
-    assert first["ficha_tecnica"] is None
+    assert first["escandallo"]["lineas"] == first["receta"]["ingredientes"]
+    assert first["escandallo"]["ingredientes_sin_coste"] == 1
+    assert first["escandallo"]["estado_coste"] == "PARCIAL"
+    assert first["ficha_tecnica"]["persistida"] is False
+    assert first["ficha_tecnica"]["origen"] == "proyeccion_datos_existentes"
+    assert first["ficha_tecnica"]["estado"] == "EN_CONSTRUCCION"
+    assert "Procedimiento" in first["ficha_tecnica"]["campos_pendientes"]
+    assert first["ficha_tecnica"]["ingredientes"] == first["receta"]["ingredientes"]
     assert first["documentos"] == []
     assert first["menus"] == []
     assert first["eventos"] == []
+    assert first["produccion"] == {
+        "indicaciones": {
+            "produccion_minima": None,
+            "produccion_maxima": None,
+            "personal_recomendado": None,
+            "recursos": [],
+            "notas": None,
+        },
+        "ordenes": [],
+        "necesidades": [],
+        "historial": [],
+    }
+    assert first["historial"] == []
+    assert first["tiene_produccion"] is False
+    assert first["tiene_relaciones_menu_evento"] is False
+    assert "Ficha técnica en construcción." in first["avisos"]
     assert "A.P" not in json.dumps(first, ensure_ascii=False)
+
+
+def test_biblioteca_detalle_sin_receta_no_inventa_contenido(tmp_path: Path) -> None:
+    _write_canonical_fixture(tmp_path)
+    path = tmp_path / "DATOS" / "db" / "escandallos_canonicos.json"
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    payload["escandallos"][0]["receta"]["ingredientes"] = []
+    path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+
+    detail = BibliotecaCulinariaReadService(tmp_path).detalle("REC-SALSA-ROMESCO")["elaboracion"]
+    assert detail["tiene_receta"] is False
+    assert detail["receta"]["ingredientes"] == []
+    assert detail["receta"]["pasos"] == []
+    assert detail["receta"]["procedimiento"] is None
+    assert detail["ficha_tecnica"]["proceso"]["procedimiento"] is None
 
 
 def test_biblioteca_sin_datos_parametros_invalidos_y_no_encontrado(tmp_path: Path) -> None:

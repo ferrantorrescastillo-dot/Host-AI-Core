@@ -205,6 +205,15 @@ class BibliotecaCulinariaReadService:
         documents = self._documents(receta)
         technical = self._public_value(dict(receta.get("ficha_tecnica") or {}))
         completeness = dict(receta.get("completitud") or {})
+        has_production = any(
+            (
+                receta.get("produccion_minima"),
+                receta.get("produccion_maxima"),
+                receta.get("personal_recomendado"),
+                receta.get("recursos_necesarios"),
+            )
+        )
+        has_relations = bool(receta.get("menus_utilizacion") or receta.get("eventos_utilizacion"))
         total_cost = self._number(esc.get("coste_total")) if esc else self._number(receta.get("coste_total"))
         unit_cost = self._number(esc.get("coste_por_racion")) if esc else self._number(receta.get("coste_por_racion"))
         return {
@@ -225,6 +234,8 @@ class BibliotecaCulinariaReadService:
             "tiene_ficha_tecnica": bool(technical),
             "tiene_fotografia": bool(receta.get("fotografia") or receta.get("documentos_fotografias")),
             "tiene_documentos": bool(documents),
+            "tiene_produccion": has_production,
+            "tiene_relaciones_menu_evento": has_relations,
             "completitud": self._number(completeness.get("porcentaje")),
             "actualizado_en": receta.get("actualizado_en") or None,
         }
@@ -322,39 +333,164 @@ class BibliotecaCulinariaReadService:
             return self._error("elaboration_not_found", "Elaboración no encontrada.", 404)
         esc = self._escandallo_for(receta)
         ingredients = self._ingredients(receta, esc)
-        technical = self._public_value(dict(receta.get("ficha_tecnica") or {}))
+        public_escandallo = self._public_escandallo(esc, ingredients)
+        documents = self._documents(receta)
+        production = self._production(receta)
+        menus = list(receta.get("menus_utilizacion") or [])
+        events = list(receta.get("eventos_utilizacion") or [])
+        pending = self._pending_fields(receta, public_escandallo)
+        technical = self._technical_sheet(
+            receta, ingredients, public_escandallo, documents, production, pending,
+        )
+        summary = self._summary(receta)
         detail = {
-            **self._summary(receta),
+            **summary,
             "receta": {
                 "ingredientes": ingredients,
                 "procedimiento": self._public_text(receta.get("elaboracion")) or None,
+                "pasos": self._public_value(list(receta.get("pasos") or [])),
                 "observaciones": self._public_text(receta.get("observaciones")) or None,
                 "tiempo_total": receta.get("tiempo_total") or receta.get("tiempo_elaboracion") or None,
                 "tiempo_activo": receta.get("tiempo_activo") or None,
                 "tiempo_pasivo": receta.get("tiempo_pasivo") or None,
+                "temperaturas": self._public_value(list(receta.get("temperaturas") or [])),
                 "tecnicas": list(receta.get("tecnicas_culinarias") or []),
+                "rendimiento": summary.get("rendimiento"),
+                "unidad_rendimiento": summary.get("unidad_rendimiento"),
+                "raciones": summary.get("raciones"),
             },
-            "escandallo": self._public_escandallo(esc),
-            "ficha_tecnica": technical or None,
+            "escandallo": public_escandallo,
+            "ficha_tecnica": technical,
             "alergenos": list(receta.get("alergenos") or []),
             "conservacion": receta.get("conservacion") or None,
             "regeneracion": receta.get("regeneracion") or None,
-            "produccion": {
+            "produccion": production,
+            "documentos": documents,
+            "imagenes": [x for x in [receta.get("fotografia")] if x] + list(receta.get("documentos_fotografias") or []),
+            "versiones": [{"version": receta.get("version"), "fecha": receta.get("actualizado_en")}]
+            if receta.get("version") else [],
+            "menus": menus,
+            "eventos": events,
+            "historial": self._history(esc),
+            "pendientes": pending,
+            "avisos": self._warnings(summary, ingredients, public_escandallo),
+        }
+        return {"ok": True, "elaboracion": detail}
+
+    @staticmethod
+    def _production(receta: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "indicaciones": {
                 "produccion_minima": receta.get("produccion_minima") or None,
                 "produccion_maxima": receta.get("produccion_maxima") or None,
                 "personal_recomendado": receta.get("personal_recomendado") or None,
                 "recursos": list(receta.get("recursos_necesarios") or []),
+                "notas": receta.get("notas_produccion") or None,
             },
-            "documentos": self._documents(receta),
-            "imagenes": [x for x in [receta.get("fotografia")] if x] + list(receta.get("documentos_fotografias") or []),
-            "versiones": [{"version": receta.get("version"), "fecha": receta.get("actualizado_en")}]
-            if receta.get("version") else [],
-            "menus": list(receta.get("menus_utilizacion") or []),
-            "eventos": list(receta.get("eventos_utilizacion") or []),
-            "historial": [],
-            "pendientes": list((receta.get("completitud") or {}).get("campos_obligatorios_pendientes") or []),
+            "ordenes": list(receta.get("ordenes_produccion") or []),
+            "necesidades": list(receta.get("necesidades_produccion") or []),
+            "historial": list(receta.get("historial_produccion") or []),
         }
-        return {"ok": True, "elaboracion": detail}
+
+    def _pending_fields(
+        self,
+        receta: dict[str, Any],
+        escandallo: dict[str, Any] | None,
+    ) -> list[str]:
+        declared = list(
+            (receta.get("completitud") or {}).get("campos_obligatorios_pendientes") or []
+        )
+        checks = (
+            ("Descripción", receta.get("descripcion")),
+            ("Procedimiento", receta.get("elaboracion")),
+            ("Tiempo total", receta.get("tiempo_total") or receta.get("tiempo_elaboracion")),
+            ("Conservación", receta.get("conservacion")),
+            ("Alérgenos", receta.get("alergenos") if "alergenos" in receta else None),
+            ("Coste por ración", (escandallo or {}).get("coste_por_racion")),
+        )
+        pending = [self._public_text(item) for item in declared]
+        for label, value in checks:
+            if label == "Alérgenos" and "alergenos" in receta:
+                continue
+            if value in (None, "", []):
+                pending.append(label)
+        return list(dict.fromkeys(pending))
+
+    def _technical_sheet(
+        self,
+        receta: dict[str, Any],
+        ingredients: list[dict[str, Any]],
+        escandallo: dict[str, Any] | None,
+        documents: list[dict[str, Any]],
+        production: dict[str, Any],
+        pending: list[str],
+    ) -> dict[str, Any]:
+        persisted = self._public_value(dict(receta.get("ficha_tecnica") or {}))
+        return {
+            "estado": "COMPLETA" if persisted and not pending else "EN_CONSTRUCCION",
+            "origen": "ficha_persistida" if persisted else "proyeccion_datos_existentes",
+            "persistida": bool(persisted),
+            "identificacion": {
+                "id": receta.get("id"),
+                "codigo": receta.get("codigo"),
+                "nombre": self._public_text(receta.get("nombre")),
+                "categoria": self._public_text(receta.get("categoria") or receta.get("familia")) or None,
+            },
+            "descripcion": self._public_text(receta.get("descripcion")) or None,
+            "fotografia": receta.get("fotografia") or None,
+            "ingredientes": ingredients,
+            "proceso": {
+                "procedimiento": self._public_text(receta.get("elaboracion")) or None,
+                "pasos": self._public_value(list(receta.get("pasos") or [])),
+                "observaciones": self._public_text(receta.get("observaciones")) or None,
+            },
+            "tiempos": {
+                "activo": receta.get("tiempo_activo") or None,
+                "pasivo": receta.get("tiempo_pasivo") or None,
+                "total": receta.get("tiempo_total") or receta.get("tiempo_elaboracion") or None,
+            },
+            "temperaturas": self._public_value(list(receta.get("temperaturas") or [])),
+            "rendimiento": self._number(receta.get("rendimiento") or receta.get("numero_raciones")),
+            "unidad_rendimiento": receta.get("unidad_rendimiento") or None,
+            "raciones": self._number(receta.get("numero_raciones")),
+            "escandallo": escandallo,
+            "alergenos": list(receta.get("alergenos") or []),
+            "conservacion": receta.get("conservacion") or None,
+            "caducidad": receta.get("caducidad") or receta.get("vida_util_refrigerado") or None,
+            "regeneracion": receta.get("regeneracion") or None,
+            "presentacion": receta.get("presentacion") or None,
+            "utensilios": list(receta.get("utensilios") or []),
+            "produccion": production,
+            "documentos": documents,
+            "version": receta.get("version") or None,
+            "actualizado_en": receta.get("actualizado_en") or None,
+            "campos_pendientes": pending,
+            "datos_persistidos": persisted or None,
+        }
+
+    def _history(self, escandallo: dict[str, Any] | None) -> list[dict[str, Any]]:
+        if not escandallo or not escandallo.get("id"):
+            return []
+        return self._public_value(self.escandallos.historial(str(escandallo["id"])))
+
+    @staticmethod
+    def _warnings(
+        summary: dict[str, Any],
+        ingredients: list[dict[str, Any]],
+        escandallo: dict[str, Any] | None,
+    ) -> list[str]:
+        warnings = []
+        unlinked = sum(item.get("estado_relacion") != "relacionado" for item in ingredients)
+        if unlinked:
+            warnings.append(f"{unlinked} ingrediente(s) sin relación confirmada con Artículos.")
+        missing_cost = int((escandallo or {}).get("ingredientes_sin_coste") or 0)
+        if missing_cost:
+            warnings.append(f"{missing_cost} ingrediente(s) sin precio disponible.")
+        if not summary.get("tiene_ficha_tecnica"):
+            warnings.append("Ficha técnica en construcción.")
+        if not summary.get("tiene_documentos"):
+            warnings.append("Sin documentos asociados.")
+        return warnings
 
     def _ingredients(self, receta: dict[str, Any], esc: dict[str, Any] | None) -> list[dict[str, Any]]:
         catalog = self.articulos.listar_productos(incluir_archivados=True)
@@ -393,12 +529,27 @@ class BibliotecaCulinariaReadService:
             })
         return output
 
-    def _public_escandallo(self, esc: dict[str, Any] | None) -> dict[str, Any] | None:
+    def _public_escandallo(
+        self,
+        esc: dict[str, Any] | None,
+        ingredients: list[dict[str, Any]] | None = None,
+    ) -> dict[str, Any] | None:
         if not esc:
             return None
+        lines = list(ingredients or [])
+        missing_cost = sum(
+            item.get("coste_unitario") in (None, 0, 0.0)
+            for item in lines
+        )
         return {
             "id": esc.get("id"),
             "estado": esc.get("estado"),
+            "estado_coste": (
+                "SIN_COSTE"
+                if lines and missing_cost == len(lines)
+                else ("PARCIAL" if missing_cost else "DISPONIBLE")
+            ),
+            "lineas": lines,
             "coste_ingredientes": self._number(esc.get("coste_ingredientes")),
             "otros_costes": self._number(esc.get("otros_costes")),
             "coste_total": self._number(esc.get("coste_total")),
@@ -408,6 +559,7 @@ class BibliotecaCulinariaReadService:
             "margen": self._number(esc.get("margen_porcentual") or esc.get("margen")),
             "fecha_calculo": esc.get("fecha_ultimo_calculo") or esc.get("fecha_calculo") or None,
             "desactualizado": str(esc.get("estado") or "").upper() == "DESACTUALIZADO",
+            "ingredientes_sin_coste": missing_cost,
             "incidencias": list(esc.get("incidencias") or []),
         }
 
