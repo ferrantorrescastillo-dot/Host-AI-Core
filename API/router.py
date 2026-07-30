@@ -29,6 +29,7 @@ ROUTES: tuple[Route, ...] = (
     Route("GET", "/api/v1/articulos", articulos.list_handle),
     Route("GET", "/api/v1/biblioteca", biblioteca.summary_handle),
     Route("GET", "/api/v1/biblioteca/elaboraciones", biblioteca.list_handle),
+    Route("POST", "/api/v1/biblioteca/importaciones", biblioteca.import_create_handle),
     Route("GET", "/executive", executive.handle),
     Route("GET", "/dashboard", dashboard.handle),
     Route("GET", "/eventos", eventos.handle),
@@ -52,6 +53,12 @@ class ApiRouter:
             handler = articulos.detail_handle
         if handler is None and key[0] == "GET" and key[1].startswith("/api/v1/biblioteca/elaboraciones/"):
             handler = biblioteca.detail_handle
+        if handler is None and key[0] == "GET" and key[1].startswith("/api/v1/biblioteca/importaciones/"):
+            handler = (
+                biblioteca.import_proposals_handle
+                if key[1].endswith("/propuestas")
+                else biblioteca.import_detail_handle
+            )
         if handler is None:
             return ApiResponse(
                 status_code=404,

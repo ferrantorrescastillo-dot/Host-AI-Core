@@ -192,3 +192,53 @@ export type DocumentoElaboracion = {
   descripcion?: string | null;
   estado?: string | null;
 };
+
+export type ImportProposal = {
+  id: string;
+  tipo: string;
+  estado: "PENDIENTE_REVISION";
+  confianza: { valor: number; explicacion: string };
+  explicacion: string;
+  origen: { importacion_id: string; nombre: string; tipo: string };
+  datos_propuestos: Record<string, unknown>;
+  persistida: false;
+};
+
+export type BibliotecaImportSession = {
+  documento: {
+    id: string;
+    nombre: string;
+    tipo_mime: string;
+    tamano: number;
+    origen: string;
+    clasificacion: {
+      tipo: string;
+      confianza: { valor: number; explicacion: string };
+    };
+    secciones: Array<Record<string, unknown>>;
+    entidades: Array<Record<string, unknown>>;
+    advertencias: string[];
+    contenido_almacenado: false;
+  };
+  resumen: {
+    secciones: number;
+    entidades: number;
+    propuestas: number;
+    incidencias: number;
+    estado: "PENDIENTE_REVISION";
+  };
+  propuestas: ImportProposal[];
+  solo_previsualizacion: true;
+  confirmacion_disponible: false;
+};
+
+export type BibliotecaImportResponse = ApiEnvelope & {
+  importacion: BibliotecaImportSession;
+};
+
+export type BibliotecaImportProposalsResponse = ApiEnvelope & {
+  importacion_id: string;
+  propuestas: ImportProposal[];
+  total: number;
+  solo_previsualizacion: true;
+};

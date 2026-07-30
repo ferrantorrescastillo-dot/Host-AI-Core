@@ -17,6 +17,20 @@ def detail_handle(request: ApiRequest, facade: CorePublicFacade) -> ApiResponse:
     return _response(facade.elaboracion(elaboration_id))
 
 
+def import_create_handle(request: ApiRequest, facade: CorePublicFacade) -> ApiResponse:
+    return _response(facade.crear_importacion_biblioteca(request.body))
+
+
+def import_detail_handle(request: ApiRequest, facade: CorePublicFacade) -> ApiResponse:
+    import_id = str(request.path or "").split("/importaciones/", 1)[-1].split("/", 1)[0]
+    return _response(facade.importacion_biblioteca(import_id))
+
+
+def import_proposals_handle(request: ApiRequest, facade: CorePublicFacade) -> ApiResponse:
+    import_id = str(request.path or "").split("/importaciones/", 1)[-1].split("/", 1)[0]
+    return _response(facade.propuestas_importacion_biblioteca(import_id))
+
+
 def _response(payload: dict) -> ApiResponse:
     status = 200 if payload.get("ok") else int((payload.get("error") or {}).get("status") or 500)
     return ApiResponse(status_code=status, payload=payload)

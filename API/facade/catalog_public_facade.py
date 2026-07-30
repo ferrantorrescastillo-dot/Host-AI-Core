@@ -6,6 +6,7 @@ from typing import Any
 from API.facade.core_public_api02 import CorePublicApi02Facade
 from SERVICIOS.articulos_catalog_read_service import ArticulosCatalogReadService
 from SERVICIOS.biblioteca_culinaria_read_service import BibliotecaCulinariaReadService
+from SERVICIOS.importador_inteligente_biblioteca import ImportDocumentService
 
 
 class CatalogPublicFacade(CorePublicApi02Facade):
@@ -15,6 +16,7 @@ class CatalogPublicFacade(CorePublicApi02Facade):
         super().__init__(base_dir=base_dir)
         self._articulos_service: ArticulosCatalogReadService | None = None
         self._biblioteca_service: BibliotecaCulinariaReadService | None = None
+        self._biblioteca_import_service: ImportDocumentService | None = None
 
     def _get_articulos_service(self) -> ArticulosCatalogReadService:
         if self._articulos_service is None:
@@ -57,6 +59,26 @@ class CatalogPublicFacade(CorePublicApi02Facade):
 
     def elaboracion(self, elaboracion_id: str) -> dict[str, Any]:
         return self._library_call(self._get_biblioteca_service().detalle, elaboracion_id)
+
+    def _get_biblioteca_import_service(self) -> ImportDocumentService:
+        if self._biblioteca_import_service is None:
+            self._biblioteca_import_service = ImportDocumentService(self.base_dir)
+        return self._biblioteca_import_service
+
+    def crear_importacion_biblioteca(self, body: dict[str, Any]) -> dict[str, Any]:
+        return self._library_call(
+            self._get_biblioteca_import_service().import_document, dict(body or {})
+        )
+
+    def importacion_biblioteca(self, importacion_id: str) -> dict[str, Any]:
+        return self._library_call(
+            self._get_biblioteca_import_service().get_import, importacion_id
+        )
+
+    def propuestas_importacion_biblioteca(self, importacion_id: str) -> dict[str, Any]:
+        return self._library_call(
+            self._get_biblioteca_import_service().get_proposals, importacion_id
+        )
 
     def _library_call(self, operation: Any, *args: Any) -> dict[str, Any]:
         try:

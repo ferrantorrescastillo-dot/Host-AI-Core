@@ -26,4 +26,22 @@ export const bibliotecaService = {
   summary: () => hostAiApiClient.getBiblioteca(),
   list: (query: ElaboracionesQuery = {}) => hostAiApiClient.getElaboraciones(serialize(query)),
   detail: (id: string) => hostAiApiClient.getElaboracion(id),
+  importDocument: async (file: File) => {
+    const buffer = new Uint8Array(await file.arrayBuffer());
+    let binary = "";
+    const chunkSize = 0x8000;
+    for (let index = 0; index < buffer.length; index += chunkSize) {
+      binary += String.fromCharCode(...buffer.subarray(index, index + chunkSize));
+    }
+    return hostAiApiClient.createBibliotecaImport({
+      nombre: file.name,
+      tipo_mime: file.type || "application/octet-stream",
+      contenido_base64: btoa(binary),
+      texto: file.name.toLowerCase().endsWith(".txt")
+        ? new TextDecoder().decode(buffer)
+        : undefined,
+    });
+  },
+  importDetail: (id: string) => hostAiApiClient.getBibliotecaImport(id),
+  importProposals: (id: string) => hostAiApiClient.getBibliotecaImportProposals(id),
 };

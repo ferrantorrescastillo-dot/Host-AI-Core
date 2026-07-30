@@ -171,9 +171,33 @@ esos casos los costes desconocidos son `null`, el total completo
 también es `null` y `coste_total_parcial` informa únicamente la suma verificable.
 Así se distingue un coste desconocido de un coste real igual a cero.
 
-Menús, documentos e importaciones disponen de espacios públicos preparados,
+Menús y documentos disponen de espacios públicos preparados,
 pero no simulan capacidades. La escritura web queda aplazada hasta incorporar
 confirmación y auditoría pública. En una fase posterior, las recetas podrán
 originarse desde Word, PDF o imagen: la IA detectará, interpretará, relacionará
 y propondrá; el backend validará y el usuario revisará y confirmará. Los menús
 podrán duplicarse y reutilizarse entre eventos mediante sus casos de uso.
+
+### Importador Inteligente de Biblioteca
+
+Host AI no guarda documentos como finalidad funcional: transforma su contenido
+en conocimiento estructurado reutilizable. La fase inicial aplica el flujo
+`ImportDocumentService` → clasificador → intérprete → extractor → constructor
+de propuestas. Los componentes son sustituibles por OCR o IA posteriores y
+reutilizan los lectores y el flujo de importación 6.0.1 existentes.
+
+La API pública ofrece:
+
+- `POST /api/v1/biblioteca/importaciones`
+- `GET /api/v1/biblioteca/importaciones/{id}`
+- `GET /api/v1/biblioteca/importaciones/{id}/propuestas`
+
+El transporte inicial admite PDF, DOCX, XLSX, JPG, PNG y texto hasta 10 MB. El
+contenido recibido solo se usa durante la interpretación y no forma parte de la
+sesión devuelta. Las sesiones y propuestas viven en memoria del proceso.
+
+Todas las propuestas nacen en `PENDIENTE_REVISION`, incluyen tipo, confianza,
+explicación y origen, y declaran `persistida: false`. Esta fase no publica
+ninguna operación de confirmación: la respuesta mantiene
+`datos_reales_modificados: false` y React se limita a presentar clasificación,
+resumen y propuestas.
