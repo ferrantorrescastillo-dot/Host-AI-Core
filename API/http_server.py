@@ -56,8 +56,12 @@ def _parse_allowed_origins() -> list[str]:
     if env_name == "development":
         safe_values.extend(
             [
+                "http://localhost:5173",
+                "http://127.0.0.1:5173",
                 "http://localhost:5176",
                 "http://127.0.0.1:5176",
+                "http://localhost:5178",
+                "http://127.0.0.1:5178",
             ]
         )
 

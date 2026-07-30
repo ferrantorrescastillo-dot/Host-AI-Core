@@ -204,6 +204,34 @@ def test_http_cors_host_ai_web_en_articulos_y_dashboard(tmp_path: Path) -> None:
             assert response.headers.get("access-control-allow-origin") == origin
 
 
+def test_http_cors_biblioteca_desde_vite_5178(tmp_path: Path) -> None:
+    client = _make_client(tmp_path)
+    origins = (
+        "http://localhost:5178",
+        "http://127.0.0.1:5178",
+    )
+    endpoints = (
+        "/api/v1/biblioteca",
+        "/api/v1/biblioteca/elaboraciones",
+    )
+
+    for origin in origins:
+        for endpoint in endpoints:
+            preflight = client.options(
+                endpoint,
+                headers={
+                    "Origin": origin,
+                    "Access-Control-Request-Method": "GET",
+                },
+            )
+            assert preflight.status_code in (200, 204)
+            assert preflight.headers.get("access-control-allow-origin") == origin
+
+            response = client.get(endpoint, headers={"Origin": origin})
+            assert response.status_code == 200
+            assert response.headers.get("access-control-allow-origin") == origin
+
+
 def test_http_datos_reales_modificados_false_en_endpoints_versionados(monkeypatch, tmp_path: Path) -> None:
     from API.facade.core_public_api02 import CorePublicApi02Facade
 
