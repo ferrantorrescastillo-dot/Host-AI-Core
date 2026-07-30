@@ -1,6 +1,11 @@
 import { HOST_AI_API_BASE_URL } from "../config/env";
 import type { ChatResponse, DashboardResponse } from "../types/api";
 import type { ArticuloResponse, CatalogoResponse } from "../types/articulos";
+import type {
+  BibliotecaResponse,
+  ElaboracionResponse,
+  ElaboracionesResponse,
+} from "../types/biblioteca";
 
 type Envelope = {
   ok: boolean;
@@ -94,6 +99,21 @@ export const hostAiApiClient = {
 
   getArticulo(id: string): Promise<ArticuloResponse> {
     return request<ArticuloResponse>(`/api/v1/articulos/${encodeURIComponent(id)}`, { method: "GET" });
+  },
+
+  getBiblioteca(): Promise<BibliotecaResponse> {
+    return request<BibliotecaResponse>("/api/v1/biblioteca", { method: "GET" });
+  },
+
+  getElaboraciones(query = ""): Promise<ElaboracionesResponse> {
+    return request<ElaboracionesResponse>(`/api/v1/biblioteca/elaboraciones${query}`, { method: "GET" });
+  },
+
+  getElaboracion(id: string): Promise<ElaboracionResponse> {
+    return request<ElaboracionResponse>(
+      `/api/v1/biblioteca/elaboraciones/${encodeURIComponent(id)}`,
+      { method: "GET" },
+    );
   },
 
   sendChatMessage(input: { mensaje: string; contexto?: Record<string, unknown> }): Promise<ChatResponse> {

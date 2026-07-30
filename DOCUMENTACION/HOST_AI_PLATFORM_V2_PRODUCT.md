@@ -38,3 +38,38 @@ infieren relaciones mediante coincidencias aproximadas.
 
 Todas las respuestas conservan el sobre público (`ok`, versiones, `request_id`,
 `modo_seguro` y `datos_reales_modificados`). Las consultas son de solo lectura.
+
+## Biblioteca Culinaria
+
+La Biblioteca es el lugar donde vive el conocimiento culinario reutilizable.
+Su taxonomía pública distingue Artículos, Elaboraciones, Recetas, Escandallos,
+Fichas técnicas, Menús, Documentación e Importaciones. La nomenclatura técnica
+heredada no se muestra en la interfaz: públicamente siempre se habla de
+Elaboraciones.
+
+Un Artículo es un producto comprado o ingrediente. Una Elaboración es una
+preparación producida por el restaurante; su Receta describe ingredientes y
+proceso, su Escandallo contiene los cálculos económicos del backend y su Ficha
+técnica reúne la vista operativa viva. Una ficha técnica de proveedor pertenece
+al Artículo o a Documentación, no a la ficha culinaria.
+
+La relación de producto es:
+
+`Artículo → Elaboración → Receta → Escandallo → Ficha técnica → Menú → Evento`.
+
+La regla de producto es: cada dato se introduce una vez y se reutiliza. Los
+ingredientes solo enlazan con Artículos cuando existe una coincidencia exacta y
+única; las coincidencias no demostrables quedan sin relacionar.
+
+Rutas de lectura:
+
+- `GET /api/v1/biblioteca`;
+- `GET /api/v1/biblioteca/elaboraciones`;
+- `GET /api/v1/biblioteca/elaboraciones/{elaboracion_id}`.
+
+Menús, documentos e importaciones disponen de espacios públicos preparados,
+pero no simulan capacidades. La escritura web queda aplazada hasta incorporar
+confirmación y auditoría pública. En una fase posterior, las recetas podrán
+originarse desde Word, PDF o imagen: la IA detectará, interpretará, relacionará
+y propondrá; el backend validará y el usuario revisará y confirmará. Los menús
+podrán duplicarse y reutilizarse entre eventos mediante sus casos de uso.

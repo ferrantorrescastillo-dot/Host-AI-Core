@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from typing import Callable
 
 from API.contracts.http_models import ApiRequest, ApiResponse
-from API.endpoints import articulos, chat, dashboard, eventos, executive, health, plan, version, workflow
+from API.endpoints import articulos, biblioteca, chat, dashboard, eventos, executive, health, plan, version, workflow
 from API.facade.core_public_facade import CorePublicFacade
 from API.infra.response_envelope import build_error_payload, normalize_success_payload
 
@@ -27,6 +27,8 @@ ROUTES: tuple[Route, ...] = (
     Route("GET", "/api/v1/executive", executive.handle),
     Route("GET", "/api/v1/dashboard", dashboard.handle),
     Route("GET", "/api/v1/articulos", articulos.list_handle),
+    Route("GET", "/api/v1/biblioteca", biblioteca.summary_handle),
+    Route("GET", "/api/v1/biblioteca/elaboraciones", biblioteca.list_handle),
     Route("GET", "/executive", executive.handle),
     Route("GET", "/dashboard", dashboard.handle),
     Route("GET", "/eventos", eventos.handle),
@@ -48,6 +50,8 @@ class ApiRouter:
         handler = self._table.get(key)
         if handler is None and key[0] == "GET" and key[1].startswith("/api/v1/articulos/"):
             handler = articulos.detail_handle
+        if handler is None and key[0] == "GET" and key[1].startswith("/api/v1/biblioteca/elaboraciones/"):
+            handler = biblioteca.detail_handle
         if handler is None:
             return ApiResponse(
                 status_code=404,

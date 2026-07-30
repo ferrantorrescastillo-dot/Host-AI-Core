@@ -138,6 +138,18 @@ def create_app(platform_api: HostAIPlatformAPI | None = None) -> FastAPI:
     async def get_articulo(articulo_id: str, request: Request) -> JSONResponse:
         return await _delegate(request)
 
+    @app.get("/api/v1/biblioteca")
+    async def get_biblioteca(request: Request) -> JSONResponse:
+        return await _delegate(request)
+
+    @app.get("/api/v1/biblioteca/elaboraciones")
+    async def get_elaboraciones(request: Request) -> JSONResponse:
+        return await _delegate(request)
+
+    @app.get("/api/v1/biblioteca/elaboraciones/{elaboracion_id}")
+    async def get_elaboracion(elaboracion_id: str, request: Request) -> JSONResponse:
+        return await _delegate(request)
+
     @app.post("/api/v1/chat")
     async def post_chat(request: Request) -> JSONResponse:
         parsed: dict[str, Any] = {}

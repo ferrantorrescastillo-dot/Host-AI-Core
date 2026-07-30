@@ -342,6 +342,11 @@ textarea {
 .detail-grid { display: grid; grid-template-columns: max-content 1fr; gap: 8px 18px; }
 .detail-grid dd { margin: 0; }
 @media (max-width: 900px) { .catalog-filters { grid-template-columns: 1fr; } }
+.library-nav, .library-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0; }
+.library-nav a, .library-tabs button { padding: 8px 11px; border: 1px solid #cbd8dc; border-radius: 999px; background: #fff; text-decoration: none; color: inherit; }
+.library-nav a.active, .library-tabs button.active { background: var(--accent); color: white; border-color: var(--accent); }
+.library-detail header { margin: 20px 0; }
+.catalog-table td small { display: block; color: #63757a; margin-top: 3px; }
 
 .eventos-list {
   display: grid;

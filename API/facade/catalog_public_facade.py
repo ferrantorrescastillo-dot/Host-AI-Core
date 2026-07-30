@@ -5,6 +5,7 @@ from typing import Any
 
 from API.facade.core_public_api02 import CorePublicApi02Facade
 from SERVICIOS.articulos_catalog_read_service import ArticulosCatalogReadService
+from SERVICIOS.biblioteca_culinaria_read_service import BibliotecaCulinariaReadService
 
 
 class CatalogPublicFacade(CorePublicApi02Facade):
@@ -13,6 +14,7 @@ class CatalogPublicFacade(CorePublicApi02Facade):
     def __init__(self, base_dir: Path | None = None) -> None:
         super().__init__(base_dir=base_dir)
         self._articulos_service: ArticulosCatalogReadService | None = None
+        self._biblioteca_service: BibliotecaCulinariaReadService | None = None
 
     def _get_articulos_service(self) -> ArticulosCatalogReadService:
         if self._articulos_service is None:
@@ -40,4 +42,27 @@ class CatalogPublicFacade(CorePublicApi02Facade):
             return self._error_payload(
                 code="catalog_unavailable",
                 message="No se pudo consultar el artículo.",
+            )
+
+    def _get_biblioteca_service(self) -> BibliotecaCulinariaReadService:
+        if self._biblioteca_service is None:
+            self._biblioteca_service = BibliotecaCulinariaReadService(self.base_dir)
+        return self._biblioteca_service
+
+    def biblioteca(self) -> dict[str, Any]:
+        return self._library_call(self._get_biblioteca_service().resumen)
+
+    def elaboraciones(self, query: dict[str, Any]) -> dict[str, Any]:
+        return self._library_call(self._get_biblioteca_service().listar, dict(query or {}))
+
+    def elaboracion(self, elaboracion_id: str) -> dict[str, Any]:
+        return self._library_call(self._get_biblioteca_service().detalle, elaboracion_id)
+
+    def _library_call(self, operation: Any, *args: Any) -> dict[str, Any]:
+        try:
+            return {**self._base_payload(), **operation(*args)}
+        except Exception:
+            return self._error_payload(
+                code="library_unavailable",
+                message="No se pudo consultar la Biblioteca Culinaria.",
             )

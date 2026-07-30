@@ -12,6 +12,10 @@ import { NotFoundPage } from "./pages/NotFoundPage";
 import { PlaceholderPage } from "./pages/PlaceholderPage";
 import { ArticulosPage } from "./pages/ArticulosPage";
 import { ArticuloDetailPage } from "./pages/ArticuloDetailPage";
+import { BibliotecaPage } from "./pages/BibliotecaPage";
+import { ElaboracionesPage } from "./pages/ElaboracionesPage";
+import { ElaboracionDetailPage } from "./pages/ElaboracionDetailPage";
+import { BibliotecaPendingPage } from "./pages/BibliotecaPendingPage";
 
 export function App() {
   return (
@@ -27,6 +31,15 @@ export function App() {
         <Route path="/stock" element={<StockPage />} />
         <Route path="/articulos" element={<ArticulosPage />} />
         <Route path="/articulos/:articuloId" element={<ArticuloDetailPage />} />
+        <Route path="/biblioteca" element={<BibliotecaPage />} />
+        <Route path="/biblioteca/elaboraciones" element={<ElaboracionesPage />} />
+        <Route path="/biblioteca/elaboraciones/:elaboracionId" element={<ElaboracionDetailPage />} />
+        <Route path="/biblioteca/recetas" element={<ElaboracionesPage preset="receta" />} />
+        <Route path="/biblioteca/escandallos" element={<ElaboracionesPage preset="escandallo" />} />
+        <Route path="/biblioteca/fichas-tecnicas" element={<ElaboracionesPage preset="ficha" />} />
+        <Route path="/biblioteca/menus" element={<BibliotecaPendingPage title="Menús" detail="La lectura pública de menús se incorporará cuando pueda garantizarse sin efectos laterales." />} />
+        <Route path="/biblioteca/documentacion" element={<BibliotecaPendingPage title="Documentación" detail="No hay documentos clasificados públicamente fuera de sus elaboraciones." />} />
+        <Route path="/biblioteca/importaciones" element={<BibliotecaPendingPage title="Importaciones" detail="La importación asistida requiere revisión y confirmación antes de exponerse en web." />} />
         <Route path="/configuracion" element={<PlaceholderPage modulo="Configuracion" />} />
         <Route path="/home" element={<Navigate to="/" replace />} />
         <Route path="*" element={<NotFoundPage />} />
