@@ -121,6 +121,14 @@ def create_app(platform_api: HostAIPlatformAPI | None = None) -> FastAPI:
     async def get_dashboard(request: Request) -> JSONResponse:
         return await _delegate(request)
 
+    @app.get("/api/v1/articulos")
+    async def get_articulos(request: Request) -> JSONResponse:
+        return await _delegate(request)
+
+    @app.get("/api/v1/articulos/{articulo_id}")
+    async def get_articulo(articulo_id: str, request: Request) -> JSONResponse:
+        return await _delegate(request)
+
     @app.post("/api/v1/chat")
     async def post_chat(request: Request) -> JSONResponse:
         parsed: dict[str, Any] = {}

@@ -1,5 +1,6 @@
 import { HOST_AI_API_BASE_URL } from "../config/env";
 import type { ChatResponse, DashboardResponse } from "../types/api";
+import type { ArticuloResponse, CatalogoResponse } from "../types/articulos";
 
 type Envelope = {
   ok: boolean;
@@ -85,6 +86,14 @@ async function request<T extends Envelope>(path: string, init?: RequestInit): Pr
 export const hostAiApiClient = {
   getDashboard(): Promise<DashboardResponse> {
     return request<DashboardResponse>("/api/v1/dashboard", { method: "GET" });
+  },
+
+  getArticulos(query = ""): Promise<CatalogoResponse> {
+    return request<CatalogoResponse>(`/api/v1/articulos${query}`, { method: "GET" });
+  },
+
+  getArticulo(id: string): Promise<ArticuloResponse> {
+    return request<ArticuloResponse>(`/api/v1/articulos/${encodeURIComponent(id)}`, { method: "GET" });
   },
 
   sendChatMessage(input: { mensaje: string; contexto?: Record<string, unknown> }): Promise<ChatResponse> {

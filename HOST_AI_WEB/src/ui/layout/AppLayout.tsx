@@ -9,6 +9,7 @@ const LINKS = [
   { to: "/produccion", label: "Produccion" },
   { to: "/compras", label: "Compras" },
   { to: "/stock", label: "Stock" },
+  { to: "/articulos", label: "Articulos" },
   { to: "/executive", label: "Executive" },
   { to: "/configuracion", label: "Configuracion" },
 ];

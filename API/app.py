@@ -4,7 +4,7 @@ from pathlib import Path
 from uuid import uuid4
 
 from API.contracts.http_models import ApiRequest, ApiResponse
-from API.facade.core_public_api02 import CorePublicApi02Facade
+from API.facade.catalog_public_facade import CatalogPublicFacade
 from API.router import ApiRouter
 
 
@@ -16,7 +16,7 @@ class HostAIPlatformAPI:
     """
 
     def __init__(self, base_dir: Path | None = None) -> None:
-        self.facade = CorePublicApi02Facade(base_dir=base_dir)
+        self.facade = CatalogPublicFacade(base_dir=base_dir)
         self.router = ApiRouter(self.facade)
 
     def handle(self, request: ApiRequest) -> ApiResponse:

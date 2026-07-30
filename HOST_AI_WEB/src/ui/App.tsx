@@ -10,6 +10,8 @@ import { ProduccionPage } from "./pages/ProduccionPage";
 import { StockPage } from "./pages/StockPage";
 import { NotFoundPage } from "./pages/NotFoundPage";
 import { PlaceholderPage } from "./pages/PlaceholderPage";
+import { ArticulosPage } from "./pages/ArticulosPage";
+import { ArticuloDetailPage } from "./pages/ArticuloDetailPage";
 
 export function App() {
   return (
@@ -23,6 +25,8 @@ export function App() {
         <Route path="/produccion" element={<ProduccionPage />} />
         <Route path="/compras" element={<ComprasPage />} />
         <Route path="/stock" element={<StockPage />} />
+        <Route path="/articulos" element={<ArticulosPage />} />
+        <Route path="/articulos/:articuloId" element={<ArticuloDetailPage />} />
         <Route path="/configuracion" element={<PlaceholderPage modulo="Configuracion" />} />
         <Route path="/home" element={<Navigate to="/" replace />} />
         <Route path="*" element={<NotFoundPage />} />
