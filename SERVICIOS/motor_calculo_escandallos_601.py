@@ -189,6 +189,13 @@ class MotorCalculoEscandallos601:
 
         return precio, unidad_base, incidencias
 
+    def precio_catalogo_normalizado(
+        self,
+        producto: dict[str, Any],
+    ) -> tuple[float | None, str, list[dict[str, Any]]]:
+        """Normaliza el precio público del catálogo sin seleccionar otra fuente."""
+        return self._precio_desde_producto_base(producto)
+
     def _seleccionar_precio(self, producto: dict[str, Any], proveedor_forzado: str = "") -> tuple[PrecioSeleccionado601 | None, list[dict[str, Any]]]:
         incidencias: list[dict[str, Any]] = []
         codigo = str(producto.get("codigo") or "")

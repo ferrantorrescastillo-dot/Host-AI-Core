@@ -127,6 +127,12 @@ deberá validarlo y el usuario confirmarlo antes de cualquier persistencia.
 económica en memoria mediante `MotorCalculoEscandallos601`. El servicio no
 persiste el resultado y no interpreta importes incluidos en nombres.
 
+El precio base se obtiene mediante `ArticulosCatalogReadService.obtener`, la
+misma fachada que alimenta `GET /api/v1/articulos/{articulo_id}`. Por tanto,
+`precio_unitario` coincide con el precio público de la ficha de Artículos. El
+motor normaliza ese importe cuando la ficha estructura unidad de compra,
+cantidad de formato y unidad base.
+
 Solo se valora una línea si su relación con Artículos es estable. El motor
 mantiene su prioridad vigente: proveedor forzado o preferente, tarifa de la
 asociación preferente, histórico de compras y, como último recurso, precio
@@ -140,7 +146,8 @@ Cada línea puede exponer `precio_unitario`, `unidad_precio`, `origen_precio`,
 formatos con cantidad neta estructurada.
 
 Un precio sin unidad, una relación dudosa o una conversión incompatible no se
-calcula. En esos casos los costes desconocidos son `null`, el total completo
+oculta: se expone el importe público, pero no se calcula su coste de línea. En
+esos casos los costes desconocidos son `null`, el total completo
 también es `null` y `coste_total_parcial` informa únicamente la suma verificable.
 Así se distingue un coste desconocido de un coste real igual a cero.
 

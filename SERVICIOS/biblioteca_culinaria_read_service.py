@@ -7,6 +7,7 @@ from hashlib import sha256
 from pathlib import Path
 from typing import Any
 
+from SERVICIOS.articulos_catalog_read_service import ArticulosCatalogReadService
 from SERVICIOS.biblioteca_escandallos_601 import RepositorioBibliotecaEscandallos601
 from SERVICIOS.biblioteca_recetas_601 import RepositorioBibliotecaRecetas601
 from SERVICIOS.lector_modelo_canonico_555b72 import LectorModeloCanonico555B72
@@ -28,6 +29,7 @@ class BibliotecaCulinariaReadService:
         self.recetas = RepositorioBibliotecaRecetas601(base_dir)
         self.escandallos = RepositorioBibliotecaEscandallos601(base_dir)
         self.articulos = RepositorioProductosMaestro601(base_dir)
+        self.catalogo_articulos = ArticulosCatalogReadService(base_dir)
         self.motor_escandallos = MotorCalculoEscandallos601(self.articulos)
         self.modelo_canonico = LectorModeloCanonico555B72(base_dir)
 
@@ -544,6 +546,7 @@ class BibliotecaCulinariaReadService:
     ) -> dict[str, Any] | None:
         if not esc:
             return None
+        public_prices = self._article_prices(ingredients)
         calculation = self.motor_escandallos.calcular(
             nombre_escandallo=str(receta.get("nombre") or "Escandallo"),
             numero_raciones=float(
@@ -581,6 +584,7 @@ class BibliotecaCulinariaReadService:
                 "codigo": str(receta.get("codigo") or ""),
                 "nombre": str(receta.get("nombre") or ""),
             },
+            precios_fijados=public_prices or None,
         )
         calculated_lines = list(calculation.get("lineas") or [])
         public_lines = [
@@ -638,6 +642,43 @@ class BibliotecaCulinariaReadService:
             ],
         }
 
+    def _article_prices(
+        self,
+        ingredients: list[dict[str, Any]],
+    ) -> dict[str, dict[str, Any]]:
+        """Adapta el mismo contrato público que alimenta la ficha de Artículos."""
+        prices: dict[str, dict[str, Any]] = {}
+        for ingredient in ingredients:
+            code = str(ingredient.get("articulo_id") or "")
+            if not code or code in prices:
+                continue
+            response = self.catalogo_articulos.obtener(code)
+            article = dict(response.get("articulo") or {}) if response.get("ok") else {}
+            price = self._number(article.get("precio"))
+            if price is None:
+                continue
+            product = self.articulos.obtener_producto(code) or {}
+            normalized_price, normalized_unit, _ = (
+                self.motor_escandallos.precio_catalogo_normalizado(product)
+            )
+            prices[code] = {
+                "precio_neto_unidad_base": (
+                    normalized_price if normalized_price is not None else price
+                ),
+                "unidad_base": (
+                    normalized_unit
+                    or article.get("unidad")
+                    or article.get("unidad_base")
+                    or ""
+                ),
+                "proveedor": article.get("proveedor") or "",
+                "fecha": article.get("actualizado_en") or "",
+                "provisional": False,
+                "precio_incluye_iva": bool(article.get("precio_incluye_iva", False)),
+                "fuente": "catalogo_articulos_publico",
+            }
+        return prices
+
     def _cost_line(
         self,
         ingredient: dict[str, Any],
@@ -687,8 +728,10 @@ class BibliotecaCulinariaReadService:
             "asociacion": "tarifa_proveedor",
             "historico": "historico_compras",
             "catalogo_producto": "catalogo_articulos",
+            "catalogo_articulos_publico": "catalogo_articulos",
         }.get(str(reference.get("fuente") or ""), "no_disponible")
         output.update({
+            "articulo_codigo": ingredient.get("articulo_id"),
             "precio_unitario": price,
             "unidad_precio": calculated.get("unidad_precio") or None,
             "origen_precio": origin if price is not None else "no_disponible",

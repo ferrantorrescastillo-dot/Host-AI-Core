@@ -50,6 +50,7 @@ export type ElaboracionesResponse = ApiEnvelope & {
 
 export type IngredienteReceta = {
   articulo_id?: string | null;
+  articulo_codigo?: string | null;
   codigo?: string | null;
   nombre_articulo?: string | null;
   unidad_base?: string | null;
