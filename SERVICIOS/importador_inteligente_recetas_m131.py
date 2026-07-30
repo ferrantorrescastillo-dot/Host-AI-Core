@@ -178,14 +178,9 @@ class ImportadorInteligenteRecetasM131:
 
     @staticmethod
     def _leer_docx(p: Path) -> str:
-        try:
-            from docx import Document
-        except ImportError as exc:
-            raise RuntimeError('Falta python-docx para importar archivos Word (.docx).') from exc
-        d=Document(p); partes=[x.text for x in d.paragraphs]
-        for t in d.tables:
-            for row in t.rows: partes.append(' '.join(c.text.strip() for c in row.cells if c.text.strip()))
-        return '\n'.join(partes)
+        from SERVICIOS.lector_word_documentos import WordDocumentReader
+
+        return WordDocumentReader().read(p).plain_text
 
     @staticmethod
     def _leer_pdf(p: Path) -> str:

@@ -201,3 +201,29 @@ explicación y origen, y declaran `persistida: false`. Esta fase no publica
 ninguna operación de confirmación: la respuesta mantiene
 `datos_reales_modificados: false` y React se limita a presentar clasificación,
 resumen y propuestas.
+
+#### Lector Word para recetas
+
+La lectura `.docx` reutiliza la dependencia y el flujo previstos por el
+importador manual M1.3.1. La extracción se ha consolidado en
+`WordDocumentReader`, compartido por el modo manual y el adaptador del
+Importador Inteligente. Se usa `python-docx==1.2.0`; no se automatiza Microsoft
+Word ni se requiere tenerlo instalado.
+
+El lector conserva el orden de párrafos y tablas, identifica títulos, listas,
+filas y celdas, y entrega bloques con referencias de origen. El extractor puede
+separar varias recetas mediante encabezados, marcadores culinarios, tablas y
+líneas de ingredientes. Cantidades, unidades, procedimiento y rendimiento solo
+se publican cuando aparecen de forma reconocible. La relación de ingredientes
+reutiliza el Catálogo Maestro y la detección de duplicados consulta la
+Biblioteca de solo lectura.
+
+Las imágenes incrustadas se notifican pero no se someten a OCR. Tampoco se
+admite el formato binario antiguo `.doc`. Los documentos vacíos, corruptos o
+protegidos devuelven errores controlados; los documentos válidos pero ambiguos
+permanecen como documentación pendiente de revisión. Una futura capa de IA
+podrá interpretar esos casos sin cambiar el contrato del lector.
+
+La regla de seguridad se mantiene: cada receta e ingrediente produce propuestas
+independientes y explicables, pero ninguna propuesta modifica la Biblioteca ni
+los datos maestros.

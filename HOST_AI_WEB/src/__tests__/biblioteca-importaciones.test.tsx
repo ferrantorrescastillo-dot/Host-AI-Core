@@ -20,25 +20,60 @@ const response = {
       clasificacion: {
         tipo: "RECETA",
         confianza: { valor: 0.82, explicacion: "Marcadores detectados: receta, ingredientes." },
+        evidencias: ["Marcadores culinarios detectados."],
+        advertencias: [],
       },
       secciones: [],
-      entidades: [],
+      entidades: [{
+        id: "ENT-REC-001",
+        kind: "RECETA",
+        name: "Salsa verde",
+        fields: {
+          ingredientes_estructurados: [{
+            nombre_original: "Perejil",
+            cantidad_texto: "100",
+            unidad: "g",
+            estado_relacion: "relacionado",
+            articulo_id: "M.P-PER",
+          }],
+          pasos: ["Triturar."],
+        },
+        confidence: { valor: 0.78, explicacion: "Estructura Word." },
+      }, {
+        id: "ENT-REC-002",
+        kind: "RECETA",
+        name: "Salsa roja",
+        fields: { ingredientes_estructurados: [], pasos: [] },
+        confidence: { valor: 0.75, explicacion: "Estructura Word." },
+      }],
       advertencias: [],
       contenido_almacenado: false,
     },
-    resumen: { secciones: 1, entidades: 1, propuestas: 1, incidencias: 0, estado: "PENDIENTE_REVISION" },
+    resumen: {
+      secciones: 4, entidades: 3, propuestas: 1, incidencias: 0,
+      recetas_detectadas: 2, ingredientes_detectados: 1,
+      ingredientes_relacionados: 1, coincidencias_dudosas: 0,
+      ingredientes_sin_relacionar: 0, ingredientes_nuevos: 0,
+      duplicados_detectados: 0, estado: "PENDIENTE_REVISION",
+    },
     propuestas: [{
       id: "IMPWEB-1-PROP-001",
       tipo: "CREAR_RECETA",
       estado: "PENDIENTE_REVISION",
       confianza: { valor: 0.75, explicacion: "Receta detectada." },
       explicacion: "Propuesta generada a partir de receta «Salsa verde».",
+      titulo: "Crear receta: Salsa verde",
       origen: { importacion_id: "IMPWEB-1", nombre: "receta.txt", tipo: "TEXTO" },
+      entidad_origen: "ENT-REC-001",
+      bloques_origen: ["bloque:0"],
+      advertencias: [],
+      conflictos: [],
       datos_propuestos: {},
       persistida: false,
     }],
     solo_previsualizacion: true,
     confirmacion_disponible: false,
+    limitaciones: ["Las imágenes incrustadas no se interpretan en esta fase."],
   },
 };
 
@@ -67,7 +102,13 @@ describe("Importador Inteligente de Biblioteca", () => {
 
     expect(await screen.findByText("Documento recibido")).toBeInTheDocument();
     expect(screen.getByText("RECETA")).toBeInTheDocument();
-    expect(screen.getByText("Crear receta")).toBeInTheDocument();
+    expect(screen.getByText("Crear receta: Salsa verde")).toBeInTheDocument();
+    expect(screen.getByText("Salsa verde")).toBeInTheDocument();
+    expect(screen.getByText("Salsa roja")).toBeInTheDocument();
+    expect(screen.getByText(/100 g Perejil/)).toBeInTheDocument();
+    expect(screen.getAllByText("2").length).toBeGreaterThan(0);
+    expect(screen.getByText(/Relacionado/)).toBeInTheDocument();
+    expect(screen.queryByText(/Lector Word pendiente/)).not.toBeInTheDocument();
     expect(screen.getAllByText(/Pendiente de revisión/).length).toBeGreaterThan(0);
     expect(screen.getByText(/Ninguna propuesta ha sido aplicada/)).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /confirmar/i })).not.toBeInTheDocument();
@@ -89,7 +130,7 @@ describe("Importador Inteligente de Biblioteca", () => {
       json: async () => ({
         ok: false, version: "1.0", api_version: "1.0", request_id: "IMP-ERR",
         modo_seguro: true, datos_reales_modificados: false,
-        error: { status: 400, code: "invalid_content", message: "Documento inválido." },
+        error: { status: 400, code: "contenido_no_interpretable", message: "Documento inválido." },
       }),
     } as Response);
     render(<MemoryRouter initialEntries={["/biblioteca/importaciones"]}><App /></MemoryRouter>);

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import base64
+import logging
 import tempfile
 import unicodedata
 from pathlib import Path
@@ -24,8 +25,12 @@ from SERVICIOS.centro_importacion_601 import (
     LectorImagen601,
     LectorPdf601,
     LectorTexto601,
-    LectorWord601,
 )
+from SERVICIOS.extractor_recetas_word import WordRecipeExtractor
+from SERVICIOS.lector_word_documentos import WordDocumentReadError, WordDocumentReader
+
+
+logger = logging.getLogger(__name__)
 
 
 class DocumentClassifier(Protocol):
@@ -92,7 +97,6 @@ class ExistingReadersDocumentInterpreter:
     """Adapta los lectores 6.0.1; los bytes solo existen durante la interpretación."""
 
     READERS = {
-        ".docx": LectorWord601,
         ".xlsx": LectorExcel601,
         ".pdf": LectorPdf601,
         ".jpg": LectorImagen601,
@@ -106,6 +110,8 @@ class ExistingReadersDocumentInterpreter:
             document = LectorTexto601().leer(text or content.decode("utf-8", errors="replace"))
             document.etiqueta_origen = filename or "texto_pegado"
             return document
+        if suffix == ".docx":
+            return self._interpret_word(filename, content)
         reader_type = self.READERS.get(suffix)
         if reader_type is None:
             return DocumentoImportacion601(
@@ -126,18 +132,44 @@ class ExistingReadersDocumentInterpreter:
             if temp_path is not None:
                 temp_path.unlink(missing_ok=True)
 
+    @staticmethod
+    def _interpret_word(filename: str, content: bytes) -> DocumentoImportacion601:
+        temp_path: Path | None = None
+        try:
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".docx") as temp:
+                temp.write(content)
+                temp_path = Path(temp.name)
+            parsed = WordDocumentReader().read(temp_path, filename=filename)
+            return DocumentoImportacion601(
+                origen="WORD",
+                etiqueta_origen=filename,
+                texto=parsed.plain_text,
+                archivos=[],
+                advertencias=list(parsed.warnings),
+                payload={"documento_estructurado": parsed.to_dict()},
+            )
+        finally:
+            if temp_path is not None:
+                temp_path.unlink(missing_ok=True)
+
 
 class ExistingFlowKnowledgeExtractor:
     """Proyecta el contexto no persistente del flujo de importación certificado."""
 
     def __init__(self, base_dir: Path) -> None:
         self.flow = FlujoImportacionUnificado601(base_dir)
+        self.word_recipes = WordRecipeExtractor(base_dir)
 
     def extract(
         self,
         document: DocumentoImportacion601,
         document_type: DocumentType,
     ) -> tuple[list[DocumentSection], list[ExtractedEntity], dict[str, Any]]:
+        structured = dict((document.payload or {}).get("documento_estructurado") or {})
+        if document.origen == "WORD" and structured:
+            blocks = list(structured.get("bloques") or [])
+            context = self.word_recipes.extract(blocks)
+            return self._structured_sections(blocks), self._entities(context), context
         if document_type == DocumentType.ESCANDALLO:
             document.tipo_contenido = "ESCANDALLOS"
         elif document_type == DocumentType.MENU:
@@ -154,6 +186,26 @@ class ExistingFlowKnowledgeExtractor:
         sections = self._sections(document.texto)
         entities = self._entities(context)
         return sections, entities, context
+
+    @staticmethod
+    def _structured_sections(blocks: list[dict[str, Any]]) -> list[DocumentSection]:
+        sections: list[DocumentSection] = []
+        for index, block in enumerate(blocks, 1):
+            text = str(block.get("texto") or "").strip()
+            if not text:
+                continue
+            sections.append(DocumentSection(
+                id=f"SEC-{index:03d}",
+                title=text[:200],
+                kind=str(block.get("tipo") or "unknown"),
+                fields={
+                    "nivel": block.get("nivel"),
+                    "filas": list(block.get("filas") or []),
+                    "orden": block.get("orden"),
+                    "referencia_origen": block.get("referencia_origen"),
+                },
+            ))
+        return sections
 
     @staticmethod
     def _sections(text: str) -> list[DocumentSection]:
@@ -176,7 +228,12 @@ class ExistingFlowKnowledgeExtractor:
             ))
         for index, ingredient in enumerate(list(context.get("ingredientes") or []), 1):
             data = dict(ingredient) if isinstance(ingredient, dict) else {"nombre": str(ingredient)}
-            name = str(data.get("nombre") or data.get("ingrediente") or f"Ingrediente {index}")
+            name = str(
+                data.get("nombre_original")
+                or data.get("nombre")
+                or data.get("ingrediente")
+                or f"Ingrediente {index}"
+            )
             entities.append(ExtractedEntity(
                 f"ENT-ING-{index:03d}", "INGREDIENTE", name, data,
                 Confidence(0.7, "Ingrediente detectado por el flujo de importación 6.0.1."),
@@ -197,24 +254,41 @@ class ReviewOnlyProposalBuilder:
         origin: dict[str, Any],
     ) -> list[Proposal]:
         proposals: list[Proposal] = []
-        recipes = [entity for entity in entities if entity.kind == "RECETA"]
-        for entity in recipes:
-            proposals.extend([
-                self._proposal(import_id, len(proposals) + 1, ProposalType.CREAR_ELABORACION, entity, origin),
-                self._proposal(import_id, len(proposals) + 1, ProposalType.CREAR_RECETA, entity, origin),
-            ])
-        for product in list(context.get("productos_nuevos") or []):
-            data = dict(product) if isinstance(product, dict) else {"nombre": str(product)}
-            entity = ExtractedEntity(
-                f"ENT-ART-{len(proposals) + 1:03d}",
-                "ARTICULO",
-                str(data.get("nombre") or data.get("producto") or "Artículo pendiente"),
-                data,
-                Confidence(0.6, "Producto no relacionado detectado por el flujo existente."),
-            )
+        for entity in [item for item in entities if item.kind == "RECETA"]:
+            match = dict(entity.fields.get("coincidencia_biblioteca") or {})
+            state = str(match.get("estado") or "nueva_entidad")
+            if state == "coincidencia_exacta":
+                proposals.append(self._proposal(
+                    import_id, len(proposals) + 1, ProposalType.ACTUALIZAR_RECETA,
+                    entity, origin, conflicts=list(match.get("candidatos") or []),
+                ))
+            elif state == "posible_duplicado":
+                proposals.append(self._proposal(
+                    import_id, len(proposals) + 1, ProposalType.REVISAR_COINCIDENCIA,
+                    entity, origin, conflicts=list(match.get("candidatos") or []),
+                ))
+            else:
+                proposals.extend([
+                    self._proposal(import_id, len(proposals) + 1, ProposalType.CREAR_ELABORACION, entity, origin),
+                    self._proposal(import_id, len(proposals) + 1, ProposalType.CREAR_RECETA, entity, origin),
+                ])
+
+        for entity in [item for item in entities if item.kind == "INGREDIENTE"]:
+            state = str(entity.fields.get("estado_relacion") or "sin_relacionar")
+            proposal_type = {
+                "relacionado": ProposalType.RELACIONAR_INGREDIENTE,
+                "coincidencia_dudosa": ProposalType.REVISAR_COINCIDENCIA,
+                "sin_relacionar": ProposalType.CREAR_ARTICULO,
+            }.get(state, ProposalType.REVISAR_COINCIDENCIA)
             proposals.append(self._proposal(
-                import_id, len(proposals) + 1, ProposalType.CREAR_ARTICULO, entity, origin
+                import_id,
+                len(proposals) + 1,
+                proposal_type,
+                entity,
+                origin,
+                conflicts=list(entity.fields.get("candidatos") or []),
             ))
+
         type_map = {
             DocumentType.ESCANDALLO: ProposalType.ACTUALIZAR_ESCANDALLO,
             DocumentType.FICHA_TECNICA: ProposalType.ACTUALIZAR_FICHA_TECNICA,
@@ -225,9 +299,7 @@ class ReviewOnlyProposalBuilder:
                 "ENT-DOC-001", document_type.value, origin["nombre"], {},
                 Confidence(0.5, "Tipo documental detectado; extracción detallada pendiente."),
             )
-            proposals.append(self._proposal(
-                import_id, 1, type_map[document_type], entity, origin
-            ))
+            proposals.append(self._proposal(import_id, 1, type_map[document_type], entity, origin))
         if not proposals:
             entity = ExtractedEntity(
                 "ENT-DOC-001", "DOCUMENTO", origin["nombre"], {},
@@ -245,7 +317,11 @@ class ReviewOnlyProposalBuilder:
         proposal_type: ProposalType,
         entity: ExtractedEntity,
         origin: dict[str, Any],
+        conflicts: list[dict[str, Any]] | None = None,
     ) -> Proposal:
+        source_blocks = list(entity.fields.get("bloques_origen") or [])
+        if entity.fields.get("bloque_origen"):
+            source_blocks.append(str(entity.fields["bloque_origen"]))
         return Proposal(
             id=f"{import_id}-PROP-{index:03d}",
             type=proposal_type,
@@ -254,6 +330,11 @@ class ReviewOnlyProposalBuilder:
             explanation=f"Propuesta generada a partir de {entity.kind.lower()} «{entity.name}».",
             origin=dict(origin),
             payload={"entidad": entity.to_dict()},
+            title=f"{proposal_type.value.replace('_', ' ').title()}: {entity.name}",
+            source_entity=entity.id,
+            source_blocks=source_blocks,
+            warnings=list(entity.fields.get("advertencias") or []),
+            conflicts=list(conflicts or []),
         )
 
 
@@ -279,27 +360,55 @@ class ImportDocumentService:
         filename = Path(str(payload.get("nombre") or "documento.txt")).name
         suffix = Path(filename).suffix.lower()
         if suffix not in self.ALLOWED_EXTENSIONS:
-            return self._error("unsupported_format", "Formato de documento no admitido.", 400)
+            return self._error("formato_no_soportado", "Formato de documento no admitido.", 400)
         try:
             content = base64.b64decode(str(payload.get("contenido_base64") or ""), validate=True)
         except (ValueError, TypeError):
-            return self._error("invalid_content", "El contenido del documento no es válido.", 400)
+            return self._error("contenido_no_interpretable", "El contenido del documento no es válido.", 400)
         text = str(payload.get("texto") or "")
         if not content and not text:
-            return self._error("empty_document", "El documento está vacío.", 400)
+            return self._error("documento_vacio", "El documento está vacío.", 400)
         effective_size = len(content) if content else len(text.encode("utf-8"))
         if effective_size > self.MAX_BYTES:
             return self._error("document_too_large", "El documento supera el límite de 10 MB.", 413)
         media_type = str(payload.get("tipo_mime") or "application/octet-stream")
         document_type, classification = self.classifier.classify(filename=filename, text=text)
-        interpreted = self.interpreter.interpret(
-            filename=filename, content=content, text=text
-        )
+        try:
+            interpreted = self.interpreter.interpret(
+                filename=filename, content=content, text=text
+            )
+        except WordDocumentReadError as exc:
+            return self._error(exc.code, str(exc), exc.status)
+        except Exception as exc:
+            logger.exception("Error interno al interpretar %s.", filename)
+            return self._error(
+                "error_interno",
+                f"No se pudo interpretar el documento: {type(exc).__name__}.",
+                500,
+            )
         if not text and interpreted.texto:
             document_type, classification = self.classifier.classify(
                 filename=filename, text=interpreted.texto
             )
         sections, entities, context = self.extractor.extract(interpreted, document_type)
+        detected_recipes = list(context.get("recetas") or [])
+        if detected_recipes:
+            document_type = (
+                DocumentType.RECETA
+                if document_type in {
+                    DocumentType.DOCUMENTACION,
+                    DocumentType.DESCONOCIDO,
+                    DocumentType.RECETA,
+                }
+                else DocumentType.MIXTO
+            )
+            classification = Confidence(
+                min(0.92, 0.72 + (0.05 * len(detected_recipes))),
+                (
+                    f"Se detectaron {len(detected_recipes)} recetas delimitadas "
+                    "por la estructura y el contenido del documento."
+                ),
+            )
         import_id = f"IMPWEB-{uuid4().hex[:12].upper()}"
         origin = {"importacion_id": import_id, "nombre": filename, "tipo": interpreted.origen}
         proposals = self.proposal_builder.build(
@@ -328,12 +437,48 @@ class ImportDocumentService:
                 "entidades": len(entities),
                 "propuestas": len(proposals),
                 "incidencias": len(list(context.get("incidencias") or [])),
+                "recetas_detectadas": len(list(context.get("recetas") or [])),
+                "ingredientes_detectados": len(list(context.get("ingredientes") or [])),
+                "ingredientes_relacionados": sum(
+                    item.get("estado_relacion") == "relacionado"
+                    for item in list(context.get("ingredientes") or [])
+                ),
+                "coincidencias_dudosas": sum(
+                    item.get("estado_relacion") == "coincidencia_dudosa"
+                    for item in list(context.get("ingredientes") or [])
+                ),
+                "ingredientes_sin_relacionar": sum(
+                    item.get("estado_relacion") == "sin_relacionar"
+                    for item in list(context.get("ingredientes") or [])
+                ),
+                "ingredientes_nuevos": sum(
+                    item.get("estado_relacion") == "sin_relacionar"
+                    for item in list(context.get("ingredientes") or [])
+                ),
+                "duplicados_detectados": sum(
+                    str((item.get("coincidencia_biblioteca") or {}).get("estado") or "")
+                    in {"coincidencia_exacta", "posible_duplicado"}
+                    for item in list(context.get("recetas") or [])
+                ),
                 "estado": "PENDIENTE_REVISION",
             },
             "propuestas": [item.to_dict() for item in proposals],
             "solo_previsualizacion": True,
             "confirmacion_disponible": False,
+            "limitaciones": [
+                "Las imágenes incrustadas no se interpretan en esta fase.",
+                "Los documentos ambiguos requieren revisión humana.",
+            ],
         }
+        logger.info(
+            "Importación interpretada: lector=%s tipo=%s secciones=%d entidades=%d propuestas=%d advertencias=%d",
+            interpreted.origen,
+            document_type.value,
+            len(sections),
+            len(entities),
+            len(proposals),
+            len(interpreted.advertencias or []),
+        )
         self._sessions[import_id] = session
         return {"ok": True, "importacion": session}
 

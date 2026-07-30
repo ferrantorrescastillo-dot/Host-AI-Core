@@ -66,6 +66,7 @@ export function BibliotecaImportPage() {
 
 function ImportPreview({ session }: { session: BibliotecaImportSession }) {
   const { documento, resumen, propuestas } = session;
+  const recipes = documento.entidades.filter((entity) => entity.kind === "RECETA");
   return <section className="catalog-section">
     <h3>Documento recibido</h3>
     <dl className="detail-grid">
@@ -73,19 +74,44 @@ function ImportPreview({ session }: { session: BibliotecaImportSession }) {
       <dt>Clasificación</dt><dd>{documento.clasificacion.tipo}</dd>
       <dt>Confianza</dt><dd>{Math.round(documento.clasificacion.confianza.valor * 100)}%</dd>
       <dt>Estado</dt><dd>Pendiente de revisión</dd>
-      <dt>Entidades detectadas</dt><dd>{resumen.entidades}</dd>
+      <dt>Recetas detectadas</dt><dd>{resumen.recetas_detectadas}</dd>
+      <dt>Ingredientes detectados</dt><dd>{resumen.ingredientes_detectados}</dd>
+      <dt>Ingredientes relacionados</dt><dd>{resumen.ingredientes_relacionados}</dd>
+      <dt>Coincidencias dudosas</dt><dd>{resumen.coincidencias_dudosas}</dd>
+      <dt>Ingredientes sin relacionar</dt><dd>{resumen.ingredientes_sin_relacionar}</dd>
+      <dt>Posibles duplicados</dt><dd>{resumen.duplicados_detectados}</dd>
       <dt>Propuestas</dt><dd>{resumen.propuestas}</dd>
     </dl>
     <p>{documento.clasificacion.confianza.explicacion}</p>
     {documento.advertencias.length ? <><h4>Advertencias</h4><ul>{documento.advertencias.map((item) => <li key={item}>{item}</li>)}</ul></> : null}
+    <h3>Entidades detectadas</h3>
+    {recipes.length ? <ul className="operational-checks">{recipes.map((recipe) => <li key={recipe.id}>
+      <strong>{recipe.name}</strong>
+      <span> · {recipe.fields.ingredientes_estructurados?.length ?? 0} ingredientes</span>
+      {recipe.fields.ingredientes_estructurados?.length ? <ul>
+        {recipe.fields.ingredientes_estructurados.map((ingredient, index) => <li key={`${recipe.id}-${index}`}>
+          {ingredient.cantidad_texto} {ingredient.unidad ?? ""} {ingredient.nombre_original}
+          {" · "}{relationLabel(ingredient.estado_relacion)}
+        </li>)}
+      </ul> : <p>Sin ingredientes estructurados.</p>}
+    </li>)}</ul> : <p>No se detectaron recetas con estructura suficiente.</p>}
     <h3>Propuestas detectadas</h3>
     <ul className="operational-checks">{propuestas.map((proposal) => <li key={proposal.id}>
-      <strong>{proposalLabel(proposal.tipo)}</strong>
+      <strong>{proposal.titulo || proposalLabel(proposal.tipo)}</strong>
       <span> · {Math.round(proposal.confianza.valor * 100)}% · Pendiente de revisión</span>
       <p>{proposal.explicacion}</p>
     </li>)}</ul>
+    {session.limitaciones.length ? <><h4>Limitaciones</h4><ul>{session.limitaciones.map((item) => <li key={item}>{item}</li>)}</ul></> : null}
     <p><strong>Pendiente de implementar:</strong> revisión, edición y confirmación. Ninguna propuesta ha sido aplicada.</p>
   </section>;
+}
+
+function relationLabel(value: string) {
+  return {
+    relacionado: "Relacionado",
+    coincidencia_dudosa: "Revisar coincidencia",
+    sin_relacionar: "Sin relacionar",
+  }[value] ?? value;
 }
 
 function proposalLabel(value: string) {

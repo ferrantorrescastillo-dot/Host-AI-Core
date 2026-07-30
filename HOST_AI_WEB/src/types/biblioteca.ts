@@ -199,9 +199,36 @@ export type ImportProposal = {
   estado: "PENDIENTE_REVISION";
   confianza: { valor: number; explicacion: string };
   explicacion: string;
+  titulo: string;
   origen: { importacion_id: string; nombre: string; tipo: string };
+  entidad_origen: string | null;
+  bloques_origen: string[];
+  advertencias: string[];
+  conflictos: Array<Record<string, unknown>>;
   datos_propuestos: Record<string, unknown>;
   persistida: false;
+};
+
+export type BibliotecaImportEntity = {
+  id: string;
+  kind: "RECETA" | "INGREDIENTE" | string;
+  name: string;
+  fields: {
+    ingredientes_estructurados?: Array<{
+      nombre_original: string;
+      cantidad_texto: string;
+      unidad?: string | null;
+      estado_relacion: "relacionado" | "coincidencia_dudosa" | "sin_relacionar";
+      articulo_id?: string | null;
+    }>;
+    pasos?: string[];
+    estado_relacion?: "relacionado" | "coincidencia_dudosa" | "sin_relacionar";
+    cantidad_texto?: string;
+    unidad?: string | null;
+    receta?: string;
+    [key: string]: unknown;
+  };
+  confidence: { valor: number; explicacion: string };
 };
 
 export type BibliotecaImportSession = {
@@ -214,9 +241,11 @@ export type BibliotecaImportSession = {
     clasificacion: {
       tipo: string;
       confianza: { valor: number; explicacion: string };
+      evidencias: string[];
+      advertencias: string[];
     };
     secciones: Array<Record<string, unknown>>;
-    entidades: Array<Record<string, unknown>>;
+    entidades: BibliotecaImportEntity[];
     advertencias: string[];
     contenido_almacenado: false;
   };
@@ -225,11 +254,19 @@ export type BibliotecaImportSession = {
     entidades: number;
     propuestas: number;
     incidencias: number;
+    recetas_detectadas: number;
+    ingredientes_detectados: number;
+    ingredientes_relacionados: number;
+    coincidencias_dudosas: number;
+    ingredientes_sin_relacionar: number;
+    ingredientes_nuevos: number;
+    duplicados_detectados: number;
     estado: "PENDIENTE_REVISION";
   };
   propuestas: ImportProposal[];
   solo_previsualizacion: true;
   confirmacion_disponible: false;
+  limitaciones: string[];
 };
 
 export type BibliotecaImportResponse = ApiEnvelope & {

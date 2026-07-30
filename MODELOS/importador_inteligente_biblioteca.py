@@ -15,6 +15,7 @@ class DocumentType(str, Enum):
     ALBARAN = "ALBARAN"
     DOCUMENTACION = "DOCUMENTACION"
     DESCONOCIDO = "DESCONOCIDO"
+    MIXTO = "MIXTO"
 
 
 class ProposalType(str, Enum):
@@ -27,6 +28,9 @@ class ProposalType(str, Enum):
     ACTUALIZAR_ESCANDALLO = "ACTUALIZAR_ESCANDALLO"
     CREAR_MENU = "CREAR_MENU"
     REVISAR_DOCUMENTACION = "REVISAR_DOCUMENTACION"
+    CREAR_ESCANDALLO = "CREAR_ESCANDALLO"
+    GENERAR_FICHA_TECNICA = "GENERAR_FICHA_TECNICA"
+    REVISAR_COINCIDENCIA = "REVISAR_COINCIDENCIA"
 
 
 class ProposalStatus(str, Enum):
@@ -74,6 +78,11 @@ class Proposal:
     explanation: str
     origin: dict[str, Any]
     payload: dict[str, Any]
+    title: str = ""
+    source_entity: str = ""
+    source_blocks: list[str] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
+    conflicts: list[dict[str, Any]] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -82,7 +91,12 @@ class Proposal:
             "estado": self.status.value,
             "confianza": self.confidence.to_dict(),
             "explicacion": self.explanation,
+            "titulo": self.title or self.type.value.replace("_", " ").title(),
             "origen": dict(self.origin),
+            "entidad_origen": self.source_entity or None,
+            "bloques_origen": list(self.source_blocks),
+            "advertencias": list(self.warnings),
+            "conflictos": list(self.conflicts),
             "datos_propuestos": dict(self.payload),
             "persistida": False,
         }
@@ -111,6 +125,8 @@ class ImportDocument:
             "clasificacion": {
                 "tipo": self.document_type.value,
                 "confianza": self.classification.to_dict(),
+                "evidencias": [self.classification.reason],
+                "advertencias": list(self.warnings),
             },
             "secciones": [item.to_dict() for item in self.sections],
             "entidades": [item.to_dict() for item in self.entities],
