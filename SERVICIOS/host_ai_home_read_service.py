@@ -318,7 +318,12 @@ class HostAIHomeReadService:
         return modulo
 
     def _leer_alertas_stock(self) -> dict[str, Any]:
-        diag = dict(getattr(self.core.stock, "diagnosticar_stock")() or {})
+        motor = self.core.stock
+        actual = dict(getattr(motor, "stock_actual")() or {})
+        lotes = list(getattr(motor, "lotes_listado")() or [])
+        movimientos = list(getattr(motor, "movimientos_listado")() or [])
+        diag = dict(getattr(motor, "diagnosticar_stock")() or {})
+        resumen_motor = dict(getattr(motor, "resumen_operativo")() or {})
         avisos = list(diag.get("avisos") or [])
         items = [
             {
@@ -328,7 +333,47 @@ class HostAIHomeReadService:
             }
             for a in avisos
         ]
-        return self._pack_items(items)
+        modulo = self._pack_items(items)
+        modulo.update(
+            {
+                "existencias": list(actual.get("items") or []),
+                "total_existencias": int(actual.get("total_items") or 0),
+                "lotes": lotes,
+                "total_lotes": int(actual.get("total_lotes") or len(lotes)),
+                "movimientos": movimientos,
+                "total_movimientos": len(movimientos),
+                "alertas": items,
+                "total_alertas": len(items),
+                "estado_operativo": str(diag.get("estado") or ""),
+                "caducidades": [
+                    item
+                    for item in items
+                    if item["tipo"]
+                    in {"caducado", "caducidad_cercana", "caducidad_invalida"}
+                ],
+                "total_caducidades": sum(
+                    1
+                    for item in items
+                    if item["tipo"]
+                    in {"caducado", "caducidad_cercana", "caducidad_invalida"}
+                ),
+                "resumen": {
+                    "articulos": int(resumen_motor.get("total_articulos") or 0),
+                    "lotes": int(resumen_motor.get("total_lotes") or 0),
+                    "movimientos": len(movimientos),
+                    "alertas": int(resumen_motor.get("total_avisos") or 0),
+                    "bajo_minimo": int(
+                        resumen_motor.get("articulos_bajo_minimo") or 0
+                    ),
+                    "caducados": int(resumen_motor.get("lotes_caducados") or 0),
+                    "caducan_pronto": int(
+                        resumen_motor.get("lotes_caducan_pronto") or 0
+                    ),
+                    "valor_total": float(resumen_motor.get("valor_total") or 0),
+                },
+            }
+        )
+        return modulo
 
     def _leer_produccion_pendiente(self) -> dict[str, Any]:
         motor = self.core.produccion_real

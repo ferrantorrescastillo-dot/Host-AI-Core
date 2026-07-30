@@ -6,6 +6,7 @@ import { HomePage } from "./pages/HomePage";
 import { EventosPage } from "./pages/EventosPage";
 import { ComprasPage } from "./pages/ComprasPage";
 import { ProduccionPage } from "./pages/ProduccionPage";
+import { StockPage } from "./pages/StockPage";
 import { NotFoundPage } from "./pages/NotFoundPage";
 import { PlaceholderPage } from "./pages/PlaceholderPage";
 
@@ -19,7 +20,7 @@ export function App() {
         <Route path="/eventos" element={<EventosPage />} />
         <Route path="/produccion" element={<ProduccionPage />} />
         <Route path="/compras" element={<ComprasPage />} />
-        <Route path="/stock" element={<PlaceholderPage modulo="Stock" />} />
+        <Route path="/stock" element={<StockPage />} />
         <Route path="/configuracion" element={<PlaceholderPage modulo="Configuracion" />} />
         <Route path="/home" element={<Navigate to="/" replace />} />
         <Route path="*" element={<NotFoundPage />} />

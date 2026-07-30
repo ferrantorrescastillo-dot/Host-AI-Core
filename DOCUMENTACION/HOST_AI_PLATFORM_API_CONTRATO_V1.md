@@ -127,6 +127,28 @@ tareas con estado, prioridad, cantidad, unidad, bloqueo, retraso, progreso e
 incidencias. Solo se publican planes con tareas no finalizadas. La lectura no
 modifica datos reales y no introduce reglas de produccion en la fachada HTTP.
 
+### 3.7 Stock en dashboard
+
+`GET /api/v1/dashboard` expone el estado operativo de Stock en
+`dashboard.modulos.stock`, construido por `HostAIHomeReadService` mediante
+las operaciones de lectura existentes de `MotorStock`.
+
+- `estado`, `total` e `items`: contrato compatible de alertas de Stock.
+- `existencias` y `total_existencias`: articulos agrupados y cantidades
+  actuales devueltos por `stock_actual()`.
+- `lotes` y `total_lotes`: lotes positivos ordenados por el motor.
+- `movimientos` y `total_movimientos`: historial ordenado por el motor.
+- `alertas` y `total_alertas`: alias explicito de las alertas del contrato
+  base.
+- `estado_operativo`: estado calculado por `diagnosticar_stock()`.
+- `caducidades` y `total_caducidades`: alertas de caducidad ya calculadas
+  por el motor.
+- `resumen`: articulos, lotes, movimientos, alertas, stock bajo minimo,
+  caducidades y valor total procedentes de `resumen_operativo()`.
+
+El agregador no calcula disponibilidad, minimos ni fechas de caducidad. No
+modifica datos reales y no accede directamente al almacenamiento.
+
 ## 4. Codigos de estado
 
 - 200: respuesta valida (incluye respuestas funcionales de endpoint).

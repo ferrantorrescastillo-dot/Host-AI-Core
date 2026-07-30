@@ -25,8 +25,82 @@ export type DashboardPayload = {
     eventos?: EventosModule;
     compras?: ComprasModule;
     produccion?: ProduccionModule;
+    stock?: StockModule;
     [key: string]: unknown;
   };
+};
+
+export type StockLote = {
+  id?: string;
+  nombre?: string;
+  cantidad?: number;
+  unidad?: string;
+  familia?: string;
+  ubicacion?: string;
+  proveedor?: string;
+  articulo_id?: string;
+  fecha_entrada?: string;
+  caducidad?: string;
+  coste_unitario?: number;
+  creado_en?: string;
+};
+
+export type StockExistencia = {
+  clave?: string;
+  nombre?: string;
+  articulo_id?: string;
+  familia?: string;
+  unidad?: string;
+  cantidad?: number;
+  lotes?: StockLote[];
+};
+
+export type StockMovimiento = {
+  id?: string;
+  tipo?: string;
+  nombre?: string;
+  cantidad?: number;
+  unidad?: string;
+  motivo?: string;
+  lote_id?: string;
+  articulo_id?: string;
+  creado_en?: string;
+};
+
+export type StockAlerta = {
+  tipo?: string;
+  nivel?: string;
+  mensaje?: string;
+};
+
+export type StockResumen = {
+  articulos?: number;
+  lotes?: number;
+  movimientos?: number;
+  alertas?: number;
+  bajo_minimo?: number;
+  caducados?: number;
+  caducan_pronto?: number;
+  valor_total?: number;
+};
+
+export type StockModule = {
+  estado?: string;
+  total?: number;
+  items?: StockAlerta[];
+  existencias?: StockExistencia[];
+  total_existencias?: number;
+  lotes?: StockLote[];
+  total_lotes?: number;
+  movimientos?: StockMovimiento[];
+  total_movimientos?: number;
+  alertas?: StockAlerta[];
+  total_alertas?: number;
+  estado_operativo?: string;
+  caducidades?: StockAlerta[];
+  total_caducidades?: number;
+  resumen?: StockResumen;
+  mensaje?: string;
 };
 
 export type ProduccionTareaListItem = {
