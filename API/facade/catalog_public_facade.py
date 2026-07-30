@@ -113,6 +113,29 @@ class CatalogPublicFacade(CorePublicApi02Facade):
             operation_name="actualizar el borrador de una importación de Biblioteca",
         )
 
+    def confirmar_importacion_biblioteca(
+        self, importacion_id: str, body: dict[str, Any]
+    ) -> dict[str, Any]:
+        return self._library_call(
+            self._get_biblioteca_import_service().confirm, importacion_id, dict(body or {}),
+            error_code="library_import_confirmation_failed",
+            operation_name="confirmar una importación de Biblioteca",
+        )
+
+    def estado_importacion_biblioteca(self, importacion_id: str) -> dict[str, Any]:
+        return self._library_call(
+            self._get_biblioteca_import_service().get_status, importacion_id,
+            error_code="library_import_failed",
+            operation_name="consultar el estado de una importación de Biblioteca",
+        )
+
+    def historial_importacion_biblioteca(self, importacion_id: str) -> dict[str, Any]:
+        return self._library_call(
+            self._get_biblioteca_import_service().get_history, importacion_id,
+            error_code="library_import_failed",
+            operation_name="consultar el historial de una importación de Biblioteca",
+        )
+
     def _library_call(
         self,
         operation: Any,

@@ -162,6 +162,16 @@ export const hostAiApiClient = {
     );
   },
 
+  confirmBibliotecaImport(
+    id: string,
+    input: { draft_version: number; usuario: string; confirmacion: "CONFIRMAR" },
+  ): Promise<import("../types/biblioteca").BibliotecaImportConfirmationResponse> {
+    return request(
+      `/api/v1/biblioteca/importaciones/${encodeURIComponent(id)}/confirmar`,
+      { method: "POST", body: JSON.stringify(input) },
+    );
+  },
+
   sendChatMessage(input: { mensaje: string; contexto?: Record<string, unknown> }): Promise<ChatResponse> {
     return request<ChatResponse>("/api/v1/chat", {
       method: "POST",

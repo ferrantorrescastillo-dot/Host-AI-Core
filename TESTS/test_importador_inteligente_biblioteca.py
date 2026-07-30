@@ -117,7 +117,7 @@ def test_importacion_genera_solo_propuestas_y_no_conserva_documento(tmp_path: Pa
     assert document["clasificacion"]["tipo"] == "RECETA"
     assert document["contenido_almacenado"] is False
     assert preview["solo_previsualizacion"] is True
-    assert preview["confirmacion_disponible"] is False
+    assert preview["confirmacion_disponible"] is True
     assert preview["propuestas"]
     assert all(item["estado"] == "PENDIENTE_REVISION" for item in preview["propuestas"])
     assert all(item["persistida"] is False for item in preview["propuestas"])
@@ -185,7 +185,7 @@ def test_http_word_genera_sesion_clasificacion_y_propuestas_sin_escribir(
         for warning in session["documento"]["advertencias"]
     )
     assert session["solo_previsualizacion"] is True
-    assert session["confirmacion_disponible"] is False
+    assert session["confirmacion_disponible"] is True
 
 
 def test_word_con_dos_recetas_tabla_listas_y_propuestas_separadas(
@@ -313,7 +313,18 @@ def test_python_docx_disponible_y_previsualizacion_no_escribe_datos(
         if path.is_file()
     }
     assert result["ok"] is True
-    assert before == after
+    # La fase final persiste únicamente conocimiento estructurado y auditoría,
+    # nunca el DOCX ni cambios en las fuentes maestras.
+    domain_files = {
+        Path("DATOS/db/articulos.json"),
+        Path("DATOS/db/biblioteca_recetas_601.json"),
+        Path("DATOS/db/biblioteca_escandallos_601.json"),
+    }
+    assert {path: before.get(path) for path in domain_files} == {
+        path: after.get(path) for path in domain_files
+    }
+    store = (tmp_path / "DATOS/db/biblioteca_importaciones_web.json").read_text(encoding="utf-8")
+    assert "UEsDB" not in store
     assert all(not item["persistida"] for item in result["importacion"]["propuestas"])
 
 

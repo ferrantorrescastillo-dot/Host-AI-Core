@@ -265,7 +265,7 @@ export type BibliotecaImportSession = {
   };
   propuestas: ImportProposal[];
   solo_previsualizacion: true;
-  confirmacion_disponible: false;
+  confirmacion_disponible: boolean;
   limitaciones: string[];
   borrador: ImportDraft;
 };
@@ -341,7 +341,7 @@ export type RecipeDraft = {
 export type ImportDraft = {
   id: string;
   document_id: string;
-  status: "PENDIENTE_REVISION" | "EN_REVISION";
+  status: "PENDIENTE_REVISION" | "EN_REVISION" | "CONFIRMADA";
   classification: string;
   confidence: number;
   recipes: RecipeDraft[];
@@ -351,12 +351,27 @@ export type ImportDraft = {
   draft_version: number;
   created_at: string;
   updated_at: string;
-  persisted: false;
-  confirmation_available: false;
+  persisted: boolean;
+  confirmation_available: boolean;
 };
 
 export type BibliotecaDraftResponse = ApiEnvelope & {
   importacion_id: string;
   borrador: ImportDraft;
   datos_reales_modificados: false;
+};
+
+export type ImportConfirmationResult = {
+  estado: "COMPLETADA" | "FALLIDA";
+  acciones: Array<{ tipo: string; id: string }>;
+  entidades: Array<{ tipo: string; id: string; nombre: string }>;
+  errores: Array<{ entidad: string; validacion: string; accion: string; mensaje: string }>;
+  rollback: boolean;
+  transaccion_id?: string;
+};
+
+export type BibliotecaImportConfirmationResponse = ApiEnvelope & {
+  importacion_id: string;
+  estado: "CONFIRMADA";
+  resultado: ImportConfirmationResult;
 };

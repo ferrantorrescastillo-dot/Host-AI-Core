@@ -263,3 +263,12 @@ memoria y se pierden al reiniciar el backend.
 No existe todavía una operación pública para aplicar el borrador. La siguiente
 fase será la validación final y confirmación transaccional, con vista previa,
 trazabilidad y rollback.
+## Confirmación transaccional del Importador Inteligente
+
+Host AI no conserva el documento original: persiste únicamente el borrador estructurado,
+su versión, estado, usuario e historial. Guardar y revisar nunca modifica la Biblioteca.
+La acción **Confirmar e importar** exige aceptación explícita, valida el borrador y ejecuta
+los casos de uso 6.0.1 de artículos, recetas, fichas y escandallos sobre una preparación
+aislada. Los cambios resultantes se publican en una única transacción con backup,
+verificación y rollback completo. Una versión obsoleta, una jerarquía inválida o un campo
+culinario obligatorio vacío bloquean la operación sin cambios parciales.

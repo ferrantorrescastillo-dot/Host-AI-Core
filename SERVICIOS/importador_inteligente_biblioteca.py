@@ -33,6 +33,10 @@ from SERVICIOS.borrador_importacion_biblioteca import (
     ImportDraftService,
 )
 from SERVICIOS.lector_word_documentos import WordDocumentReadError, WordDocumentReader
+from SERVICIOS.confirmacion_importacion_biblioteca import (
+    ImportConfirmationService,
+    ImportSessionRepository,
+)
 
 
 logger = logging.getLogger(__name__)
@@ -360,7 +364,9 @@ class ImportDocumentService:
         self.extractor = extractor or ExistingFlowKnowledgeExtractor(base_dir)
         self.proposal_builder = proposal_builder or ReviewOnlyProposalBuilder()
         self.drafts = ImportDraftService(base_dir)
-        self._sessions: dict[str, dict[str, Any]] = {}
+        self.repository = ImportSessionRepository(base_dir)
+        self.confirmations = ImportConfirmationService(base_dir, self.repository)
+        self._sessions = self.repository.load_all()
 
     def import_document(self, payload: dict[str, Any]) -> dict[str, Any]:
         filename = Path(str(payload.get("nombre") or "documento.txt")).name
@@ -470,7 +476,9 @@ class ImportDocumentService:
             },
             "propuestas": [item.to_dict() for item in proposals],
             "solo_previsualizacion": True,
-            "confirmacion_disponible": False,
+            "confirmacion_disponible": True,
+            "estado": "PENDIENTE_REVISION",
+            "historial": [],
             "limitaciones": [
                 "Las imágenes incrustadas no se interpretan en esta fase.",
                 "Los documentos ambiguos requieren revisión humana.",
@@ -492,6 +500,7 @@ class ImportDocumentService:
             len(interpreted.advertencias or []),
         )
         self._sessions[import_id] = session
+        self.repository.save_all(self._sessions)
         return {"ok": True, "importacion": session}
 
     def get_import(self, import_id: str) -> dict[str, Any]:
@@ -543,14 +552,38 @@ class ImportDocumentService:
         except DraftValidationError as exc:
             return self._error("invalid_draft", str(exc), 400)
         session["borrador"] = updated
+        self.repository.save_all(self._sessions)
         return {
             "ok": True,
             "importacion_id": import_id,
             "borrador": updated,
             "solo_previsualizacion": True,
-            "confirmacion_disponible": False,
+            "confirmacion_disponible": True,
             "datos_reales_modificados": False,
         }
+
+    def confirm(self, import_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+        if import_id not in self._sessions:
+            return self._error("import_not_found", "Importación no encontrada.", 404)
+        return self.confirmations.confirm(self._sessions, import_id, dict(payload or {}))
+
+    def get_status(self, import_id: str) -> dict[str, Any]:
+        session = self._sessions.get(import_id)
+        if session is None:
+            return self._error("import_not_found", "Importación no encontrada.", 404)
+        return {
+            "ok": True, "importacion_id": import_id,
+            "estado": session.get("estado", "PENDIENTE_REVISION"),
+            "version": session.get("borrador", {}).get("version", 0),
+            "resultado": session.get("resultado_confirmacion"),
+        }
+
+    def get_history(self, import_id: str) -> dict[str, Any]:
+        session = self._sessions.get(import_id)
+        if session is None:
+            return self._error("import_not_found", "Importación no encontrada.", 404)
+        history = list(session.get("historial") or [])
+        return {"ok": True, "importacion_id": import_id, "historial": history, "total": len(history)}
 
     @staticmethod
     def _error(code: str, message: str, status: int) -> dict[str, Any]:

@@ -49,4 +49,10 @@ export const bibliotecaService = {
     id: string,
     draft: { draft_version: number; recipes: unknown[] },
   ) => hostAiApiClient.updateBibliotecaImportDraft(id, draft),
+  confirmImport: (id: string, draftVersion: number, usuario: string) =>
+    hostAiApiClient.confirmBibliotecaImport(id, {
+      draft_version: draftVersion,
+      usuario,
+      confirmacion: "CONFIRMAR",
+    }),
 };

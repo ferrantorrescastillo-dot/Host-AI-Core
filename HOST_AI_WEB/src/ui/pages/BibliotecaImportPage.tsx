@@ -4,6 +4,7 @@ import { bibliotecaService } from "../../services/bibliotecaService";
 import type {
   BibliotecaImportSession,
   ImportDraft,
+  ImportConfirmationResult,
   IngredientDraft,
   RecipeDraft,
 } from "../../types/biblioteca";
@@ -39,7 +40,7 @@ export function BibliotecaImportPage() {
     <p className="eyebrow">Biblioteca Culinaria</p>
     <h2>Importador Inteligente</h2>
     <BibliotecaNav />
-    <p>Host AI transforma documentos en conocimiento estructurado y propone cambios para revisión. En esta fase no modifica la Biblioteca.</p>
+    <p>Host AI transforma documentos en conocimiento estructurado. Solo una confirmación explícita aplica el borrador revisado.</p>
     <div
       className="panel-state"
       onDragOver={(event) => event.preventDefault()}
@@ -108,7 +109,6 @@ function ImportPreview({ session }: { session: BibliotecaImportSession }) {
       <p>{proposal.explicacion}</p>
     </li>)}</ul>
     {session.limitaciones.length ? <><h4>Limitaciones</h4><ul>{session.limitaciones.map((item) => <li key={item}>{item}</li>)}</ul></> : null}
-    <p><strong>Pendiente de implementar:</strong> revisión, edición y confirmación. Ninguna propuesta ha sido aplicada.</p>
   </section>;
 }
 
@@ -117,6 +117,9 @@ function DraftReview({ initialDraft }: { initialDraft: ImportDraft }) {
   const [selectedId, setSelectedId] = useState(initialDraft.recipes[0]?.id ?? "");
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
+  const [accepted, setAccepted] = useState(false);
+  const [confirming, setConfirming] = useState(false);
+  const [result, setResult] = useState<ImportConfirmationResult | null>(null);
   const selected = draft.recipes.find((recipe) => recipe.id === selectedId);
 
   function updateRecipe(id: string, changes: Partial<RecipeDraft>) {
@@ -155,6 +158,22 @@ function DraftReview({ initialDraft }: { initialDraft: ImportDraft }) {
         : error.message);
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function confirm() {
+    setConfirming(true);
+    setMessage("");
+    try {
+      const response = await bibliotecaService.confirmImport(
+        draft.document_id, draft.version, "usuario_web",
+      );
+      setResult(response.resultado);
+      setMessage("Importación confirmada y aplicada a la Biblioteca.");
+    } catch (reason) {
+      setMessage((reason as HostAiApiError).message);
+    } finally {
+      setConfirming(false);
     }
   }
 
@@ -262,6 +281,23 @@ function DraftReview({ initialDraft }: { initialDraft: ImportDraft }) {
     </button>
     {message ? <p role="status">{message}</p> : null}
     <p><strong>Modo seguro:</strong> guardar este borrador no aplica ninguna propuesta.</p>
+    <section className="confirmation-preview">
+      <h4>Confirmación final</h4>
+      <p>Se aplicarán {draft.recipes.filter((item) =>
+        item.entity_type !== "DESCARTAR" && item.proposed_action !== "IGNORAR"
+      ).length} elaboraciones revisadas en una única transacción.</p>
+      <label>
+        <input checked={accepted} onChange={(event) => setAccepted(event.target.checked)} type="checkbox" />
+        He revisado el borrador y autorizo aplicar estos cambios.
+      </label>
+      <button disabled={!accepted || confirming || Boolean(result)} type="button" onClick={() => void confirm()}>
+        {confirming ? "Aplicando transacción..." : "Confirmar e importar"}
+      </button>
+      {result ? <div role="status">
+        <strong>Importación completada</strong>
+        <p>{result.acciones.length} acciones · {result.entidades.length} entidades · sin rollback.</p>
+      </div> : null}
+    </section>
   </section>;
 }
 

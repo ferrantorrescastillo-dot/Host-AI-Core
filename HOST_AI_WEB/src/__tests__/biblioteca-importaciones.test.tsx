@@ -194,8 +194,8 @@ describe("Importador Inteligente de Biblioteca", () => {
     expect(screen.getByText(/Relacionado/)).toBeInTheDocument();
     expect(screen.queryByText(/Lector Word pendiente/)).not.toBeInTheDocument();
     expect(screen.getAllByText(/Pendiente de revisión/).length).toBeGreaterThan(0);
-    expect(screen.getByText(/Ninguna propuesta ha sido aplicada/)).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: /confirmar/i })).not.toBeInTheDocument();
+    expect(screen.getByText(/guardar este borrador no aplica ninguna propuesta/)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Confirmar e importar" })).toBeDisabled();
     expect(screen.getByRole("heading", { name: "Revisar borrador" })).toBeInTheDocument();
     fireEvent.change(screen.getByLabelText("Título de la sección"), {
       target: { value: "Salsa verde revisada" },
@@ -252,7 +252,46 @@ describe("Importador Inteligente de Biblioteca", () => {
       "http://127.0.0.1:8000/api/v1/biblioteca/importaciones/IMPWEB-1/borrador",
       expect.objectContaining({ method: "PATCH" }),
     );
-    expect(screen.queryByRole("button", { name: /confirmar/i })).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Confirmar e importar" })).toBeDisabled();
+  });
+
+  it("exige aceptación explícita y confirma mediante la API pública", async () => {
+    vi.spyOn(global, "fetch")
+      .mockResolvedValueOnce({ ok: true, status: 200, json: async () => response } as Response)
+      .mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: async () => ({
+          ...response,
+          importacion_id: "IMPWEB-1",
+          estado: "CONFIRMADA",
+          resultado: {
+            estado: "COMPLETADA",
+            acciones: [{ tipo: "CREAR_RECETA", id: "REC601-000001" }],
+            entidades: [{ tipo: "RECETA", id: "REC601-000001", nombre: "Salsa" }],
+            errores: [],
+            rollback: false,
+          },
+        }),
+      } as Response);
+    render(<MemoryRouter initialEntries={["/biblioteca/importaciones"]}><App /></MemoryRouter>);
+    const file = new File(["Receta"], "receta.txt", { type: "text/plain" });
+    Object.defineProperty(file, "arrayBuffer", {
+      value: async () => new TextEncoder().encode("Receta").buffer,
+    });
+    fireEvent.change(screen.getByLabelText("Seleccionar documento"), {
+      target: { files: [file] },
+    });
+    await screen.findByText("Confirmación final");
+    const button = screen.getByRole("button", { name: "Confirmar e importar" });
+    expect(button).toBeDisabled();
+    fireEvent.click(screen.getByRole("checkbox"));
+    fireEvent.click(button);
+    expect(await screen.findByText("Importación completada")).toBeInTheDocument();
+    expect(global.fetch).toHaveBeenLastCalledWith(
+      "http://127.0.0.1:8000/api/v1/biblioteca/importaciones/IMPWEB-1/confirmar",
+      expect.objectContaining({ method: "POST" }),
+    );
   });
 
   it("muestra el conflicto de versión de forma controlada", async () => {

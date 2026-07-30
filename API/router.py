@@ -53,8 +53,14 @@ class ApiRouter:
             handler = articulos.detail_handle
         if handler is None and key[0] == "GET" and key[1].startswith("/api/v1/biblioteca/elaboraciones/"):
             handler = biblioteca.detail_handle
-        if handler is None and key[0] in {"GET", "PATCH"} and key[1].startswith("/api/v1/biblioteca/importaciones/"):
-            if key[1].endswith("/borrador"):
+        if handler is None and key[0] in {"GET", "POST", "PATCH"} and key[1].startswith("/api/v1/biblioteca/importaciones/"):
+            if key[0] == "POST" and key[1].endswith("/confirmar"):
+                handler = biblioteca.import_confirm_handle
+            elif key[0] == "GET" and key[1].endswith("/estado"):
+                handler = biblioteca.import_status_handle
+            elif key[0] == "GET" and key[1].endswith("/historial"):
+                handler = biblioteca.import_history_handle
+            elif key[1].endswith("/borrador"):
                 handler = biblioteca.import_draft_handle
             elif key[0] == "GET" and key[1].endswith("/propuestas"):
                 handler = biblioteca.import_proposals_handle

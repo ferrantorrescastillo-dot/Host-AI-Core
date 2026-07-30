@@ -8,6 +8,7 @@ from typing import Any
 class DraftStatus(str, Enum):
     PENDIENTE_REVISION = "PENDIENTE_REVISION"
     EN_REVISION = "EN_REVISION"
+    CONFIRMADA = "CONFIRMADA"
 
 
 class RecipeEntityType(str, Enum):
@@ -115,8 +116,8 @@ class ImportDraft:
             "draft_version": self.version,
             "created_at": self.created_at,
             "updated_at": self.updated_at,
-            "persisted": False,
-            "confirmation_available": False,
+            "persisted": True,
+            "confirmation_available": True,
         }
 
 

@@ -1,0 +1,100 @@
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+from fastapi.testclient import TestClient
+
+from API.app import HostAIPlatformAPI
+from API.http_server import create_app
+from SERVICIOS.confirmacion_importacion_biblioteca import (
+    ImportConfirmationService,
+    ImportSessionRepository,
+)
+
+
+def _session() -> dict:
+    return {
+        "documento": {"id": "IMP-1", "nombre": "receta.docx"},
+        "estado": "PENDIENTE_REVISION",
+        "borrador": {
+            "version": 2,
+            "recipes": [{
+                "id": "R-1", "title": "Crema de calabaza", "entity_type": "PRINCIPAL",
+                "parent_recipe_id": None, "proposed_action": "CREAR_RECETA",
+                "description": "", "procedure": ["Cocer y triturar."], "servings": 4,
+                "yield_value": 4, "notes": "Revisada", "duplicate_candidates": [],
+                "ingredients": [{
+                    "id": "I-1", "name_raw": "Calabaza", "quantity_raw": "1",
+                    "quantity": 1.0, "unit": "kg", "unit_raw": "kg",
+                    "relation_status": "SIN_RELACIONAR", "article_id": None,
+                    "observations": "",
+                }],
+            }],
+        },
+        "historial": [],
+    }
+
+
+def test_confirmacion_persiste_receta_estado_e_historial_y_sobrevive_reinicio(tmp_path: Path) -> None:
+    repository = ImportSessionRepository(tmp_path)
+    sessions = {"IMP-1": _session()}
+    repository.save_all(sessions)
+    result = ImportConfirmationService(tmp_path, repository).confirm(
+        sessions, "IMP-1",
+        {"draft_version": 2, "usuario": "chef", "confirmacion": "CONFIRMAR"},
+    )
+    assert result["ok"] is True
+    assert sessions["IMP-1"]["estado"] == "CONFIRMADA"
+    assert sessions["IMP-1"]["historial"][0]["usuario"] == "chef"
+    assert ImportSessionRepository(tmp_path).load_all()["IMP-1"]["estado"] == "CONFIRMADA"
+    recipes = json.loads(
+        (tmp_path / "DATOS/db/biblioteca_recetas_601.json").read_text(encoding="utf-8")
+    )["recetas"]
+    assert recipes[0]["nombre"] == "Crema de calabaza"
+
+
+def test_confirmacion_bloquea_version_antigua_y_datos_incompletos_sin_escribir_dominio(
+    tmp_path: Path,
+) -> None:
+    repository = ImportSessionRepository(tmp_path)
+    sessions = {"IMP-1": _session()}
+    sessions["IMP-1"]["borrador"]["recipes"][0]["title"] = ""
+    result = ImportConfirmationService(tmp_path, repository).confirm(
+        sessions, "IMP-1",
+        {"draft_version": 1, "usuario": "chef", "confirmacion": "CONFIRMAR"},
+    )
+    assert result["ok"] is False
+    assert {item["validacion"] for item in result["resultado"]["errores"]} >= {
+        "VERSION_CONFLICT", "TITULO_VACIO",
+    }
+    assert not (tmp_path / "DATOS/db/biblioteca_recetas_601.json").exists()
+
+
+def test_confirmacion_exige_aceptacion_explicita(tmp_path: Path) -> None:
+    repository = ImportSessionRepository(tmp_path)
+    sessions = {"IMP-1": _session()}
+    result = ImportConfirmationService(tmp_path, repository).confirm(
+        sessions, "IMP-1", {"draft_version": 2, "usuario": "chef"}
+    )
+    assert result["error"]["code"] == "confirmation_required"
+    assert not (tmp_path / "DATOS/db/biblioteca_recetas_601.json").exists()
+
+
+def test_http_confirmacion_estado_e_historial(tmp_path: Path) -> None:
+    api = HostAIPlatformAPI(base_dir=tmp_path)
+    service = api.facade._get_biblioteca_import_service()
+    service._sessions["IMP-1"] = _session()
+    service.repository.save_all(service._sessions)
+    client = TestClient(create_app(api))
+
+    confirmed = client.post(
+        "/api/v1/biblioteca/importaciones/IMP-1/confirmar",
+        json={"draft_version": 2, "usuario": "chef", "confirmacion": "CONFIRMAR"},
+    )
+    assert confirmed.status_code == 200
+    assert confirmed.json()["resultado"]["estado"] == "COMPLETADA"
+    assert client.get("/api/v1/biblioteca/importaciones/IMP-1/estado").json()["estado"] == "CONFIRMADA"
+    history = client.get("/api/v1/biblioteca/importaciones/IMP-1/historial").json()
+    assert history["total"] == 1
+    assert history["historial"][0]["usuario"] == "chef"

@@ -194,6 +194,31 @@ def create_app(platform_api: HostAIPlatformAPI | None = None) -> FastAPI:
             parsed = {}
         return await _delegate(request, body=parsed)
 
+    @app.post("/api/v1/biblioteca/importaciones/{importacion_id}/confirmar")
+    async def post_biblioteca_importacion_confirmar(
+        importacion_id: str, request: Request
+    ) -> JSONResponse:
+        parsed: dict[str, Any] = {}
+        try:
+            maybe_json = await request.json()
+            if isinstance(maybe_json, dict):
+                parsed = maybe_json
+        except Exception:
+            parsed = {}
+        return await _delegate(request, body=parsed)
+
+    @app.get("/api/v1/biblioteca/importaciones/{importacion_id}/estado")
+    async def get_biblioteca_importacion_estado(
+        importacion_id: str, request: Request
+    ) -> JSONResponse:
+        return await _delegate(request)
+
+    @app.get("/api/v1/biblioteca/importaciones/{importacion_id}/historial")
+    async def get_biblioteca_importacion_historial(
+        importacion_id: str, request: Request
+    ) -> JSONResponse:
+        return await _delegate(request)
+
     @app.post("/api/v1/chat")
     async def post_chat(request: Request) -> JSONResponse:
         parsed: dict[str, Any] = {}
