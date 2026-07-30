@@ -53,6 +53,56 @@ def _write_fixture(base: Path) -> None:
     (invoices / "historico_precios.json").write_text('{"registros":[]}', encoding="utf-8")
 
 
+def _write_canonical_fixture(base: Path) -> None:
+    db = base / "DATOS" / "db"
+    db.mkdir(parents=True)
+    (db / "escandallos_canonicos.json").write_text(json.dumps({
+        "schema_version": "1.0",
+        "escandallos": [
+            {
+                "receta": {
+                    "codigo": "REC-SALSA-ROMESCO",
+                    "nombre": "A.P. Salsa romesco",
+                    "rendimiento": 12,
+                    "unidad_rendimiento": "raciones",
+                    "ingredientes": [
+                        {
+                            "codigo": "ART-001", "articulo_id": "ART-001",
+                            "nombre": "Tomate pera", "cantidad": 2, "unidad": "kg",
+                            "merma_pct": 5, "precio_unitario": 4,
+                        },
+                        {"nombre": "Ingrediente heredado", "cantidad": 20, "unidad": "g"},
+                    ],
+                },
+                "coste_total": 8.5,
+            },
+            {
+                "receta": {
+                    "codigo": "REC-CREMA-CATALANA",
+                    "nombre": "Crema catalana",
+                    "rendimiento": 10,
+                    "unidad_rendimiento": "raciones",
+                    "ingredientes": [{"nombre": "Leche", "cantidad": 1, "unidad": "l"}],
+                },
+                "coste_total": 0,
+            },
+        ],
+    }, ensure_ascii=False), encoding="utf-8")
+    (db / "escandallos.json").write_text(json.dumps([
+        {"receta_id": "REC-LEGACY", "nombre": "La fuente legacy no debe duplicarse", "lineas": []},
+    ]), encoding="utf-8")
+    (db / "articulos.json").write_text(json.dumps([
+        {"codigo": "ART-001", "nombre": "Tomate pera", "precio": 4, "unidad": "kg"},
+        {"codigo": "ART-002", "nombre": "Leche", "precio": 1, "unidad": "l"},
+        {"codigo": "ART-MP", "nombre": "Materia prima no elaborada", "precio": 1, "unidad": "kg"},
+    ]), encoding="utf-8")
+    (db / "proveedores.json").write_text("[]", encoding="utf-8")
+    (db / "compras_producto_proveedor.json").write_text("[]", encoding="utf-8")
+    invoices = base / "DATOS" / "facturas"
+    invoices.mkdir(parents=True)
+    (invoices / "historico_precios.json").write_text('{"registros":[]}', encoding="utf-8")
+
+
 def test_biblioteca_resumen_listado_busqueda_filtros_y_detalle(tmp_path: Path) -> None:
     _write_fixture(tmp_path)
     service = BibliotecaCulinariaReadService(tmp_path)
@@ -70,6 +120,67 @@ def test_biblioteca_resumen_listado_busqueda_filtros_y_detalle(tmp_path: Path) -
     assert detail["receta"]["ingredientes"][0]["articulo_id"] == "ART-001"
     assert detail["documentos"][0]["tipo"] == "pdf"
     assert "AP" not in json.dumps(detail, ensure_ascii=False)
+
+
+def test_biblioteca_proyecta_escandallos_canonicos_sin_incluir_articulos(tmp_path: Path) -> None:
+    _write_canonical_fixture(tmp_path)
+    service = BibliotecaCulinariaReadService(tmp_path)
+
+    summary = service.resumen()["biblioteca"]
+    assert summary["total_elaboraciones"] == 2
+    assert summary["sin_receta"] == 0
+    assert summary["sin_escandallo"] == 0
+    assert summary["sin_ficha_tecnica"] == 2
+
+    listed = service.listar({
+        "q": "tomate", "tiene_receta": "true", "tiene_escandallo": "true",
+        "tiene_ficha_tecnica": "false", "page": "1", "page_size": "1",
+    })["elaboraciones"]
+    assert listed["total"] == 1
+    assert listed["total_pages"] == 1
+    assert listed["items"][0]["id"] == "REC-SALSA-ROMESCO"
+    assert listed["items"][0]["nombre"] == "Elaboración Salsa romesco"
+    assert listed["items"][0]["coste_total"] == 8.5
+    assert listed["items"][0]["tiene_ficha_tecnica"] is False
+
+    all_items = service.listar({})["elaboraciones"]["items"]
+    assert {item["id"] for item in all_items} == {
+        "REC-SALSA-ROMESCO", "REC-CREMA-CATALANA",
+    }
+    assert all(item["nombre"] != "Materia prima no elaborada" for item in all_items)
+    assert next(item for item in all_items if item["id"] == "REC-CREMA-CATALANA")["coste_total"] == 0
+
+
+def test_biblioteca_detalle_canonico_es_estable_parcial_y_enlaza_articulo_real(tmp_path: Path) -> None:
+    _write_canonical_fixture(tmp_path)
+    first = BibliotecaCulinariaReadService(tmp_path).detalle("REC-SALSA-ROMESCO")["elaboracion"]
+    second = BibliotecaCulinariaReadService(tmp_path).detalle("REC-SALSA-ROMESCO")["elaboracion"]
+
+    assert first["id"] == second["id"] == "REC-SALSA-ROMESCO"
+    assert first["tiene_receta"] is True
+    assert first["tiene_escandallo"] is True
+    assert first["tiene_ficha_tecnica"] is False
+    assert first["receta"]["procedimiento"] is None
+    assert first["receta"]["ingredientes"][0] == {
+        "articulo_id": "ART-001",
+        "codigo": "ART-001",
+        "nombre_original": "Tomate pera",
+        "cantidad_texto": "2 kg",
+        "cantidad": 2.0,
+        "unidad": "kg",
+        "merma": 5.0,
+        "cantidad_neta": None,
+        "coste_unitario": 4.0,
+        "coste_linea": None,
+        "observaciones": None,
+        "estado_relacion": "relacionado",
+    }
+    assert first["receta"]["ingredientes"][1]["estado_relacion"] == "sin_relacionar"
+    assert first["ficha_tecnica"] is None
+    assert first["documentos"] == []
+    assert first["menus"] == []
+    assert first["eventos"] == []
+    assert "A.P" not in json.dumps(first, ensure_ascii=False)
 
 
 def test_biblioteca_sin_datos_parametros_invalidos_y_no_encontrado(tmp_path: Path) -> None:
@@ -92,3 +203,16 @@ def test_http_biblioteca_contratos_publicos(tmp_path: Path) -> None:
     assert detail.status_code == 200
     assert detail.json()["elaboracion"]["nombre"] == "Salsa de tomate"
     assert client.get("/api/v1/biblioteca/elaboraciones/NO-EXISTE").status_code == 404
+
+
+def test_http_biblioteca_publica_fuente_canonica_real(tmp_path: Path) -> None:
+    _write_canonical_fixture(tmp_path)
+    client = TestClient(create_app(HostAIPlatformAPI(base_dir=tmp_path)))
+
+    response = client.get("/api/v1/biblioteca/elaboraciones?q=romesco")
+    assert response.status_code == 200
+    assert response.json()["elaboraciones"]["items"][0]["id"] == "REC-SALSA-ROMESCO"
+
+    detail = client.get("/api/v1/biblioteca/elaboraciones/REC-SALSA-ROMESCO")
+    assert detail.status_code == 200
+    assert detail.json()["elaboracion"]["receta"]["ingredientes"][0]["articulo_id"] == "ART-001"

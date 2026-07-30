@@ -67,6 +67,27 @@ Rutas de lectura:
 - `GET /api/v1/biblioteca/elaboraciones`;
 - `GET /api/v1/biblioteca/elaboraciones/{elaboracion_id}`.
 
+La proyección de Elaboraciones reutiliza dos fuentes existentes, sin crear otra
+persistencia: las fichas de `RepositorioBibliotecaRecetas601` y el modelo leído
+por `LectorModeloCanonico555B72`. Este último prioriza
+`DATOS/db/escandallos_canonicos.json` y conserva el fallback compatible a
+`DATOS/db/escandallos.json`. Las fichas 6.0.1 prevalecen cuando comparten código;
+el resto de escandallos canónicos se proyecta como elaboraciones parciales.
+
+La regla de clasificación no usa el catálogo de Artículos: solo una receta
+contenida en el modelo de escandallos puede aparecer como Elaboración. Su código
+de receta es el identificador público estable; si un registro heredado carece de
+código, la capa de lectura genera una identidad determinista a partir de nombre,
+rendimiento y unidad. Una elaboración canónica tiene receta y escandallo cuando
+contiene ingredientes reales, pero solo declara ficha técnica, procedimiento,
+documentos, menús o eventos si esas relaciones existen en la fuente.
+
+Los ingredientes conservan su `articulo_id` únicamente cuando resuelve contra el
+Catálogo Maestro; la coincidencia exacta y única por nombre se mantiene como
+compatibilidad. No se realizan emparejamientos aproximados silenciosos. La
+nomenclatura interna heredada se conserva en origen, pero se traduce a
+«Elaboración» en el contrato y la interfaz públicos.
+
 Menús, documentos e importaciones disponen de espacios públicos preparados,
 pero no simulan capacidades. La escritura web queda aplazada hasta incorporar
 confirmación y auditoría pública. En una fase posterior, las recetas podrán

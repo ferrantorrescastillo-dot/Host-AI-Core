@@ -3,11 +3,13 @@ from __future__ import annotations
 import math
 import re
 import unicodedata
+from hashlib import sha256
 from pathlib import Path
 from typing import Any
 
 from SERVICIOS.biblioteca_escandallos_601 import RepositorioBibliotecaEscandallos601
 from SERVICIOS.biblioteca_recetas_601 import RepositorioBibliotecaRecetas601
+from SERVICIOS.lector_modelo_canonico_555b72 import LectorModeloCanonico555B72
 from SERVICIOS.repositorio_productos_maestro_601 import RepositorioProductosMaestro601
 
 
@@ -25,6 +27,7 @@ class BibliotecaCulinariaReadService:
         self.recetas = RepositorioBibliotecaRecetas601(base_dir)
         self.escandallos = RepositorioBibliotecaEscandallos601(base_dir)
         self.articulos = RepositorioProductosMaestro601(base_dir)
+        self.modelo_canonico = LectorModeloCanonico555B72(base_dir)
 
     @staticmethod
     def _norm(value: Any) -> str:
@@ -33,7 +36,7 @@ class BibliotecaCulinariaReadService:
 
     @staticmethod
     def _public_text(value: Any) -> str:
-        return re.sub(r"\bAP\b", "Elaboración", str(value or ""), flags=re.IGNORECASE)
+        return re.sub(r"\bA\.?P\.?(?=\s|$)", "Elaboración", str(value or ""), flags=re.IGNORECASE)
 
     @classmethod
     def _public_value(cls, value: Any) -> Any:
@@ -53,6 +56,10 @@ class BibliotecaCulinariaReadService:
             return None
 
     @staticmethod
+    def _first_present(*values: Any) -> Any:
+        return next((value for value in values if value not in ("", None)), None)
+
+    @staticmethod
     def _bool_query(value: Any) -> bool | None:
         text = str(value or "").lower()
         if not text:
@@ -63,7 +70,100 @@ class BibliotecaCulinariaReadService:
             return False
         raise ValueError("Los indicadores deben ser true o false.")
 
+    def _all_recipes(self, incluir_archivadas: bool) -> list[dict[str, Any]]:
+        """Proyecta las fichas 6.0.1 y completa con el modelo culinario canónico."""
+        recipes = self.recetas.listar(incluir_archivadas=incluir_archivadas)
+        output = [dict(item) for item in recipes]
+        identities = {
+            self._norm(item.get("codigo") or item.get("id") or item.get("nombre"))
+            for item in output
+        }
+        for escandallo in self.modelo_canonico.cargar().get("escandallos", []):
+            recipe = self._canonical_recipe(dict(escandallo))
+            identity = self._norm(recipe.get("codigo") or recipe.get("id") or recipe.get("nombre"))
+            if not identity or identity in identities:
+                continue
+            output.append(recipe)
+            identities.add(identity)
+        return output
+
+    def _canonical_recipe(self, escandallo: dict[str, Any]) -> dict[str, Any]:
+        code = str(escandallo.get("codigo") or escandallo.get("receta_id") or "").strip()
+        name = str(escandallo.get("nombre") or escandallo.get("receta") or "").strip()
+        raw = escandallo.get("raw") if isinstance(escandallo.get("raw"), dict) else {}
+        ingredients = [
+            dict(item)
+            for item in list(escandallo.get("ingredientes") or escandallo.get("lineas") or [])
+            if isinstance(item, dict)
+        ]
+        if not code:
+            seed = "|".join(
+                (
+                    self._norm(name),
+                    str(escandallo.get("rendimiento") or escandallo.get("raciones_base") or ""),
+                    self._norm(escandallo.get("unidad_rendimiento")),
+                )
+            )
+            code = f"ELAB-{sha256(seed.encode('utf-8')).hexdigest()[:16].upper()}"
+        amounts = []
+        for ingredient in ingredients:
+            quantity = ingredient.get("cantidad")
+            unit = str(ingredient.get("unidad") or "").strip()
+            amounts.append(
+                " ".join(part for part in (self._format_number(quantity), unit) if part) or None
+            )
+        active = escandallo.get("activo")
+        return {
+            "id": code,
+            "codigo": code,
+            "nombre": name,
+            "familia": escandallo.get("grupo") or escandallo.get("familia") or "",
+            "categoria": escandallo.get("grupo") or escandallo.get("familia") or "",
+            "tipo": "Elaboración",
+            "descripcion": escandallo.get("observaciones") or "",
+            "numero_raciones": escandallo.get("raciones_base"),
+            "rendimiento": self._first_present(escandallo.get("rendimiento"), escandallo.get("raciones_base")),
+            "unidad_rendimiento": escandallo.get("unidad_rendimiento") or "",
+            "ingredientes": [str(item.get("nombre") or item.get("ingrediente") or "").strip() for item in ingredients],
+            "cantidades": amounts,
+            "elaboracion": escandallo.get("elaboracion") or escandallo.get("procedimiento") or "",
+            "estado": "ARCHIVADA" if active is False else "PENDIENTE_DE_COMPLETAR",
+            "actualizado_en": escandallo.get("actualizado_en") or None,
+            "coste_total": (
+                raw.get("coste_total")
+                if "coste_total" in raw
+                else self._first_present(escandallo.get("coste_total"), escandallo.get("coste_total_base"))
+            ),
+            "coste_por_racion": escandallo.get("coste_por_racion"),
+            "_origen_modelo": escandallo.get("origen_modelo") or "legacy",
+            "_ingredientes_estructurados": ingredients,
+            "_escandallo_canonico": escandallo,
+        }
+
+    @staticmethod
+    def _format_number(value: Any) -> str:
+        try:
+            number = float(value)
+        except (TypeError, ValueError):
+            return str(value or "").strip()
+        return f"{number:g}"
+
     def _escandallo_for(self, receta: dict[str, Any]) -> dict[str, Any] | None:
+        canonical = receta.get("_escandallo_canonico")
+        if isinstance(canonical, dict):
+            return {
+                "id": receta.get("codigo"),
+                "estado": "PARCIAL",
+                "coste_total": receta.get("coste_total"),
+                "coste_por_racion": canonical.get("coste_por_racion"),
+                "rendimiento_total": canonical.get("rendimiento") or canonical.get("raciones_base"),
+                "numero_raciones": canonical.get("raciones_base"),
+                "precio_venta_por_racion": canonical.get("precio_venta_unitario"),
+                "margen_porcentual": canonical.get("margen_porcentual"),
+                "fecha_ultimo_calculo": canonical.get("actualizado_en"),
+                "lineas": list(receta.get("_ingredientes_estructurados") or []),
+                "incidencias": list(canonical.get("incidencias") or []),
+            }
         rid = self._norm(receta.get("id"))
         code = self._norm(receta.get("codigo"))
         candidates = []
@@ -81,6 +181,8 @@ class BibliotecaCulinariaReadService:
 
     @staticmethod
     def _has_recipe(receta: dict[str, Any]) -> bool:
+        if receta.get("_origen_modelo") in {"canonico", "legacy"}:
+            return bool(list(receta.get("ingredientes") or []))
         return bool(
             list(receta.get("ingredientes") or [])
             and str(receta.get("elaboracion") or "").strip()
@@ -114,7 +216,7 @@ class BibliotecaCulinariaReadService:
             "tipo": self._public_text(receta.get("tipo")) or "Elaboración",
             "estado": str(receta.get("estado") or "PENDIENTE_DE_COMPLETAR"),
             "rendimiento": self._number(receta.get("rendimiento") or receta.get("numero_raciones")),
-            "unidad_rendimiento": "raciones" if receta.get("numero_raciones") else None,
+            "unidad_rendimiento": receta.get("unidad_rendimiento") or ("raciones" if receta.get("numero_raciones") else None),
             "raciones": self._number(receta.get("numero_raciones")),
             "coste_total": total_cost,
             "coste_por_racion": unit_cost,
@@ -128,7 +230,7 @@ class BibliotecaCulinariaReadService:
         }
 
     def resumen(self) -> dict[str, Any]:
-        items = [self._summary(x) for x in self.recetas.listar(incluir_archivadas=False)]
+        items = [self._summary(x) for x in self._all_recipes(incluir_archivadas=False)]
         return {
             "ok": True,
             "biblioteca": {
@@ -162,11 +264,12 @@ class BibliotecaCulinariaReadService:
         if order not in self.ORDERS or direction not in {"asc", "desc"}:
             return self._error("invalid_sort", "Ordenación no válida.", 400)
 
-        all_items = [self._summary(x) for x in self.recetas.listar(incluir_archivadas=True)]
+        all_recipes = self._all_recipes(incluir_archivadas=True)
+        all_items = [self._summary(x) for x in all_recipes]
         items = list(all_items)
         q = self._norm(query.get("q"))
         if q:
-            raw_by_id = {str(x.get("id")): x for x in self.recetas.listar(incluir_archivadas=True)}
+            raw_by_id = {str(x.get("id")): x for x in all_recipes}
             items = [
                 x for x in items
                 if any(q in self._norm(x.get(k)) for k in ("nombre", "codigo", "categoria"))
@@ -206,7 +309,15 @@ class BibliotecaCulinariaReadService:
         }
 
     def detalle(self, elaboracion_id: str) -> dict[str, Any]:
-        receta = self.recetas.obtener(elaboracion_id)
+        identity = self._norm(elaboracion_id)
+        receta = next(
+            (
+                item
+                for item in self._all_recipes(incluir_archivadas=True)
+                if identity in {self._norm(item.get("id")), self._norm(item.get("codigo"))}
+            ),
+            None,
+        )
         if not receta:
             return self._error("elaboration_not_found", "Elaboración no encontrada.", 404)
         esc = self._escandallo_for(receta)
@@ -248,25 +359,35 @@ class BibliotecaCulinariaReadService:
     def _ingredients(self, receta: dict[str, Any], esc: dict[str, Any] | None) -> list[dict[str, Any]]:
         catalog = self.articulos.listar_productos(incluir_archivados=True)
         by_name: dict[str, list[dict[str, Any]]] = {}
+        by_code: dict[str, dict[str, Any]] = {}
         for article in catalog:
             by_name.setdefault(self._norm(article.get("nombre")), []).append(article)
+            code = self._norm(article.get("codigo"))
+            if code:
+                by_code[code] = article
         esc_lines = list((esc or {}).get("lineas") or [])
+        structured = list(receta.get("_ingredientes_estructurados") or [])
         output = []
         names = list(receta.get("ingredientes") or [])
         amounts = list(receta.get("cantidades") or [])
         for index, name in enumerate(names):
-            matches = by_name.get(self._norm(name), [])
+            source = structured[index] if index < len(structured) and isinstance(structured[index], dict) else {}
             line = esc_lines[index] if index < len(esc_lines) and isinstance(esc_lines[index], dict) else {}
+            source_code = str(source.get("articulo_id") or source.get("codigo") or "").strip()
+            direct = by_code.get(self._norm(source_code)) if source_code else None
+            matches = [direct] if direct else by_name.get(self._norm(name), [])
+            linked = matches[0] if len(matches) == 1 else None
             output.append({
-                "articulo_id": str(matches[0].get("codigo")) if len(matches) == 1 else None,
+                "articulo_id": str(linked.get("codigo")) if linked else None,
+                "codigo": source_code or (str(linked.get("codigo")) if linked else None),
                 "nombre_original": self._public_text(name),
                 "cantidad_texto": str(amounts[index]) if index < len(amounts) else None,
                 "cantidad": self._number(line.get("cantidad_neta") or line.get("cantidad")),
                 "unidad": line.get("unidad_normalizada") or line.get("unidad") or None,
-                "merma": self._number(line.get("merma_porcentaje")),
+                "merma": self._number(line.get("merma_porcentaje") or line.get("merma_pct")),
                 "cantidad_neta": self._number(line.get("cantidad_neta")),
-                "coste_unitario": self._number(line.get("precio_unitario")),
-                "coste_linea": self._number(line.get("coste_linea")),
+                "coste_unitario": self._number(line.get("precio_unitario") or line.get("coste_unitario")),
+                "coste_linea": self._number(line.get("coste_linea") or line.get("coste_total")),
                 "observaciones": line.get("observaciones") or None,
                 "estado_relacion": "relacionado" if len(matches) == 1 else ("coincidencia_dudosa" if matches else "sin_relacionar"),
             })
