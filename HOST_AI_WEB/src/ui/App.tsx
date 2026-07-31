@@ -17,6 +17,7 @@ import { ElaboracionesPage } from "./pages/ElaboracionesPage";
 import { ElaboracionDetailPage } from "./pages/ElaboracionDetailPage";
 import { BibliotecaPendingPage } from "./pages/BibliotecaPendingPage";
 import { BibliotecaImportPage } from "./pages/BibliotecaImportPage";
+import { MenusPage } from "./pages/MenusPage";
 
 export function App() {
   return (
@@ -30,6 +31,7 @@ export function App() {
         <Route path="/produccion" element={<ProduccionPage />} />
         <Route path="/compras" element={<ComprasPage />} />
         <Route path="/stock" element={<StockPage />} />
+        <Route path="/menus" element={<MenusPage />} />
         <Route path="/articulos" element={<ArticulosPage />} />
         <Route path="/articulos/:articuloId" element={<ArticuloDetailPage />} />
         <Route path="/biblioteca" element={<BibliotecaPage />} />
@@ -38,7 +40,7 @@ export function App() {
         <Route path="/biblioteca/recetas" element={<ElaboracionesPage preset="receta" />} />
         <Route path="/biblioteca/escandallos" element={<ElaboracionesPage preset="escandallo" />} />
         <Route path="/biblioteca/fichas-tecnicas" element={<ElaboracionesPage preset="ficha" />} />
-        <Route path="/biblioteca/menus" element={<BibliotecaPendingPage title="Menús" detail="La lectura pública de menús se incorporará cuando pueda garantizarse sin efectos laterales." />} />
+        <Route path="/biblioteca/menus" element={<MenusPage />} />
         <Route path="/biblioteca/documentacion" element={<BibliotecaPendingPage title="Documentación" detail="No hay documentos clasificados públicamente fuera de sus elaboraciones." />} />
         <Route path="/biblioteca/importaciones" element={<BibliotecaImportPage />} />
         <Route path="/configuracion" element={<PlaceholderPage modulo="Configuracion" />} />

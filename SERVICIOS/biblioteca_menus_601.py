@@ -176,6 +176,7 @@ class RepositorioBibliotecaMenus601:
         cp["codigo"] = self._next_code(str(obj.get("nombre") or "Menú"), menus_601)
         cp["nombre"] = f"{obj.get('nombre', 'Menú')} (Copia)"
         cp["estado"] = ESTADO_BORRADOR
+        cp["estado_publicacion"] = ESTADO_BORRADOR
         cp["creado_en"] = now
         cp["actualizado_en"] = now
         cp["version_menu"] = 1
@@ -185,7 +186,11 @@ class RepositorioBibliotecaMenus601:
         return cp
 
     def archivar(self, id_o_codigo: str) -> dict[str, Any]:
-        return self.actualizar(id_o_codigo, {"estado": ESTADO_ARCHIVADO}, motivo_historial="archivado")
+        return self.actualizar(
+            id_o_codigo,
+            {"estado": ESTADO_ARCHIVADO, "estado_publicacion": ESTADO_ARCHIVADO},
+            motivo_historial="archivado",
+        )
 
 
 class BibliotecaMenus601:
@@ -243,6 +248,9 @@ class BibliotecaMenus601:
                 "comensales_recomendado": float(datos.get("comensales_recomendado") or 0.0),
                 "observaciones": str(datos.get("observaciones") or ""),
                 "estado": str(calc.get("estado_calculo") or ESTADO_BORRADOR),
+                "estado_publicacion": str(
+                    datos.get("estado_publicacion") or ESTADO_BORRADOR
+                ),
                 "composicion": comp,
                 "lineas": list(calc.get("lineas") or []),
                 "coste_por_comensal": calc.get("coste_por_comensal"),

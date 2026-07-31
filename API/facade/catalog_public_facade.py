@@ -9,6 +9,7 @@ from API.facade.core_public_api02 import CorePublicApi02Facade
 from SERVICIOS.articulos_catalog_read_service import ArticulosCatalogReadService
 from SERVICIOS.biblioteca_culinaria_read_service import BibliotecaCulinariaReadService
 from SERVICIOS.importador_inteligente_biblioteca import ImportDocumentService
+from SERVICIOS.menus_inteligentes_service import MenusInteligentesService
 
 
 logger = logging.getLogger(__name__)
@@ -22,6 +23,7 @@ class CatalogPublicFacade(CorePublicApi02Facade):
         self._articulos_service: ArticulosCatalogReadService | None = None
         self._biblioteca_service: BibliotecaCulinariaReadService | None = None
         self._biblioteca_import_service: ImportDocumentService | None = None
+        self._menus_service: MenusInteligentesService | None = None
 
     def _get_articulos_service(self) -> ArticulosCatalogReadService:
         if self._articulos_service is None:
@@ -64,6 +66,29 @@ class CatalogPublicFacade(CorePublicApi02Facade):
 
     def elaboracion(self, elaboracion_id: str) -> dict[str, Any]:
         return self._library_call(self._get_biblioteca_service().detalle, elaboracion_id)
+
+    def _get_menus_service(self) -> MenusInteligentesService:
+        if self._menus_service is None:
+            self._menus_service = MenusInteligentesService(self.base_dir)
+        return self._menus_service
+
+    def menus(self, query: dict[str, Any]) -> dict[str, Any]:
+        return self._library_call(self._get_menus_service().listar, dict(query or {}))
+
+    def menu(self, menu_id: str) -> dict[str, Any]:
+        return self._library_call(self._get_menus_service().obtener, menu_id)
+
+    def elaboraciones_menu(self, query: dict[str, Any]) -> dict[str, Any]:
+        return self._library_call(self._get_menus_service().elaboraciones, dict(query or {}))
+
+    def crear_menu(self, body: dict[str, Any]) -> dict[str, Any]:
+        return self._library_call(self._get_menus_service().crear, dict(body or {}))
+
+    def actualizar_menu(self, menu_id: str, body: dict[str, Any]) -> dict[str, Any]:
+        return self._library_call(self._get_menus_service().actualizar, menu_id, dict(body or {}))
+
+    def archivar_menu(self, menu_id: str, body: dict[str, Any]) -> dict[str, Any]:
+        return self._library_call(self._get_menus_service().archivar, menu_id, dict(body or {}))
 
     def _get_biblioteca_import_service(self) -> ImportDocumentService:
         if self._biblioteca_import_service is None:

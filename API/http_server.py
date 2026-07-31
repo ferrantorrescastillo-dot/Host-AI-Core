@@ -84,7 +84,7 @@ def create_app(platform_api: HostAIPlatformAPI | None = None) -> FastAPI:
         CORSMiddleware,
         allow_origins=_parse_allowed_origins(),
         allow_credentials=False,
-        allow_methods=["GET", "POST", "PATCH", "OPTIONS"],
+        allow_methods=["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
         allow_headers=["Content-Type", "X-Request-ID"],
         expose_headers=["X-Request-ID"],
     )
@@ -117,6 +117,13 @@ def create_app(platform_api: HostAIPlatformAPI | None = None) -> FastAPI:
                 message="No se pudo procesar la solicitud.",
             )
             return JSONResponse(status_code=500, content=payload)
+
+    async def _json_body(request: Request) -> dict[str, Any]:
+        try:
+            payload = await request.json()
+        except Exception:
+            return {}
+        return dict(payload) if isinstance(payload, dict) else {}
 
     @app.get("/api/v1/health")
     async def get_health(request: Request) -> JSONResponse:
@@ -153,6 +160,30 @@ def create_app(platform_api: HostAIPlatformAPI | None = None) -> FastAPI:
     @app.get("/api/v1/biblioteca/elaboraciones/{elaboracion_id}")
     async def get_elaboracion(elaboracion_id: str, request: Request) -> JSONResponse:
         return await _delegate(request)
+
+    @app.get("/api/v1/menus")
+    async def get_menus(request: Request) -> JSONResponse:
+        return await _delegate(request)
+
+    @app.post("/api/v1/menus")
+    async def post_menu(request: Request) -> JSONResponse:
+        return await _delegate(request, body=await _json_body(request))
+
+    @app.get("/api/v1/menus/elaboraciones")
+    async def get_menu_elaboraciones(request: Request) -> JSONResponse:
+        return await _delegate(request)
+
+    @app.get("/api/v1/menus/{menu_id}")
+    async def get_menu(menu_id: str, request: Request) -> JSONResponse:
+        return await _delegate(request)
+
+    @app.patch("/api/v1/menus/{menu_id}")
+    async def patch_menu(menu_id: str, request: Request) -> JSONResponse:
+        return await _delegate(request, body=await _json_body(request))
+
+    @app.delete("/api/v1/menus/{menu_id}")
+    async def delete_menu(menu_id: str, request: Request) -> JSONResponse:
+        return await _delegate(request, body=await _json_body(request))
 
     @app.post("/api/v1/biblioteca/importaciones")
     async def post_biblioteca_importacion(request: Request) -> JSONResponse:

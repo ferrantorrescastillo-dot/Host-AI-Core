@@ -9,6 +9,12 @@ import type {
   ElaboracionResponse,
   ElaboracionesResponse,
 } from "../types/biblioteca";
+import type {
+  MenuElaborationsResponse,
+  MenuInput,
+  MenuResponse,
+  MenusResponse,
+} from "../types/menus";
 
 type Envelope = {
   ok: boolean;
@@ -107,6 +113,34 @@ export const hostAiApiClient = {
 
   getArticulo(id: string): Promise<ArticuloResponse> {
     return request<ArticuloResponse>(`/api/v1/articulos/${encodeURIComponent(id)}`, { method: "GET" });
+  },
+
+  getMenus(): Promise<MenusResponse> {
+    return request<MenusResponse>("/api/v1/menus", { method: "GET" });
+  },
+
+  getMenu(id: string): Promise<MenuResponse> {
+    return request<MenuResponse>(`/api/v1/menus/${encodeURIComponent(id)}`, { method: "GET" });
+  },
+
+  getMenuElaborations(): Promise<MenuElaborationsResponse> {
+    return request<MenuElaborationsResponse>("/api/v1/menus/elaboraciones", { method: "GET" });
+  },
+
+  createMenu(input: MenuInput): Promise<MenuResponse> {
+    return request<MenuResponse>("/api/v1/menus", { method: "POST", body: JSON.stringify(input) });
+  },
+
+  updateMenu(id: string, input: MenuInput): Promise<MenuResponse> {
+    return request<MenuResponse>(`/api/v1/menus/${encodeURIComponent(id)}`, {
+      method: "PATCH", body: JSON.stringify(input),
+    });
+  },
+
+  archiveMenu(id: string, version: number): Promise<MenuResponse> {
+    return request<MenuResponse>(`/api/v1/menus/${encodeURIComponent(id)}`, {
+      method: "DELETE", body: JSON.stringify({ version }),
+    });
   },
 
   getBiblioteca(): Promise<BibliotecaResponse> {

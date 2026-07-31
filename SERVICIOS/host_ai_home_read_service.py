@@ -455,7 +455,7 @@ class HostAIHomeReadService:
         return modulo
 
     def _leer_menus_desactualizados(self) -> dict[str, Any]:
-        res = self.servicio_menus.menus_con_incidencias()
+        res = self.servicio_menus.ver_todos()
         menus = list(res.get("menus") or [])
         items = [
             {
@@ -463,10 +463,32 @@ class HostAIHomeReadService:
                 "codigo": str(m.get("codigo") or ""),
                 "nombre": str(m.get("nombre") or ""),
                 "estado": str(m.get("estado") or ""),
+                "estado_publicacion": str(
+                    m.get("estado_publicacion")
+                    or (
+                        "ARCHIVADO"
+                        if str(m.get("estado") or "") == "ARCHIVADO"
+                        else "BORRADOR"
+                        if str(m.get("estado") or "") == "BORRADOR"
+                        else "ACTIVO"
+                    )
+                ),
+                "version": int(m.get("version_menu") or 1),
+                "comensales": float(m.get("comensales_recomendado") or 0),
+                "coste_total": float(m.get("coste_total") or 0),
+                "coste_por_comensal": float(m.get("coste_por_comensal") or 0),
+                "incidencias": list(m.get("incidencias") or []),
             }
             for m in menus
         ]
-        return self._pack_items(items)
+        modulo = self._pack_items(items)
+        modulo["resumen"] = {
+            "borradores": sum(item["estado_publicacion"] == "BORRADOR" for item in items),
+            "activos": sum(item["estado_publicacion"] == "ACTIVO" for item in items),
+            "archivados": sum(item["estado_publicacion"] == "ARCHIVADO" for item in items),
+            "con_incidencias": sum(bool(item["incidencias"]) for item in items),
+        }
+        return modulo
 
     def _build_indicadores(self, modulos: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
         out: list[dict[str, Any]] = []

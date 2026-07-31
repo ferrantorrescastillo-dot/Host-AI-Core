@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from typing import Callable
 
 from API.contracts.http_models import ApiRequest, ApiResponse
-from API.endpoints import articulos, biblioteca, chat, dashboard, eventos, executive, health, plan, version, workflow
+from API.endpoints import articulos, biblioteca, chat, dashboard, eventos, executive, health, menus, plan, version, workflow
 from API.facade.core_public_facade import CorePublicFacade
 from API.infra.response_envelope import build_error_payload, normalize_success_payload
 
@@ -30,6 +30,9 @@ ROUTES: tuple[Route, ...] = (
     Route("GET", "/api/v1/biblioteca", biblioteca.summary_handle),
     Route("GET", "/api/v1/biblioteca/elaboraciones", biblioteca.list_handle),
     Route("POST", "/api/v1/biblioteca/importaciones", biblioteca.import_create_handle),
+    Route("GET", "/api/v1/menus", menus.collection_handle),
+    Route("POST", "/api/v1/menus", menus.collection_handle),
+    Route("GET", "/api/v1/menus/elaboraciones", menus.elaborations_handle),
     Route("GET", "/executive", executive.handle),
     Route("GET", "/dashboard", dashboard.handle),
     Route("GET", "/eventos", eventos.handle),
@@ -66,6 +69,8 @@ class ApiRouter:
                 handler = biblioteca.import_proposals_handle
             elif key[0] == "GET":
                 handler = biblioteca.import_detail_handle
+        if handler is None and key[0] in {"GET", "PATCH", "DELETE"} and key[1].startswith("/api/v1/menus/"):
+            handler = menus.detail_handle
         if handler is None:
             return ApiResponse(
                 status_code=404,

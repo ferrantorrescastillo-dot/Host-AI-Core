@@ -719,9 +719,52 @@ textarea {
   color: #a12622;
 }
 
+.menu-workspace {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(14rem, 20rem) minmax(0, 1fr);
+}
+
+.menu-workspace aside,
+.menu-editor,
+.menu-cost-summary {
+  display: grid;
+  gap: .75rem;
+}
+
+.menu-workspace aside button {
+  align-items: flex-start;
+  display: grid;
+  gap: .25rem;
+  text-align: left;
+}
+
+.menu-workspace aside button.active {
+  outline: 2px solid var(--accent, #476a54);
+}
+
+.menu-editor fieldset {
+  display: grid;
+  gap: .65rem;
+}
+
+.menu-editor-row,
+.menu-actions {
+  display: flex;
+  gap: .75rem;
+}
+
+.menu-editor-row > * {
+  flex: 1;
+}
+
 @media (max-width: 760px) {
   .draft-review-layout,
   .draft-ingredient-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .menu-workspace {
     grid-template-columns: 1fr;
   }
 }
