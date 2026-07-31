@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { HostAiApiError } from "../../api/client";
 import { menusService } from "../../services/menusService";
 import type { ElaboracionResumen } from "../../types/biblioteca";
-import type { IntelligentMenu, MenuInput, MenuNeedLine, MenuNeedsResponse, MenuPurchaseProposalResponse, MenuState } from "../../types/menus";
+import type { IntelligentMenu, MenuInput, MenuNeedLine, MenuNeedsResponse, MenuOrdersResponse, MenuProposalLine, MenuPurchaseProposalResponse, MenuState } from "../../types/menus";
 import { BibliotecaNav } from "../components/BibliotecaNav";
 import { ErrorState } from "../components/ErrorState";
 import { LoadingState } from "../components/LoadingState";
@@ -41,9 +41,12 @@ export function MenusPage() {
   const [needsFilter, setNeedsFilter] = useState("todos");
   const [needsLoading, setNeedsLoading] = useState(false);
   const [proposalLoading, setProposalLoading] = useState(false);
+  const [orderLoading, setOrderLoading] = useState(false);
   const [needsError, setNeedsError] = useState("");
   const [proposal, setProposal] = useState<MenuPurchaseProposalResponse["propuesta"] | null>(null);
+  const [proposalDirty, setProposalDirty] = useState(false);
   const [createdOrders, setCreatedOrders] = useState<Array<{ id: string; proveedor: string; estado: string }>>([]);
+  const [orderResult, setOrderResult] = useState<Pick<MenuOrdersResponse, "lineas_incluidas" | "lineas_pendientes" | "lineas_excluidas" | "advertencias"> | null>(null);
 
   useEffect(() => {
     void menusService.list().then((response) => setMenus(response.menus)).catch((reason) => setError(reason as HostAiApiError)).finally(() => setLoading(false));
@@ -96,7 +99,7 @@ export function MenusPage() {
     } as ElaboracionResumen] as const));
     setKnown((current) => ({ ...current, ...Object.fromEntries(currentOptions) }));
     setMessage("");
-    setNeeds(null); setProposal(null); setCreatedOrders([]); setNeedsError("");
+    setNeeds(null); setProposal(null); setProposalDirty(false); setCreatedOrders([]); setOrderResult(null); setNeedsError("");
   }
 
   async function loadNeeds() {
@@ -110,7 +113,7 @@ export function MenusPage() {
   async function generateProposal() {
     if (!selected) return;
     setProposalLoading(true); setMessage("");
-    try { setProposal((await menusService.createPurchaseProposal(selected.id)).propuesta); }
+    try { setProposal((await menusService.createPurchaseProposal(selected.id)).propuesta); setProposalDirty(false); setOrderResult(null); }
     catch (reason) { setMessage((reason as HostAiApiError).message); }
     finally { setProposalLoading(false); }
   }
@@ -118,24 +121,35 @@ export function MenusPage() {
   async function saveProposal() {
     if (!selected || !proposal) return;
     setProposalLoading(true); setMessage("");
-    try { setProposal((await menusService.updatePurchaseProposal(selected.id, proposal.id, { version: proposal.version, lineas: proposal.lineas })).propuesta); setMessage("Propuesta guardada."); }
+    try { setProposal((await menusService.updatePurchaseProposal(selected.id, proposal.id, { version: proposal.version, lineas: proposal.lineas })).propuesta); setProposalDirty(false); setMessage("Propuesta guardada."); }
     catch (reason) { setMessage((reason as HostAiApiError).message); }
     finally { setProposalLoading(false); }
   }
 
   async function createOrders() {
     if (!selected || !proposal) return;
-    const ready = proposal.lineas.filter((line) => line.incluir && line.articulo_id && line.proveedor && (line.cantidad_final_propuesta || 0) > 0);
+    const ready = proposal.lineas.filter(isOrderableLine);
     const providers = new Set(ready.map((line) => line.proveedor));
     if (!window.confirm(`Se crearán ${providers.size} borradores de pedido para ${providers.size} proveedores.`)) return;
-    setProposalLoading(true); setMessage("");
-    try { const response = await menusService.createDraftOrders(selected.id, proposal.id); setProposal(response.propuesta); setCreatedOrders(response.pedidos); }
+    setOrderLoading(true); setProposalLoading(true); setMessage("Creando borradores…");
+    try {
+      let savedProposal = proposal;
+      if (proposalDirty) {
+        savedProposal = (await menusService.updatePurchaseProposal(selected.id, proposal.id, { version: proposal.version, lineas: proposal.lineas })).propuesta;
+        setProposal(savedProposal);
+        setProposalDirty(false);
+      }
+      const response = await menusService.createDraftOrders(selected.id, savedProposal.id, savedProposal.version);
+      setProposal(response.propuesta); setCreatedOrders(response.pedidos_creados); setOrderResult(response); setMessage("Borradores creados correctamente.");
+    }
     catch (reason) { setMessage((reason as HostAiApiError).message); }
-    finally { setProposalLoading(false); }
+    finally { setOrderLoading(false); setProposalLoading(false); }
   }
 
   function updateProposalLine(id: string, changes: Record<string, unknown>) {
     setProposal((current) => current ? { ...current, lineas: current.lineas.map((line) => line.id === id ? { ...line, ...changes } : line) } : current);
+    setProposalDirty(true);
+    setOrderResult(null);
   }
 
   function updateSection(index: number, changes: Partial<MenuInput["secciones"][number]>) {
@@ -188,8 +202,15 @@ export function MenusPage() {
   if (loading) return <><BibliotecaNav /><LoadingState label="Cargando menús..." /></>;
   if (error) return <><BibliotecaNav /><ErrorState title="No se pudieron cargar los menús." detail={error.message} /></>;
 
+  const readyLines = proposal?.lineas.filter(isOrderableLine) ?? [];
+  const excludedLines = proposal?.lineas.filter((line) => !line.incluir) ?? [];
+  const pendingLines = proposal?.lineas.filter((line) => line.incluir && !isOrderableLine(line)) ?? [];
+  const readyProviders = new Set(readyLines.map((line) => line.proveedor));
+  const createDisabledReason = orderDisabledReason(proposal, orderLoading, readyLines.length);
+
   return <section>
     <BibliotecaNav />
+    {proposal ? <div className="menu-cost-summary" aria-label="Estado de preparación de pedidos"><strong>Líneas listas para pedido: {readyLines.length}</strong><span>Líneas pendientes: {pendingLines.length}</span><span>Líneas excluidas: {excludedLines.length}</span><span>Proveedores: {readyProviders.size}</span>{proposalDirty ? <span className="draft-warning">Los cambios se guardarán antes de crear los borradores.</span> : null}{createDisabledReason ? <span className="draft-warning">{createDisabledReason}</span> : null}{orderResult ? <span>{orderResult.lineas_incluidas.length} incluidas · {orderResult.lineas_pendientes.length} pendientes · {orderResult.lineas_excluidas.length} excluidas</span> : null}{orderResult?.advertencias.map((warning) => <span className="draft-warning" key={warning}>{warning}</span>)}</div> : null}
     <header className="page-header"><div><p className="eyebrow">Biblioteca Culinaria</p><h2>Menús inteligentes</h2></div><button type="button" onClick={() => { setSelected(null); setDraft(emptyDraft()); }}>Nuevo menú</button></header>
     <p>Los menús referencian elaboraciones existentes. Recetas, escandallos y costes permanecen en la Biblioteca.</p>
     <div className="menu-workspace">
@@ -243,6 +264,21 @@ function proposalDisabledReason(selected: IntelligentMenu | null, needs: MenuNee
   if (technicalError) return `Error técnico al calcular necesidades: ${technicalError}`;
   if (!needs) return "Calcula primero las necesidades.";
   if (needs.summary.candidatas_propuesta === 0) return "No existen necesidades de compra.";
+  return "";
+}
+
+function isOrderableLine(line: MenuProposalLine) {
+  return Boolean(
+    line.incluir && line.articulo_id && line.proveedor
+    && line.cantidad_final_propuesta != null && line.cantidad_final_propuesta > 0
+    && (line.unidad_base || line.formato_compra),
+  );
+}
+
+function orderDisabledReason(proposal: MenuPurchaseProposalResponse["propuesta"] | null, loading: boolean, readyCount: number) {
+  if (!proposal) return "Genera primero una propuesta.";
+  if (loading) return "Creando borradores…";
+  if (readyCount === 0) return "No hay líneas listas. Revisa artículo, proveedor, cantidad y unidad o formato.";
   return "";
 }
 

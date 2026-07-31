@@ -104,13 +104,17 @@ export type MenuProposalLine = {
   cantidad_necesaria: number; cantidad_faltante: number | null; cantidad_final_propuesta: number | null;
   unidad_base: string; proveedor: string | null; formato_compra: string | null;
   precio_estimado: number | null; coste_estimado: number | null; estado: string;
-  observaciones: string; advertencia: string | null;
+  observaciones: string; advertencia: string | null; motivos_pendientes?: string[];
 };
+
+export type MenuDraftOrder = { id: string; proveedor: string; estado: "borrador"; lineas: Array<Record<string, unknown>>; importe_estimado: number; observaciones: string };
 
 export type MenuOrdersResponse = ApiEnvelopeBase & {
   propuesta: MenuPurchaseProposalResponse["propuesta"];
-  pedidos: Array<{ id: string; proveedor: string; estado: "borrador"; lineas: Array<Record<string, unknown>>; importe_estimado: number; observaciones: string }>;
-  lineas_pendientes: MenuProposalLine[]; stock_modificado: false; recepciones_creadas: 0;
+  pedidos: MenuDraftOrder[]; pedidos_creados: MenuDraftOrder[];
+  lineas_incluidas: MenuProposalLine[]; lineas_pendientes: MenuProposalLine[]; lineas_excluidas: MenuProposalLine[];
+  advertencias: string[]; errores: Array<{ code?: string; message: string }>;
+  idempotente: boolean; stock_modificado: false; recepciones_creadas: 0;
 };
 
 export type MenuElaborationOption = {

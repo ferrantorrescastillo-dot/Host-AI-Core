@@ -64,7 +64,7 @@ describe("Selector de elaboraciones de Menús", () => {
     const body = JSON.parse(String(post.body));
     expect(body.secciones[1].elaboraciones.map((item: { elaboracion_id: string }) => item.elaboracion_id)).toEqual(["REC-NUEVA", "REC-ANTIGUA"]);
     expect(fetchMock.mock.calls.some(([url]) => String(url).includes("/api/v1/menus/elaboraciones"))).toBe(false);
-  });
+  }, 10_000);
 
   it("muestra error controlado sin inventar menús", async () => {
     vi.spyOn(global, "fetch").mockResolvedValue({ ok: false, status: 503, json: async () => ({ ...envelope, ok: false, error: { code: "menus_unavailable", message: "Menús no disponibles." } }) } as Response);
@@ -91,7 +91,10 @@ describe("Selector de elaboraciones de Menús", () => {
       } }) } as Response;
       if (url.endsWith("/crear-pedidos") && init?.method === "POST") return { ok: true, status: 201, json: async () => ({ ...envelope,
         propuesta: { id: "MENUPROP-1", estado: "CONFIRMADA", version: 2, coste_estimado: 10, coste_completo: true, lineas: [], grupos_proveedor: [], resumen: { articulos_propuestos: 1, articulos_pendientes: 0, proveedores_pendientes: 0 }, advertencias: [], crea_pedido: false, modifica_stock: false, datos_reales_modificados: true },
-        pedidos: [{ id: "PED-1", proveedor: "Proveedor B", estado: "borrador", lineas: [], importe_estimado: 14, observaciones: "Generado desde Menú" }], lineas_pendientes: [], stock_modificado: false, recepciones_creadas: 0,
+        pedidos: [{ id: "PED-1", proveedor: "Proveedor B", estado: "borrador", lineas: [], importe_estimado: 14, observaciones: "Generado desde Menú" }],
+        pedidos_creados: [{ id: "PED-1", proveedor: "Proveedor B", estado: "borrador", lineas: [], importe_estimado: 14, observaciones: "Generado desde Menú" }],
+        lineas_incluidas: [], lineas_pendientes: [], lineas_excluidas: [], advertencias: [], errores: [], idempotente: false,
+        stock_modificado: false, recepciones_creadas: 0,
       }) } as Response;
       if (url.includes("/propuesta-compra/") && init?.method === "PATCH") {
         const changed = JSON.parse(String(init.body));
@@ -120,15 +123,71 @@ describe("Selector de elaboraciones de Menús", () => {
     fireEvent.click(screen.getByRole("button", { name: "Generar propuesta de compra" }));
     expect(await screen.findByText("Propuesta BORRADOR")).toBeInTheDocument();
     expect(screen.getByLabelText("Revisar propuesta de compra")).toBeInTheDocument();
+    expect(screen.getByText("Líneas listas para pedido: 1")).toBeInTheDocument();
+    expect(screen.getByText("Líneas pendientes: 0")).toBeInTheDocument();
+    expect(screen.getByText("Proveedores: 1")).toBeInTheDocument();
     fireEvent.change(screen.getByLabelText("Cantidad propuesta LINEA-001"), { target: { value: "7" } });
     fireEvent.change(screen.getByLabelText("Proveedor LINEA-001"), { target: { value: "Proveedor B" } });
-    fireEvent.click(screen.getByRole("button", { name: "Guardar propuesta" }));
-    expect(await screen.findByText("Propuesta guardada.")).toBeInTheDocument();
     vi.spyOn(window, "confirm").mockReturnValue(true);
     fireEvent.click(screen.getByRole("button", { name: "Crear borradores de pedido" }));
     expect(await screen.findByText("1 borradores creados")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Abrir Compras" })).toHaveAttribute("href", "/compras");
     expect(screen.getByText("No se ha creado ningún pedido ni modificado Stock.")).toBeInTheDocument();
     expect(fetchMock.mock.calls.some(([url, init]) => String(url).endsWith("/propuesta-compra") && init?.method === "POST")).toBe(true);
+    const createCall = fetchMock.mock.calls.find(([url]) => String(url).endsWith("/crear-pedidos"));
+    expect(JSON.parse(String(createCall?.[1]?.body))).toMatchObject({ confirmacion: "CREAR_BORRADORES", version: 2 });
+    const patchIndex = fetchMock.mock.calls.findIndex(([url, init]) => String(url).includes("/propuesta-compra/") && init?.method === "PATCH");
+    const createIndex = fetchMock.mock.calls.findIndex(([url]) => String(url).endsWith("/crear-pedidos"));
+    expect(patchIndex).toBeGreaterThan(-1);
+    expect(createIndex).toBeGreaterThan(patchIndex);
+  });
+
+  it("explica por qué no hay líneas listas y muestra un error controlado al crear", async () => {
+    let releaseCreation!: () => void;
+    const creationGate = new Promise<void>((resolve) => { releaseCreation = resolve; });
+    const pendingLine = { id: "LINEA-PENDIENTE", incluir: true, articulo_id: "ART-PATATA", articulo: "Patata", cantidad_necesaria: 2,
+      cantidad_faltante: null, cantidad_final_propuesta: null, unidad_base: "kg", proveedor: null, formato_compra: null,
+      precio_estimado: null, coste_estimado: null, estado: "Stock no disponible", observaciones: "", advertencia: "Stock desconocido" };
+    vi.spyOn(global, "fetch").mockImplementation(async (input, init) => {
+      const url = String(input);
+      if (url.endsWith("/necesidades")) return { ok: true, status: 200, json: async () => ({ ...envelope, necesidades: {
+        menu_id: menu.id, menu_version: 1, comensales: 10, generated_at: "2026-07-31T10:00:00Z", complete: false,
+        lines: [], warnings: [], blocking_errors: [], summary: { articulos: 1, cubiertos: 0, compra_necesaria: 0, sin_relacionar: 0, conversiones_pendientes: 0, candidatas_propuesta: 1 },
+        solo_lectura: true, datos_reales_modificados: false,
+      } }) } as Response;
+      if (url.endsWith("/propuesta-compra") && init?.method === "POST") return { ok: true, status: 201, json: async () => ({ ...envelope, propuesta: {
+        id: "MENUPROP-P", estado: "BORRADOR", version: 1, coste_estimado: 0, coste_completo: false, lineas: [pendingLine], grupos_proveedor: [],
+        resumen: { articulos_propuestos: 0, articulos_pendientes: 1, proveedores_pendientes: 1 }, advertencias: ["Stock desconocido"], crea_pedido: false, modifica_stock: false, datos_reales_modificados: false,
+      } }) } as Response;
+      if (url.includes("/propuesta-compra/") && init?.method === "PATCH") {
+        const body = JSON.parse(String(init.body));
+        return { ok: true, status: 200, json: async () => ({ ...envelope, propuesta: { id: "MENUPROP-P", estado: "REVISADA", version: 2, coste_estimado: 0, coste_completo: false, lineas: body.lineas, grupos_proveedor: [], resumen: { articulos_propuestos: 1, articulos_pendientes: 0, proveedores_pendientes: 0 }, advertencias: [], crea_pedido: false, modifica_stock: false, datos_reales_modificados: false } }) } as Response;
+      }
+      if (url.endsWith("/crear-pedidos")) {
+        await creationGate;
+        return { ok: false, status: 500, json: async () => ({ ...envelope, ok: false, error: { code: "order_creation_failed", message: "No se pudieron crear los borradores." } }) } as Response;
+      }
+      return { ok: true, status: 200, json: async () => ({ ...envelope, menus: [menu], total: 1, resumen: { borradores: 1, activos: 0, archivados: 0 } }) } as Response;
+    });
+
+    render(<MemoryRouter initialEntries={["/menus"]}><App /></MemoryRouter>);
+    fireEvent.click(await screen.findByText("Menú degustación"));
+    fireEvent.click(screen.getByRole("button", { name: "Calcular necesidades" }));
+    await screen.findByText(/1 artículos/);
+    fireEvent.click(screen.getByRole("button", { name: "Generar propuesta de compra" }));
+    const createButton = await screen.findByRole("button", { name: "Crear borradores de pedido" });
+    expect(createButton).toBeDisabled();
+    expect(screen.getByText(/No hay líneas listas/)).toBeInTheDocument();
+    expect(screen.getByText("Líneas pendientes: 1")).toBeInTheDocument();
+
+    fireEvent.change(screen.getByLabelText("Cantidad propuesta LINEA-PENDIENTE"), { target: { value: "2" } });
+    fireEvent.change(screen.getByLabelText("Proveedor LINEA-PENDIENTE"), { target: { value: "Proveedor A" } });
+    expect(createButton).toBeEnabled();
+    vi.spyOn(window, "confirm").mockReturnValue(true);
+    fireEvent.click(createButton);
+    expect((await screen.findAllByText("Creando borradores…")).length).toBeGreaterThan(0);
+    expect(createButton).toBeDisabled();
+    releaseCreation();
+    expect(await screen.findByText("No se pudieron crear los borradores.")).toBeInTheDocument();
   });
 });

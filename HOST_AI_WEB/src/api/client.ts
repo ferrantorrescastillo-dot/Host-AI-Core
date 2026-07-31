@@ -158,8 +158,8 @@ export const hostAiApiClient = {
     return request<MenuPurchaseProposalResponse>(`/api/v1/menus/${encodeURIComponent(menuId)}/propuesta-compra/${encodeURIComponent(proposalId)}`, { method: "PATCH", body: JSON.stringify(input) });
   },
 
-  createMenuDraftOrders(menuId: string, proposalId: string): Promise<MenuOrdersResponse> {
-    return request<MenuOrdersResponse>(`/api/v1/menus/${encodeURIComponent(menuId)}/propuesta-compra/${encodeURIComponent(proposalId)}/crear-pedidos`, { method: "POST", body: JSON.stringify({ confirmacion: "CREAR_BORRADORES", usuario: "web" }) });
+  createMenuDraftOrders(menuId: string, proposalId: string, version: number): Promise<MenuOrdersResponse> {
+    return request<MenuOrdersResponse>(`/api/v1/menus/${encodeURIComponent(menuId)}/propuesta-compra/${encodeURIComponent(proposalId)}/crear-pedidos`, { method: "POST", body: JSON.stringify({ confirmacion: "CREAR_BORRADORES", usuario: "web", version }) });
   },
 
   getBiblioteca(): Promise<BibliotecaResponse> {

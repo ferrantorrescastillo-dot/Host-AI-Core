@@ -162,16 +162,19 @@ class MenuNecesidadesService:
         proposal = found["propuesta"]
         if str(body.get("confirmacion") or "") != "CREAR_BORRADORES":
             return {"ok": False, "error": {"status": 400, "code": "confirmation_required", "message": "Debes confirmar explícitamente la creación de borradores."}}
+        if int(body.get("version") or 0) != int(proposal["version"]):
+            return {"ok": False, "error": {"status": 409, "code": "proposal_version_conflict", "message": "La propuesta está desactualizada. Guárdala o vuelve a cargarla antes de crear pedidos."}}
+        menu_result = self.menus.obtener(menu_id)
+        if not menu_result.get("ok"):
+            return menu_result
+        if int(menu_result["menu"]["version"]) != int(proposal["menu_version"]):
+            return {"ok": False, "error": {"status": 409, "code": "menu_version_conflict", "message": "El menú cambió después de generar la propuesta. Calcula de nuevo sus necesidades."}}
+        included, pending, excluded, warnings = self._clasificar_lineas_pedido(proposal["lineas"])
         if proposal.get("pedidos_creados"):
-            return {"ok": True, "propuesta": proposal, "pedidos": proposal["pedidos_creados"], "idempotente": True}
+            return self._resultado_pedidos(proposal, proposal["pedidos_creados"], included, pending, excluded, warnings, idempotente=True)
         groups: dict[str, list[dict[str, Any]]] = {}
-        pending = []
-        for line in proposal["lineas"]:
-            quantity = line.get("cantidad_final_propuesta")
-            valid = bool(line.get("incluir")) and bool(line.get("articulo_id")) and bool(line.get("proveedor")) and quantity is not None and float(quantity) > 0
-            if not valid:
-                pending.append(line)
-                continue
+        for line in included:
+            quantity = float(line["cantidad_final_propuesta"])
             groups.setdefault(line["proveedor"], []).append({
                 "nombre": line.get("articulo"), "articulo_id": line.get("articulo_id"),
                 "cantidad": quantity, "unidad": line.get("unidad_base"),
@@ -190,7 +193,48 @@ class MenuNecesidadesService:
         orders = self.compras.crear_pedidos_borrador_transaccional(payload)
         proposal["pedidos_creados"] = orders
         proposal["estado"] = "CONFIRMADA"
-        return {"ok": True, "propuesta": proposal, "pedidos": orders, "lineas_pendientes": pending, "stock_modificado": False, "recepciones_creadas": 0}
+        return self._resultado_pedidos(proposal, orders, included, pending, excluded, warnings)
+
+    @staticmethod
+    def _clasificar_lineas_pedido(lines: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], list[str]]:
+        included: list[dict[str, Any]] = []
+        pending: list[dict[str, Any]] = []
+        excluded: list[dict[str, Any]] = []
+        warnings: list[str] = []
+        for line in lines:
+            if not line.get("incluir"):
+                excluded.append(line)
+                continue
+            reasons = []
+            if not line.get("articulo_id"):
+                reasons.append("Falta artículo relacionado.")
+            if not line.get("proveedor"):
+                reasons.append("Falta proveedor.")
+            try:
+                valid_quantity = float(line.get("cantidad_final_propuesta")) > 0
+            except (TypeError, ValueError):
+                valid_quantity = False
+            if not valid_quantity:
+                reasons.append("Falta una cantidad válida.")
+            if not line.get("unidad_base") and not line.get("formato_compra"):
+                reasons.append("Falta unidad o formato de compra.")
+            if reasons:
+                pending.append({**line, "motivos_pendientes": reasons})
+                warnings.extend(f"{line.get('articulo') or line.get('id')}: {reason}" for reason in reasons)
+            else:
+                included.append(line)
+        return included, pending, excluded, warnings
+
+    @staticmethod
+    def _resultado_pedidos(proposal: dict[str, Any], orders: list[dict[str, Any]], included: list[dict[str, Any]], pending: list[dict[str, Any]], excluded: list[dict[str, Any]], warnings: list[str], *, idempotente: bool = False) -> dict[str, Any]:
+        return {
+            "ok": True, "propuesta": proposal,
+            "pedidos": orders, "pedidos_creados": orders,
+            "lineas_incluidas": included, "lineas_pendientes": pending,
+            "lineas_excluidas": excluded, "advertencias": warnings, "errores": [],
+            "idempotente": idempotente,
+            "stock_modificado": False, "recepciones_creadas": 0,
+        }
 
     def obtener_propuesta(self, menu_id: str, proposal_id: str) -> dict[str, Any]:
         proposal = self._propuestas.get(proposal_id)

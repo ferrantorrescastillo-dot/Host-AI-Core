@@ -148,10 +148,11 @@ def test_revisa_propuesta_y_crea_borrador_idempotente_con_origen_sin_tocar_stock
         }],
     })
     assert reviewed.status_code == 200
-    assert reviewed.json()["propuesta"]["lineas"][0]["cantidad_final_propuesta"] == 7
+    reviewed_proposal = reviewed.json()["propuesta"]
+    assert reviewed_proposal["lineas"][0]["cantidad_final_propuesta"] == 7
 
     created = client.post(f"/api/v1/menus/{menu_id}/propuesta-compra/{proposal['id']}/crear-pedidos", json={
-        "confirmacion": "CREAR_BORRADORES", "usuario": "chef",
+        "confirmacion": "CREAR_BORRADORES", "usuario": "chef", "version": reviewed_proposal["version"],
     })
     assert created.status_code == 201
     order = created.json()["pedidos"][0]
@@ -161,13 +162,76 @@ def test_revisa_propuesta_y_crea_borrador_idempotente_con_origen_sin_tocar_stock
     assert menu_id in order["observaciones"] and proposal["id"] in order["observaciones"]
     assert created.json()["stock_modificado"] is False
     assert created.json()["recepciones_creadas"] == 0
+    assert created.json()["pedidos_creados"] == created.json()["pedidos"]
+    assert len(created.json()["lineas_incluidas"]) == 1
+    assert created.json()["lineas_pendientes"] == []
+    assert created.json()["lineas_excluidas"] == []
     assert stock_path.read_bytes() == before_stock
     assert json.loads((tmp_path / "DATOS/db/compras_recepciones.json").read_text(encoding="utf-8")) == []
 
-    repeated = client.post(f"/api/v1/menus/{menu_id}/propuesta-compra/{proposal['id']}/crear-pedidos", json={"confirmacion": "CREAR_BORRADORES"})
+    repeated = client.post(f"/api/v1/menus/{menu_id}/propuesta-compra/{proposal['id']}/crear-pedidos", json={"confirmacion": "CREAR_BORRADORES", "version": reviewed_proposal["version"]})
     assert repeated.json()["pedidos"][0]["id"] == order["id"]
     persisted = json.loads((tmp_path / "DATOS/db/compras_pedidos.json").read_text(encoding="utf-8"))
     assert len(persisted) == 1
+
+
+def test_crea_un_borrador_por_proveedor_y_separa_pendientes_y_excluidas(tmp_path: Path) -> None:
+    menu_id = _seed(tmp_path, stock=0)
+    service = MenuNecesidadesService(tmp_path)
+    proposal = service.crear_propuesta(menu_id)["propuesta"]
+    base = proposal["lineas"][0]
+    proposal["lineas"] = [
+        {**base, "id": "L-1", "proveedor": "Proveedor A", "cantidad_final_propuesta": 2},
+        {**base, "id": "L-2", "proveedor": "Proveedor A", "cantidad_final_propuesta": 3},
+        {**base, "id": "L-3", "proveedor": "Proveedor B", "cantidad_final_propuesta": 4},
+        {**base, "id": "L-4", "proveedor": None, "cantidad_final_propuesta": 5},
+        {**base, "id": "L-5", "incluir": False, "proveedor": "Proveedor C", "cantidad_final_propuesta": 6},
+    ]
+
+    result = service.crear_pedidos(menu_id, proposal["id"], {
+        "confirmacion": "CREAR_BORRADORES", "version": proposal["version"], "usuario": "test",
+    })
+
+    assert result["ok"] is True
+    assert [(order["proveedor"], len(order["lineas"])) for order in result["pedidos_creados"]] == [
+        ("Proveedor A", 2), ("Proveedor B", 1),
+    ]
+    assert [line["id"] for line in result["lineas_incluidas"]] == ["L-1", "L-2", "L-3"]
+    assert result["lineas_pendientes"][0]["id"] == "L-4"
+    assert "Falta proveedor." in result["lineas_pendientes"][0]["motivos_pendientes"]
+    assert result["lineas_excluidas"][0]["id"] == "L-5"
+    assert all(order["estado"] == "borrador" for order in result["pedidos_creados"])
+
+
+def test_rechaza_si_todas_las_lineas_estan_pendientes_y_no_crea_pedido(tmp_path: Path) -> None:
+    menu_id = _seed(tmp_path, stock=0)
+    service = MenuNecesidadesService(tmp_path)
+    proposal = service.crear_propuesta(menu_id)["propuesta"]
+    proposal["lineas"][0].update({"proveedor": None, "cantidad_final_propuesta": None})
+
+    result = service.crear_pedidos(menu_id, proposal["id"], {
+        "confirmacion": "CREAR_BORRADORES", "version": proposal["version"],
+    })
+
+    assert result["ok"] is False
+    assert result["error"]["code"] == "no_orderable_lines"
+    assert service.compras is None
+
+
+def test_rechaza_propuesta_inexistente_y_version_obsoleta(tmp_path: Path) -> None:
+    menu_id = _seed(tmp_path, stock=0)
+    service = MenuNecesidadesService(tmp_path)
+    missing = service.crear_pedidos(menu_id, "MENUPROP-INEXISTENTE", {
+        "confirmacion": "CREAR_BORRADORES", "version": 1,
+    })
+    assert missing["error"]["code"] == "proposal_not_found"
+
+    proposal = service.crear_propuesta(menu_id)["propuesta"]
+    stale = service.crear_pedidos(menu_id, proposal["id"], {
+        "confirmacion": "CREAR_BORRADORES", "version": proposal["version"] + 1,
+    })
+    assert stale["error"]["code"] == "proposal_version_conflict"
+    assert service.compras is None
 
 
 def test_motor_hace_rollback_si_falla_persistencia() -> None:
