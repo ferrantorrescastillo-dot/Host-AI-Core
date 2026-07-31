@@ -12,6 +12,7 @@ from SERVICIOS.biblioteca_escandallos_601 import BibliotecaEscandallos601
 from SERVICIOS.biblioteca_recetas_601 import RepositorioBibliotecaRecetas601
 from SERVICIOS.menus_inteligentes_service import MenusInteligentesService
 from SERVICIOS.host_ai_home_read_service import HostAIHomeReadService
+from SERVICIOS.motor_calculo_menus_601 import MotorCalculoMenus601
 from SERVICIOS.repositorio_productos_maestro_601 import RepositorioProductosMaestro601
 
 
@@ -52,12 +53,19 @@ def _payload(recipe_id: str) -> dict:
     }
 
 
-def _seed_canonical(base_dir: Path) -> None:
+def _seed_canonical(base_dir: Path) -> str:
     db = base_dir / "DATOS" / "db"
     db.mkdir(parents=True, exist_ok=True)
     (db / "escandallos_canonicos.json").write_text(json.dumps({
         "schema_version": "1.0",
         "escandallos": [{
+            "receta": {
+                "codigo": "REC-ENSALADILLA-GAMBA", "nombre": "Ensaladilla de gamba",
+                "rendimiento": 4, "unidad_rendimiento": "raciones",
+                "ingredientes": [{"codigo": "ART-ENSALADILLA", "articulo_id": "ART-ENSALADILLA", "nombre": "Ingredientes ensaladilla", "cantidad": 1, "unidad": "kg"}],
+            },
+            "coste_total": 6.82,
+        }, {
             "receta": {
                 "codigo": "REC-CEVICHE-ANTIGUO", "nombre": "Ceviche de corvina",
                 "rendimiento": 10, "unidad_rendimiento": "raciones",
@@ -67,6 +75,7 @@ def _seed_canonical(base_dir: Path) -> None:
         }],
     }, ensure_ascii=False), encoding="utf-8")
     (db / "articulos.json").write_text(json.dumps([
+        {"codigo": "ART-ENSALADILLA", "nombre": "Ingredientes ensaladilla", "precio": 6.82, "unidad": "kg"},
         {"codigo": "ART-CORVINA", "nombre": "Corvina", "precio": 25, "unidad": "kg"},
     ]), encoding="utf-8")
     (db / "proveedores.json").write_text("[]", encoding="utf-8")
@@ -74,10 +83,11 @@ def _seed_canonical(base_dir: Path) -> None:
     invoices = base_dir / "DATOS" / "facturas"
     invoices.mkdir(parents=True, exist_ok=True)
     (invoices / "historico_precios.json").write_text('{"registros":[]}', encoding="utf-8")
+    return "REC-ENSALADILLA-GAMBA"
 
 
 def test_crud_menu_versionado_reutiliza_biblioteca_y_costes(tmp_path: Path) -> None:
-    recipe_id = _seed(tmp_path)
+    recipe_id = _seed_canonical(tmp_path)
     service = MenusInteligentesService(tmp_path)
 
     created = service.crear(_payload(recipe_id))
@@ -87,7 +97,14 @@ def test_crud_menu_versionado_reutiliza_biblioteca_y_costes(tmp_path: Path) -> N
     assert menu["version"] == 1
     assert menu["coste_total"] > 0
     assert menu["coste_por_comensal"] > 0
-    assert menu["secciones"][0]["elaboraciones"][0]["elaboracion_id"] == recipe_id
+    line = menu["secciones"][0]["elaboraciones"][0]
+    assert line["elaboracion_id"] == recipe_id
+    assert line["coste_por_racion"] == 1.705
+    assert line["coste_linea_por_comensal"] == 1.705
+    assert line["coste_linea_total"] == 17.05
+    assert line["estado_coste"] == "DISPONIBLE"
+    assert menu["coste_completo"] is True
+    assert menu["lineas_sin_coste"] == 0
 
     updated = service.actualizar(menu["id"], {
         **_payload(recipe_id), "version": 1, "estado": "ACTIVO", "comensales": 20,
@@ -97,24 +114,34 @@ def test_crud_menu_versionado_reutiliza_biblioteca_y_costes(tmp_path: Path) -> N
     assert updated["menu"]["version"] == 2
     assert updated["menu"]["coste_total"] == menu["coste_total"] * 2
 
+    doubled_quantity = service.actualizar(menu["id"], {
+        **_payload(recipe_id), "version": 2, "estado": "ACTIVO",
+        "comensales": 10,
+        "secciones": [{"nombre": "Principal", "elaboraciones": [{
+            "elaboracion_id": recipe_id, "cantidad": 2,
+        }]}],
+    })
+    assert doubled_quantity["menu"]["coste_por_comensal"] == 3.41
+    assert doubled_quantity["menu"]["coste_total"] == 34.1
+
     conflict = service.actualizar(menu["id"], {**_payload(recipe_id), "version": 1})
     assert conflict["error"]["status"] == 409
-    archived = service.archivar(menu["id"], {"version": 2})
+    archived = service.archivar(menu["id"], {"version": 3})
     assert archived["menu"]["estado"] == "ARCHIVADO"
     assert service.listar()["total"] == 0
     assert service.listar({"incluir_archivados": "true"})["total"] == 1
 
     recipes = RepositorioBibliotecaRecetas601(tmp_path).listar(incluir_archivadas=True)
-    assert len(recipes) == 1
+    assert recipes == []
 
 
 def test_api_http_menus_crud_y_selector_biblioteca(tmp_path: Path) -> None:
-    recipe_id = _seed(tmp_path)
+    recipe_id = _seed_canonical(tmp_path)
     client = TestClient(create_app(HostAIPlatformAPI(base_dir=tmp_path)))
 
     options = client.get("/api/v1/menus/elaboraciones")
     assert options.status_code == 200
-    assert options.json()["elaboraciones"][0]["id"] == recipe_id
+    assert recipe_id in {item["id"] for item in options.json()["elaboraciones"]}
 
     created = client.post("/api/v1/menus", json=_payload(recipe_id))
     assert created.status_code == 201
@@ -140,6 +167,58 @@ def test_menu_rechaza_elaboracion_inexistente_sin_crearla(tmp_path: Path) -> Non
     assert RepositorioBibliotecaRecetas601(tmp_path).listar(incluir_archivadas=True) == []
 
 
+def test_menu_marca_escandallo_incompleto_sin_convertirlo_en_cero(tmp_path: Path) -> None:
+    recipe_id = _seed(tmp_path)
+    menu = MenusInteligentesService(tmp_path).crear(_payload(recipe_id))["menu"]
+    line = menu["secciones"][0]["elaboraciones"][0]
+
+    assert line["estado_coste"] == "INCOMPLETO"
+    assert line["coste_por_racion"] is None
+    assert line["coste_linea_por_comensal"] is None
+    assert line["coste_linea_total"] is None
+    assert menu["coste_completo"] is False
+    assert menu["lineas_sin_coste"] == 1
+
+
+def test_motor_distingue_sin_escandallo_incompleto_y_cero_real() -> None:
+    class EmptyRepo:
+        def obtener(self, _ref: str): return None
+        def listar(self, **_kwargs): return []
+        def obtener_producto(self, _ref: str): return None
+        def buscar_productos(self, _query: dict): return []
+
+    details = {
+        "SIN-ESC": {"id": "SIN-ESC", "nombre": "Sin escandallo", "escandallo": None},
+        "INCOMPLETO": {"id": "INCOMPLETO", "nombre": "Incompleta", "escandallo": {
+            "estado_coste": "PARCIAL", "coste_por_racion": None,
+            "ingredientes_sin_coste": 1, "ingredientes_sin_conversion": 0,
+        }},
+        "CERO": {"id": "CERO", "nombre": "Coste cero real", "escandallo": {
+            "estado_coste": "DISPONIBLE", "coste_por_racion": 0,
+            "ingredientes_sin_coste": 0, "ingredientes_sin_conversion": 0,
+        }},
+    }
+    repo = EmptyRepo()
+    motor = MotorCalculoMenus601(repo, repo, repo, elaboracion_resolver=details.get)
+    result = motor.calcular(nombre_menu="Estados de coste", comensales=10, composicion={
+        "Principal": [
+            {"tipo_referencia": "RECETA", "referencia": "SIN-ESC", "cantidad": 1},
+            {"tipo_referencia": "RECETA", "referencia": "INCOMPLETO", "cantidad": 1},
+            {"tipo_referencia": "RECETA", "referencia": "CERO", "cantidad": 1},
+        ],
+    })
+
+    assert [line["estado_coste"] for line in result["lineas"]] == [
+        "SIN_COSTE", "INCOMPLETO", "DISPONIBLE",
+    ]
+    assert result["lineas"][0]["coste_por_racion"] is None
+    assert result["lineas"][1]["coste_por_racion"] is None
+    assert result["lineas"][2]["coste_por_racion"] == 0
+    assert result["lineas"][2]["coste_linea_total"] == 0
+    assert result["coste_completo"] is False
+    assert result["lineas_sin_coste"] == 2
+
+
 def test_selector_y_menu_reutilizan_elaboracion_canonica_antigua(tmp_path: Path) -> None:
     _seed_canonical(tmp_path)
     client = TestClient(create_app(HostAIPlatformAPI(base_dir=tmp_path)))
@@ -153,6 +232,7 @@ def test_selector_y_menu_reutilizan_elaboracion_canonica_antigua(tmp_path: Path)
     assert catalog["total_pages"] == 1
     assert catalog["items"][0]["id"] == "REC-CEVICHE-ANTIGUO"
     assert catalog["items"][0]["coste_por_racion"] is not None
+    assert catalog["items"][0]["coste_por_racion"] == 2.5
 
     created = client.post("/api/v1/menus", json=_payload("REC-CEVICHE-ANTIGUO"))
     assert created.status_code == 201
@@ -162,7 +242,7 @@ def test_selector_y_menu_reutilizan_elaboracion_canonica_antigua(tmp_path: Path)
 
 
 def test_home_read_service_expone_resumen_real_de_menus(tmp_path: Path) -> None:
-    recipe_id = _seed(tmp_path)
+    recipe_id = _seed_canonical(tmp_path)
     created = MenusInteligentesService(tmp_path).crear(_payload(recipe_id))
     assert created["ok"] is True
     home = HostAIHomeReadService(SimpleNamespace(base_dir=tmp_path))

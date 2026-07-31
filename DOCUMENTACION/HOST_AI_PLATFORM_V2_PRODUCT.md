@@ -263,6 +263,31 @@ memoria y se pierden al reiniciar el backend.
 No existe todavía una operación pública para aplicar el borrador. La siguiente
 fase será la validación final y confirmación transaccional, con vista previa,
 trazabilidad y rollback.
+## Costes de Menús Inteligentes
+
+Menús referencia elaboraciones de Biblioteca y reutiliza el escandallo vigente
+publicado por `GET /api/v1/biblioteca/elaboraciones/{elaboracion_id}`. React no
+calcula ingredientes, precios ni totales.
+
+La `cantidad` de una línea es el número de raciones de esa elaboración por
+comensal. El motor aplica:
+
+- `coste_linea_por_comensal = coste_por_racion * cantidad`;
+- `coste_linea_total = coste_linea_por_comensal * comensales`;
+- `coste_menu_por_comensal = suma de líneas con coste disponible`;
+- `coste_menu_total = coste_menu_por_comensal * comensales`.
+
+Un coste `DISPONIBLE` puede ser cero cuando el escandallo lo confirma. Un
+escandallo incompleto conserva costes de línea a `null`, informa ingredientes
+sin precio o conversión y marca el total del menú como parcial. Una elaboración
+sin escandallo se diferencia con estado `SIN_COSTE`; nunca se transforma una
+ausencia en `0,00 EUR`.
+
+Los GET de Menús recalculan una proyección de solo lectura con el escandallo
+vigente. El menú conserva su composición y una instantánea para trazabilidad,
+pero la respuesta pública refleja cambios posteriores de precios o escandallos
+sin introducir versionado económico paralelo.
+
 ## Confirmación transaccional del Importador Inteligente
 
 Host AI no conserva el documento original: persiste únicamente el borrador estructurado,

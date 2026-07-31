@@ -13,6 +13,10 @@ export type ElaboracionResumen = {
   raciones?: number | null;
   coste_total?: number | null;
   coste_por_racion?: number | null;
+  estado_coste?: "DISPONIBLE" | "PARCIAL" | "SIN_COSTE" | "SIN_ESCANDALLO";
+  coste_completo?: boolean;
+  motivo_coste_no_disponible?: string | null;
+  fecha_calculo?: string | null;
   tiene_receta: boolean;
   tiene_escandallo: boolean;
   tiene_ficha_tecnica: boolean;

@@ -120,7 +120,11 @@ class MotorCalculoMenus601:
                     })
                 vistos.add(key)
 
-                coste_por_comensal = 0.0
+                coste_por_racion: float | None = None
+                coste_por_comensal: float | None = None
+                estado_coste = "SIN_COSTE"
+                motivo_coste_no_disponible: str | None = None
+                fecha_coste: str | None = None
                 estado_linea = ESTADO_OPERATIVO
                 inc_linea: list[dict[str, Any]] = []
                 snapshot_ref: dict[str, Any] = {}
@@ -135,7 +139,9 @@ class MotorCalculoMenus601:
                             inc_linea.append({"tipo": INC_PLATO_ARCHIVADO, "detalle": f"Escandallo archivado: {esc.get('nombre')}"})
                         if estado_esc == ESTADO_DESACTUALIZADO:
                             inc_linea.append({"tipo": INC_ESCANDALLO_DESACTUALIZADO, "detalle": f"Escandallo desactualizado: {esc.get('nombre')}"})
-                        coste_por_comensal = self._to_float(esc.get("coste_por_racion")) * cantidad
+                        coste_por_racion = self._to_float(esc.get("coste_por_racion"))
+                        coste_por_comensal = coste_por_racion * cantidad
+                        estado_coste = "DISPONIBLE"
                         snapshot_ref = {
                             "tipo": "ESCANDALLO",
                             "id": esc.get("id"),
@@ -148,21 +154,32 @@ class MotorCalculoMenus601:
                 elif tipo_ref == "RECETA":
                     receta = self._buscar_receta(referencia)
                     elaboracion_publica = None
-                    if not receta and self.elaboracion_resolver:
+                    if self.elaboracion_resolver:
                         elaboracion_publica = self.elaboracion_resolver(referencia)
+                    if elaboracion_publica:
+                        receta = None
                     if not receta:
                         if not elaboracion_publica:
                             inc_linea.append({"tipo": INC_PLATO_INEXISTENTE, "detalle": f"Receta inexistente: {referencia}"})
                         else:
                             esc = elaboracion_publica.get("escandallo")
                             if not esc:
+                                motivo_coste_no_disponible = "La elaboraciÃ³n no tiene escandallo."
                                 inc_linea.append({"tipo": INC_ESCANDALLO_INEXISTENTE, "detalle": f"ElaboraciÃ³n sin escandallo asociado: {elaboracion_publica.get('nombre')}"})
                             else:
                                 coste = esc.get("coste_por_racion")
-                                if coste in (None, ""):
-                                    inc_linea.append({"tipo": INC_PRODUCTO_SIN_PRECIO, "detalle": f"Escandallo incompleto para elaboraciÃ³n: {elaboracion_publica.get('nombre')}"})
-                                else:
+                                fecha_coste = esc.get("fecha_calculo")
+                                if str(esc.get("estado_coste") or "").upper() == "DISPONIBLE" and coste not in (None, ""):
+                                    coste_por_racion = self._to_float(coste)
                                     coste_por_comensal = self._to_float(coste) * cantidad
+                                    estado_coste = "DISPONIBLE"
+                                else:
+                                    estado_coste = "INCOMPLETO"
+                                    motivo_coste_no_disponible = (
+                                        f"Escandallo incompleto: {int(esc.get('ingredientes_sin_coste') or 0)} ingrediente(s) sin precio y "
+                                        f"{int(esc.get('ingredientes_sin_conversion') or 0)} sin conversiÃ³n."
+                                    )
+                                    inc_linea.append({"tipo": INC_PRODUCTO_SIN_PRECIO, "detalle": motivo_coste_no_disponible})
                                 snapshot_ref = {
                                     "tipo": "ELABORACION_CANONICA",
                                     "id": elaboracion_publica.get("id"),
@@ -191,7 +208,9 @@ class MotorCalculoMenus601:
                         else:
                             if str(esc.get("estado") or "") == ESTADO_DESACTUALIZADO:
                                 inc_linea.append({"tipo": INC_ESCANDALLO_DESACTUALIZADO, "detalle": f"Escandallo desactualizado para receta: {receta.get('nombre')}"})
-                            coste_por_comensal = self._to_float(esc.get("coste_por_racion")) * cantidad
+                            coste_por_racion = self._to_float(esc.get("coste_por_racion"))
+                            coste_por_comensal = coste_por_racion * cantidad
+                            estado_coste = "DISPONIBLE"
                             snapshot_ref = {
                                 "tipo": "ESCANDALLO",
                                 "id": esc.get("id"),
@@ -210,7 +229,9 @@ class MotorCalculoMenus601:
                         precio = self._to_float(producto.get("precio"))
                         if precio <= 0:
                             inc_linea.append({"tipo": INC_PRODUCTO_SIN_PRECIO, "detalle": f"Producto sin precio: {producto.get('nombre')}"})
+                        coste_por_racion = precio
                         coste_por_comensal = precio * cantidad
+                        estado_coste = "DISPONIBLE" if precio > 0 else "INCOMPLETO"
                         snapshot_ref = {
                             "tipo": "PRODUCTO",
                             "codigo": producto.get("codigo"),
@@ -226,22 +247,43 @@ class MotorCalculoMenus601:
                     estado_linea = ESTADO_CON_INCIDENCIAS
                     incidencias.extend(inc_linea)
 
+                coste_linea_por_comensal = (
+                    round(coste_por_comensal, 6)
+                    if coste_por_comensal is not None else None
+                )
+                coste_linea_total = (
+                    round(coste_por_comensal * comensales, 6)
+                    if coste_por_comensal is not None else None
+                )
+
                 lineas.append(
                     {
                         "seccion": str(seccion or "").strip(),
                         "tipo_referencia": tipo_ref,
                         "referencia": referencia,
                         "cantidad": cantidad,
-                        "coste_por_comensal": round(coste_por_comensal, 6),
-                        "coste_total": round(coste_por_comensal * comensales, 6),
+                        "coste_por_racion": coste_por_racion,
+                        "coste_linea_por_comensal": coste_linea_por_comensal,
+                        "coste_linea_total": coste_linea_total,
+                        "coste_por_comensal": coste_linea_por_comensal,
+                        "coste_total": coste_linea_total,
+                        "estado_coste": estado_coste,
+                        "motivo_coste_no_disponible": motivo_coste_no_disponible,
+                        "fecha_coste": fecha_coste,
                         "estado_linea": estado_linea,
                         "incidencias": inc_linea,
                         "snapshot_referencia": snapshot_ref,
                     }
                 )
 
-        coste_comensal = round(sum(float(x.get("coste_por_comensal") or 0.0) for x in lineas), 6)
+        coste_comensal = round(sum(
+            float(x["coste_por_comensal"])
+            for x in lineas if x.get("coste_por_comensal") is not None
+        ), 6)
         coste_total = round(coste_comensal * comensales, 6)
+        lineas_sin_coste = sum(
+            line.get("estado_coste") != "DISPONIBLE" for line in lineas
+        )
         venta_total = self._to_float(precio_venta_total)
         if venta_total <= 0 and self._to_float(precio_venta_comensal) > 0:
             venta_total = self._to_float(precio_venta_comensal) * comensales
@@ -259,6 +301,12 @@ class MotorCalculoMenus601:
             "lineas": lineas,
             "coste_por_comensal": coste_comensal,
             "coste_total": coste_total,
+            "coste_completo": lineas_sin_coste == 0,
+            "lineas_sin_coste": lineas_sin_coste,
+            "advertencias": [
+                str(line.get("motivo_coste_no_disponible"))
+                for line in lineas if line.get("motivo_coste_no_disponible")
+            ],
             "precio_venta_comensal": venta_comensal,
             "precio_venta_total": round(venta_total, 6),
             "margen_total": margen_total,

@@ -73,12 +73,17 @@ export function MenusPage() {
           elaboracion_id: item.elaboracion_id, cantidad: item.cantidad,
           orden: item.orden ?? index, observaciones: item.observaciones || "",
           version_elaboracion: item.version_elaboracion,
+          coste_por_racion: item.coste_por_racion,
+          coste_linea_por_comensal: item.coste_linea_por_comensal,
+          coste_linea_total: item.coste_linea_total,
+          estado_coste: item.estado_coste,
+          motivo_coste_no_disponible: item.motivo_coste_no_disponible,
         })),
       })),
     });
     const currentOptions = menu.secciones.flatMap((section) => section.elaboraciones.map((item) => [item.elaboracion_id, {
-      id: item.elaboracion_id, codigo: "", nombre: item.elaboracion_nombre, tipo: "Elaboración", estado: "", coste_por_racion: item.coste_por_comensal,
-      tiene_receta: true, tiene_escandallo: item.coste_por_comensal > 0, tiene_ficha_tecnica: false, tiene_fotografia: false,
+      id: item.elaboracion_id, codigo: "", nombre: item.elaboracion_nombre, tipo: "Elaboración", estado: "", coste_por_racion: item.coste_por_racion,
+      tiene_receta: true, tiene_escandallo: item.estado_coste !== "SIN_COSTE", tiene_ficha_tecnica: false, tiene_fotografia: false,
       tiene_documentos: false, tiene_produccion: false, tiene_relaciones_menu_evento: true,
     } as ElaboracionResumen] as const));
     setKnown((current) => ({ ...current, ...Object.fromEntries(currentOptions) }));
@@ -95,6 +100,11 @@ export function MenusPage() {
     updateSection(pickerSection, { elaboraciones: [...section.elaboraciones, {
       elaboracion_id: item.id, cantidad: 1, orden: section.elaboraciones.length,
       observaciones: "", version_elaboracion: item.version,
+      coste_por_racion: item.coste_por_racion,
+      estado_coste: item.tiene_escandallo
+        ? item.coste_completo ? "DISPONIBLE" : "INCOMPLETO"
+        : "SIN_COSTE",
+      motivo_coste_no_disponible: item.motivo_coste_no_disponible,
     }] });
   }
 
@@ -109,7 +119,8 @@ export function MenusPage() {
   async function save() {
     setSaving(true); setMessage("");
     try {
-      const response = selected ? await menusService.update(selected.id, { ...draft, version: selected.version }) : await menusService.create(draft);
+      const payload = menuPayload(draft);
+      const response = selected ? await menusService.update(selected.id, { ...payload, version: selected.version }) : await menusService.create(payload);
       edit(response.menu);
       setMenus((current) => current.some((item) => item.id === response.menu.id) ? current.map((item) => item.id === response.menu.id ? response.menu : item) : [...current, response.menu]);
       setMessage("Menú guardado y costes recalculados por el backend.");
@@ -134,7 +145,7 @@ export function MenusPage() {
     <header className="page-header"><div><p className="eyebrow">Biblioteca Culinaria</p><h2>Menús inteligentes</h2></div><button type="button" onClick={() => { setSelected(null); setDraft(emptyDraft()); }}>Nuevo menú</button></header>
     <p>Los menús referencian elaboraciones existentes. Recetas, escandallos y costes permanecen en la Biblioteca.</p>
     <div className="menu-workspace">
-      <aside aria-label="Listado de menús"><h3>Menús</h3>{!menus.length ? <p>No hay menús creados.</p> : menus.map((menu) => <button className={selected?.id === menu.id ? "active" : ""} key={menu.id} onClick={() => edit(menu)} type="button"><strong>{menu.nombre}</strong><span>{menu.estado} · v{menu.version}</span><span>{formatMoney(menu.coste_total)} · {formatMoney(menu.coste_por_comensal)}/comensal</span></button>)}</aside>
+      <aside aria-label="Listado de menús"><h3>Menús</h3>{!menus.length ? <p>No hay menús creados.</p> : menus.map((menu) => <button className={selected?.id === menu.id ? "active" : ""} key={menu.id} onClick={() => edit(menu)} type="button"><strong>{menu.nombre}</strong><span>{menu.estado} · v{menu.version}</span><span>{countElaborations(menu)} elaboraciones</span><span>{formatMoney(menu.coste_por_comensal)}/comensal · {formatMoney(menu.coste_total)} total</span><span>{menu.coste_completo ? "Coste completo" : `Coste parcial · ${menu.lineas_sin_coste} sin coste`}</span></button>)}</aside>
       <div className="menu-editor">
         <h3>{selected ? "Editar menú" : "Crear menú"}</h3>
         <label>Nombre<input aria-label="Nombre del menú" value={draft.nombre} onChange={(event) => setDraft({ ...draft, nombre: event.target.value })} /></label>
@@ -142,7 +153,7 @@ export function MenusPage() {
         {draft.secciones.map((section, sectionIndex) => <fieldset key={`${section.nombre}-${sectionIndex}`}><legend>Sección {sectionIndex + 1}</legend>
           <input aria-label={`Nombre sección ${sectionIndex + 1}`} value={section.nombre} onChange={(event) => updateSection(sectionIndex, { nombre: event.target.value })} />
           {section.elaboraciones.map((item, itemIndex) => { const option = known[item.elaboracion_id]; return <div className="menu-elaboration-card" key={`${item.elaboracion_id}-${itemIndex}`}>
-            <div><strong>{option?.nombre || item.elaboracion_id}</strong><small>{option?.codigo || item.elaboracion_id} · {option?.coste_por_racion == null ? "Coste no disponible" : `${formatMoney(option.coste_por_racion)}/ración`}</small></div>
+            <div><strong>{option?.nombre || item.elaboracion_id}</strong><small>{option?.codigo || item.elaboracion_id} · {costLabel(item.estado_coste, item.coste_por_racion ?? option?.coste_por_racion)}</small>{item.coste_linea_por_comensal != null ? <span>{formatMoney(item.coste_linea_por_comensal)}/comensal · {formatMoney(item.coste_linea_total)} total de línea</span> : null}{item.motivo_coste_no_disponible ? <span className="draft-warning">{item.motivo_coste_no_disponible}</span> : null}</div>
             <input aria-label={`Cantidad ${sectionIndex + 1}-${itemIndex + 1}`} min="0.01" step="any" type="number" value={item.cantidad} onChange={(event) => updateSection(sectionIndex, { elaboraciones: section.elaboraciones.map((value, index) => index === itemIndex ? { ...value, cantidad: Number(event.target.value) } : value) })} />
             <input aria-label={`Observaciones ${sectionIndex + 1}-${itemIndex + 1}`} placeholder="Observaciones" value={item.observaciones || ""} onChange={(event) => updateSection(sectionIndex, { elaboraciones: section.elaboraciones.map((value, index) => index === itemIndex ? { ...value, observaciones: event.target.value } : value) })} />
             <div className="menu-item-actions"><button aria-label={`Subir ${option?.nombre || item.elaboracion_id}`} disabled={itemIndex === 0} type="button" onClick={() => moveElaboration(sectionIndex, itemIndex, -1)}>↑</button><button aria-label={`Bajar ${option?.nombre || item.elaboracion_id}`} disabled={itemIndex === section.elaboraciones.length - 1} type="button" onClick={() => moveElaboration(sectionIndex, itemIndex, 1)}>↓</button><button type="button" onClick={() => updateSection(sectionIndex, { elaboraciones: section.elaboraciones.filter((_, index) => index !== itemIndex) })}>Quitar</button></div>
@@ -151,7 +162,7 @@ export function MenusPage() {
         </fieldset>)}
         <button type="button" onClick={() => setDraft({ ...draft, secciones: [...draft.secciones, { nombre: "Nueva sección", elaboraciones: [] }] })}>Añadir sección</button>
         <label>Observaciones<textarea aria-label="Observaciones del menú" value={draft.observaciones} onChange={(event) => setDraft({ ...draft, observaciones: event.target.value })} /></label>
-        {selected ? <div className="menu-cost-summary"><strong>Coste automático</strong><span>Total: {formatMoney(selected.coste_total)}</span><span>Por comensal: {formatMoney(selected.coste_por_comensal)}</span>{selected.incidencias.map((issue, index) => <p className="draft-warning" key={`${issue.tipo}-${index}`}>{issue.detalle || issue.tipo}</p>)}</div> : null}
+        {selected ? <div className="menu-cost-summary"><strong>{selected.coste_completo ? "Coste automático completo" : "Coste parcial"}</strong><span>Total conocido: {formatMoney(selected.coste_total)}</span><span>Por comensal conocido: {formatMoney(selected.coste_por_comensal)}</span>{!selected.coste_completo ? <span className="draft-warning">{selected.lineas_sin_coste} elaboraciones sin coste. El total no es definitivo.</span> : null}{selected.advertencias.map((warning, index) => <p className="draft-warning" key={`${warning}-${index}`}>{warning}</p>)}{selected.incidencias.map((issue, index) => <p className="draft-warning" key={`${issue.tipo}-${index}`}>{issue.detalle || issue.tipo}</p>)}</div> : null}
         <div className="menu-actions"><button disabled={saving} type="button" onClick={() => void save()}>{saving ? "Guardando..." : "Guardar menú"}</button>{selected && selected.estado !== "ARCHIVADO" ? <button disabled={saving} type="button" onClick={() => void archive()}>Archivar menú</button> : null}</div>
         {message ? <p role="status">{message}</p> : null}
       </div>
@@ -166,6 +177,31 @@ export function MenusPage() {
   </section>;
 }
 
-function formatMoney(value: number) {
+function formatMoney(value: number | null | undefined) {
   return new Intl.NumberFormat("es-ES", { style: "currency", currency: "EUR" }).format(value || 0);
+}
+
+function countElaborations(menu: IntelligentMenu) {
+  return menu.secciones.reduce((total, section) => total + section.elaboraciones.length, 0);
+}
+
+function costLabel(state: string | undefined, value: number | null | undefined) {
+  if (state === "SIN_COSTE") return "Sin escandallo";
+  if (state === "INCOMPLETO") return "Coste incompleto";
+  return value == null ? "Coste no disponible" : `${formatMoney(value)}/ración`;
+}
+
+function menuPayload(draft: MenuInput): MenuInput {
+  return {
+    nombre: draft.nombre, estado: draft.estado, comensales: draft.comensales,
+    observaciones: draft.observaciones,
+    secciones: draft.secciones.map((section) => ({
+      nombre: section.nombre,
+      elaboraciones: section.elaboraciones.map((item) => ({
+        elaboracion_id: item.elaboracion_id, cantidad: item.cantidad,
+        orden: item.orden, observaciones: item.observaciones,
+        version_elaboracion: item.version_elaboracion,
+      })),
+    })),
+  };
 }

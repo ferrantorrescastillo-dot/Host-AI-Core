@@ -213,6 +213,7 @@ class BibliotecaCulinariaReadService:
 
     def _summary(self, receta: dict[str, Any]) -> dict[str, Any]:
         esc = self._escandallo_for(receta)
+        public_costing = self._costing(receta, esc, self._ingredients(receta, esc)) if esc else None
         documents = self._documents(receta)
         technical = self._public_value(dict(receta.get("ficha_tecnica") or {}))
         completeness = dict(receta.get("completitud") or {})
@@ -225,8 +226,14 @@ class BibliotecaCulinariaReadService:
             )
         )
         has_relations = bool(receta.get("menus_utilizacion") or receta.get("eventos_utilizacion"))
-        total_cost = self._number(esc.get("coste_total")) if esc else self._number(receta.get("coste_total"))
-        unit_cost = self._number(esc.get("coste_por_racion")) if esc else self._number(receta.get("coste_por_racion"))
+        total_cost = (
+            self._number(public_costing.get("coste_total"))
+            if public_costing else self._number(receta.get("coste_total"))
+        )
+        unit_cost = (
+            self._number(public_costing.get("coste_por_racion"))
+            if public_costing else self._number(receta.get("coste_por_racion"))
+        )
         return {
             "id": str(receta.get("id") or ""),
             "codigo": str(receta.get("codigo") or ""),
@@ -240,6 +247,14 @@ class BibliotecaCulinariaReadService:
             "raciones": self._number(receta.get("numero_raciones")),
             "coste_total": total_cost,
             "coste_por_racion": unit_cost,
+            "estado_coste": (
+                public_costing.get("estado_coste") if public_costing else "SIN_ESCANDALLO"
+            ),
+            "coste_completo": bool(
+                public_costing and public_costing.get("estado_coste") == "DISPONIBLE"
+            ),
+            "motivo_coste_no_disponible": self._cost_unavailable_reason(public_costing),
+            "fecha_calculo": public_costing.get("fecha_calculo") if public_costing else None,
             "tiene_receta": self._has_recipe(receta),
             "tiene_escandallo": esc is not None,
             "tiene_ficha_tecnica": bool(technical),
@@ -251,6 +266,18 @@ class BibliotecaCulinariaReadService:
             "actualizado_en": receta.get("actualizado_en") or None,
             "version": receta.get("version") or None,
         }
+
+    @staticmethod
+    def _cost_unavailable_reason(costing: dict[str, Any] | None) -> str | None:
+        if not costing:
+            return "Sin escandallo."
+        if costing.get("estado_coste") == "DISPONIBLE":
+            return None
+        return (
+            f"Coste incompleto: {int(costing.get('ingredientes_sin_coste') or 0)} "
+            f"ingrediente(s) sin precio y {int(costing.get('ingredientes_sin_conversion') or 0)} "
+            "sin conversiÃ³n."
+        )
 
     def resumen(self) -> dict[str, Any]:
         items = [self._summary(x) for x in self._all_recipes(incluir_archivadas=False)]

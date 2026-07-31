@@ -143,7 +143,10 @@ def test_biblioteca_proyecta_escandallos_canonicos_sin_incluir_articulos(tmp_pat
     assert listed["total_pages"] == 1
     assert listed["items"][0]["id"] == "REC-SALSA-ROMESCO"
     assert listed["items"][0]["nombre"] == "Elaboración Salsa romesco"
-    assert listed["items"][0]["coste_total"] == 8.5
+    assert listed["items"][0]["coste_total"] is None
+    assert listed["items"][0]["estado_coste"] == "PARCIAL"
+    assert listed["items"][0]["coste_completo"] is False
+    assert "sin precio" in listed["items"][0]["motivo_coste_no_disponible"]
     assert listed["items"][0]["tiene_ficha_tecnica"] is False
 
     all_items = service.listar({})["elaboraciones"]["items"]
@@ -151,7 +154,10 @@ def test_biblioteca_proyecta_escandallos_canonicos_sin_incluir_articulos(tmp_pat
         "REC-SALSA-ROMESCO", "REC-CREMA-CATALANA",
     }
     assert all(item["nombre"] != "Materia prima no elaborada" for item in all_items)
-    assert next(item for item in all_items if item["id"] == "REC-CREMA-CATALANA")["coste_total"] == 0
+    crema = next(item for item in all_items if item["id"] == "REC-CREMA-CATALANA")
+    assert crema["coste_total"] == 1
+    assert crema["coste_por_racion"] == 0.1
+    assert crema["coste_completo"] is True
 
 
 def test_biblioteca_detalle_canonico_es_estable_parcial_y_enlaza_articulo_real(tmp_path: Path) -> None:

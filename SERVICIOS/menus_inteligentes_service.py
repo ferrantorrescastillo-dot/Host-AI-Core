@@ -172,6 +172,7 @@ class MenusInteligentesService:
         }
 
     def _public(self, menu: dict[str, Any]) -> dict[str, Any]:
+        menu = self._with_current_cost(menu)
         return {
             "id": str(menu.get("menu_id") or ""),
             "codigo": str(menu.get("codigo") or ""),
@@ -184,6 +185,9 @@ class MenusInteligentesService:
             "secciones": self._sections(menu),
             "coste_total": float(menu.get("coste_total") or 0),
             "coste_por_comensal": float(menu.get("coste_por_comensal") or 0),
+            "coste_completo": bool(menu.get("coste_completo", True)),
+            "lineas_sin_coste": int(menu.get("lineas_sin_coste") or 0),
+            "advertencias": list(menu.get("advertencias_coste") or []),
             "incidencias": list(menu.get("incidencias") or []),
             "creado_en": menu.get("creado_en"),
             "actualizado_en": menu.get("actualizado_en"),
@@ -204,13 +208,38 @@ class MenusInteligentesService:
                     "elaboracion_id": str(recipe.get("id") or reference.get("referencia") or ""),
                     "elaboracion_nombre": str(recipe.get("nombre") or reference.get("referencia") or ""),
                     "cantidad": float(reference.get("cantidad") or 1),
-                    "coste_por_comensal": float(line.get("coste_por_comensal") or 0),
+                    "coste_por_racion": line.get("coste_por_racion"),
+                    "coste_linea_por_comensal": line.get("coste_linea_por_comensal"),
+                    "coste_linea_total": line.get("coste_linea_total"),
+                    "coste_por_comensal": line.get("coste_por_comensal"),
+                    "estado_coste": str(line.get("estado_coste") or "SIN_COSTE"),
+                    "motivo_coste_no_disponible": line.get("motivo_coste_no_disponible"),
+                    "fecha_coste": line.get("fecha_coste"),
                     "orden": int(reference.get("orden") or len(items)),
                     "observaciones": str(reference.get("observaciones") or ""),
                     "version_elaboracion": reference.get("version_elaboracion") or recipe.get("version"),
                 })
             sections.append({"id": f"SEC-{order + 1:03d}", "nombre": name, "orden": order, "elaboraciones": items})
         return sections
+
+    def _with_current_cost(self, menu: dict[str, Any]) -> dict[str, Any]:
+        calculation = self.menus.motor.calcular(
+            nombre_menu=str(menu.get("nombre") or "MenÃº"),
+            comensales=float(menu.get("comensales_recomendado") or 0),
+            composicion=dict(menu.get("composicion") or {}),
+            precio_venta_comensal=float(menu.get("precio_venta_comensal") or 0),
+            precio_venta_total=float(menu.get("precio_venta_total") or 0),
+        )
+        return {
+            **menu,
+            "lineas": list(calculation.get("lineas") or []),
+            "coste_por_comensal": calculation.get("coste_por_comensal"),
+            "coste_total": calculation.get("coste_total"),
+            "coste_completo": calculation.get("coste_completo"),
+            "lineas_sin_coste": calculation.get("lineas_sin_coste"),
+            "advertencias_coste": list(calculation.get("advertencias") or []),
+            "incidencias": list(calculation.get("incidencias") or []),
+        }
 
     def _elaboration(self, elaboration_id: str) -> dict[str, Any] | None:
         result = self.biblioteca.detalle(elaboration_id)
