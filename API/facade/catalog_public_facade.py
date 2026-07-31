@@ -10,6 +10,7 @@ from SERVICIOS.articulos_catalog_read_service import ArticulosCatalogReadService
 from SERVICIOS.biblioteca_culinaria_read_service import BibliotecaCulinariaReadService
 from SERVICIOS.importador_inteligente_biblioteca import ImportDocumentService
 from SERVICIOS.menus_inteligentes_service import MenusInteligentesService
+from SERVICIOS.menu_necesidades_service import MenuNecesidadesService
 
 
 logger = logging.getLogger(__name__)
@@ -24,6 +25,7 @@ class CatalogPublicFacade(CorePublicApi02Facade):
         self._biblioteca_service: BibliotecaCulinariaReadService | None = None
         self._biblioteca_import_service: ImportDocumentService | None = None
         self._menus_service: MenusInteligentesService | None = None
+        self._menu_needs_service: MenuNecesidadesService | None = None
 
     def _get_articulos_service(self) -> ArticulosCatalogReadService:
         if self._articulos_service is None:
@@ -89,6 +91,22 @@ class CatalogPublicFacade(CorePublicApi02Facade):
 
     def archivar_menu(self, menu_id: str, body: dict[str, Any]) -> dict[str, Any]:
         return self._library_call(self._get_menus_service().archivar, menu_id, dict(body or {}))
+
+    def _get_menu_needs_service(self) -> MenuNecesidadesService:
+        if self._menu_needs_service is None:
+            self._menu_needs_service = MenuNecesidadesService(self.base_dir)
+        return self._menu_needs_service
+
+    def necesidades_menu(self, menu_id: str) -> dict[str, Any]:
+        return self._library_call(self._get_menu_needs_service().necesidades, menu_id)
+
+    def crear_propuesta_compra_menu(self, menu_id: str) -> dict[str, Any]:
+        return self._library_call(self._get_menu_needs_service().crear_propuesta, menu_id)
+
+    def propuesta_compra_menu(self, menu_id: str, proposal_id: str) -> dict[str, Any]:
+        return self._library_call(
+            self._get_menu_needs_service().obtener_propuesta, menu_id, proposal_id
+        )
 
     def _get_biblioteca_import_service(self) -> ImportDocumentService:
         if self._biblioteca_import_service is None:

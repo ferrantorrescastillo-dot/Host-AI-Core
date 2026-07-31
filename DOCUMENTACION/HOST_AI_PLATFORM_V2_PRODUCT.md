@@ -288,6 +288,34 @@ vigente. El menú conserva su composición y una instantánea para trazabilidad,
 pero la respuesta pública refleja cambios posteriores de precios o escandallos
 sin introducir versionado económico paralelo.
 
+## Necesidades y propuesta de compra desde Menús
+
+Un menú guardado puede proyectarse como necesidades mediante
+`GET /api/v1/menus/{menu_id}/necesidades`. La proyección reutiliza el motor de
+escalado y explosión de recetas, el cruce canónico de Stock y el catálogo
+maestro de Artículos/Proveedores. La trazabilidad conserva sección,
+elaboración, cantidad aportada y factor de escalado.
+
+- necesidad: cantidad resultante del escandallo, rendimiento, comensales y
+  cantidad de la elaboración;
+- stock disponible: existencia canónica actual; las reservas y compromisos se
+  muestran separadamente cuando el dominio dispone de ellos;
+- faltante: diferencia positiva entre necesidad y stock disponible, únicamente
+  cuando artículo y unidades están resueltos;
+- propuesta de compra: borrador revisable agrupado por proveedor, con formato,
+  excedente y coste estimado cuando existen datos canónicos;
+- pedido real: operación distinta que esta fase nunca ejecuta.
+
+`POST /api/v1/menus/{menu_id}/propuesta-compra` no modifica Stock, no registra
+necesidades en Compras y no crea pedidos. Las propuestas son temporales en
+memoria y se pierden al reiniciar el backend. Los ingredientes sin relación
+exacta de artículo o con conversión no resoluble permanecen pendientes; Host AI
+no agrupa por parecido ni inventa factores, proveedores, formatos o precios.
+
+La siguiente fase podrá confirmar explícitamente una propuesta mediante los
+casos de uso existentes de Compras e integrar Menús con Eventos, manteniendo
+vista previa, transacción y trazabilidad.
+
 ## Confirmación transaccional del Importador Inteligente
 
 Host AI no conserva el documento original: persiste únicamente el borrador estructurado,

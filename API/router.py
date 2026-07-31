@@ -70,7 +70,14 @@ class ApiRouter:
             elif key[0] == "GET":
                 handler = biblioteca.import_detail_handle
         if handler is None and key[0] in {"GET", "PATCH", "DELETE"} and key[1].startswith("/api/v1/menus/"):
-            handler = menus.detail_handle
+            if key[1].endswith("/necesidades"):
+                handler = menus.needs_handle
+            elif "/propuesta-compra/" in key[1] and key[0] == "GET":
+                handler = menus.proposal_handle
+            else:
+                handler = menus.detail_handle
+        if handler is None and key[0] == "POST" and key[1].startswith("/api/v1/menus/") and key[1].endswith("/propuesta-compra"):
+            handler = menus.proposal_handle
         if handler is None:
             return ApiResponse(
                 status_code=404,

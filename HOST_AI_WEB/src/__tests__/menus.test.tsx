@@ -71,4 +71,43 @@ describe("Selector de elaboraciones de Menús", () => {
     render(<MemoryRouter initialEntries={["/biblioteca/menus"]}><App /></MemoryRouter>);
     expect(await screen.findByText("Menús no disponibles.")).toBeInTheDocument();
   });
+
+  it("consulta necesidades reales, filtra trazabilidad y genera solo una propuesta", async () => {
+    const fetchMock = vi.spyOn(global, "fetch").mockImplementation(async (input, init) => {
+      const url = String(input);
+      if (url.endsWith("/necesidades")) return { ok: true, status: 200, json: async () => ({ ...envelope, necesidades: {
+        menu_id: menu.id, menu_version: 1, comensales: 10, generated_at: "2026-07-31T10:00:00Z", complete: true,
+        summary: { articulos: 2, cubiertos: 1, compra_necesaria: 1, sin_relacionar: 0, conversiones_pendientes: 0 },
+        warnings: [], blocking_errors: [], solo_lectura: true, datos_reales_modificados: false,
+        lines: [{ articulo_id: "ART-PATATA", articulo_codigo: "ART-PATATA", articulo_nombre: "Patata", ingrediente_nombre: "Patata",
+          origenes: [{ seccion: "Principal", elaboracion_id: "REC-ENS", elaboracion_nombre: "Ensaladilla", cantidad: 2.5, unidad: "kg", factor_escalado: 2.5 }],
+          cantidad_necesaria: 2.5, unidad_necesaria: "kg", stock_fisico: 1, stock_reservado: 0, stock_comprometido: 0,
+          stock_disponible: 1, cantidad_faltante: 1.5, unidad_stock: "kg", estado: "Parcialmente cubierto",
+          proveedor_preferente: "Proveedor A", formato_compra: "saco", cantidad_propuesta_compra: 5, coste_estimado: 10, motivo_no_resuelto: null },
+        { articulo_id: "ART-SAL", articulo_codigo: "ART-SAL", articulo_nombre: "Sal", ingrediente_nombre: "Sal", origenes: [],
+          cantidad_necesaria: 0.1, unidad_necesaria: "kg", stock_fisico: 1, stock_reservado: 0, stock_comprometido: 0,
+          stock_disponible: 1, cantidad_faltante: 0, unidad_stock: "kg", estado: "Cubierto por stock", proveedor_preferente: null,
+          formato_compra: null, cantidad_propuesta_compra: 0, coste_estimado: 0, motivo_no_resuelto: null }],
+      } }) } as Response;
+      if (url.endsWith("/propuesta-compra") && init?.method === "POST") return { ok: true, status: 201, json: async () => ({ ...envelope,
+        propuesta: { id: "MENUPROP-1", estado: "BORRADOR", coste_estimado: 10, coste_completo: true,
+          grupos_proveedor: [{ proveedor: "Proveedor A", lineas: [] }], crea_pedido: false, modifica_stock: false, datos_reales_modificados: false },
+      }) } as Response;
+      return { ok: true, status: 200, json: async () => ({ ...envelope, menus: [menu], total: 1, resumen: { borradores: 1, activos: 0, archivados: 0 } }) } as Response;
+    });
+
+    render(<MemoryRouter initialEntries={["/menus"]}><App /></MemoryRouter>);
+    fireEvent.click(await screen.findByText("Menú degustación"));
+    fireEvent.click(screen.getByRole("button", { name: "Calcular necesidades" }));
+    expect(await screen.findByText(/2 artículos/)).toBeInTheDocument();
+    expect(screen.getByText(/Falta: 1,5 kg/)).toBeInTheDocument();
+    fireEvent.click(screen.getAllByText("Ver trazabilidad")[0]);
+    expect(screen.getByText(/Ensaladilla: 2,5 kg/)).toBeInTheDocument();
+    fireEvent.change(screen.getByLabelText("Filtrar necesidades"), { target: { value: "cubiertos" } });
+    expect(screen.getByText("Sal")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Generar propuesta de compra" }));
+    expect(await screen.findByText("Propuesta BORRADOR")).toBeInTheDocument();
+    expect(screen.getByText("No se ha creado ningún pedido ni modificado Stock.")).toBeInTheDocument();
+    expect(fetchMock.mock.calls.some(([url, init]) => String(url).endsWith("/propuesta-compra") && init?.method === "POST")).toBe(true);
+  });
 });

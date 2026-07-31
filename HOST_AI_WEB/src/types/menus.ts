@@ -76,6 +76,27 @@ export type MenusResponse = ApiEnvelopeBase & {
 
 export type MenuResponse = ApiEnvelopeBase & { menu: IntelligentMenu };
 
+export type MenuNeedOrigin = { seccion: string; elaboracion_id: string; elaboracion_nombre: string; cantidad: number; unidad: string; factor_escalado: number };
+export type MenuNeedLine = {
+  articulo_id: string | null; articulo_codigo: string | null; articulo_nombre: string | null; ingrediente_nombre: string;
+  origenes: MenuNeedOrigin[]; cantidad_necesaria: number; unidad_necesaria: string;
+  stock_fisico: number | null; stock_reservado: number | null; stock_comprometido: number | null;
+  stock_disponible: number | null; cantidad_faltante: number | null; unidad_stock: string | null; estado: string;
+  proveedor_preferente: string | null; formato_compra: string | null; cantidad_propuesta_compra: number | null;
+  coste_estimado: number | null; motivo_no_resuelto: string | null;
+};
+export type MenuNeedsResponse = ApiEnvelopeBase & { necesidades: {
+  menu_id: string; menu_version: number; comensales: number; generated_at: string; complete: boolean;
+  lines: MenuNeedLine[]; warnings: string[]; blocking_errors: Array<{ code: string; message: string; articulo_id?: string | null }>;
+  summary: { articulos: number; cubiertos: number; compra_necesaria: number; sin_relacionar: number; conversiones_pendientes: number };
+  solo_lectura: true; datos_reales_modificados: false;
+} };
+export type MenuPurchaseProposalResponse = ApiEnvelopeBase & { propuesta: {
+  id: string; estado: "BORRADOR"; coste_estimado: number; coste_completo: boolean;
+  grupos_proveedor: Array<{ proveedor: string; lineas: Array<Record<string, unknown>> }>;
+  crea_pedido: false; modifica_stock: false; datos_reales_modificados: false;
+} };
+
 export type MenuElaborationOption = {
   id: string;
   codigo: string;

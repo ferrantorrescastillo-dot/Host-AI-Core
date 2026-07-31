@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { HostAiApiError } from "../../api/client";
 import { menusService } from "../../services/menusService";
 import type { ElaboracionResumen } from "../../types/biblioteca";
-import type { IntelligentMenu, MenuInput, MenuState } from "../../types/menus";
+import type { IntelligentMenu, MenuInput, MenuNeedLine, MenuNeedsResponse, MenuPurchaseProposalResponse, MenuState } from "../../types/menus";
 import { BibliotecaNav } from "../components/BibliotecaNav";
 import { ErrorState } from "../components/ErrorState";
 import { LoadingState } from "../components/LoadingState";
@@ -36,6 +36,10 @@ export function MenusPage() {
   const [searching, setSearching] = useState(false);
   const [searchError, setSearchError] = useState("");
   const [known, setKnown] = useState<Record<string, ElaboracionResumen>>({});
+  const [needs, setNeeds] = useState<MenuNeedsResponse["necesidades"] | null>(null);
+  const [needsFilter, setNeedsFilter] = useState("todos");
+  const [needsLoading, setNeedsLoading] = useState(false);
+  const [proposal, setProposal] = useState<MenuPurchaseProposalResponse["propuesta"] | null>(null);
 
   useEffect(() => {
     void menusService.list().then((response) => setMenus(response.menus)).catch((reason) => setError(reason as HostAiApiError)).finally(() => setLoading(false));
@@ -88,6 +92,23 @@ export function MenusPage() {
     } as ElaboracionResumen] as const));
     setKnown((current) => ({ ...current, ...Object.fromEntries(currentOptions) }));
     setMessage("");
+    setNeeds(null); setProposal(null);
+  }
+
+  async function loadNeeds() {
+    if (!selected) return;
+    setNeedsLoading(true); setMessage("");
+    try { setNeeds((await menusService.needs(selected.id)).necesidades); }
+    catch (reason) { setMessage((reason as HostAiApiError).message); }
+    finally { setNeedsLoading(false); }
+  }
+
+  async function generateProposal() {
+    if (!selected) return;
+    setNeedsLoading(true); setMessage("");
+    try { setProposal((await menusService.createPurchaseProposal(selected.id)).propuesta); }
+    catch (reason) { setMessage((reason as HostAiApiError).message); }
+    finally { setNeedsLoading(false); }
   }
 
   function updateSection(index: number, changes: Partial<MenuInput["secciones"][number]>) {
@@ -163,6 +184,7 @@ export function MenusPage() {
         <button type="button" onClick={() => setDraft({ ...draft, secciones: [...draft.secciones, { nombre: "Nueva sección", elaboraciones: [] }] })}>Añadir sección</button>
         <label>Observaciones<textarea aria-label="Observaciones del menú" value={draft.observaciones} onChange={(event) => setDraft({ ...draft, observaciones: event.target.value })} /></label>
         {selected ? <div className="menu-cost-summary"><strong>{selected.coste_completo ? "Coste automático completo" : "Coste parcial"}</strong><span>Total conocido: {formatMoney(selected.coste_total)}</span><span>Por comensal conocido: {formatMoney(selected.coste_por_comensal)}</span>{!selected.coste_completo ? <span className="draft-warning">{selected.lineas_sin_coste} elaboraciones sin coste. El total no es definitivo.</span> : null}{selected.advertencias.map((warning, index) => <p className="draft-warning" key={`${warning}-${index}`}>{warning}</p>)}{selected.incidencias.map((issue, index) => <p className="draft-warning" key={`${issue.tipo}-${index}`}>{issue.detalle || issue.tipo}</p>)}</div> : null}
+        {selected ? <section className="menu-cost-summary" aria-label="Necesidades y compras"><h3>Necesidades y compras</h3><p>Proyección informativa: no descuenta Stock ni crea pedidos.</p><button disabled={needsLoading} type="button" onClick={() => void loadNeeds()}>{needsLoading ? "Calculando..." : "Calcular necesidades"}</button>{needs ? <><div><strong>{needs.summary.articulos} artículos</strong><span>{needs.summary.cubiertos} cubiertos · {needs.summary.compra_necesaria} con compra · {needs.summary.sin_relacionar} sin relacionar</span></div><label>Filtrar<select aria-label="Filtrar necesidades" value={needsFilter} onChange={(event) => setNeedsFilter(event.target.value)}><option value="todos">Todos</option><option value="compra">Compra necesaria</option><option value="cubiertos">Cubiertos</option><option value="pendientes">Pendientes</option></select></label>{filterNeeds(needs.lines, needsFilter).map((line, index) => <NeedCard key={`${line.articulo_id || line.ingrediente_nombre}-${index}`} line={line} />)}<button disabled={needsLoading || needs.summary.compra_necesaria === 0} type="button" onClick={() => void generateProposal()}>Generar propuesta de compra</button></> : null}{proposal ? <div role="status"><strong>Propuesta {proposal.estado}</strong><span>{proposal.grupos_proveedor.length} grupos de proveedor · coste estimado {formatMoney(proposal.coste_estimado)}</span><span>No se ha creado ningún pedido ni modificado Stock.</span></div> : null}</section> : null}
         <div className="menu-actions"><button disabled={saving} type="button" onClick={() => void save()}>{saving ? "Guardando..." : "Guardar menú"}</button>{selected && selected.estado !== "ARCHIVADO" ? <button disabled={saving} type="button" onClick={() => void archive()}>Archivar menú</button> : null}</div>
         {message ? <p role="status">{message}</p> : null}
       </div>
@@ -175,6 +197,21 @@ export function MenusPage() {
       <nav className="catalog-pagination"><button disabled={page <= 1} onClick={() => setPage(page - 1)}>Anterior</button><span>Página {page} de {catalogMeta.totalPages || 1} · {catalogMeta.total} resultados</span><button disabled={page >= catalogMeta.totalPages} onClick={() => setPage(page + 1)}>Siguiente</button></nav>
     </div></div> : null}
   </section>;
+}
+
+function NeedCard({ line }: { line: MenuNeedLine }) {
+  return <article><strong>{line.articulo_nombre || line.ingrediente_nombre}</strong><span>Necesario: {formatQuantity(line.cantidad_necesaria, line.unidad_necesaria)} · Disponible: {formatQuantity(line.stock_disponible, line.unidad_stock)}</span><span>Falta: {formatQuantity(line.cantidad_faltante, line.unidad_necesaria)} · {line.estado}</span><span>Proveedor: {line.proveedor_preferente || "Pendiente"} · Compra propuesta: {formatQuantity(line.cantidad_propuesta_compra, line.unidad_necesaria)}</span>{line.motivo_no_resuelto ? <span className="draft-warning">{line.motivo_no_resuelto}</span> : null}<details><summary>Ver trazabilidad</summary>{line.origenes.map((origin, index) => <p key={`${origin.elaboracion_id}-${index}`}>{origin.seccion} · {origin.elaboracion_nombre}: {formatQuantity(origin.cantidad, origin.unidad)} (factor x{origin.factor_escalado})</p>)}</details></article>;
+}
+
+function filterNeeds(lines: MenuNeedLine[], filter: string) {
+  if (filter === "compra") return lines.filter((line) => (line.cantidad_faltante || 0) > 0);
+  if (filter === "cubiertos") return lines.filter((line) => line.estado === "Cubierto por stock");
+  if (filter === "pendientes") return lines.filter((line) => line.cantidad_faltante == null || line.estado.includes("pendiente") || line.estado.startsWith("Sin "));
+  return lines;
+}
+
+function formatQuantity(value: number | null | undefined, unit: string | null | undefined) {
+  return value == null ? "Pendiente" : `${new Intl.NumberFormat("es-ES", { maximumFractionDigits: 4 }).format(value)} ${unit || ""}`.trim();
 }
 
 function formatMoney(value: number | null | undefined) {

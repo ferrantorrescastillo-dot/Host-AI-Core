@@ -12,6 +12,8 @@ import type {
 import type {
   MenuElaborationsResponse,
   MenuInput,
+  MenuNeedsResponse,
+  MenuPurchaseProposalResponse,
   MenuResponse,
   MenusResponse,
 } from "../types/menus";
@@ -141,6 +143,14 @@ export const hostAiApiClient = {
     return request<MenuResponse>(`/api/v1/menus/${encodeURIComponent(id)}`, {
       method: "DELETE", body: JSON.stringify({ version }),
     });
+  },
+
+  getMenuNeeds(id: string): Promise<MenuNeedsResponse> {
+    return request<MenuNeedsResponse>(`/api/v1/menus/${encodeURIComponent(id)}/necesidades`, { method: "GET" });
+  },
+
+  createMenuPurchaseProposal(id: string): Promise<MenuPurchaseProposalResponse> {
+    return request<MenuPurchaseProposalResponse>(`/api/v1/menus/${encodeURIComponent(id)}/propuesta-compra`, { method: "POST" });
   },
 
   getBiblioteca(): Promise<BibliotecaResponse> {

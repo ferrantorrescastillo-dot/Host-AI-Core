@@ -9,4 +9,6 @@ export const menusService = {
   create: (input: MenuInput) => hostAiApiClient.createMenu(input),
   update: (id: string, input: MenuInput) => hostAiApiClient.updateMenu(id, input),
   archive: (id: string, version: number) => hostAiApiClient.archiveMenu(id, version),
+  needs: (id: string) => hostAiApiClient.getMenuNeeds(id),
+  createPurchaseProposal: (id: string) => hostAiApiClient.createMenuPurchaseProposal(id),
 };
