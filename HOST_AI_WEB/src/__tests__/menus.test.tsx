@@ -77,7 +77,7 @@ describe("Selector de elaboraciones de Menús", () => {
       const url = String(input);
       if (url.endsWith("/necesidades")) return { ok: true, status: 200, json: async () => ({ ...envelope, necesidades: {
         menu_id: menu.id, menu_version: 1, comensales: 10, generated_at: "2026-07-31T10:00:00Z", complete: true,
-        summary: { articulos: 2, cubiertos: 1, compra_necesaria: 1, sin_relacionar: 0, conversiones_pendientes: 0 },
+        summary: { articulos: 2, cubiertos: 1, compra_necesaria: 1, sin_relacionar: 0, conversiones_pendientes: 0, candidatas_propuesta: 1 },
         warnings: [], blocking_errors: [], solo_lectura: true, datos_reales_modificados: false,
         lines: [{ articulo_id: "ART-PATATA", articulo_codigo: "ART-PATATA", articulo_nombre: "Patata", ingrediente_nombre: "Patata",
           origenes: [{ seccion: "Principal", elaboracion_id: "REC-ENS", elaboracion_nombre: "Ensaladilla", cantidad: 2.5, unidad: "kg", factor_escalado: 2.5 }],
@@ -91,7 +91,8 @@ describe("Selector de elaboraciones de Menús", () => {
       } }) } as Response;
       if (url.endsWith("/propuesta-compra") && init?.method === "POST") return { ok: true, status: 201, json: async () => ({ ...envelope,
         propuesta: { id: "MENUPROP-1", estado: "BORRADOR", coste_estimado: 10, coste_completo: true,
-          grupos_proveedor: [{ proveedor: "Proveedor A", lineas: [] }], crea_pedido: false, modifica_stock: false, datos_reales_modificados: false },
+          grupos_proveedor: [{ proveedor: "Proveedor A", lineas: [] }], resumen: { articulos_propuestos: 1, articulos_pendientes: 0, proveedores_pendientes: 0 },
+          advertencias: [], crea_pedido: false, modifica_stock: false, datos_reales_modificados: false },
       }) } as Response;
       return { ok: true, status: 200, json: async () => ({ ...envelope, menus: [menu], total: 1, resumen: { borradores: 1, activos: 0, archivados: 0 } }) } as Response;
     });

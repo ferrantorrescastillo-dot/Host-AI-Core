@@ -39,6 +39,8 @@ export function MenusPage() {
   const [needs, setNeeds] = useState<MenuNeedsResponse["necesidades"] | null>(null);
   const [needsFilter, setNeedsFilter] = useState("todos");
   const [needsLoading, setNeedsLoading] = useState(false);
+  const [proposalLoading, setProposalLoading] = useState(false);
+  const [needsError, setNeedsError] = useState("");
   const [proposal, setProposal] = useState<MenuPurchaseProposalResponse["propuesta"] | null>(null);
 
   useEffect(() => {
@@ -92,23 +94,23 @@ export function MenusPage() {
     } as ElaboracionResumen] as const));
     setKnown((current) => ({ ...current, ...Object.fromEntries(currentOptions) }));
     setMessage("");
-    setNeeds(null); setProposal(null);
+    setNeeds(null); setProposal(null); setNeedsError("");
   }
 
   async function loadNeeds() {
     if (!selected) return;
-    setNeedsLoading(true); setMessage("");
+    setNeedsLoading(true); setMessage(""); setNeedsError("");
     try { setNeeds((await menusService.needs(selected.id)).necesidades); }
-    catch (reason) { setMessage((reason as HostAiApiError).message); }
+    catch (reason) { const detail = (reason as HostAiApiError).message; setMessage(detail); setNeedsError(detail); }
     finally { setNeedsLoading(false); }
   }
 
   async function generateProposal() {
     if (!selected) return;
-    setNeedsLoading(true); setMessage("");
+    setProposalLoading(true); setMessage("");
     try { setProposal((await menusService.createPurchaseProposal(selected.id)).propuesta); }
     catch (reason) { setMessage((reason as HostAiApiError).message); }
-    finally { setNeedsLoading(false); }
+    finally { setProposalLoading(false); }
   }
 
   function updateSection(index: number, changes: Partial<MenuInput["secciones"][number]>) {
@@ -184,7 +186,7 @@ export function MenusPage() {
         <button type="button" onClick={() => setDraft({ ...draft, secciones: [...draft.secciones, { nombre: "Nueva sección", elaboraciones: [] }] })}>Añadir sección</button>
         <label>Observaciones<textarea aria-label="Observaciones del menú" value={draft.observaciones} onChange={(event) => setDraft({ ...draft, observaciones: event.target.value })} /></label>
         {selected ? <div className="menu-cost-summary"><strong>{selected.coste_completo ? "Coste automático completo" : "Coste parcial"}</strong><span>Total conocido: {formatMoney(selected.coste_total)}</span><span>Por comensal conocido: {formatMoney(selected.coste_por_comensal)}</span>{!selected.coste_completo ? <span className="draft-warning">{selected.lineas_sin_coste} elaboraciones sin coste. El total no es definitivo.</span> : null}{selected.advertencias.map((warning, index) => <p className="draft-warning" key={`${warning}-${index}`}>{warning}</p>)}{selected.incidencias.map((issue, index) => <p className="draft-warning" key={`${issue.tipo}-${index}`}>{issue.detalle || issue.tipo}</p>)}</div> : null}
-        {selected ? <section className="menu-cost-summary" aria-label="Necesidades y compras"><h3>Necesidades y compras</h3><p>Proyección informativa: no descuenta Stock ni crea pedidos.</p><button disabled={needsLoading} type="button" onClick={() => void loadNeeds()}>{needsLoading ? "Calculando..." : "Calcular necesidades"}</button>{needs ? <><div><strong>{needs.summary.articulos} artículos</strong><span>{needs.summary.cubiertos} cubiertos · {needs.summary.compra_necesaria} con compra · {needs.summary.sin_relacionar} sin relacionar</span></div><label>Filtrar<select aria-label="Filtrar necesidades" value={needsFilter} onChange={(event) => setNeedsFilter(event.target.value)}><option value="todos">Todos</option><option value="compra">Compra necesaria</option><option value="cubiertos">Cubiertos</option><option value="pendientes">Pendientes</option></select></label>{filterNeeds(needs.lines, needsFilter).map((line, index) => <NeedCard key={`${line.articulo_id || line.ingrediente_nombre}-${index}`} line={line} />)}<button disabled={needsLoading || needs.summary.compra_necesaria === 0} type="button" onClick={() => void generateProposal()}>Generar propuesta de compra</button></> : null}{proposal ? <div role="status"><strong>Propuesta {proposal.estado}</strong><span>{proposal.grupos_proveedor.length} grupos de proveedor · coste estimado {formatMoney(proposal.coste_estimado)}</span><span>No se ha creado ningún pedido ni modificado Stock.</span></div> : null}</section> : null}
+        <section className="menu-cost-summary" aria-label="Necesidades y compras"><h3>Necesidades y compras</h3><p>Proyección informativa: no descuenta Stock ni crea pedidos.</p><button disabled={!selected || needsLoading} type="button" onClick={() => void loadNeeds()}>{needsLoading ? "Calculando..." : "Calcular necesidades"}</button>{needs ? <><div><strong>{needs.summary.articulos} artículos</strong><span>{needs.summary.cubiertos} cubiertos · {needs.summary.compra_necesaria} con faltante calculado · {needs.summary.candidatas_propuesta} candidatas o pendientes</span></div><label>Filtrar<select aria-label="Filtrar necesidades" value={needsFilter} onChange={(event) => setNeedsFilter(event.target.value)}><option value="todos">Todos</option><option value="compra">Compra necesaria</option><option value="cubiertos">Cubiertos</option><option value="pendientes">Pendientes</option></select></label>{filterNeeds(needs.lines, needsFilter).map((line, index) => <NeedCard key={`${line.articulo_id || line.ingrediente_nombre}-${index}`} line={line} />)}<button disabled={Boolean(proposalDisabledReason(selected, needs, proposalLoading, needsError))} type="button" onClick={() => void generateProposal()}>{proposalLoading ? "Generando propuesta…" : "Generar propuesta de compra"}</button></> : null}{proposalDisabledReason(selected, needs, proposalLoading, needsError) ? <p className="draft-warning">{proposalDisabledReason(selected, needs, proposalLoading, needsError)}</p> : null}{proposal ? <div role="status"><strong>Propuesta {proposal.estado}</strong><span>{proposal.resumen.articulos_propuestos} artículos propuestos · {proposal.resumen.articulos_pendientes} pendientes · {proposal.resumen.proveedores_pendientes} proveedores pendientes</span><span>{proposal.grupos_proveedor.length} grupos de proveedor · coste estimado {formatMoney(proposal.coste_estimado)}{proposal.coste_completo ? "" : " (parcial)"}</span>{proposal.advertencias.map((warning, index) => <span className="draft-warning" key={`${warning}-${index}`}>{warning}</span>)}<span>No se ha creado ningún pedido ni modificado Stock.</span></div> : null}</section>
         <div className="menu-actions"><button disabled={saving} type="button" onClick={() => void save()}>{saving ? "Guardando..." : "Guardar menú"}</button>{selected && selected.estado !== "ARCHIVADO" ? <button disabled={saving} type="button" onClick={() => void archive()}>Archivar menú</button> : null}</div>
         {message ? <p role="status">{message}</p> : null}
       </div>
@@ -208,6 +210,15 @@ function filterNeeds(lines: MenuNeedLine[], filter: string) {
   if (filter === "cubiertos") return lines.filter((line) => line.estado === "Cubierto por stock");
   if (filter === "pendientes") return lines.filter((line) => line.cantidad_faltante == null || line.estado.includes("pendiente") || line.estado.startsWith("Sin "));
   return lines;
+}
+
+function proposalDisabledReason(selected: IntelligentMenu | null, needs: MenuNeedsResponse["necesidades"] | null, loading: boolean, technicalError: string) {
+  if (!selected) return "Guarda primero el menú.";
+  if (loading) return "La propuesta se está generando.";
+  if (technicalError) return `Error técnico al calcular necesidades: ${technicalError}`;
+  if (!needs) return "Calcula primero las necesidades.";
+  if (needs.summary.candidatas_propuesta === 0) return "No existen necesidades de compra.";
+  return "";
 }
 
 function formatQuantity(value: number | null | undefined, unit: string | null | undefined) {

@@ -69,6 +69,12 @@ def test_ingrediente_sin_relacion_estable_es_visible_y_no_se_agrupa(tmp_path: Pa
     assert result["lines"][0]["estado"] == "Sin artículo relacionado"
     assert result["lines"][0]["cantidad_faltante"] is None
     assert result["blocking_errors"][0]["code"] == "UNRESOLVED_NEED"
+    proposal = MenuNecesidadesService(tmp_path)
+    # La línea pendiente se conserva en una propuesta revisable, no bloquea todo el flujo.
+    pending = proposal.crear_propuesta(menu_id)["propuesta"]
+    assert pending["resumen"]["articulos_pendientes"] == 1
+    assert pending["lineas"][0]["estado"] == "Sin artículo relacionado"
+    assert pending["lineas"][0]["cantidad_faltante"] is None
 
 
 def test_conversion_incompatible_no_inventa_faltante(tmp_path: Path) -> None:
@@ -78,6 +84,9 @@ def test_conversion_incompatible_no_inventa_faltante(tmp_path: Path) -> None:
     assert line["estado"] == "Conversión pendiente"
     assert line["stock_disponible"] is None
     assert line["cantidad_faltante"] is None
+    proposal = MenuNecesidadesService(tmp_path).crear_propuesta(menu_id)["propuesta"]
+    assert proposal["lineas"][0]["estado"] == "Conversión pendiente"
+    assert proposal["coste_completo"] is False
 
 
 def test_api_genera_propuesta_revisable_sin_modificar_stock_ni_crear_pedido(tmp_path: Path) -> None:
@@ -94,6 +103,7 @@ def test_api_genera_propuesta_revisable_sin_modificar_stock_ni_crear_pedido(tmp_
     body = proposal.json()["propuesta"]
     assert body["estado"] == "BORRADOR"
     assert body["grupos_proveedor"][0]["proveedor"] == "Proveedor A"
+    assert body["resumen"]["articulos_propuestos"] == 1
     assert body["crea_pedido"] is False
     assert body["modifica_stock"] is False
     assert stock_path.read_bytes() == before_stock
@@ -102,3 +112,22 @@ def test_api_genera_propuesta_revisable_sin_modificar_stock_ni_crear_pedido(tmp_
     fetched = client.get(f"/api/v1/menus/{menu_id}/propuesta-compra/{body['id']}")
     assert fetched.status_code == 200
     assert fetched.json()["propuesta"]["id"] == body["id"]
+
+
+def test_stock_desconocido_y_proveedor_pendiente_no_bloquean_propuesta(tmp_path: Path) -> None:
+    menu_id = _seed(tmp_path)
+    _write(tmp_path / "DATOS/db/stock_inicial.json", [])
+    articles = json.loads((tmp_path / "DATOS/db/articulos.json").read_text(encoding="utf-8"))
+    articles[0]["proveedor"] = ""
+    articles[0]["catalogo_maestro"]["proveedor_preferente"] = ""
+    _write(tmp_path / "DATOS/db/articulos.json", articles)
+
+    service = MenuNecesidadesService(tmp_path)
+    needs = service.necesidades(menu_id)["necesidades"]
+    assert needs["summary"]["compra_necesaria"] == 0
+    assert needs["summary"]["candidatas_propuesta"] == 1
+    proposal = service.crear_propuesta(menu_id)["propuesta"]
+    assert proposal["resumen"] == {
+        "articulos_propuestos": 0, "articulos_pendientes": 1, "proveedores_pendientes": 1,
+    }
+    assert proposal["lineas"][0]["estado"] == "Stock no disponible"

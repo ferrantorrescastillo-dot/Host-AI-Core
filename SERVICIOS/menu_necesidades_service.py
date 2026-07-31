@@ -90,6 +90,7 @@ class MenuNecesidadesService:
                     "compra_necesaria": sum(float(x.get("cantidad_faltante") or 0) > 0 for x in lines),
                     "sin_relacionar": sum(x["estado"] == "Sin artículo relacionado" for x in lines),
                     "conversiones_pendientes": sum(x["estado"] == "Conversión pendiente" for x in lines),
+                    "candidatas_propuesta": sum(x["estado"] != "Cubierto por stock" for x in lines),
                 },
                 "solo_lectura": True, "datos_reales_modificados": False,
             },
@@ -100,7 +101,10 @@ class MenuNecesidadesService:
         if not result.get("ok"):
             return result
         needs = result["necesidades"]
-        lines = [self._proposal_line(line) for line in needs["lines"] if float(line.get("cantidad_faltante") or 0) > 0]
+        lines = [
+            self._proposal_line(line)
+            for line in needs["lines"] if line.get("estado") != "Cubierto por stock"
+        ]
         proposal_id = f"MENUPROP-{uuid4().hex[:10].upper()}"
         groups: dict[str, list[dict[str, Any]]] = {}
         for line in lines:
@@ -113,6 +117,11 @@ class MenuNecesidadesService:
             "coste_estimado": round(sum(float(x.get("coste_estimado") or 0) for x in lines), 4),
             "coste_completo": all(x.get("coste_estimado") is not None for x in lines),
             "advertencias": [x["advertencia"] for x in lines if x.get("advertencia")],
+            "resumen": {
+                "articulos_propuestos": sum(float(x.get("cantidad_faltante") or 0) > 0 for x in lines),
+                "articulos_pendientes": sum(x.get("cantidad_faltante") is None for x in lines),
+                "proveedores_pendientes": sum(not x.get("proveedor") for x in lines),
+            },
             "crea_pedido": False, "modifica_stock": False, "datos_reales_modificados": False,
         }
         self._propuestas[proposal_id] = proposal
@@ -188,15 +197,18 @@ class MenuNecesidadesService:
     @staticmethod
     def _proposal_line(line: dict[str, Any]) -> dict[str, Any]:
         proposed = line.get("cantidad_propuesta_compra")
-        missing = float(line.get("cantidad_faltante") or 0)
+        raw_missing = line.get("cantidad_faltante")
+        missing = float(raw_missing) if raw_missing is not None else None
         return {
             "articulo_id": line.get("articulo_id"), "articulo": line.get("articulo_nombre"),
-            "cantidad_faltante": missing, "unidad_base": line.get("unidad_necesaria"),
+            "cantidad_faltante": missing, "cantidad_necesaria": line.get("cantidad_necesaria"),
+            "unidad_base": line.get("unidad_necesaria"), "estado": line.get("estado"),
             "proveedor": line.get("proveedor_preferente"), "formato_compra": line.get("formato_compra"),
             "cantidad_formatos": (round(float(proposed) / float(line["cantidad_formato"]), 4) if proposed is not None and line.get("cantidad_formato") else None),
-            "cantidad_final_propuesta": proposed, "excedente_previsto": (round(float(proposed) - missing, 4) if proposed is not None else None),
+            "cantidad_final_propuesta": proposed, "excedente_previsto": (round(float(proposed) - missing, 4) if proposed is not None and missing is not None else None),
             "precio_estimado": line.get("precio_estimado"), "coste_estimado": line.get("coste_estimado"),
-            "motivo": "Faltante calculado para el menú", "advertencia": line.get("motivo_no_resuelto"),
+            "motivo": "Faltante calculado para el menú" if missing is not None else "Pendiente de revisión antes de comprar",
+            "advertencia": line.get("motivo_no_resuelto"),
         }
 
     @staticmethod

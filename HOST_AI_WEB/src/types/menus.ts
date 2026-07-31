@@ -88,12 +88,14 @@ export type MenuNeedLine = {
 export type MenuNeedsResponse = ApiEnvelopeBase & { necesidades: {
   menu_id: string; menu_version: number; comensales: number; generated_at: string; complete: boolean;
   lines: MenuNeedLine[]; warnings: string[]; blocking_errors: Array<{ code: string; message: string; articulo_id?: string | null }>;
-  summary: { articulos: number; cubiertos: number; compra_necesaria: number; sin_relacionar: number; conversiones_pendientes: number };
+  summary: { articulos: number; cubiertos: number; compra_necesaria: number; sin_relacionar: number; conversiones_pendientes: number; candidatas_propuesta: number };
   solo_lectura: true; datos_reales_modificados: false;
 } };
 export type MenuPurchaseProposalResponse = ApiEnvelopeBase & { propuesta: {
   id: string; estado: "BORRADOR"; coste_estimado: number; coste_completo: boolean;
   grupos_proveedor: Array<{ proveedor: string; lineas: Array<Record<string, unknown>> }>;
+  resumen: { articulos_propuestos: number; articulos_pendientes: number; proveedores_pendientes: number };
+  advertencias: string[];
   crea_pedido: false; modifica_stock: false; datos_reales_modificados: false;
 } };
 
