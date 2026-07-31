@@ -7,6 +7,9 @@ export type MenuElaboration = {
   elaboracion_nombre: string;
   cantidad: number;
   coste_por_comensal: number;
+  orden?: number;
+  observaciones?: string;
+  version_elaboracion?: number | null;
 };
 
 export type MenuSection = {
@@ -40,7 +43,13 @@ export type MenuInput = {
   observaciones: string;
   secciones: Array<{
     nombre: string;
-    elaboraciones: Array<{ elaboracion_id: string; cantidad: number }>;
+    elaboraciones: Array<{
+      elaboracion_id: string;
+      cantidad: number;
+      orden?: number;
+      observaciones?: string;
+      version_elaboracion?: number | null;
+    }>;
   }>;
   version?: number;
 };

@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any
 
 from SERVICIOS.biblioteca_escandallos_601 import RepositorioBibliotecaEscandallos601
+from SERVICIOS.biblioteca_culinaria_read_service import BibliotecaCulinariaReadService
 from SERVICIOS.biblioteca_recetas_601 import RepositorioBibliotecaRecetas601
 from SERVICIOS.motor_calculo_menus_601 import (
     ESTADO_ARCHIVADO,
@@ -200,7 +201,17 @@ class BibliotecaMenus601:
         self.repo_esc = RepositorioBibliotecaEscandallos601(self.base_dir)
         self.repo_rec = RepositorioBibliotecaRecetas601(self.base_dir)
         self.repo_prod = RepositorioProductosMaestro601(self.base_dir)
-        self.motor = MotorCalculoMenus601(self.repo_esc, self.repo_rec, self.repo_prod)
+        self.biblioteca = BibliotecaCulinariaReadService(base_dir)
+        self.motor = MotorCalculoMenus601(
+            self.repo_esc,
+            self.repo_rec,
+            self.repo_prod,
+            elaboracion_resolver=self._resolver_elaboracion,
+        )
+
+    def _resolver_elaboracion(self, referencia: str) -> dict[str, Any] | None:
+        result = self.biblioteca.detalle(referencia)
+        return result.get("elaboracion") if result.get("ok") else None
 
     @staticmethod
     def _empty_composicion() -> dict[str, list[dict[str, Any]]]:

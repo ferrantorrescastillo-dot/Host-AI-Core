@@ -758,6 +758,18 @@ textarea {
   flex: 1;
 }
 
+.menu-elaboration-card { display: grid; grid-template-columns: minmax(12rem, 1fr) 6rem minmax(10rem, 1fr) auto; gap: .65rem; align-items: center; padding: .7rem; border: 1px solid var(--border); border-radius: .65rem; }
+.menu-elaboration-card > div:first-child { display: grid; gap: .2rem; }
+.menu-item-actions { display: flex; gap: .35rem; }
+.menu-picker { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; padding: 1rem; background: rgb(18 25 22 / 55%); }
+.menu-picker-panel { width: min(58rem, 100%); max-height: 90vh; overflow: auto; padding: 1.2rem; border-radius: .9rem; background: var(--surface); box-shadow: 0 1rem 3rem rgb(0 0 0 / 25%); }
+.menu-picker-panel > header { display: flex; justify-content: space-between; gap: 1rem; align-items: start; }
+.menu-picker-filters { display: flex; gap: .8rem; align-items: end; flex-wrap: wrap; margin: .8rem 0; }
+.menu-picker-filters label { min-width: 9rem; }
+.menu-picker-results { display: grid; gap: .55rem; }
+.menu-picker-results article { display: flex; justify-content: space-between; gap: 1rem; align-items: center; padding: .8rem; border: 1px solid var(--border); border-radius: .7rem; }
+.menu-picker-results article > div { display: grid; gap: .2rem; }
+
 @media (max-width: 760px) {
   .draft-review-layout,
   .draft-ingredient-fields {
@@ -767,4 +779,6 @@ textarea {
   .menu-workspace {
     grid-template-columns: 1fr;
   }
+
+  .menu-elaboration-card { grid-template-columns: 1fr; }
 }

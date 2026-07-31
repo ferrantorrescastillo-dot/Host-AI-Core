@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any
+from typing import Any, Callable
 
 from SERVICIOS.biblioteca_escandallos_601 import RepositorioBibliotecaEscandallos601
 from SERVICIOS.biblioteca_recetas_601 import RepositorioBibliotecaRecetas601
@@ -28,10 +28,12 @@ class MotorCalculoMenus601:
         repo_esc: RepositorioBibliotecaEscandallos601,
         repo_rec: RepositorioBibliotecaRecetas601,
         repo_prod: RepositorioProductosMaestro601,
+        elaboracion_resolver: Callable[[str], dict[str, Any] | None] | None = None,
     ):
         self.repo_esc = repo_esc
         self.repo_rec = repo_rec
         self.repo_prod = repo_prod
+        self.elaboracion_resolver = elaboracion_resolver
 
     @staticmethod
     def _now() -> str:
@@ -145,8 +147,31 @@ class MotorCalculoMenus601:
                         }
                 elif tipo_ref == "RECETA":
                     receta = self._buscar_receta(referencia)
+                    elaboracion_publica = None
+                    if not receta and self.elaboracion_resolver:
+                        elaboracion_publica = self.elaboracion_resolver(referencia)
                     if not receta:
-                        inc_linea.append({"tipo": INC_PLATO_INEXISTENTE, "detalle": f"Receta inexistente: {referencia}"})
+                        if not elaboracion_publica:
+                            inc_linea.append({"tipo": INC_PLATO_INEXISTENTE, "detalle": f"Receta inexistente: {referencia}"})
+                        else:
+                            esc = elaboracion_publica.get("escandallo")
+                            if not esc:
+                                inc_linea.append({"tipo": INC_ESCANDALLO_INEXISTENTE, "detalle": f"ElaboraciÃ³n sin escandallo asociado: {elaboracion_publica.get('nombre')}"})
+                            else:
+                                coste = esc.get("coste_por_racion")
+                                if coste in (None, ""):
+                                    inc_linea.append({"tipo": INC_PRODUCTO_SIN_PRECIO, "detalle": f"Escandallo incompleto para elaboraciÃ³n: {elaboracion_publica.get('nombre')}"})
+                                else:
+                                    coste_por_comensal = self._to_float(coste) * cantidad
+                                snapshot_ref = {
+                                    "tipo": "ELABORACION_CANONICA",
+                                    "id": elaboracion_publica.get("id"),
+                                    "codigo": elaboracion_publica.get("codigo"),
+                                    "nombre": elaboracion_publica.get("nombre"),
+                                    "estado": elaboracion_publica.get("estado"),
+                                    "version": elaboracion_publica.get("version"),
+                                    "escandallo_id": esc.get("id"),
+                                }
                     else:
                         if str(receta.get("estado") or "") == "ARCHIVADA":
                             inc_linea.append({"tipo": INC_PLATO_ARCHIVADO, "detalle": f"Receta archivada: {receta.get('nombre')}"})

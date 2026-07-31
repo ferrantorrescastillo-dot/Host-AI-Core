@@ -22,6 +22,7 @@ export type ElaboracionResumen = {
   tiene_relaciones_menu_evento: boolean;
   completitud?: number | null;
   actualizado_en?: string | null;
+  version?: number | null;
 };
 
 export type BibliotecaResponse = ApiEnvelope & {

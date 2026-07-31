@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -49,6 +50,30 @@ def _payload(recipe_id: str) -> dict:
             "elaboraciones": [{"elaboracion_id": recipe_id, "cantidad": 1}],
         }],
     }
+
+
+def _seed_canonical(base_dir: Path) -> None:
+    db = base_dir / "DATOS" / "db"
+    db.mkdir(parents=True, exist_ok=True)
+    (db / "escandallos_canonicos.json").write_text(json.dumps({
+        "schema_version": "1.0",
+        "escandallos": [{
+            "receta": {
+                "codigo": "REC-CEVICHE-ANTIGUO", "nombre": "Ceviche de corvina",
+                "rendimiento": 10, "unidad_rendimiento": "raciones",
+                "ingredientes": [{"codigo": "ART-CORVINA", "articulo_id": "ART-CORVINA", "nombre": "Corvina", "cantidad": 1, "unidad": "kg"}],
+            },
+            "coste_total": 25, "coste_por_racion": 2.5,
+        }],
+    }, ensure_ascii=False), encoding="utf-8")
+    (db / "articulos.json").write_text(json.dumps([
+        {"codigo": "ART-CORVINA", "nombre": "Corvina", "precio": 25, "unidad": "kg"},
+    ]), encoding="utf-8")
+    (db / "proveedores.json").write_text("[]", encoding="utf-8")
+    (db / "compras_producto_proveedor.json").write_text("[]", encoding="utf-8")
+    invoices = base_dir / "DATOS" / "facturas"
+    invoices.mkdir(parents=True, exist_ok=True)
+    (invoices / "historico_precios.json").write_text('{"registros":[]}', encoding="utf-8")
 
 
 def test_crud_menu_versionado_reutiliza_biblioteca_y_costes(tmp_path: Path) -> None:
@@ -112,6 +137,27 @@ def test_menu_rechaza_elaboracion_inexistente_sin_crearla(tmp_path: Path) -> Non
     service = MenusInteligentesService(tmp_path)
     result = service.crear(_payload("REC-NO-EXISTE"))
     assert result["error"]["code"] == "elaboration_not_found"
+    assert RepositorioBibliotecaRecetas601(tmp_path).listar(incluir_archivadas=True) == []
+
+
+def test_selector_y_menu_reutilizan_elaboracion_canonica_antigua(tmp_path: Path) -> None:
+    _seed_canonical(tmp_path)
+    client = TestClient(create_app(HostAIPlatformAPI(base_dir=tmp_path)))
+
+    found = client.get("/api/v1/biblioteca/elaboraciones", params={
+        "q": "corvina", "page": 1, "page_size": 1, "tiene_escandallo": "true",
+    })
+    assert found.status_code == 200
+    catalog = found.json()["elaboraciones"]
+    assert catalog["total"] == 1
+    assert catalog["total_pages"] == 1
+    assert catalog["items"][0]["id"] == "REC-CEVICHE-ANTIGUO"
+    assert catalog["items"][0]["coste_por_racion"] is not None
+
+    created = client.post("/api/v1/menus", json=_payload("REC-CEVICHE-ANTIGUO"))
+    assert created.status_code == 201
+    assert created.json()["menu"]["secciones"][0]["elaboraciones"][0]["elaboracion_nombre"] == "Ceviche de corvina"
+    assert created.json()["menu"]["coste_por_comensal"] > 0
     assert RepositorioBibliotecaRecetas601(tmp_path).listar(incluir_archivadas=True) == []
 
 

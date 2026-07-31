@@ -117,6 +117,11 @@ class BibliotecaCulinariaReadService:
                 " ".join(part for part in (self._format_number(quantity), unit) if part) or None
             )
         active = escandallo.get("activo")
+        total_cost = self._number(escandallo.get("coste_total"))
+        yield_value = self._number(escandallo.get("rendimiento") or escandallo.get("raciones_base"))
+        unit_cost = self._number(escandallo.get("coste_por_racion"))
+        if unit_cost is None and total_cost is not None and yield_value and yield_value > 0:
+            unit_cost = round(total_cost / yield_value, 6)
         return {
             "id": code,
             "codigo": code,
@@ -138,7 +143,7 @@ class BibliotecaCulinariaReadService:
                 if "coste_total" in raw
                 else self._first_present(escandallo.get("coste_total"), escandallo.get("coste_total_base"))
             ),
-            "coste_por_racion": escandallo.get("coste_por_racion"),
+            "coste_por_racion": unit_cost,
             "_origen_modelo": escandallo.get("origen_modelo") or "legacy",
             "_ingredientes_estructurados": ingredients,
             "_escandallo_canonico": escandallo,
@@ -159,7 +164,9 @@ class BibliotecaCulinariaReadService:
                 "id": receta.get("codigo"),
                 "estado": "PARCIAL",
                 "coste_total": receta.get("coste_total"),
-                "coste_por_racion": canonical.get("coste_por_racion"),
+                "coste_por_racion": self._first_present(
+                    canonical.get("coste_por_racion"), receta.get("coste_por_racion")
+                ),
                 "rendimiento_total": canonical.get("rendimiento") or canonical.get("raciones_base"),
                 "numero_raciones": canonical.get("raciones_base"),
                 "precio_venta_por_racion": canonical.get("precio_venta_unitario"),
@@ -242,6 +249,7 @@ class BibliotecaCulinariaReadService:
             "tiene_relaciones_menu_evento": has_relations,
             "completitud": self._number(completeness.get("porcentaje")),
             "actualizado_en": receta.get("actualizado_en") or None,
+            "version": receta.get("version") or None,
         }
 
     def resumen(self) -> dict[str, Any]:

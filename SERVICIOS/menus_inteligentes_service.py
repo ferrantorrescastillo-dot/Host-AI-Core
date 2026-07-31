@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import Any
 
 from SERVICIOS.biblioteca_menus_601 import BibliotecaMenus601
+from SERVICIOS.biblioteca_culinaria_read_service import BibliotecaCulinariaReadService
 from SERVICIOS.biblioteca_recetas_601 import RepositorioBibliotecaRecetas601
 
 
@@ -16,6 +17,7 @@ class MenusInteligentesService:
     def __init__(self, base_dir: Path) -> None:
         self.menus = BibliotecaMenus601(base_dir)
         self.recetas = RepositorioBibliotecaRecetas601(base_dir)
+        self.biblioteca = BibliotecaCulinariaReadService(base_dir)
 
     def listar(self, query: dict[str, Any] | None = None) -> dict[str, Any]:
         query = dict(query or {})
@@ -50,19 +52,22 @@ class MenusInteligentesService:
         return {"ok": True, "menu": self._public(result["menu"])}
 
     def elaboraciones(self, query: dict[str, Any] | None = None) -> dict[str, Any]:
-        text = self._norm(dict(query or {}).get("q"))
-        items = []
-        for recipe in self.recetas.listar(incluir_archivadas=False):
-            item = {
-                "id": str(recipe.get("id") or recipe.get("codigo") or ""),
-                "codigo": str(recipe.get("codigo") or ""),
-                "nombre": str(recipe.get("nombre") or ""),
-                "familia": str(recipe.get("familia") or ""),
-            }
-            if item["id"] and (not text or text in self._norm(item["nombre"])):
-                items.append(item)
-        items.sort(key=lambda item: self._norm(item["nombre"]))
-        return {"ok": True, "elaboraciones": items, "total": len(items)}
+        # Alias compatible: la autoridad del selector es el catÃ¡logo pÃºblico completo.
+        result = self.biblioteca.listar({"page_size": 100, **dict(query or {})})
+        if not result.get("ok"):
+            return result
+        catalog = result["elaboraciones"]
+        return {
+            "ok": True,
+            "elaboraciones": [
+                {
+                    "id": item["id"], "codigo": item["codigo"],
+                    "nombre": item["nombre"], "familia": item.get("categoria") or "",
+                }
+                for item in catalog["items"]
+            ],
+            "total": catalog["total"],
+        }
 
     def crear(self, body: dict[str, Any]) -> dict[str, Any]:
         normalized = self._normalize(body)
@@ -137,7 +142,7 @@ class MenusInteligentesService:
             composition[section_name] = []
             for reference in references:
                 recipe_id = str((reference or {}).get("elaboracion_id") or "").strip()
-                recipe = self.recetas.obtener(recipe_id)
+                recipe = self._elaboration(recipe_id)
                 if not recipe:
                     return self._error(
                         "elaboration_not_found",
@@ -154,6 +159,9 @@ class MenusInteligentesService:
                     "tipo_referencia": "RECETA",
                     "referencia": str(recipe.get("id") or recipe.get("codigo") or recipe_id),
                     "cantidad": quantity,
+                    "orden": int((reference or {}).get("orden") or len(composition[section_name])),
+                    "observaciones": str((reference or {}).get("observaciones") or ""),
+                    "version_elaboracion": (reference or {}).get("version_elaboracion"),
                 })
         return {
             "nombre": name,
@@ -190,16 +198,23 @@ class MenusInteligentesService:
         for order, (name, references) in enumerate(dict(menu.get("composicion") or {}).items()):
             items = []
             for reference in references or []:
-                recipe = self.recetas.obtener(str(reference.get("referencia") or "")) or {}
+                recipe = self._elaboration(str(reference.get("referencia") or "")) or {}
                 line = line_costs.get((self._norm(name), self._norm(reference.get("referencia"))), {})
                 items.append({
                     "elaboracion_id": str(recipe.get("id") or reference.get("referencia") or ""),
                     "elaboracion_nombre": str(recipe.get("nombre") or reference.get("referencia") or ""),
                     "cantidad": float(reference.get("cantidad") or 1),
                     "coste_por_comensal": float(line.get("coste_por_comensal") or 0),
+                    "orden": int(reference.get("orden") or len(items)),
+                    "observaciones": str(reference.get("observaciones") or ""),
+                    "version_elaboracion": reference.get("version_elaboracion") or recipe.get("version"),
                 })
             sections.append({"id": f"SEC-{order + 1:03d}", "nombre": name, "orden": order, "elaboraciones": items})
         return sections
+
+    def _elaboration(self, elaboration_id: str) -> dict[str, Any] | None:
+        result = self.biblioteca.detalle(elaboration_id)
+        return result.get("elaboracion") if result.get("ok") else None
 
     @staticmethod
     def _public_state(menu: dict[str, Any]) -> str:
