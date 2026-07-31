@@ -18,6 +18,7 @@ type Envelope = {
   modo_seguro: boolean;
   datos_reales_modificados: boolean;
   error?: { status?: number; code?: string; message?: string };
+  resultado?: unknown;
 };
 
 export class HostAiApiError extends Error {
@@ -25,6 +26,7 @@ export class HostAiApiError extends Error {
   statusCode?: number;
   modoSeguro?: boolean;
   datosRealesModificados?: boolean;
+  details?: unknown;
 
   constructor(
     message: string,
@@ -33,6 +35,7 @@ export class HostAiApiError extends Error {
       statusCode?: number;
       modoSeguro?: boolean;
       datosRealesModificados?: boolean;
+      details?: unknown;
     },
   ) {
     super(message);
@@ -41,6 +44,7 @@ export class HostAiApiError extends Error {
     this.statusCode = opts?.statusCode;
     this.modoSeguro = opts?.modoSeguro;
     this.datosRealesModificados = opts?.datosRealesModificados;
+    this.details = opts?.details;
   }
 }
 
@@ -85,6 +89,7 @@ async function request<T extends Envelope>(path: string, init?: RequestInit): Pr
       statusCode: response.status,
       modoSeguro: payload.modo_seguro,
       datosRealesModificados: payload.datos_reales_modificados,
+      details: payload.resultado,
     });
   }
 

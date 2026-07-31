@@ -715,6 +715,10 @@ textarea {
   color: #8a4b13;
 }
 
+.draft-error {
+  color: #a12622;
+}
+
 @media (max-width: 760px) {
   .draft-review-layout,
   .draft-ingredient-fields {

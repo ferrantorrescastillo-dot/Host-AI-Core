@@ -288,6 +288,18 @@ export type DraftIssue = {
   field: string;
 };
 
+export type DraftValidationIssue = {
+  code: string;
+  level: "BLOQUEANTE" | "ADVERTENCIA";
+  recipe_id: string;
+  recipe_title: string;
+  recipe_index: number;
+  ingredient_id?: string | null;
+  ingredient_index?: number | null;
+  field: string;
+  message: string;
+};
+
 export type ArticleCandidate = {
   articulo_id: string;
   codigo: string;
@@ -353,6 +365,11 @@ export type ImportDraft = {
   updated_at: string;
   persisted: boolean;
   confirmation_available: boolean;
+  validation?: {
+    valid: boolean;
+    blocking_errors: DraftValidationIssue[];
+    warnings: DraftValidationIssue[];
+  };
 };
 
 export type BibliotecaDraftResponse = ApiEnvelope & {

@@ -305,6 +305,90 @@ describe("Importador Inteligente de Biblioteca", () => {
     });
   });
 
+  it("muestra bloqueos con receta y campo, permite enfocarlos y actualiza al guardar", async () => {
+    const blocked: any = structuredClone(response);
+    const recipe = blocked.importacion.borrador.recipes[0];
+    const ingredient = recipe.ingredients[0];
+    ingredient.validation_errors = [{
+      code: "CANTIDAD_INVALIDA",
+      level: "ERROR",
+      message: "No se reconoce la cantidad «desconocida».",
+      field: "quantity",
+    }];
+    recipe.validation_errors = [{
+      code: "PROCEDIMIENTO_VACIO",
+      level: "ERROR",
+      message: "El procedimiento es obligatorio antes de confirmar.",
+      field: "procedure",
+    }];
+    blocked.importacion.borrador.validation = {
+      valid: false,
+      blocking_errors: [{
+        code: "CANTIDAD_INVALIDA",
+        level: "BLOQUEANTE",
+        recipe_id: recipe.id,
+        recipe_title: recipe.title,
+        recipe_index: 0,
+        ingredient_id: ingredient.id,
+        ingredient_index: 0,
+        field: "quantity",
+        message: "No se reconoce la cantidad «desconocida».",
+      }],
+      warnings: [{
+        code: "ARTICULO_PENDIENTE",
+        level: "ADVERTENCIA",
+        recipe_id: recipe.id,
+        recipe_title: recipe.title,
+        recipe_index: 0,
+        ingredient_id: ingredient.id,
+        ingredient_index: 0,
+        field: "article_id",
+        message: "La coincidencia de artículo sigue pendiente.",
+      }],
+    };
+    const corrected: any = structuredClone(blocked);
+    corrected.importacion.borrador.version = 2;
+    corrected.importacion.borrador.draft_version = 2;
+    corrected.importacion.borrador.validation = {
+      valid: true, blocking_errors: [], warnings: [],
+    };
+    corrected.importacion.borrador.recipes[0].validation_errors = [];
+    corrected.importacion.borrador.recipes[0].ingredients[0].validation_errors = [];
+
+    vi.spyOn(global, "fetch")
+      .mockResolvedValueOnce({ ok: true, status: 200, json: async () => blocked } as Response)
+      .mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: async () => ({
+          ...corrected,
+          borrador: corrected.importacion.borrador,
+          datos_reales_modificados: false,
+        }),
+      } as Response);
+    render(<MemoryRouter initialEntries={["/biblioteca/importaciones"]}><App /></MemoryRouter>);
+    const file = new File(["Receta"], "receta.txt", { type: "text/plain" });
+    Object.defineProperty(file, "arrayBuffer", {
+      value: async () => new TextEncoder().encode("Receta").buffer,
+    });
+    fireEvent.change(screen.getByLabelText("Seleccionar documento"), {
+      target: { files: [file] },
+    });
+
+    expect(await screen.findByRole("region", { name: "Errores que impiden confirmar" }))
+      .toHaveTextContent("Salsa verde");
+    expect(screen.getByRole("region", { name: "Advertencias del borrador" }))
+      .toHaveTextContent("La coincidencia de artículo sigue pendiente.");
+    fireEvent.click(screen.getAllByRole("button", { name: "Revisar campo" })[0]);
+    await waitFor(() => expect(screen.getByLabelText("Cantidad nata")).toHaveFocus());
+    fireEvent.change(screen.getByLabelText("Cantidad nata"), { target: { value: "2,3" } });
+    fireEvent.click(screen.getByRole("button", { name: "Guardar borrador" }));
+
+    await waitFor(() => expect(
+      screen.queryByRole("region", { name: "Errores que impiden confirmar" }),
+    ).not.toBeInTheDocument());
+  });
+
   it("exige aceptación explícita y confirma mediante la API pública", async () => {
     vi.spyOn(global, "fetch")
       .mockResolvedValueOnce({ ok: true, status: 200, json: async () => response } as Response)

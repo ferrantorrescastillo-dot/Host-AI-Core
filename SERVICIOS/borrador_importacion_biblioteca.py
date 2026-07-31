@@ -233,7 +233,9 @@ class ImportDraftService:
             updated_at=now,
         )
         self._validate(draft)
-        return draft.to_dict()
+        result = draft.to_dict()
+        self._validate_dict(result)
+        return result
 
     def update(self, current: dict[str, Any], payload: dict[str, Any]) -> dict[str, Any]:
         expected = payload.get("draft_version", payload.get("version"))
@@ -254,6 +256,12 @@ class ImportDraftService:
         candidate["draft_version"] = candidate["version"]
         candidate["status"] = DraftStatus.EN_REVISION.value
         candidate["updated_at"] = datetime.now(timezone.utc).isoformat()
+        self._validate_dict(candidate)
+        return candidate
+
+    def validate(self, draft: dict[str, Any]) -> dict[str, Any]:
+        """Recalcula toda la validación desde el borrador revisado."""
+        candidate = deepcopy(draft)
         self._validate_dict(candidate)
         return candidate
 
@@ -320,6 +328,9 @@ class ImportDraftService:
         for key in ("title", "description", "notes", "proposed_action"):
             if key in patch:
                 target[key] = str(patch.get(key) or "").strip()
+        for key in ("servings", "yield_value"):
+            if key in patch:
+                target[key] = self._number_or_none(patch.get(key))
         if target.get("proposed_action") not in VALID_ACTIONS:
             raise DraftValidationError("La acción propuesta no es válida.")
         if "entity_type" in patch:
@@ -452,18 +463,40 @@ class ImportDraftService:
         for recipe in recipes:
             issues: list[dict[str, Any]] = []
             entity_type = str(recipe.get("entity_type") or "")
-            if entity_type != RecipeEntityType.DESCARTAR.value and not str(recipe.get("title") or "").strip():
+            active = (
+                entity_type != RecipeEntityType.DESCARTAR.value
+                and recipe.get("proposed_action") != "IGNORAR"
+            )
+            if active and not str(recipe.get("title") or "").strip():
                 issues.append(DraftIssue(
                     "TITULO_VACIO", DraftIssueLevel.ERROR,
                     "La sección necesita un título.", "title",
                 ).to_dict())
-            if entity_type == RecipeEntityType.SUBELABORACION.value and recipe.get("parent_recipe_id") not in ids:
+            if active and entity_type == RecipeEntityType.SUBELABORACION.value and recipe.get("parent_recipe_id") not in ids:
                 issues.append(DraftIssue(
                     "SUBELABORACION_SIN_PRINCIPAL", DraftIssueLevel.ERROR,
                     "Selecciona la elaboración principal de esta subelaboración.", "parent_recipe_id",
                 ).to_dict())
             if (
-                entity_type not in {RecipeEntityType.DESCARTAR.value, RecipeEntityType.SECCION.value}
+                active
+                and not [item for item in recipe.get("procedure") or [] if str(item).strip()]
+            ):
+                issues.append(DraftIssue(
+                    "PROCEDIMIENTO_VACIO", DraftIssueLevel.ERROR,
+                    "El procedimiento es obligatorio antes de confirmar.", "procedure",
+                ).to_dict())
+            if (
+                active
+                and not self._is_positive_number(
+                    recipe.get("servings") or recipe.get("yield_value")
+                )
+            ):
+                issues.append(DraftIssue(
+                    "RACIONES_INVALIDAS", DraftIssueLevel.ERROR,
+                    "El rendimiento o número de raciones debe ser mayor que cero.", "servings",
+                ).to_dict())
+            if (
+                active
                 and not recipe.get("ingredients")
             ):
                 issues.append(DraftIssue(
@@ -490,19 +523,37 @@ class ImportDraftService:
                     ).to_dict())
             seen: set[str] = set()
             for ingredient in recipe.get("ingredients") or []:
+                if not active:
+                    ingredient["validation_errors"] = []
+                    continue
                 ingredient_issues = [
                     issue for issue in ingredient.get("validation_errors") or []
                     if issue.get("code") in {
                         "CANTIDAD_AMBIGUA", "CANTIDAD_RANGO", "CANTIDAD_APROXIMADA", "CANTIDAD_INVALIDA"
                     }
                 ]
+                if (
+                    ingredient.get("quantity") is None
+                    and not any(
+                        issue.get("level") == DraftIssueLevel.ERROR.value
+                        for issue in ingredient_issues
+                    )
+                ):
+                    ingredient_issues.append(DraftIssue(
+                        "CANTIDAD_SIN_RESOLVER", DraftIssueLevel.ERROR,
+                        "Introduce una cantidad numérica antes de confirmar.", "quantity",
+                    ).to_dict())
                 unit = str(ingredient.get("unit") or "")
                 if unit and unit not in {normalizar_unidad(value) for value in UNIDADES_ADMITIDAS}:
                     ingredient_issues.append(DraftIssue(
                         "UNIDAD_DESCONOCIDA", DraftIssueLevel.ADVERTENCIA,
                         f"La unidad «{unit}» no está normalizada.", "unit",
                     ).to_dict())
-                normalized_name = str(ingredient.get("normalized_name") or "")
+                normalized_name = str(
+                    ingredient.get("normalized_name")
+                    or normalize_text(ingredient.get("name_raw"))
+                )
+                ingredient["normalized_name"] = normalized_name
                 if not normalized_name:
                     ingredient_issues.append(DraftIssue(
                         "INGREDIENTE_SIN_NOMBRE", DraftIssueLevel.ERROR,
@@ -514,8 +565,77 @@ class ImportDraftService:
                         "El ingrediente aparece más de una vez en la sección.", "name",
                     ).to_dict())
                 seen.add(normalized_name)
+                if (
+                    ingredient.get("relation_status") == "RELACIONADO"
+                    and not ingredient.get("article_id")
+                ):
+                    ingredient_issues.append(DraftIssue(
+                        "ARTICULO_NO_SELECCIONADO", DraftIssueLevel.ERROR,
+                        "Selecciona el artículo relacionado o deja la relación pendiente.",
+                        "article_id",
+                    ).to_dict())
                 ingredient["validation_errors"] = ingredient_issues
             recipe["validation_errors"] = issues
+        validation = self._validation_summary(recipes)
+        draft["validation"] = validation
+        draft["confirmation_available"] = validation["valid"]
+
+    @staticmethod
+    def _number_or_none(value: Any) -> float | None:
+        try:
+            return float(str(value).replace(",", ".")) if value not in {None, ""} else None
+        except (TypeError, ValueError):
+            return None
+
+    @classmethod
+    def _is_positive_number(cls, value: Any) -> bool:
+        parsed = cls._number_or_none(value)
+        return parsed is not None and parsed > 0
+
+    @staticmethod
+    def _validation_summary(recipes: list[dict[str, Any]]) -> dict[str, Any]:
+        blocking: list[dict[str, Any]] = []
+        warnings: list[dict[str, Any]] = []
+        for recipe_index, recipe in enumerate(recipes):
+            recipe_id = str(recipe.get("id") or "")
+            recipe_title = str(recipe.get("title") or "Sin título")
+            contextual = {
+                "recipe_id": recipe_id,
+                "recipe_title": recipe_title,
+                "recipe_index": recipe_index,
+            }
+            for issue in recipe.get("validation_errors") or []:
+                target = blocking if issue.get("level") == DraftIssueLevel.ERROR.value else warnings
+                target.append({
+                    **issue,
+                    **contextual,
+                    "level": (
+                        "BLOQUEANTE"
+                        if issue.get("level") == DraftIssueLevel.ERROR.value
+                        else "ADVERTENCIA"
+                    ),
+                    "ingredient_id": None,
+                    "ingredient_index": None,
+                })
+            for ingredient_index, ingredient in enumerate(recipe.get("ingredients") or []):
+                for issue in ingredient.get("validation_errors") or []:
+                    target = blocking if issue.get("level") == DraftIssueLevel.ERROR.value else warnings
+                    target.append({
+                        **issue,
+                        **contextual,
+                        "level": (
+                            "BLOQUEANTE"
+                            if issue.get("level") == DraftIssueLevel.ERROR.value
+                            else "ADVERTENCIA"
+                        ),
+                        "ingredient_id": str(ingredient.get("id") or ""),
+                        "ingredient_index": ingredient_index,
+                    })
+        return {
+            "valid": not blocking,
+            "blocking_errors": blocking,
+            "warnings": warnings,
+        }
 
 
 class DraftConflictError(Exception):

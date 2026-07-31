@@ -3,6 +3,7 @@ import { HostAiApiError } from "../../api/client";
 import { bibliotecaService } from "../../services/bibliotecaService";
 import type {
   BibliotecaImportSession,
+  DraftValidationIssue,
   ImportDraft,
   ImportConfirmationResult,
   IngredientDraft,
@@ -122,13 +123,31 @@ function DraftReview({ initialDraft }: { initialDraft: ImportDraft }) {
   const [confirming, setConfirming] = useState(false);
   const [result, setResult] = useState<ImportConfirmationResult | null>(null);
   const selected = draft.recipes.find((recipe) => recipe.id === selectedId);
+  const blockingErrors = dirty ? [] : (draft.validation?.blocking_errors ?? []);
+  const warnings = dirty ? [] : (draft.validation?.warnings ?? []);
+
+  function focusIssue(issue: DraftValidationIssue) {
+    setSelectedId(issue.recipe_id);
+    window.setTimeout(() => {
+      const targetId = issue.ingredient_id
+        ? ingredientFieldId(issue.ingredient_id, issue.field)
+        : recipeFieldId(issue.recipe_id, issue.field);
+      document.getElementById(targetId)?.focus();
+    }, 0);
+  }
 
   function updateRecipe(id: string, changes: Partial<RecipeDraft>) {
     setDirty(true);
     setAccepted(false);
     setDraft((current) => ({
       ...current,
-      recipes: current.recipes.map((recipe) => recipe.id === id ? { ...recipe, ...changes } : recipe),
+      recipes: current.recipes.map((recipe) => recipe.id === id ? {
+        ...recipe,
+        ...changes,
+        validation_errors: recipe.validation_errors.filter(
+          (issue) => !(issue.field in changes),
+        ),
+      } : recipe),
     }));
   }
 
@@ -220,7 +239,15 @@ function DraftReview({ initialDraft }: { initialDraft: ImportDraft }) {
       setResult(response.resultado);
       setMessage("Importación confirmada y aplicada a la Biblioteca.");
     } catch (reason) {
-      setMessage((reason as HostAiApiError).message);
+      const error = reason as HostAiApiError;
+      const details = error.details as {
+        errores?: Array<{ message?: string; mensaje?: string }>;
+      } | undefined;
+      const concrete = details?.errores
+        ?.map((issue) => issue.message || issue.mensaje)
+        .filter(Boolean)
+        .join(" ");
+      setMessage(concrete || error.message);
     } finally {
       setConfirming(false);
     }
@@ -229,6 +256,20 @@ function DraftReview({ initialDraft }: { initialDraft: ImportDraft }) {
   return <section className="draft-review">
     <h3>Revisar borrador</h3>
     <p>Host AI propone la estructura. Tú decides qué es principal, subelaboración, componente o información que debe ignorarse.</p>
+    {!dirty && blockingErrors.length ? <section aria-label="Errores que impiden confirmar">
+      <h4>Errores que impiden confirmar</h4>
+      <ul>{blockingErrors.map((issue, index) => <li key={`${issue.code}-${issue.recipe_id}-${issue.ingredient_id}-${index}`}>
+        <strong>Error bloqueante · {issue.recipe_title}</strong>: {issue.message}{" "}
+        <button type="button" onClick={() => focusIssue(issue)}>Revisar campo</button>
+      </li>)}</ul>
+    </section> : null}
+    {!dirty && warnings.length ? <section aria-label="Advertencias del borrador">
+      <h4>Advertencias</h4>
+      <ul>{warnings.map((issue, index) => <li key={`${issue.code}-${issue.recipe_id}-${issue.ingredient_id}-${index}`}>
+        <strong>Advertencia · {issue.recipe_title}</strong>: {issue.message}{" "}
+        <button type="button" onClick={() => focusIssue(issue)}>Revisar campo</button>
+      </li>)}</ul>
+    </section> : null}
     <div className="draft-review-layout">
       <aside aria-label="Secciones detectadas">
         {draft.recipes.map((recipe) => <button
@@ -246,10 +287,13 @@ function DraftReview({ initialDraft }: { initialDraft: ImportDraft }) {
         <label>Título
           <input
             aria-label="Título de la sección"
+            id={recipeFieldId(selected.id, "title")}
             value={selected.title}
             onChange={(event) => updateRecipe(selected.id, { title: event.target.value })}
           />
         </label>
+        {selected.validation_errors.filter((issue) => issue.field === "title")
+          .map((issue) => <p className="draft-error" key={issue.code}><strong>Error bloqueante:</strong> {issue.message}</p>)}
         <label>Tipo culinario
           <select
             aria-label="Tipo culinario"
@@ -297,7 +341,7 @@ function DraftReview({ initialDraft }: { initialDraft: ImportDraft }) {
         {selected.duplicate_candidates.length ? <p className="draft-warning">Hay posibles duplicados. Revísalos antes de crear una elaboración nueva.</p> : null}
         <h4>Ingredientes</h4>
         {selected.validation_errors.filter((issue) => issue.field === "ingredients")
-          .map((issue) => <p className="draft-warning" key={issue.code}>{issue.message}</p>)}
+          .map((issue) => <p className="draft-error" key={issue.code}><strong>Error bloqueante:</strong> {issue.message}</p>)}
         {!selected.ingredients.length
           ? <p>No hay ingredientes. Añade al menos uno para poder confirmar.</p>
           : null}
@@ -313,6 +357,7 @@ function DraftReview({ initialDraft }: { initialDraft: ImportDraft }) {
         <label>Procedimiento
           <textarea
             aria-label="Procedimiento"
+            id={recipeFieldId(selected.id, "procedure")}
             rows={5}
             value={selected.procedure.join("\n")}
             onChange={(event) => updateRecipe(selected.id, {
@@ -320,6 +365,23 @@ function DraftReview({ initialDraft }: { initialDraft: ImportDraft }) {
             })}
           />
         </label>
+        {selected.validation_errors.filter((issue) => issue.field === "procedure")
+          .map((issue) => <p className="draft-error" key={issue.code}><strong>Error bloqueante:</strong> {issue.message}</p>)}
+        <label>Número de raciones
+          <input
+            aria-label="Número de raciones"
+            id={recipeFieldId(selected.id, "servings")}
+            min="0"
+            step="any"
+            type="number"
+            value={selected.servings ?? ""}
+            onChange={(event) => updateRecipe(selected.id, {
+              servings: event.target.value === "" ? null : Number(event.target.value),
+            })}
+          />
+        </label>
+        {selected.validation_errors.filter((issue) => issue.field === "servings")
+          .map((issue) => <p className="draft-error" key={issue.code}><strong>Error bloqueante:</strong> {issue.message}</p>)}
         <label>Observaciones
           <textarea
             aria-label="Observaciones de la sección"
@@ -328,9 +390,12 @@ function DraftReview({ initialDraft }: { initialDraft: ImportDraft }) {
             onChange={(event) => updateRecipe(selected.id, { notes: event.target.value })}
           />
         </label>
-        {[...selected.validation_errors.filter((issue) => issue.field !== "ingredients"),
-          ...selected.ingredients.flatMap((item) => item.validation_errors)]
-          .map((issue, index) => <p className="draft-warning" key={`${issue.code}-${index}`}>{issue.message}</p>)}
+        {selected.validation_errors.filter((issue) =>
+          !["ingredients", "procedure", "servings", "title"].includes(issue.field)
+        ).map((issue, index) => <p
+          className={issue.level === "ERROR" ? "draft-error" : "draft-warning"}
+          key={`${issue.code}-${index}`}
+        ><strong>{issue.level === "ERROR" ? "Error bloqueante" : "Advertencia"}:</strong> {issue.message}</p>)}
       </div> : <p>No hay secciones editables.</p>}
     </div>
     <button disabled={saving} type="button" onClick={() => void save()}>
@@ -348,7 +413,7 @@ function DraftReview({ initialDraft }: { initialDraft: ImportDraft }) {
         <input checked={accepted} onChange={(event) => setAccepted(event.target.checked)} type="checkbox" />
         He revisado el borrador y autorizo aplicar estos cambios.
       </label>
-      <button disabled={dirty || !accepted || confirming || Boolean(result)} type="button" onClick={() => void confirm()}>
+      <button disabled={dirty || blockingErrors.length > 0 || !accepted || confirming || Boolean(result)} type="button" onClick={() => void confirm()}>
         {confirming ? "Aplicando transacción..." : "Confirmar e importar"}
       </button>
       {result ? <div role="status">
@@ -374,23 +439,39 @@ function IngredientEditor({
       <label>Cantidad
         <input
           aria-label={`Cantidad ${ingredient.name_raw}`}
+          id={ingredientFieldId(ingredient.id, "quantity")}
           value={ingredient.quantity_raw}
           onChange={(event) => onChange({ quantity_raw: event.target.value })}
         />
+        {ingredient.validation_errors.filter((issue) => issue.field === "quantity").map((issue) =>
+          <span className={issue.level === "ERROR" ? "draft-error" : "draft-warning"} key={issue.code}>
+            {issue.level === "ERROR" ? "Error bloqueante: " : "Advertencia: "}{issue.message}
+          </span>
+        )}
       </label>
       <label>Unidad
         <input
           aria-label={`Unidad ${ingredient.name_raw}`}
+          id={ingredientFieldId(ingredient.id, "unit")}
           value={ingredient.unit_raw}
           onChange={(event) => onChange({ unit_raw: event.target.value })}
         />
+        {ingredient.validation_errors.filter((issue) => issue.field === "unit").map((issue) =>
+          <span className="draft-warning" key={issue.code}>Advertencia: {issue.message}</span>
+        )}
       </label>
       <label>Ingrediente
         <input
           aria-label={`Ingrediente ${ingredient.name_raw}`}
+          id={ingredientFieldId(ingredient.id, "name")}
           value={ingredient.name_raw}
           onChange={(event) => onChange({ name_raw: event.target.value })}
         />
+        {ingredient.validation_errors.filter((issue) => issue.field === "name").map((issue) =>
+          <span className={issue.level === "ERROR" ? "draft-error" : "draft-warning"} key={issue.code}>
+            {issue.level === "ERROR" ? "Error bloqueante: " : "Advertencia: "}{issue.message}
+          </span>
+        )}
       </label>
     </div>
     <label>Observaciones
@@ -403,6 +484,7 @@ function IngredientEditor({
     <label>Relación con Artículos
       <select
         aria-label={`Relación ${ingredient.name_raw}`}
+        id={ingredientFieldId(ingredient.id, "article_id")}
         value={ingredient.article_id ?? ingredient.relation_status}
         onChange={(event) => {
           const candidate = ingredient.article_candidates.find((item) => item.articulo_id === event.target.value);
@@ -426,9 +508,6 @@ function IngredientEditor({
         {candidate.precio == null ? "" : ` · ${candidate.precio} €`} · {candidate.motivo}
       </li>)}
     </ul> : <p>Sin candidatos en el Catálogo de Artículos.</p>}
-    {ingredient.validation_errors.map((issue) =>
-      <p className="draft-warning" key={issue.code}>{issue.message}</p>
-    )}
     <button type="button" onClick={onDelete}>Eliminar ingrediente</button>
   </article>;
 }
@@ -436,6 +515,14 @@ function IngredientEditor({
 function issueCount(recipe: RecipeDraft) {
   return recipe.validation_errors.length
     + recipe.ingredients.reduce((total, ingredient) => total + ingredient.validation_errors.length, 0);
+}
+
+function recipeFieldId(recipeId: string, field: string) {
+  return `recipe-${recipeId}-${field}`;
+}
+
+function ingredientFieldId(ingredientId: string, field: string) {
+  return `ingredient-${ingredientId}-${field}`;
 }
 
 function entityLabel(value: RecipeDraft["entity_type"]) {

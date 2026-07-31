@@ -526,10 +526,11 @@ class ImportDocumentService:
         session = self._sessions.get(str(import_id or ""))
         if session is None:
             return self._error("import_not_found", "Importación no encontrada.", 404)
+        validated = self.drafts.validate(session["borrador"])
         return {
             "ok": True,
             "importacion_id": import_id,
-            "borrador": session["borrador"],
+            "borrador": validated,
             "datos_reales_modificados": False,
         }
 
@@ -558,7 +559,9 @@ class ImportDocumentService:
             "importacion_id": import_id,
             "borrador": updated,
             "solo_previsualizacion": True,
-            "confirmacion_disponible": True,
+            "confirmacion_disponible": bool(
+                updated.get("validation", {}).get("valid")
+            ),
             "datos_reales_modificados": False,
         }
 

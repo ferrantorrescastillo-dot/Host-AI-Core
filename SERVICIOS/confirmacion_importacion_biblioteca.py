@@ -10,6 +10,7 @@ from typing import Any
 
 from SERVICIOS.biblioteca_escandallos_601 import BibliotecaEscandallos601
 from SERVICIOS.biblioteca_recetas_601 import RepositorioBibliotecaRecetas601
+from SERVICIOS.borrador_importacion_biblioteca import ImportDraftService
 from SERVICIOS.motor_escritura_segura_i1342 import MotorEscrituraSeguraI1342
 from SERVICIOS.repositorio_productos_maestro_601 import RepositorioProductosMaestro601
 
@@ -56,37 +57,33 @@ class ImportConfirmationService:
         self.base_dir = Path(base_dir).resolve()
         self.repository = repository
 
-    def preflight(self, session: dict[str, Any], version: int) -> list[dict[str, str]]:
-        draft = dict(session.get("borrador") or {})
-        errors: list[dict[str, str]] = []
+    def preflight(self, session: dict[str, Any], version: int) -> list[dict[str, Any]]:
+        draft = ImportDraftService(self.base_dir).validate(
+            dict(session.get("borrador") or {})
+        )
+        errors: list[dict[str, Any]] = []
         if int(draft.get("version") or 0) != version:
-            errors.append(self._issue("VERSION_CONFLICT", "borrador", "La versión revisada ya no es la actual."))
+            errors.append(self._issue(
+                "VERSION_CONFLICT", "borrador",
+                "La versión revisada ya no es la actual.", field="version",
+            ))
         if str(session.get("estado") or "") == "CONFIRMADA":
             errors.append(self._issue("IMPORT_ALREADY_CONFIRMED", "importación", "La importación ya fue confirmada."))
-        for recipe in draft.get("recipes") or []:
-            if recipe.get("entity_type") == "DESCARTAR" or recipe.get("proposed_action") == "IGNORAR":
-                continue
-            rid = str(recipe.get("id") or "")
-            if not str(recipe.get("title") or "").strip():
-                errors.append(self._issue("TITULO_VACIO", rid, "El nombre de la elaboración es obligatorio."))
-            if recipe.get("entity_type") == "SUBELABORACION" and not recipe.get("parent_recipe_id"):
-                errors.append(self._issue("SUBELABORACION_SIN_PRINCIPAL", rid, "La subelaboración no tiene principal."))
-            if not [x for x in recipe.get("procedure") or [] if str(x).strip()]:
-                errors.append(self._issue("PROCEDIMIENTO_VACIO", rid, "El procedimiento es obligatorio."))
-            if float(recipe.get("servings") or recipe.get("yield_value") or 0) <= 0:
-                errors.append(self._issue("RACIONES_INVALIDAS", rid, "El rendimiento o número de raciones debe ser mayor que cero."))
-            ingredients = recipe.get("ingredients") or []
-            if not ingredients:
-                errors.append(self._issue("INGREDIENTES_VACIOS", rid, "Debe existir al menos un ingrediente."))
-            for ingredient in ingredients:
-                iid = str(ingredient.get("id") or "")
-                if not str(ingredient.get("name_raw") or "").strip():
-                    errors.append(self._issue("INGREDIENTE_SIN_NOMBRE", iid, "El nombre del ingrediente es obligatorio."))
-                if ingredient.get("quantity") is None:
-                    errors.append(self._issue("CANTIDAD_INVALIDA", iid, "La cantidad debe estar resuelta antes de confirmar."))
-                relation = str(ingredient.get("relation_status") or "")
-                if relation == "RELACIONADO" and not ingredient.get("article_id"):
-                    errors.append(self._issue("ARTICULO_NO_SELECCIONADO", iid, "Falta el artículo seleccionado."))
+        errors.extend(
+            self._issue(
+                str(issue["code"]),
+                str(issue.get("ingredient_id") or issue.get("recipe_id") or "borrador"),
+                str(issue["message"]),
+                level=str(issue.get("level") or "BLOQUEANTE"),
+                recipe_id=issue.get("recipe_id"),
+                recipe_title=issue.get("recipe_title"),
+                recipe_index=issue.get("recipe_index"),
+                ingredient_id=issue.get("ingredient_id"),
+                ingredient_index=issue.get("ingredient_index"),
+                field=str(issue.get("field") or ""),
+            )
+            for issue in draft.get("validation", {}).get("blocking_errors", [])
+        )
         return errors
 
     def confirm(
@@ -232,14 +229,33 @@ class ImportConfirmationService:
             return changes, actions, entities
 
     @staticmethod
-    def _issue(code: str, entity: str, message: str) -> dict[str, str]:
-        return {"code": code, "entidad": entity, "validacion": code, "accion": "confirmar", "mensaje": message}
+    def _issue(
+        code: str, entity: str, message: str, *, level: str = "BLOQUEANTE",
+        recipe_id: Any = None, recipe_title: Any = None, recipe_index: Any = None,
+        ingredient_id: Any = None, ingredient_index: Any = None, field: str = "",
+    ) -> dict[str, Any]:
+        return {
+            "code": code,
+            "level": level,
+            "recipe_id": recipe_id,
+            "recipe_title": recipe_title,
+            "recipe_index": recipe_index,
+            "ingredient_id": ingredient_id,
+            "ingredient_index": ingredient_index,
+            "field": field,
+            "message": message,
+            # Alias históricos para consumidores existentes.
+            "entidad": entity,
+            "validacion": code,
+            "accion": "confirmar",
+            "mensaje": message,
+        }
 
     @staticmethod
     def _error(code: str, message: str, status: int) -> dict[str, Any]:
         return {"ok": False, "error": {"code": code, "message": message, "status": status}}
 
-    def _failure(self, code: str, message: str, errors: list[dict[str, str]]) -> dict[str, Any]:
+    def _failure(self, code: str, message: str, errors: list[dict[str, Any]]) -> dict[str, Any]:
         return {**self._error(code, message, 409), "resultado": {
             "estado": "FALLIDA", "acciones": [], "entidades": [], "errores": errors, "rollback": True,
         }}

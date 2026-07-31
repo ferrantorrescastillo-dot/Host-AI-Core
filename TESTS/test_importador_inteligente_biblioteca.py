@@ -19,6 +19,7 @@ from SERVICIOS.importador_inteligente_biblioteca import (
 )
 from SERVICIOS.borrador_importacion_biblioteca import (
     CulinaryQuantityParser,
+    ImportDraftService,
     IngredientTextNormalizer,
 )
 
@@ -385,6 +386,7 @@ def test_borrador_editable_jerarquia_ingrediente_y_version_optimista(
     assert saved["recipes"][1]["parent_recipe_id"] == first["id"]
     assert saved["recipes"][1]["ingredients"][0]["quantity"] is None
     assert saved["recipes"][1]["ingredients"][0]["validation_errors"][0]["code"] == "CANTIDAD_AMBIGUA"
+    assert updated["confirmacion_disponible"] is False
 
     conflict = service.update_draft(import_id, {
         "draft_version": 1,
@@ -392,6 +394,20 @@ def test_borrador_editable_jerarquia_ingrediente_y_version_optimista(
     })
     assert conflict["error"]["status"] == 409
     assert conflict["error"]["code"] == "draft_version_conflict"
+
+    corrected_recipe = {
+        **saved["recipes"][1],
+        "ingredients": [{
+            **saved["recipes"][1]["ingredients"][0],
+            "quantity_raw": "2,3",
+        }],
+    }
+    corrected = service.update_draft(import_id, {
+        "draft_version": 2,
+        "recipes": [corrected_recipe],
+    })
+    assert corrected["borrador"]["validation"]["blocking_errors"] == []
+    assert corrected["confirmacion_disponible"] is True
 
 
 def test_borrador_articulos_exactos_candidatos_y_sin_candidato(tmp_path: Path) -> None:
@@ -473,6 +489,82 @@ def test_borrador_permite_anadir_varios_eliminar_y_revalidar_ingredientes(
     assert len(final_recipe["ingredients"]) == 1
     assert final_recipe["ingredients"][0]["quantity"] == 1.25
     assert final_recipe["ingredients"][0]["validation_errors"] == []
+
+
+def test_validacion_borrador_expone_bloqueos_con_contexto_y_no_bloquea_articulos(
+    tmp_path: Path,
+) -> None:
+    drafts = ImportDraftService(tmp_path)
+    draft = drafts.build(
+        import_id="IMP-VALIDATION",
+        classification="RECETA",
+        confidence=0.8,
+        recipes=[{
+            "id_origen": "REC-SALSA",
+            "nombre": "Salsa de naranja",
+            "ingredientes_estructurados": [],
+            "pasos": [],
+            "numero_raciones": 0,
+        }],
+    )
+    codes = {issue["code"] for issue in draft["validation"]["blocking_errors"]}
+    assert codes == {"INGREDIENTES_VACIOS", "PROCEDIMIENTO_VACIO", "RACIONES_INVALIDAS"}
+    assert all(issue["level"] == "BLOQUEANTE" for issue in draft["validation"]["blocking_errors"])
+    assert all(issue["recipe_id"] == "REC-SALSA" for issue in draft["validation"]["blocking_errors"])
+    assert {issue["field"] for issue in draft["validation"]["blocking_errors"]} == {
+        "ingredients", "procedure", "servings",
+    }
+
+    corrected = drafts.update(draft, {
+        "draft_version": 1,
+        "recipes": [{
+            **draft["recipes"][0],
+            "procedure": ["Reducir y triturar."],
+            "servings": 4,
+            "ingredients": [{
+                "id": "NEW-NARANJA",
+                "quantity_raw": "1",
+                "unit_raw": "kg",
+                "name_raw": "Naranja",
+                "observations": "",
+                "relation_status": "REVISAR_COINCIDENCIA",
+                "article_id": None,
+            }],
+        }],
+    })
+    assert corrected["validation"]["valid"] is True
+    assert corrected["validation"]["blocking_errors"] == []
+    assert corrected["confirmation_available"] is True
+
+
+def test_validacion_borrador_localiza_ingrediente_vacio_y_cantidad_invalida(
+    tmp_path: Path,
+) -> None:
+    drafts = ImportDraftService(tmp_path)
+    draft = drafts.build(
+        import_id="IMP-INVALID",
+        classification="RECETA",
+        confidence=0.8,
+        recipes=[{
+            "id_origen": "REC-JAMON",
+            "nombre": "Salsa de jamón",
+            "ingredientes_estructurados": [{
+                "cantidad_texto": "cantidad desconocida",
+                "unidad": "kg",
+                "nombre_original": "",
+            }],
+            "pasos": ["Cocer."],
+            "numero_raciones": 4,
+        }],
+    )
+    errors = draft["validation"]["blocking_errors"]
+    assert {issue["code"] for issue in errors} == {
+        "CANTIDAD_INVALIDA", "INGREDIENTE_SIN_NOMBRE",
+    }
+    assert all(issue["recipe_id"] == "REC-JAMON" for issue in errors)
+    assert all(issue["ingredient_id"] == "ING-DRAFT-001-001" for issue in errors)
+    assert all(issue["ingredient_index"] == 0 for issue in errors)
+    assert {issue["field"] for issue in errors} == {"quantity", "name"}
 
 
 def test_http_borrador_get_patch_conflicto_y_sin_escritura(tmp_path: Path) -> None:

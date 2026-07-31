@@ -69,6 +69,25 @@ def test_confirmacion_bloquea_version_antigua_y_datos_incompletos_sin_escribir_d
     assert {item["validacion"] for item in result["resultado"]["errores"]} >= {
         "VERSION_CONFLICT", "TITULO_VACIO",
     }
+    title_error = next(
+        item for item in result["resultado"]["errores"]
+        if item["code"] == "TITULO_VACIO"
+    )
+    assert title_error == {
+        "code": "TITULO_VACIO",
+        "level": "BLOQUEANTE",
+        "recipe_id": "R-1",
+        "recipe_title": "Sin título",
+        "recipe_index": 0,
+        "ingredient_id": None,
+        "ingredient_index": None,
+        "field": "title",
+        "message": "La sección necesita un título.",
+        "entidad": "R-1",
+        "validacion": "TITULO_VACIO",
+        "accion": "confirmar",
+        "mensaje": "La sección necesita un título.",
+    }
     assert not (tmp_path / "DATOS/db/biblioteca_recetas_601.json").exists()
 
 
