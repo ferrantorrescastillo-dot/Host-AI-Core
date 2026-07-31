@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { HostAiApiError } from "../../api/client";
 import { menusService } from "../../services/menusService";
 import type { ElaboracionResumen } from "../../types/biblioteca";
@@ -42,6 +43,7 @@ export function MenusPage() {
   const [proposalLoading, setProposalLoading] = useState(false);
   const [needsError, setNeedsError] = useState("");
   const [proposal, setProposal] = useState<MenuPurchaseProposalResponse["propuesta"] | null>(null);
+  const [createdOrders, setCreatedOrders] = useState<Array<{ id: string; proveedor: string; estado: string }>>([]);
 
   useEffect(() => {
     void menusService.list().then((response) => setMenus(response.menus)).catch((reason) => setError(reason as HostAiApiError)).finally(() => setLoading(false));
@@ -94,7 +96,7 @@ export function MenusPage() {
     } as ElaboracionResumen] as const));
     setKnown((current) => ({ ...current, ...Object.fromEntries(currentOptions) }));
     setMessage("");
-    setNeeds(null); setProposal(null); setNeedsError("");
+    setNeeds(null); setProposal(null); setCreatedOrders([]); setNeedsError("");
   }
 
   async function loadNeeds() {
@@ -111,6 +113,29 @@ export function MenusPage() {
     try { setProposal((await menusService.createPurchaseProposal(selected.id)).propuesta); }
     catch (reason) { setMessage((reason as HostAiApiError).message); }
     finally { setProposalLoading(false); }
+  }
+
+  async function saveProposal() {
+    if (!selected || !proposal) return;
+    setProposalLoading(true); setMessage("");
+    try { setProposal((await menusService.updatePurchaseProposal(selected.id, proposal.id, { version: proposal.version, lineas: proposal.lineas })).propuesta); setMessage("Propuesta guardada."); }
+    catch (reason) { setMessage((reason as HostAiApiError).message); }
+    finally { setProposalLoading(false); }
+  }
+
+  async function createOrders() {
+    if (!selected || !proposal) return;
+    const ready = proposal.lineas.filter((line) => line.incluir && line.articulo_id && line.proveedor && (line.cantidad_final_propuesta || 0) > 0);
+    const providers = new Set(ready.map((line) => line.proveedor));
+    if (!window.confirm(`Se crearán ${providers.size} borradores de pedido para ${providers.size} proveedores.`)) return;
+    setProposalLoading(true); setMessage("");
+    try { const response = await menusService.createDraftOrders(selected.id, proposal.id); setProposal(response.propuesta); setCreatedOrders(response.pedidos); }
+    catch (reason) { setMessage((reason as HostAiApiError).message); }
+    finally { setProposalLoading(false); }
+  }
+
+  function updateProposalLine(id: string, changes: Record<string, unknown>) {
+    setProposal((current) => current ? { ...current, lineas: current.lineas.map((line) => line.id === id ? { ...line, ...changes } : line) } : current);
   }
 
   function updateSection(index: number, changes: Partial<MenuInput["secciones"][number]>) {
@@ -186,7 +211,7 @@ export function MenusPage() {
         <button type="button" onClick={() => setDraft({ ...draft, secciones: [...draft.secciones, { nombre: "Nueva sección", elaboraciones: [] }] })}>Añadir sección</button>
         <label>Observaciones<textarea aria-label="Observaciones del menú" value={draft.observaciones} onChange={(event) => setDraft({ ...draft, observaciones: event.target.value })} /></label>
         {selected ? <div className="menu-cost-summary"><strong>{selected.coste_completo ? "Coste automático completo" : "Coste parcial"}</strong><span>Total conocido: {formatMoney(selected.coste_total)}</span><span>Por comensal conocido: {formatMoney(selected.coste_por_comensal)}</span>{!selected.coste_completo ? <span className="draft-warning">{selected.lineas_sin_coste} elaboraciones sin coste. El total no es definitivo.</span> : null}{selected.advertencias.map((warning, index) => <p className="draft-warning" key={`${warning}-${index}`}>{warning}</p>)}{selected.incidencias.map((issue, index) => <p className="draft-warning" key={`${issue.tipo}-${index}`}>{issue.detalle || issue.tipo}</p>)}</div> : null}
-        <section className="menu-cost-summary" aria-label="Necesidades y compras"><h3>Necesidades y compras</h3><p>Proyección informativa: no descuenta Stock ni crea pedidos.</p><button disabled={!selected || needsLoading} type="button" onClick={() => void loadNeeds()}>{needsLoading ? "Calculando..." : "Calcular necesidades"}</button>{needs ? <><div><strong>{needs.summary.articulos} artículos</strong><span>{needs.summary.cubiertos} cubiertos · {needs.summary.compra_necesaria} con faltante calculado · {needs.summary.candidatas_propuesta} candidatas o pendientes</span></div><label>Filtrar<select aria-label="Filtrar necesidades" value={needsFilter} onChange={(event) => setNeedsFilter(event.target.value)}><option value="todos">Todos</option><option value="compra">Compra necesaria</option><option value="cubiertos">Cubiertos</option><option value="pendientes">Pendientes</option></select></label>{filterNeeds(needs.lines, needsFilter).map((line, index) => <NeedCard key={`${line.articulo_id || line.ingrediente_nombre}-${index}`} line={line} />)}<button disabled={Boolean(proposalDisabledReason(selected, needs, proposalLoading, needsError))} type="button" onClick={() => void generateProposal()}>{proposalLoading ? "Generando propuesta…" : "Generar propuesta de compra"}</button></> : null}{proposalDisabledReason(selected, needs, proposalLoading, needsError) ? <p className="draft-warning">{proposalDisabledReason(selected, needs, proposalLoading, needsError)}</p> : null}{proposal ? <div role="status"><strong>Propuesta {proposal.estado}</strong><span>{proposal.resumen.articulos_propuestos} artículos propuestos · {proposal.resumen.articulos_pendientes} pendientes · {proposal.resumen.proveedores_pendientes} proveedores pendientes</span><span>{proposal.grupos_proveedor.length} grupos de proveedor · coste estimado {formatMoney(proposal.coste_estimado)}{proposal.coste_completo ? "" : " (parcial)"}</span>{proposal.advertencias.map((warning, index) => <span className="draft-warning" key={`${warning}-${index}`}>{warning}</span>)}<span>No se ha creado ningún pedido ni modificado Stock.</span></div> : null}</section>
+        <section className="menu-cost-summary" aria-label="Necesidades y compras"><h3>Necesidades y compras</h3><p>Proyección informativa: no descuenta Stock ni crea pedidos.</p><button disabled={!selected || needsLoading} type="button" onClick={() => void loadNeeds()}>{needsLoading ? "Calculando..." : "Calcular necesidades"}</button>{needs ? <><div><strong>{needs.summary.articulos} artículos</strong><span>{needs.summary.cubiertos} cubiertos · {needs.summary.compra_necesaria} con faltante calculado · {needs.summary.candidatas_propuesta} candidatas o pendientes</span></div><label>Filtrar<select aria-label="Filtrar necesidades" value={needsFilter} onChange={(event) => setNeedsFilter(event.target.value)}><option value="todos">Todos</option><option value="compra">Compra necesaria</option><option value="cubiertos">Cubiertos</option><option value="pendientes">Pendientes</option></select></label>{filterNeeds(needs.lines, needsFilter).map((line, index) => <NeedCard key={`${line.articulo_id || line.ingrediente_nombre}-${index}`} line={line} />)}<button disabled={Boolean(proposalDisabledReason(selected, needs, proposalLoading, needsError))} type="button" onClick={() => void generateProposal()}>{proposalLoading ? "Generando propuesta…" : "Generar propuesta de compra"}</button></> : null}{proposalDisabledReason(selected, needs, proposalLoading, needsError) ? <p className="draft-warning">{proposalDisabledReason(selected, needs, proposalLoading, needsError)}</p> : null}{proposal ? <div aria-label="Revisar propuesta de compra"><h3>Revisar propuesta de compra</h3><strong>Propuesta {proposal.estado}</strong><span>{proposal.resumen.articulos_propuestos} líneas listas · {proposal.resumen.articulos_pendientes} pendientes · {proposal.resumen.proveedores_pendientes} proveedores pendientes</span><span>Coste estimado: {proposal.coste_completo ? formatMoney(proposal.coste_estimado) : `${formatMoney(proposal.coste_estimado)} (parcial)`}</span><ul>{[...new Set(proposal.advertencias)].map((warning) => <li className="draft-warning" key={warning}>{warning}</li>)}</ul>{proposal.lineas.map((line) => <article key={line.id}><label><input aria-label={`Incluir ${line.articulo || line.id}`} checked={line.incluir} type="checkbox" onChange={(event) => updateProposalLine(line.id, { incluir: event.target.checked })} /> Incluir</label><strong>{line.articulo || "Artículo sin relacionar"}</strong><span>{line.estado} · necesario {formatQuantity(line.cantidad_necesaria, line.unidad_base)}</span><label>Cantidad propuesta<input aria-label={`Cantidad propuesta ${line.id}`} min="0" step="any" type="number" value={line.cantidad_final_propuesta ?? ""} onChange={(event) => updateProposalLine(line.id, { cantidad_final_propuesta: event.target.value === "" ? null : Number(event.target.value) })} /></label><label>Proveedor<input aria-label={`Proveedor ${line.id}`} value={line.proveedor || ""} onChange={(event) => updateProposalLine(line.id, { proveedor: event.target.value })} /></label><label>Observaciones<input aria-label={`Observaciones ${line.id}`} value={line.observaciones} onChange={(event) => updateProposalLine(line.id, { observaciones: event.target.value })} /></label><span>{line.formato_compra || "Formato pendiente"} · {line.precio_estimado == null ? "Precio pendiente" : `${formatMoney(line.precio_estimado)}/${line.unidad_base}`}</span>{line.advertencia ? <span className="draft-warning">{line.advertencia}</span> : null}</article>)}<button disabled={proposalLoading} type="button" onClick={() => void saveProposal()}>Guardar propuesta</button><button disabled={proposalLoading || !proposal.lineas.some((line) => line.incluir && line.articulo_id && line.proveedor && (line.cantidad_final_propuesta || 0) > 0)} type="button" onClick={() => void createOrders()}>Crear borradores de pedido</button><span>No se ha creado ningún pedido ni modificado Stock.</span></div> : null}{createdOrders.length ? <div role="status"><strong>{createdOrders.length} borradores creados</strong>{createdOrders.map((order) => <span key={order.id}>{order.id} · {order.proveedor} · {order.estado}</span>)}<Link to="/compras">Abrir Compras</Link><span>Stock sin cambios. No se ha enviado ningún pedido.</span></div> : null}</section>
         <div className="menu-actions"><button disabled={saving} type="button" onClick={() => void save()}>{saving ? "Guardando..." : "Guardar menú"}</button>{selected && selected.estado !== "ARCHIVADO" ? <button disabled={saving} type="button" onClick={() => void archive()}>Archivar menú</button> : null}</div>
         {message ? <p role="status">{message}</p> : null}
       </div>

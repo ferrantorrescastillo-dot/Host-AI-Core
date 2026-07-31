@@ -37,11 +37,14 @@ def proposal_handle(request: ApiRequest, facade: CorePublicFacade) -> ApiRespons
     suffix = str(request.path).split("/api/v1/menus/", 1)[-1]
     parts = suffix.split("/")
     menu_id = parts[0]
-    payload = (
-        facade.crear_propuesta_compra_menu(menu_id)
-        if request.method.upper() == "POST"
-        else facade.propuesta_compra_menu(menu_id, parts[-1])
-    )
+    if request.method.upper() == "PATCH":
+        payload = facade.actualizar_propuesta_compra_menu(menu_id, parts[-1], request.body)
+    elif request.method.upper() == "POST" and str(request.path).endswith("/crear-pedidos"):
+        payload = facade.crear_pedidos_propuesta_menu(menu_id, parts[-2], request.body)
+    elif request.method.upper() == "POST":
+        payload = facade.crear_propuesta_compra_menu(menu_id)
+    else:
+        payload = facade.propuesta_compra_menu(menu_id, parts[-1])
     return _response(payload, created=request.method.upper() == "POST")
 
 

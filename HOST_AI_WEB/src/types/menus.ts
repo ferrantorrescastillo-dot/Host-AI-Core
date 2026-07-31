@@ -92,12 +92,26 @@ export type MenuNeedsResponse = ApiEnvelopeBase & { necesidades: {
   solo_lectura: true; datos_reales_modificados: false;
 } };
 export type MenuPurchaseProposalResponse = ApiEnvelopeBase & { propuesta: {
-  id: string; estado: "BORRADOR"; coste_estimado: number; coste_completo: boolean;
-  grupos_proveedor: Array<{ proveedor: string; lineas: Array<Record<string, unknown>> }>;
+  id: string; estado: "BORRADOR" | "REVISADA" | "CONFIRMADA"; version: number; coste_estimado: number; coste_completo: boolean;
+  lineas: MenuProposalLine[]; grupos_proveedor: Array<{ proveedor: string; lineas: MenuProposalLine[] }>;
   resumen: { articulos_propuestos: number; articulos_pendientes: number; proveedores_pendientes: number };
   advertencias: string[];
   crea_pedido: false; modifica_stock: false; datos_reales_modificados: false;
 } };
+
+export type MenuProposalLine = {
+  id: string; incluir: boolean; articulo_id: string | null; articulo: string | null;
+  cantidad_necesaria: number; cantidad_faltante: number | null; cantidad_final_propuesta: number | null;
+  unidad_base: string; proveedor: string | null; formato_compra: string | null;
+  precio_estimado: number | null; coste_estimado: number | null; estado: string;
+  observaciones: string; advertencia: string | null;
+};
+
+export type MenuOrdersResponse = ApiEnvelopeBase & {
+  propuesta: MenuPurchaseProposalResponse["propuesta"];
+  pedidos: Array<{ id: string; proveedor: string; estado: "borrador"; lineas: Array<Record<string, unknown>>; importe_estimado: number; observaciones: string }>;
+  lineas_pendientes: MenuProposalLine[]; stock_modificado: false; recepciones_creadas: 0;
+};
 
 export type MenuElaborationOption = {
   id: string;

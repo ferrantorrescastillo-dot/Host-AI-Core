@@ -108,6 +108,12 @@ class CatalogPublicFacade(CorePublicApi02Facade):
             self._get_menu_needs_service().obtener_propuesta, menu_id, proposal_id
         )
 
+    def actualizar_propuesta_compra_menu(self, menu_id: str, proposal_id: str, body: dict[str, Any]) -> dict[str, Any]:
+        return self._library_call(self._get_menu_needs_service().actualizar_propuesta, menu_id, proposal_id, body)
+
+    def crear_pedidos_propuesta_menu(self, menu_id: str, proposal_id: str, body: dict[str, Any]) -> dict[str, Any]:
+        return self._library_call(self._get_menu_needs_service().crear_pedidos, menu_id, proposal_id, body)
+
     def _get_biblioteca_import_service(self) -> ImportDocumentService:
         if self._biblioteca_import_service is None:
             self._biblioteca_import_service = ImportDocumentService(self.base_dir)

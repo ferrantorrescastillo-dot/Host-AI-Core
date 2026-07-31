@@ -197,6 +197,14 @@ def create_app(platform_api: HostAIPlatformAPI | None = None) -> FastAPI:
     async def get_menu_propuesta_compra(menu_id: str, proposal_id: str, request: Request) -> JSONResponse:
         return await _delegate(request)
 
+    @app.patch("/api/v1/menus/{menu_id}/propuesta-compra/{proposal_id}")
+    async def patch_menu_propuesta_compra(menu_id: str, proposal_id: str, request: Request) -> JSONResponse:
+        return await _delegate(request, body=await _json_body(request))
+
+    @app.post("/api/v1/menus/{menu_id}/propuesta-compra/{proposal_id}/crear-pedidos")
+    async def post_menu_propuesta_pedidos(menu_id: str, proposal_id: str, request: Request) -> JSONResponse:
+        return await _delegate(request, body=await _json_body(request))
+
     @app.post("/api/v1/biblioteca/importaciones")
     async def post_biblioteca_importacion(request: Request) -> JSONResponse:
         parsed: dict[str, Any] = {}

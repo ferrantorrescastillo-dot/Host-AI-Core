@@ -9,6 +9,8 @@ from uuid import uuid4
 from SERVICIOS.cruce_stock_produccion_556c import CruceStockProduccion556C
 from SERVICIOS.menus_inteligentes_service import MenusInteligentesService
 from SERVICIOS.repositorio_productos_maestro_601 import RepositorioProductosMaestro601
+from SERVICIOS.base_datos_local import BaseDatosLocal
+from MOTORES.motor_compras import MotorCompras
 
 
 class MenuNecesidadesService:
@@ -19,6 +21,7 @@ class MenuNecesidadesService:
         self.menus = MenusInteligentesService(self.base_dir)
         self.stock = CruceStockProduccion556C(self.base_dir)
         self.productos = RepositorioProductosMaestro601(self.base_dir)
+        self.compras: MotorCompras | None = None
         self._propuestas: dict[str, dict[str, Any]] = {}
 
     def necesidades(self, menu_id: str) -> dict[str, Any]:
@@ -123,9 +126,71 @@ class MenuNecesidadesService:
                 "proveedores_pendientes": sum(not x.get("proveedor") for x in lines),
             },
             "crea_pedido": False, "modifica_stock": False, "datos_reales_modificados": False,
+            "version": 1, "pedidos_creados": [],
         }
+        for index, line in enumerate(proposal["lineas"]):
+            line.update({"id": f"LINEA-{index + 1:03d}", "incluir": True, "observaciones": ""})
         self._propuestas[proposal_id] = proposal
         return {"ok": True, "propuesta": proposal}
+
+    def actualizar_propuesta(self, menu_id: str, proposal_id: str, body: dict[str, Any]) -> dict[str, Any]:
+        found = self.obtener_propuesta(menu_id, proposal_id)
+        if not found.get("ok"):
+            return found
+        proposal = found["propuesta"]
+        if int(body.get("version") or 0) != int(proposal["version"]):
+            return {"ok": False, "error": {"status": 409, "code": "proposal_version_conflict", "message": "La propuesta cambió desde la última lectura."}}
+        updates = {str(x.get("id")): x for x in body.get("lineas") or []}
+        for line in proposal["lineas"]:
+            change = updates.get(line["id"])
+            if not change:
+                continue
+            line["incluir"] = bool(change.get("incluir", line["incluir"]))
+            line["proveedor"] = str(change.get("proveedor", line.get("proveedor") or "")).strip() or None
+            line["observaciones"] = str(change.get("observaciones", line.get("observaciones") or ""))
+            if "cantidad_final_propuesta" in change:
+                value = change.get("cantidad_final_propuesta")
+                line["cantidad_final_propuesta"] = float(value) if value not in (None, "") else None
+        proposal["version"] += 1
+        proposal["estado"] = "REVISADA"
+        return {"ok": True, "propuesta": proposal}
+
+    def crear_pedidos(self, menu_id: str, proposal_id: str, body: dict[str, Any]) -> dict[str, Any]:
+        found = self.obtener_propuesta(menu_id, proposal_id)
+        if not found.get("ok"):
+            return found
+        proposal = found["propuesta"]
+        if str(body.get("confirmacion") or "") != "CREAR_BORRADORES":
+            return {"ok": False, "error": {"status": 400, "code": "confirmation_required", "message": "Debes confirmar explícitamente la creación de borradores."}}
+        if proposal.get("pedidos_creados"):
+            return {"ok": True, "propuesta": proposal, "pedidos": proposal["pedidos_creados"], "idempotente": True}
+        groups: dict[str, list[dict[str, Any]]] = {}
+        pending = []
+        for line in proposal["lineas"]:
+            quantity = line.get("cantidad_final_propuesta")
+            valid = bool(line.get("incluir")) and bool(line.get("articulo_id")) and bool(line.get("proveedor")) and quantity is not None and float(quantity) > 0
+            if not valid:
+                pending.append(line)
+                continue
+            groups.setdefault(line["proveedor"], []).append({
+                "nombre": line.get("articulo"), "articulo_id": line.get("articulo_id"),
+                "cantidad": quantity, "unidad": line.get("unidad_base"),
+                "precio_unitario": line.get("precio_estimado") or 0,
+                "observaciones": line.get("observaciones") or "",
+                "propuesta_id": proposal_id,
+            })
+        payload = [{
+            "proveedor": provider, "lineas": lines,
+            "observaciones": f"Generado desde Menú {menu_id} v{proposal['menu_version']} | propuesta {proposal_id} | usuario {body.get('usuario') or 'web'}",
+        } for provider, lines in groups.items()]
+        if not payload:
+            return {"ok": False, "error": {"status": 400, "code": "no_orderable_lines", "message": "No hay líneas válidas para crear borradores."}}
+        if self.compras is None:
+            self.compras = MotorCompras(BaseDatosLocal(self.base_dir))
+        orders = self.compras.crear_pedidos_borrador_transaccional(payload)
+        proposal["pedidos_creados"] = orders
+        proposal["estado"] = "CONFIRMADA"
+        return {"ok": True, "propuesta": proposal, "pedidos": orders, "lineas_pendientes": pending, "stock_modificado": False, "recepciones_creadas": 0}
 
     def obtener_propuesta(self, menu_id: str, proposal_id: str) -> dict[str, Any]:
         proposal = self._propuestas.get(proposal_id)

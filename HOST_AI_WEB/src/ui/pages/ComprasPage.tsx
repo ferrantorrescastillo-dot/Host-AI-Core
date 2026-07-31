@@ -99,6 +99,7 @@ function ComprasContent({ data }: { data: ComprasResult | null }) {
   const propuestas = data?.propuestas ?? [];
   const proveedores = data?.proveedores ?? [];
   const historial = data?.historial ?? [];
+  const pedidos = data?.pedidos ?? [];
 
   return (
     <>
@@ -157,6 +158,7 @@ function ComprasContent({ data }: { data: ComprasResult | null }) {
       </section>
 
       <PropuestasSection items={propuestas} />
+      <section className="feature-block" aria-label="Borradores de pedido"><h3>Borradores de pedido</h3>{pedidos.length ? <ul className="clean-list compras-list">{pedidos.map((pedido) => <li className="compra-item" key={pedido.id}><div><strong>{pedido.proveedor}</strong><p className="meta-line">{pedido.estado} · {pedido.observaciones || "Sin referencia"}</p></div><p>{pedido.lineas.length} líneas · {pedido.importe_estimado.toLocaleString("es-ES", { style: "currency", currency: "EUR" })}</p></li>)}</ul> : <div className="panel-state"><p>No hay borradores de pedido.</p></div>}</section>
       <ProveedoresSection items={proveedores} />
       <HistorialSection items={historial} />
       <UnavailableSection

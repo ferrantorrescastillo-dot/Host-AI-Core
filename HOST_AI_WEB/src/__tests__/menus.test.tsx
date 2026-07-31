@@ -89,8 +89,19 @@ describe("Selector de elaboraciones de Menús", () => {
           stock_disponible: 1, cantidad_faltante: 0, unidad_stock: "kg", estado: "Cubierto por stock", proveedor_preferente: null,
           formato_compra: null, cantidad_propuesta_compra: 0, coste_estimado: 0, motivo_no_resuelto: null }],
       } }) } as Response;
+      if (url.endsWith("/crear-pedidos") && init?.method === "POST") return { ok: true, status: 201, json: async () => ({ ...envelope,
+        propuesta: { id: "MENUPROP-1", estado: "CONFIRMADA", version: 2, coste_estimado: 10, coste_completo: true, lineas: [], grupos_proveedor: [], resumen: { articulos_propuestos: 1, articulos_pendientes: 0, proveedores_pendientes: 0 }, advertencias: [], crea_pedido: false, modifica_stock: false, datos_reales_modificados: true },
+        pedidos: [{ id: "PED-1", proveedor: "Proveedor B", estado: "borrador", lineas: [], importe_estimado: 14, observaciones: "Generado desde Menú" }], lineas_pendientes: [], stock_modificado: false, recepciones_creadas: 0,
+      }) } as Response;
+      if (url.includes("/propuesta-compra/") && init?.method === "PATCH") {
+        const changed = JSON.parse(String(init.body));
+        return { ok: true, status: 200, json: async () => ({ ...envelope, propuesta: { id: "MENUPROP-1", estado: "REVISADA", version: 2, coste_estimado: 10, coste_completo: true, lineas: changed.lineas, grupos_proveedor: [], resumen: { articulos_propuestos: 1, articulos_pendientes: 0, proveedores_pendientes: 0 }, advertencias: [], crea_pedido: false, modifica_stock: false, datos_reales_modificados: false } }) } as Response;
+      }
       if (url.endsWith("/propuesta-compra") && init?.method === "POST") return { ok: true, status: 201, json: async () => ({ ...envelope,
-        propuesta: { id: "MENUPROP-1", estado: "BORRADOR", coste_estimado: 10, coste_completo: true,
+        propuesta: { id: "MENUPROP-1", estado: "BORRADOR", version: 1, coste_estimado: 10, coste_completo: true,
+          lineas: [{ id: "LINEA-001", incluir: true, articulo_id: "ART-PATATA", articulo: "Patata", cantidad_necesaria: 2.5,
+            cantidad_faltante: 1.5, cantidad_final_propuesta: 5, unidad_base: "kg", proveedor: "Proveedor A", formato_compra: "saco",
+            precio_estimado: 2, coste_estimado: 10, estado: "Parcialmente cubierto", observaciones: "", advertencia: null }],
           grupos_proveedor: [{ proveedor: "Proveedor A", lineas: [] }], resumen: { articulos_propuestos: 1, articulos_pendientes: 0, proveedores_pendientes: 0 },
           advertencias: [], crea_pedido: false, modifica_stock: false, datos_reales_modificados: false },
       }) } as Response;
@@ -108,6 +119,15 @@ describe("Selector de elaboraciones de Menús", () => {
     expect(screen.getByText("Sal")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Generar propuesta de compra" }));
     expect(await screen.findByText("Propuesta BORRADOR")).toBeInTheDocument();
+    expect(screen.getByLabelText("Revisar propuesta de compra")).toBeInTheDocument();
+    fireEvent.change(screen.getByLabelText("Cantidad propuesta LINEA-001"), { target: { value: "7" } });
+    fireEvent.change(screen.getByLabelText("Proveedor LINEA-001"), { target: { value: "Proveedor B" } });
+    fireEvent.click(screen.getByRole("button", { name: "Guardar propuesta" }));
+    expect(await screen.findByText("Propuesta guardada.")).toBeInTheDocument();
+    vi.spyOn(window, "confirm").mockReturnValue(true);
+    fireEvent.click(screen.getByRole("button", { name: "Crear borradores de pedido" }));
+    expect(await screen.findByText("1 borradores creados")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Abrir Compras" })).toHaveAttribute("href", "/compras");
     expect(screen.getByText("No se ha creado ningún pedido ni modificado Stock.")).toBeInTheDocument();
     expect(fetchMock.mock.calls.some(([url, init]) => String(url).endsWith("/propuesta-compra") && init?.method === "POST")).toBe(true);
   });

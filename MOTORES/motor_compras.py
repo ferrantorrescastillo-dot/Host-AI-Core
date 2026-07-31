@@ -304,6 +304,49 @@ class MotorCompras:
             "lectura_host_ai": self._lectura_pedidos(pedidos),
         }
 
+    def crear_pedidos_borrador_transaccional(self, grupos: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """Crea borradores ya revisados con una sola persistencia, o ninguno."""
+        preparados: List[PedidoSugerido] = []
+        for grupo in grupos:
+            proveedor = str(grupo.get("proveedor") or "").strip()
+            if not proveedor:
+                raise ValueError("Cada borrador necesita un proveedor.")
+            lineas_raw = list(grupo.get("lineas") or [])
+            if not lineas_raw:
+                raise ValueError(f"El borrador de {proveedor} no puede estar vacío.")
+            lineas: List[LineaPedido] = []
+            for raw in lineas_raw:
+                cantidad = float(raw.get("cantidad") or 0)
+                if cantidad <= 0:
+                    raise ValueError("Cada línea incluida necesita una cantidad mayor que cero.")
+                nombre = str(raw.get("nombre") or "").strip()
+                articulo_id = str(raw.get("articulo_id") or "").strip()
+                if not nombre or not articulo_id:
+                    raise ValueError("Cada línea incluida necesita un artículo relacionado.")
+                lineas.append(LineaPedido(
+                    nombre=nombre, cantidad=cantidad, unidad=str(raw.get("unidad") or "u"),
+                    articulo_id=articulo_id, propuesta_id=str(raw.get("propuesta_id") or ""),
+                    precio_unitario=float(raw.get("precio_unitario") or 0),
+                    observaciones=str(raw.get("observaciones") or ""),
+                ))
+            preparados.append(PedidoSugerido(
+                proveedor=proveedor, lineas=lineas, estado="borrador",
+                observaciones=str(grupo.get("observaciones") or ""),
+            ))
+
+        anteriores = dict(self.pedidos_sugeridos)
+        try:
+            for pedido in preparados:
+                self.pedidos_sugeridos[pedido.id] = pedido
+            if self.db:
+                self.db.guardar("compras_pedidos", [p.to_dict() for p in self.pedidos_sugeridos.values()])
+        except Exception:
+            self.pedidos_sugeridos = anteriores
+            if self.db:
+                self.db.guardar("compras_pedidos", [p.to_dict() for p in anteriores.values()])
+            raise
+        return [pedido.to_dict() for pedido in preparados]
+
     def obtener_pedido(self, pedido_id: str) -> Optional[PedidoSugerido]:
         return self.pedidos_sugeridos.get(pedido_id)
 

@@ -258,6 +258,12 @@ class HostAIHomeReadService:
         propuestas = list(getattr(compras, "listar_propuestas_compra")(solo_pendientes=True) or [])
         proveedores = list(getattr(compras, "listar_proveedores")(incluir_inactivos=False) or [])
         historial = list(getattr(compras, "listar_historial_compras")() or [])
+        listar_pedidos = getattr(compras, "listar_pedidos", None)
+        pedidos = (
+            list(listar_pedidos(estado="borrador") or [])
+            if callable(listar_pedidos)
+            else []
+        )
         items = [
             {
                 "id": str(n.get("id") or ""),
@@ -313,6 +319,8 @@ class HostAIHomeReadService:
                 "total_propuestas": len(propuestas),
                 "total_proveedores": len(proveedores),
                 "total_historial": len(historial),
+                "pedidos": pedidos,
+                "total_pedidos": len(pedidos),
             }
         )
         return modulo

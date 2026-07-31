@@ -9,6 +9,7 @@ from API.app import HostAIPlatformAPI
 from API.http_server import create_app
 from SERVICIOS.menu_necesidades_service import MenuNecesidadesService
 from SERVICIOS.menus_inteligentes_service import MenusInteligentesService
+from MOTORES.motor_compras import MotorCompras
 
 
 def _write(path: Path, value: object) -> None:
@@ -131,3 +132,57 @@ def test_stock_desconocido_y_proveedor_pendiente_no_bloquean_propuesta(tmp_path:
         "articulos_propuestos": 0, "articulos_pendientes": 1, "proveedores_pendientes": 1,
     }
     assert proposal["lineas"][0]["estado"] == "Stock no disponible"
+
+
+def test_revisa_propuesta_y_crea_borrador_idempotente_con_origen_sin_tocar_stock(tmp_path: Path) -> None:
+    menu_id = _seed(tmp_path, stock=0)
+    stock_path = tmp_path / "DATOS/db/stock_inicial.json"
+    before_stock = stock_path.read_bytes()
+    client = TestClient(create_app(HostAIPlatformAPI(base_dir=tmp_path)))
+    proposal = client.post(f"/api/v1/menus/{menu_id}/propuesta-compra").json()["propuesta"]
+    line = proposal["lineas"][0]
+    reviewed = client.patch(f"/api/v1/menus/{menu_id}/propuesta-compra/{proposal['id']}", json={
+        "version": proposal["version"], "lineas": [{
+            "id": line["id"], "incluir": True, "cantidad_final_propuesta": 7,
+            "proveedor": "Proveedor B", "observaciones": "Entregar por la mañana",
+        }],
+    })
+    assert reviewed.status_code == 200
+    assert reviewed.json()["propuesta"]["lineas"][0]["cantidad_final_propuesta"] == 7
+
+    created = client.post(f"/api/v1/menus/{menu_id}/propuesta-compra/{proposal['id']}/crear-pedidos", json={
+        "confirmacion": "CREAR_BORRADORES", "usuario": "chef",
+    })
+    assert created.status_code == 201
+    order = created.json()["pedidos"][0]
+    assert order["estado"] == "borrador"
+    assert order["proveedor"] == "Proveedor B"
+    assert order["lineas"][0]["cantidad"] == 7
+    assert menu_id in order["observaciones"] and proposal["id"] in order["observaciones"]
+    assert created.json()["stock_modificado"] is False
+    assert created.json()["recepciones_creadas"] == 0
+    assert stock_path.read_bytes() == before_stock
+    assert json.loads((tmp_path / "DATOS/db/compras_recepciones.json").read_text(encoding="utf-8")) == []
+
+    repeated = client.post(f"/api/v1/menus/{menu_id}/propuesta-compra/{proposal['id']}/crear-pedidos", json={"confirmacion": "CREAR_BORRADORES"})
+    assert repeated.json()["pedidos"][0]["id"] == order["id"]
+    persisted = json.loads((tmp_path / "DATOS/db/compras_pedidos.json").read_text(encoding="utf-8"))
+    assert len(persisted) == 1
+
+
+def test_motor_hace_rollback_si_falla_persistencia() -> None:
+    class FailingDb:
+        db_dir = Path(".")
+        def cargar(self, _name): return []
+        def guardar(self, _name, _rows): raise OSError("fallo simulado")
+
+    motor = MotorCompras(FailingDb())
+    try:
+        motor.crear_pedidos_borrador_transaccional([{"proveedor": "Proveedor", "lineas": [{
+            "nombre": "Patata", "articulo_id": "ART-1", "cantidad": 1, "unidad": "kg",
+        }]}])
+    except OSError as exc:
+        assert "fallo simulado" in str(exc)
+    else:
+        raise AssertionError("Debía fallar la persistencia")
+    assert motor.pedidos_sugeridos == {}

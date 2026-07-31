@@ -14,6 +14,7 @@ import type {
   MenuInput,
   MenuNeedsResponse,
   MenuPurchaseProposalResponse,
+  MenuOrdersResponse,
   MenuResponse,
   MenusResponse,
 } from "../types/menus";
@@ -151,6 +152,14 @@ export const hostAiApiClient = {
 
   createMenuPurchaseProposal(id: string): Promise<MenuPurchaseProposalResponse> {
     return request<MenuPurchaseProposalResponse>(`/api/v1/menus/${encodeURIComponent(id)}/propuesta-compra`, { method: "POST" });
+  },
+
+  updateMenuPurchaseProposal(menuId: string, proposalId: string, input: Record<string, unknown>): Promise<MenuPurchaseProposalResponse> {
+    return request<MenuPurchaseProposalResponse>(`/api/v1/menus/${encodeURIComponent(menuId)}/propuesta-compra/${encodeURIComponent(proposalId)}`, { method: "PATCH", body: JSON.stringify(input) });
+  },
+
+  createMenuDraftOrders(menuId: string, proposalId: string): Promise<MenuOrdersResponse> {
+    return request<MenuOrdersResponse>(`/api/v1/menus/${encodeURIComponent(menuId)}/propuesta-compra/${encodeURIComponent(proposalId)}/crear-pedidos`, { method: "POST", body: JSON.stringify({ confirmacion: "CREAR_BORRADORES", usuario: "web" }) });
   },
 
   getBiblioteca(): Promise<BibliotecaResponse> {

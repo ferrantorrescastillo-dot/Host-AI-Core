@@ -12,6 +12,7 @@ export type ComprasResult = ApiEnvelopeBase & {
   propuestas: PropuestaCompraListItem[];
   proveedores: ProveedorCompraListItem[];
   historial: CompraHistorialListItem[];
+  pedidos: Array<{ id: string; proveedor: string; estado: string; lineas: Array<{ nombre: string; cantidad: number; unidad: string }>; importe_estimado: number; observaciones?: string }>;
   estado?: string;
   total: number;
   mensaje?: string;
@@ -33,6 +34,8 @@ export const comprasService = {
     const historial = Array.isArray(modulo?.historial)
       ? modulo.historial
       : [];
+    const pedidos = Array.isArray((modulo as typeof modulo & { pedidos?: ComprasResult["pedidos"] })?.pedidos)
+      ? (modulo as typeof modulo & { pedidos: ComprasResult["pedidos"] }).pedidos : [];
 
     return {
       ok: response.ok,
@@ -46,6 +49,7 @@ export const comprasService = {
       propuestas,
       proveedores,
       historial,
+      pedidos,
       estado: modulo?.estado,
       total:
         typeof modulo?.total === "number"
