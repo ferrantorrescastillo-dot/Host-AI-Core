@@ -346,11 +346,26 @@ class ImportDraftService:
     def _patch_ingredients(self, recipe: dict[str, Any], patches: Any) -> None:
         if not isinstance(patches, list):
             raise DraftValidationError("Los ingredientes deben enviarse como una lista.")
-        ingredients = {str(item.get("id")): item for item in recipe.get("ingredients") or []}
-        for patch in patches:
-            if not isinstance(patch, dict) or str(patch.get("id") or "") not in ingredients:
+        current = {
+            str(item.get("id")): item
+            for item in recipe.get("ingredients") or []
+            if str(item.get("id") or "")
+        }
+        revised: list[dict[str, Any]] = []
+        used_ids: set[str] = set()
+        for index, patch in enumerate(patches, 1):
+            if not isinstance(patch, dict):
+                raise DraftValidationError("Cada ingrediente debe ser un objeto.")
+            requested_id = str(patch.get("id") or "")
+            if requested_id in current:
+                item = deepcopy(current[requested_id])
+            elif not requested_id or requested_id.startswith("NEW-"):
+                item = self._new_ingredient(recipe, index)
+            else:
                 raise DraftValidationError("El ingrediente editado no pertenece al borrador.")
-            item = ingredients[str(patch["id"])]
+            if item["id"] in used_ids:
+                raise DraftValidationError("No se puede repetir el mismo ingrediente en el borrador.")
+            used_ids.add(item["id"])
             for key in ("quantity_raw", "unit_raw", "name_raw", "observations", "relation_status"):
                 if key in patch:
                     item[key] = str(patch.get(key) or "").strip()
@@ -360,6 +375,9 @@ class ImportDraftService:
             item["quantity"] = quantity
             item["unit"] = normalizar_unidad(item["unit_raw"]) or None
             item["normalized_name"] = normalize_text(item["name_raw"])
+            relation = self.articles.find(item["name_raw"], item["unit"])
+            item["article_candidates"] = relation["candidates"]
+            item["confidence"] = relation["confidence"]
             article_id = str(patch.get("article_id") or "") or None
             if article_id:
                 candidate = next(
@@ -374,6 +392,37 @@ class ImportDraftService:
             elif "article_id" in patch:
                 item["article_id"] = None
             item["validation_errors"] = [issue.to_dict() for issue in issues]
+            revised.append(item)
+        recipe["ingredients"] = revised
+
+    @staticmethod
+    def _new_ingredient(recipe: dict[str, Any], index: int) -> dict[str, Any]:
+        existing = {
+            str(item.get("id") or "")
+            for item in recipe.get("ingredients") or []
+        }
+        sequence = index
+        while True:
+            ingredient_id = f"{recipe['id']}-ING-{sequence:03d}"
+            if ingredient_id not in existing:
+                break
+            sequence += 1
+        return {
+            "id": ingredient_id,
+            "original_text": "",
+            "quantity_raw": "",
+            "quantity": None,
+            "unit_raw": "",
+            "unit": None,
+            "name_raw": "",
+            "normalized_name": "",
+            "observations": "",
+            "article_id": None,
+            "article_candidates": [],
+            "relation_status": "SIN_RELACIONAR",
+            "confidence": 0.0,
+            "validation_errors": [],
+        }
 
     def _validate(self, draft: ImportDraft) -> None:
         raw = draft.to_dict()
@@ -413,6 +462,14 @@ class ImportDraftService:
                     "SUBELABORACION_SIN_PRINCIPAL", DraftIssueLevel.ERROR,
                     "Selecciona la elaboración principal de esta subelaboración.", "parent_recipe_id",
                 ).to_dict())
+            if (
+                entity_type not in {RecipeEntityType.DESCARTAR.value, RecipeEntityType.SECCION.value}
+                and not recipe.get("ingredients")
+            ):
+                issues.append(DraftIssue(
+                    "INGREDIENTES_VACIOS", DraftIssueLevel.ERROR,
+                    "Añade al menos un ingrediente antes de confirmar.", "ingredients",
+                ).to_dict())
             if entity_type == RecipeEntityType.COMPONENTE.value and not (
                 recipe.get("ingredients") or recipe.get("procedure")
             ):
@@ -446,6 +503,11 @@ class ImportDraftService:
                         f"La unidad «{unit}» no está normalizada.", "unit",
                     ).to_dict())
                 normalized_name = str(ingredient.get("normalized_name") or "")
+                if not normalized_name:
+                    ingredient_issues.append(DraftIssue(
+                        "INGREDIENTE_SIN_NOMBRE", DraftIssueLevel.ERROR,
+                        "El nombre del ingrediente es obligatorio.", "name",
+                    ).to_dict())
                 if normalized_name and normalized_name in seen:
                     ingredient_issues.append(DraftIssue(
                         "INGREDIENTE_DUPLICADO", DraftIssueLevel.ADVERTENCIA,

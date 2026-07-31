@@ -117,12 +117,15 @@ function DraftReview({ initialDraft }: { initialDraft: ImportDraft }) {
   const [selectedId, setSelectedId] = useState(initialDraft.recipes[0]?.id ?? "");
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
+  const [dirty, setDirty] = useState(false);
   const [accepted, setAccepted] = useState(false);
   const [confirming, setConfirming] = useState(false);
   const [result, setResult] = useState<ImportConfirmationResult | null>(null);
   const selected = draft.recipes.find((recipe) => recipe.id === selectedId);
 
   function updateRecipe(id: string, changes: Partial<RecipeDraft>) {
+    setDirty(true);
+    setAccepted(false);
     setDraft((current) => ({
       ...current,
       recipes: current.recipes.map((recipe) => recipe.id === id ? { ...recipe, ...changes } : recipe),
@@ -130,14 +133,59 @@ function DraftReview({ initialDraft }: { initialDraft: ImportDraft }) {
   }
 
   function updateIngredient(recipeId: string, ingredientId: string, changes: Partial<IngredientDraft>) {
+    setDirty(true);
+    setAccepted(false);
     setDraft((current) => ({
       ...current,
       recipes: current.recipes.map((recipe) => recipe.id !== recipeId ? recipe : {
         ...recipe,
         ingredients: recipe.ingredients.map((ingredient) =>
-          ingredient.id === ingredientId ? { ...ingredient, ...changes } : ingredient
+          ingredient.id === ingredientId
+            ? { ...ingredient, ...changes, validation_errors: [] }
+            : ingredient
         ),
       }),
+    }));
+  }
+
+  function addIngredient(recipeId: string) {
+    const ingredient: IngredientDraft = {
+      id: `NEW-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+      original_text: "",
+      quantity_raw: "",
+      quantity: null,
+      unit_raw: "",
+      unit: null,
+      name_raw: "",
+      normalized_name: "",
+      observations: "",
+      article_id: null,
+      article_candidates: [],
+      relation_status: "SIN_RELACIONAR",
+      confidence: 0,
+      validation_errors: [],
+    };
+    setDirty(true);
+    setAccepted(false);
+    setDraft((current) => ({
+      ...current,
+      recipes: current.recipes.map((recipe) => recipe.id === recipeId
+        ? { ...recipe, ingredients: [...recipe.ingredients, ingredient] }
+        : recipe),
+    }));
+  }
+
+  function removeIngredient(recipeId: string, ingredientId: string) {
+    setDirty(true);
+    setAccepted(false);
+    setDraft((current) => ({
+      ...current,
+      recipes: current.recipes.map((recipe) => recipe.id === recipeId
+        ? {
+          ...recipe,
+          ingredients: recipe.ingredients.filter((ingredient) => ingredient.id !== ingredientId),
+        }
+        : recipe),
     }));
   }
 
@@ -150,6 +198,7 @@ function DraftReview({ initialDraft }: { initialDraft: ImportDraft }) {
         recipes: draft.recipes,
       });
       setDraft(response.borrador);
+      setDirty(false);
       setMessage("Borrador guardado. Ningún dato de la Biblioteca ha sido modificado.");
     } catch (reason) {
       const error = reason as HostAiApiError;
@@ -247,13 +296,20 @@ function DraftReview({ initialDraft }: { initialDraft: ImportDraft }) {
         </label>
         {selected.duplicate_candidates.length ? <p className="draft-warning">Hay posibles duplicados. Revísalos antes de crear una elaboración nueva.</p> : null}
         <h4>Ingredientes</h4>
+        {selected.validation_errors.filter((issue) => issue.field === "ingredients")
+          .map((issue) => <p className="draft-warning" key={issue.code}>{issue.message}</p>)}
+        {!selected.ingredients.length
+          ? <p>No hay ingredientes. Añade al menos uno para poder confirmar.</p>
+          : null}
         <div className="draft-ingredients">{selected.ingredients.map((ingredient) =>
           <IngredientEditor
             ingredient={ingredient}
             key={ingredient.id}
             onChange={(changes) => updateIngredient(selected.id, ingredient.id, changes)}
+            onDelete={() => removeIngredient(selected.id, ingredient.id)}
           />
         )}</div>
+        <button type="button" onClick={() => addIngredient(selected.id)}>Añadir ingrediente</button>
         <label>Procedimiento
           <textarea
             aria-label="Procedimiento"
@@ -272,7 +328,8 @@ function DraftReview({ initialDraft }: { initialDraft: ImportDraft }) {
             onChange={(event) => updateRecipe(selected.id, { notes: event.target.value })}
           />
         </label>
-        {[...selected.validation_errors, ...selected.ingredients.flatMap((item) => item.validation_errors)]
+        {[...selected.validation_errors.filter((issue) => issue.field !== "ingredients"),
+          ...selected.ingredients.flatMap((item) => item.validation_errors)]
           .map((issue, index) => <p className="draft-warning" key={`${issue.code}-${index}`}>{issue.message}</p>)}
       </div> : <p>No hay secciones editables.</p>}
     </div>
@@ -281,6 +338,7 @@ function DraftReview({ initialDraft }: { initialDraft: ImportDraft }) {
     </button>
     {message ? <p role="status">{message}</p> : null}
     <p><strong>Modo seguro:</strong> guardar este borrador no aplica ninguna propuesta.</p>
+    {dirty ? <p className="draft-warning">Guarda el borrador revisado antes de confirmar la importación.</p> : null}
     <section className="confirmation-preview">
       <h4>Confirmación final</h4>
       <p>Se aplicarán {draft.recipes.filter((item) =>
@@ -290,7 +348,7 @@ function DraftReview({ initialDraft }: { initialDraft: ImportDraft }) {
         <input checked={accepted} onChange={(event) => setAccepted(event.target.checked)} type="checkbox" />
         He revisado el borrador y autorizo aplicar estos cambios.
       </label>
-      <button disabled={!accepted || confirming || Boolean(result)} type="button" onClick={() => void confirm()}>
+      <button disabled={dirty || !accepted || confirming || Boolean(result)} type="button" onClick={() => void confirm()}>
         {confirming ? "Aplicando transacción..." : "Confirmar e importar"}
       </button>
       {result ? <div role="status">
@@ -304,9 +362,11 @@ function DraftReview({ initialDraft }: { initialDraft: ImportDraft }) {
 function IngredientEditor({
   ingredient,
   onChange,
+  onDelete,
 }: {
   ingredient: IngredientDraft;
   onChange: (changes: Partial<IngredientDraft>) => void;
+  onDelete: () => void;
 }) {
   return <article className="draft-ingredient">
     <small>Texto original: {ingredient.original_text}</small>
@@ -369,6 +429,7 @@ function IngredientEditor({
     {ingredient.validation_errors.map((issue) =>
       <p className="draft-warning" key={issue.code}>{issue.message}</p>
     )}
+    <button type="button" onClick={onDelete}>Eliminar ingrediente</button>
   </article>;
 }
 

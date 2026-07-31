@@ -417,6 +417,64 @@ def test_borrador_articulos_exactos_candidatos_y_sin_candidato(tmp_path: Path) -
     assert service.drafts.articles.find("ingrediente inexistente", "kg")["status"] == "SIN_RELACIONAR"
 
 
+def test_borrador_permite_anadir_varios_eliminar_y_revalidar_ingredientes(
+    tmp_path: Path,
+) -> None:
+    service = ImportDocumentService(tmp_path)
+    created = service.import_document(_word_payload(recipes=2))
+    import_id = created["importacion"]["documento"]["id"]
+    draft = service.get_draft(import_id)["borrador"]
+    empty_recipe = draft["recipes"][0]
+    empty_recipe["ingredients"] = []
+
+    with_invalid = service.update_draft(import_id, {
+        "draft_version": draft["version"],
+        "recipes": [{
+            **empty_recipe,
+            "ingredients": [
+                {
+                    "id": "NEW-1", "quantity_raw": "cantidad desconocida",
+                    "unit_raw": "kg", "name_raw": "Naranja",
+                    "observations": "Sin piel", "relation_status": "SIN_RELACIONAR",
+                    "article_id": None,
+                },
+                {
+                    "id": "NEW-2", "quantity_raw": "0,5",
+                    "unit_raw": "l", "name_raw": "Fondo",
+                    "observations": "", "relation_status": "SIN_RELACIONAR",
+                    "article_id": None,
+                },
+            ],
+        }],
+    })
+    assert with_invalid["ok"] is True
+    saved = with_invalid["borrador"]
+    ingredients = saved["recipes"][0]["ingredients"]
+    assert len(ingredients) == 2
+    assert all(not item["id"].startswith("NEW-") for item in ingredients)
+    assert ingredients[0]["validation_errors"][0]["code"] == "CANTIDAD_INVALIDA"
+    assert not any(
+        issue["code"] == "INGREDIENTES_VACIOS"
+        for issue in saved["recipes"][0]["validation_errors"]
+    )
+
+    corrected = service.update_draft(import_id, {
+        "draft_version": saved["version"],
+        "recipes": [{
+            **saved["recipes"][0],
+            "ingredients": [{
+                **ingredients[0],
+                "quantity_raw": "1,25",
+            }],
+        }],
+    })
+    assert corrected["ok"] is True
+    final_recipe = corrected["borrador"]["recipes"][0]
+    assert len(final_recipe["ingredients"]) == 1
+    assert final_recipe["ingredients"][0]["quantity"] == 1.25
+    assert final_recipe["ingredients"][0]["validation_errors"] == []
+
+
 def test_http_borrador_get_patch_conflicto_y_sin_escritura(tmp_path: Path) -> None:
     client = TestClient(create_app(HostAIPlatformAPI(base_dir=tmp_path)))
     created = client.post("/api/v1/biblioteca/importaciones", json=_word_payload()).json()

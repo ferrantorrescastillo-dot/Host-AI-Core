@@ -11,6 +11,7 @@ from SERVICIOS.confirmacion_importacion_biblioteca import (
     ImportConfirmationService,
     ImportSessionRepository,
 )
+from SERVICIOS.borrador_importacion_biblioteca import ImportDraftService
 
 
 def _session() -> dict:
@@ -98,3 +99,55 @@ def test_http_confirmacion_estado_e_historial(tmp_path: Path) -> None:
     history = client.get("/api/v1/biblioteca/importaciones/IMP-1/historial").json()
     assert history["total"] == 1
     assert history["historial"][0]["usuario"] == "chef"
+
+
+def test_confirmacion_usa_ingredientes_anadidos_al_borrador_revisado(tmp_path: Path) -> None:
+    drafts = ImportDraftService(tmp_path)
+    draft = drafts.build(
+        import_id="IMP-EDIT",
+        classification="RECETA",
+        confidence=0.8,
+        recipes=[{
+            "id_origen": "REC-NARANJA",
+            "nombre": "Salsa de naranja",
+            "ingredientes_estructurados": [],
+            "pasos": ["Reducir y triturar."],
+            "numero_raciones": 4,
+        }],
+    )
+    revised = drafts.update(draft, {
+        "draft_version": 1,
+        "recipes": [{
+            **draft["recipes"][0],
+            "servings": 4,
+            "ingredients": [{
+                "id": "NEW-NARANJA",
+                "quantity_raw": "2",
+                "unit_raw": "kg",
+                "name_raw": "Naranja",
+                "observations": "Sin piel",
+                "relation_status": "SIN_RELACIONAR",
+                "article_id": None,
+            }],
+        }],
+    })
+    sessions = {"IMP-EDIT": {
+        "documento": {"id": "IMP-EDIT", "nombre": "salsa.docx"},
+        "estado": "PENDIENTE_REVISION",
+        "borrador": revised,
+        "historial": [],
+    }}
+    repository = ImportSessionRepository(tmp_path)
+    repository.save_all(sessions)
+
+    result = ImportConfirmationService(tmp_path, repository).confirm(
+        sessions, "IMP-EDIT",
+        {"draft_version": 2, "usuario": "chef", "confirmacion": "CONFIRMAR"},
+    )
+
+    assert result["ok"] is True
+    recipes = json.loads(
+        (tmp_path / "DATOS/db/biblioteca_recetas_601.json").read_text(encoding="utf-8")
+    )["recetas"]
+    assert recipes[0]["ingredientes"] == ["Naranja"]
+    assert recipes[0]["cantidades"] == ["2 kg"]

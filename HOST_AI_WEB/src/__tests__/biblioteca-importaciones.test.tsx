@@ -212,7 +212,7 @@ describe("Importador Inteligente de Biblioteca", () => {
     fireEvent.change(screen.getByLabelText("Relación nata"), {
       target: { value: "ART-NATA" },
     });
-    expect(screen.getAllByText(/puede representar una fracción/).length).toBeGreaterThan(0);
+    expect(screen.queryByText(/puede representar una fracción/)).not.toBeInTheDocument();
     await waitFor(() => expect(global.fetch).toHaveBeenCalledWith(
       "http://127.0.0.1:8000/api/v1/biblioteca/importaciones",
       expect.objectContaining({ method: "POST" }),
@@ -253,6 +253,56 @@ describe("Importador Inteligente de Biblioteca", () => {
       expect.objectContaining({ method: "PATCH" }),
     );
     expect(screen.getByRole("button", { name: "Confirmar e importar" })).toBeDisabled();
+  });
+
+  it("añade ingredientes a una receta vacía, permite varios y elimina uno", async () => {
+    vi.spyOn(global, "fetch")
+      .mockResolvedValueOnce({ ok: true, status: 200, json: async () => response } as Response)
+      .mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: async () => ({
+          ...response,
+          importacion_id: "IMPWEB-1",
+          borrador: { ...response.importacion.borrador, version: 2, draft_version: 2 },
+          datos_reales_modificados: false,
+        }),
+      } as Response);
+    render(<MemoryRouter initialEntries={["/biblioteca/importaciones"]}><App /></MemoryRouter>);
+    const file = new File(["Receta"], "receta.txt", { type: "text/plain" });
+    Object.defineProperty(file, "arrayBuffer", {
+      value: async () => new TextEncoder().encode("Receta").buffer,
+    });
+    fireEvent.change(screen.getByLabelText("Seleccionar documento"), {
+      target: { files: [file] },
+    });
+    await screen.findByText("Revisar borrador");
+    fireEvent.click(screen.getByRole("button", { name: /Salsa roja.*0 ingredientes/ }));
+    expect(screen.getByText(/No hay ingredientes/)).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Añadir ingrediente" }));
+    fireEvent.click(screen.getByRole("button", { name: "Añadir ingrediente" }));
+    const names = screen.getAllByLabelText(/^Ingrediente/);
+    const quantities = screen.getAllByLabelText(/^Cantidad/);
+    fireEvent.change(names[0], { target: { value: "Naranja" } });
+    fireEvent.change(quantities[0], { target: { value: "2" } });
+    fireEvent.change(names[1], { target: { value: "Fondo" } });
+    fireEvent.change(quantities[1], { target: { value: "0,5" } });
+    fireEvent.click(screen.getAllByRole("button", { name: "Eliminar ingrediente" })[1]);
+    expect(screen.getByText(/Guarda el borrador revisado antes de confirmar/)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Guardar borrador" }));
+
+    await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(2));
+    expect(screen.queryByText(/Guarda el borrador revisado antes de confirmar/)).not.toBeInTheDocument();
+    const request = vi.mocked(global.fetch).mock.calls[1][1] as RequestInit;
+    const body = JSON.parse(String(request.body));
+    const salsaRoja = body.recipes.find((recipe: { id: string }) => recipe.id === "REC-WORD-002");
+    expect(salsaRoja.ingredients).toHaveLength(1);
+    expect(salsaRoja.ingredients[0]).toMatchObject({
+      name_raw: "Naranja",
+      quantity_raw: "2",
+      relation_status: "SIN_RELACIONAR",
+    });
   });
 
   it("exige aceptación explícita y confirma mediante la API pública", async () => {
