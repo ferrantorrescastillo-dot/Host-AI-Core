@@ -90,7 +90,7 @@ def test_conversion_incompatible_no_inventa_faltante(tmp_path: Path) -> None:
     assert proposal["coste_completo"] is False
 
 
-def test_api_genera_propuesta_revisable_sin_modificar_stock_ni_crear_pedido(tmp_path: Path) -> None:
+def test_api_genera_propuesta_y_crea_borrador_visible_en_compras_sin_modificar_stock(tmp_path: Path) -> None:
     menu_id = _seed(tmp_path, stock=0)
     stock_path = tmp_path / "DATOS/db/stock_inicial.json"
     before_stock = stock_path.read_bytes()
@@ -102,13 +102,20 @@ def test_api_genera_propuesta_revisable_sin_modificar_stock_ni_crear_pedido(tmp_
     proposal = client.post(f"/api/v1/menus/{menu_id}/propuesta-compra")
     assert proposal.status_code == 201
     body = proposal.json()["propuesta"]
-    assert body["estado"] == "BORRADOR"
+    assert body["estado"] == "CONFIRMADA"
     assert body["grupos_proveedor"][0]["proveedor"] == "Proveedor A"
     assert body["resumen"]["articulos_propuestos"] == 1
-    assert body["crea_pedido"] is False
+    assert body["crea_pedido"] is True
     assert body["modifica_stock"] is False
+    assert len(proposal.json()["pedidos_creados"]) == 1
+    assert proposal.json()["pedidos_creados"][0]["estado"] == "borrador"
+    assert menu_id in proposal.json()["pedidos_creados"][0]["observaciones"]
     assert stock_path.read_bytes() == before_stock
-    assert not (tmp_path / "DATOS/db/compras_pedidos.json").exists()
+    persisted = json.loads((tmp_path / "DATOS/db/compras_pedidos.json").read_text(encoding="utf-8"))
+    assert persisted[0]["id"] == proposal.json()["pedidos_creados"][0]["id"]
+
+    dashboard = client.get("/api/v1/dashboard").json()
+    assert any(order["id"] == persisted[0]["id"] for order in dashboard["dashboard"]["modulos"]["compras"]["pedidos"])
 
     fetched = client.get(f"/api/v1/menus/{menu_id}/propuesta-compra/{body['id']}")
     assert fetched.status_code == 200
@@ -136,6 +143,11 @@ def test_stock_desconocido_y_proveedor_pendiente_no_bloquean_propuesta(tmp_path:
 
 def test_revisa_propuesta_y_crea_borrador_idempotente_con_origen_sin_tocar_stock(tmp_path: Path) -> None:
     menu_id = _seed(tmp_path, stock=0)
+    articles_path = tmp_path / "DATOS/db/articulos.json"
+    articles = json.loads(articles_path.read_text(encoding="utf-8"))
+    articles[0]["proveedor"] = ""
+    articles[0]["catalogo_maestro"]["proveedor_preferente"] = ""
+    _write(articles_path, articles)
     stock_path = tmp_path / "DATOS/db/stock_inicial.json"
     before_stock = stock_path.read_bytes()
     client = TestClient(create_app(HostAIPlatformAPI(base_dir=tmp_path)))

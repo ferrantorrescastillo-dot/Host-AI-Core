@@ -113,7 +113,17 @@ export function MenusPage() {
   async function generateProposal() {
     if (!selected) return;
     setProposalLoading(true); setMessage("");
-    try { setProposal((await menusService.createPurchaseProposal(selected.id)).propuesta); setProposalDirty(false); setOrderResult(null); }
+    try {
+      const response = await menusService.createPurchaseProposal(selected.id);
+      setProposal(response.propuesta); setProposalDirty(false);
+      setCreatedOrders(response.pedidos_creados ?? []);
+      setOrderResult(response.lineas_incluidas && response.lineas_pendientes && response.lineas_excluidas
+        ? { lineas_incluidas: response.lineas_incluidas, lineas_pendientes: response.lineas_pendientes, lineas_excluidas: response.lineas_excluidas, advertencias: response.advertencias ?? [] }
+        : null);
+      setMessage(response.pedidos_creados?.length
+        ? `${response.pedidos_creados.length} borradores de pedido creados.`
+        : "Propuesta creada. Completa las líneas pendientes para crear sus borradores.");
+    }
     catch (reason) { setMessage((reason as HostAiApiError).message); }
     finally { setProposalLoading(false); }
   }

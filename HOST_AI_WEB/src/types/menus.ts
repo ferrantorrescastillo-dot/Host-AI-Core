@@ -96,8 +96,10 @@ export type MenuPurchaseProposalResponse = ApiEnvelopeBase & { propuesta: {
   lineas: MenuProposalLine[]; grupos_proveedor: Array<{ proveedor: string; lineas: MenuProposalLine[] }>;
   resumen: { articulos_propuestos: number; articulos_pendientes: number; proveedores_pendientes: number };
   advertencias: string[];
-  crea_pedido: false; modifica_stock: false; datos_reales_modificados: false;
-} };
+  crea_pedido: boolean; modifica_stock: false; datos_reales_modificados: boolean;
+}; pedidos_creados?: MenuDraftOrder[]; lineas_incluidas?: MenuProposalLine[];
+lineas_pendientes?: MenuProposalLine[]; lineas_excluidas?: MenuProposalLine[];
+advertencias?: string[]; errores?: Array<{ code?: string; message: string }> };
 
 export type MenuProposalLine = {
   id: string; incluir: boolean; articulo_id: string | null; articulo: string | null;

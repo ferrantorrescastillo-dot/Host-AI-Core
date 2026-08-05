@@ -94,14 +94,17 @@ class CatalogPublicFacade(CorePublicApi02Facade):
 
     def _get_menu_needs_service(self) -> MenuNecesidadesService:
         if self._menu_needs_service is None:
-            self._menu_needs_service = MenuNecesidadesService(self.base_dir)
+            self._menu_needs_service = MenuNecesidadesService(
+                self.base_dir,
+                compras=self._get_core().compras,
+            )
         return self._menu_needs_service
 
     def necesidades_menu(self, menu_id: str) -> dict[str, Any]:
         return self._library_call(self._get_menu_needs_service().necesidades, menu_id)
 
     def crear_propuesta_compra_menu(self, menu_id: str) -> dict[str, Any]:
-        return self._library_call(self._get_menu_needs_service().crear_propuesta, menu_id)
+        return self._library_call(self._get_menu_needs_service().crear_propuesta_con_pedidos, menu_id)
 
     def propuesta_compra_menu(self, menu_id: str, proposal_id: str) -> dict[str, Any]:
         return self._library_call(

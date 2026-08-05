@@ -14,14 +14,14 @@ from MOTORES.motor_compras import MotorCompras
 
 
 class MenuNecesidadesService:
-    """Proyecta necesidades y compras sin escribir en Stock ni Compras."""
+    """Proyecta necesidades y crea borradores controlados sin modificar Stock."""
 
-    def __init__(self, base_dir: Path) -> None:
+    def __init__(self, base_dir: Path, compras: MotorCompras | None = None) -> None:
         self.base_dir = Path(base_dir)
         self.menus = MenusInteligentesService(self.base_dir)
         self.stock = CruceStockProduccion556C(self.base_dir)
         self.productos = RepositorioProductosMaestro601(self.base_dir)
-        self.compras: MotorCompras | None = None
+        self.compras = compras
         self._propuestas: dict[str, dict[str, Any]] = {}
 
     def necesidades(self, menu_id: str) -> dict[str, Any]:
@@ -133,6 +133,26 @@ class MenuNecesidadesService:
         self._propuestas[proposal_id] = proposal
         return {"ok": True, "propuesta": proposal}
 
+    def crear_propuesta_con_pedidos(self, menu_id: str, usuario: str = "web") -> dict[str, Any]:
+        created = self.crear_propuesta(menu_id)
+        if not created.get("ok"):
+            return created
+        proposal = created["propuesta"]
+        included, pending, excluded, warnings = self._clasificar_lineas_pedido(proposal["lineas"])
+        if not included:
+            return self._resultado_pedidos(
+                proposal, [], included, pending, excluded, warnings
+            )
+        return self.crear_pedidos(
+            menu_id,
+            proposal["id"],
+            {
+                "confirmacion": "CREAR_BORRADORES",
+                "version": proposal["version"],
+                "usuario": usuario,
+            },
+        )
+
     def actualizar_propuesta(self, menu_id: str, proposal_id: str, body: dict[str, Any]) -> dict[str, Any]:
         found = self.obtener_propuesta(menu_id, proposal_id)
         if not found.get("ok"):
@@ -193,6 +213,8 @@ class MenuNecesidadesService:
         orders = self.compras.crear_pedidos_borrador_transaccional(payload)
         proposal["pedidos_creados"] = orders
         proposal["estado"] = "CONFIRMADA"
+        proposal["crea_pedido"] = True
+        proposal["datos_reales_modificados"] = True
         return self._resultado_pedidos(proposal, orders, included, pending, excluded, warnings)
 
     @staticmethod
