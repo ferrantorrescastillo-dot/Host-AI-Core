@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { HostAiApiError } from "../../api/client";
 import { produccionService, type ProduccionResult } from "../../services/produccionService";
 import type { ProduccionPlanListItem, ProduccionTareaListItem } from "../../types/api";
+import type { ProductionPreview } from "../../types/produccion";
 import { ErrorState } from "../components/ErrorState";
 import { LoadingState } from "../components/LoadingState";
 
@@ -99,18 +100,33 @@ function PlanCard({ plan }: { plan: ProduccionPlanListItem }) {
       </dl>
       {plan.tareas?.length ? (
         <ul className="clean-list produccion-tasks" aria-label={`Tareas de ${plan.nombre || "producción"}`}>
-          {plan.tareas.map((tarea, index) => <Tarea key={tarea.id || `${tarea.titulo || "tarea"}-${index}`} tarea={tarea} />)}
+          {plan.tareas.map((tarea, index) => <Tarea key={tarea.id || `${tarea.titulo || "tarea"}-${index}`} planId={String(plan.id || "")} tarea={tarea} />)}
         </ul>
       ) : null}
     </article>
   );
 }
 
-function Tarea({ tarea }: { tarea: ProduccionTareaListItem }) {
+function Tarea({ tarea, planId }: { tarea: ProduccionTareaListItem; planId: string }) {
+  const [preview, setPreview] = useState<ProductionPreview | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState("");
+  const taskId = String(tarea.id || "");
+  const loadPreview = async () => { setBusy(true); setMessage(""); try { setPreview((await produccionService.preview(planId, taskId)).consumo_previsto); } catch (error) { setMessage((error as Error).message); } finally { setBusy(false); } };
+  const confirm = async () => {
+    if (!preview?.ok || !window.confirm(`Se consumirán ${preview.consumos?.length || 0} ingredientes. ¿Confirmar producción terminada?`)) return;
+    setBusy(true); setMessage("");
+    try { const response = await produccionService.confirm(planId, taskId); setMessage(response.resultado.mensaje); setPreview(null); }
+    catch (error) { setMessage((error as Error).message); }
+    finally { setBusy(false); }
+  };
   return (
     <li>
       <div><strong>{tarea.titulo || "Tarea sin nombre"}</strong><p className="meta-line">{formatQuantity(tarea.cantidad, tarea.unidad)} · {readable(tarea.estado) || "Sin estado"}</p></div>
       {tarea.bloqueo ? <p className="produccion-alert">Bloqueo: {tarea.bloqueo}</p> : null}
+      <button type="button" disabled={busy || !planId || !taskId} onClick={() => void loadPreview()}>{busy ? "Consultando..." : "Ver consumo previsto"}</button>
+      {preview ? <section className="production-preview" aria-label={`Consumo previsto de ${tarea.titulo}`}><strong>Consumo previsto</strong>{preview.consumos?.map((item) => <p key={`${item.articulo_id}-${item.unidad}`}>{item.nombre}: {formatQuantity(item.cantidad, item.unidad)} · disponible {formatQuantity(item.disponible, item.unidad)}</p>)}{preview.faltantes?.map((item) => <p className="produccion-alert" key={`${item.nombre}-faltante`}>Stock insuficiente: faltan {formatQuantity(item.faltante, item.unidad)} de {item.nombre}</p>)}<button type="button" disabled={busy || !preview.ok} onClick={() => void confirm()}>Confirmar producción terminada</button><p className="meta-line">Stock solo cambiará tras esta confirmación explícita.</p></section> : null}
+      {message ? <p role="status">{message}</p> : null}
     </li>
   );
 }

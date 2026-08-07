@@ -28,4 +28,7 @@ export const produccionService = {
       mensaje: modulo?.mensaje,
     };
   },
+  getPlan: (planId: string) => hostAiApiClient.getProductionPlan(planId),
+  preview: (planId: string, taskId: string) => hostAiApiClient.getProductionPreview(planId, taskId),
+  confirm: (planId: string, taskId: string) => hostAiApiClient.confirmProduction(planId, taskId),
 };

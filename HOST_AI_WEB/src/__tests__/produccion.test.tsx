@@ -1,6 +1,7 @@
 import { render, screen, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import userEvent from "@testing-library/user-event";
 import { App } from "../ui/App";
 
 function response(items: unknown[]) {
@@ -100,5 +101,23 @@ describe("Producción", () => {
     renderPage();
     expect(await screen.findByText("Producción no disponible temporalmente.")).toBeInTheDocument();
     expect(screen.getByText("Request ID: REQ-PROD-ERROR")).toBeInTheDocument();
+  });
+
+  it("previsualiza el consumo y exige confirmación antes de modificar Stock", async () => {
+    const fetchMock = vi.spyOn(global, "fetch").mockImplementation(async (input, init) => {
+      const url = String(input);
+      if (url.endsWith("/consumo-previsto")) return { ok: true, json: async () => ({ ...response([]), consumo_previsto: { ok: true, estado: "LISTO", mensaje: "Stock suficiente", consumos: [{ nombre: "Patata", articulo_id: "ART-1", cantidad: 2.5, unidad: "kg", disponible: 10 }], faltantes: [] }, stock_modificado: false }) } as Response;
+      if (url.endsWith("/confirmar") && init?.method === "POST") return { ok: true, json: async () => ({ ...response([]), resultado: { estado: "REGISTRADA", mensaje: "Producción terminada y stock actualizado correctamente." }, plan: {}, stock_modificado: true }) } as Response;
+      return { ok: true, json: async () => response([{ id: "PLAN-MENU", nombre: "Producción menú", estado: "borrador", tareas: [{ id: "TASK-1", titulo: "Ensaladilla", estado: "pendiente", cantidad: 10, unidad: "raciones" }] }]) } as Response;
+    });
+    vi.spyOn(window, "confirm").mockReturnValue(true);
+    renderPage();
+    await userEvent.click(await screen.findByRole("button", { name: "Ver consumo previsto" }));
+    expect(await screen.findByText(/Patata: 2,5 kg/)).toBeInTheDocument();
+    expect(fetchMock.mock.calls.some(([url]) => String(url).endsWith("/confirmar"))).toBe(false);
+    await userEvent.click(screen.getByRole("button", { name: "Confirmar producción terminada" }));
+    expect(window.confirm).toHaveBeenCalled();
+    expect(await screen.findByText("Producción terminada y stock actualizado correctamente.")).toBeInTheDocument();
+    expect(fetchMock.mock.calls.filter(([url]) => String(url).endsWith("/confirmar"))).toHaveLength(1);
   });
 });

@@ -13,4 +13,5 @@ export const menusService = {
   createPurchaseProposal: (id: string) => hostAiApiClient.createMenuPurchaseProposal(id),
   updatePurchaseProposal: (menuId: string, proposalId: string, input: Record<string, unknown>) => hostAiApiClient.updateMenuPurchaseProposal(menuId, proposalId, input),
   createDraftOrders: (menuId: string, proposalId: string, version: number) => hostAiApiClient.createMenuDraftOrders(menuId, proposalId, version),
+  createProductionPlan: (menuId: string) => hostAiApiClient.createMenuProductionPlan(menuId),
 };

@@ -19,6 +19,7 @@ import type {
   MenusResponse,
 } from "../types/menus";
 import type { CompraConfirmationResponse, CompraDraftInput, CompraDraftResponse } from "../types/compras";
+import type { ProductionConfirmationResponse, ProductionPlanResponse, ProductionPreviewResponse } from "../types/produccion";
 
 type Envelope = {
   ok: boolean;
@@ -175,6 +176,19 @@ export const hostAiApiClient = {
 
   createMenuDraftOrders(menuId: string, proposalId: string, version: number): Promise<MenuOrdersResponse> {
     return request<MenuOrdersResponse>(`/api/v1/menus/${encodeURIComponent(menuId)}/propuesta-compra/${encodeURIComponent(proposalId)}/crear-pedidos`, { method: "POST", body: JSON.stringify({ confirmacion: "CREAR_BORRADORES", usuario: "web", version }) });
+  },
+
+  createMenuProductionPlan(menuId: string): Promise<ProductionPlanResponse> {
+    return request<ProductionPlanResponse>(`/api/v1/menus/${encodeURIComponent(menuId)}/plan-produccion`, { method: "POST", body: "{}" });
+  },
+  getProductionPlan(planId: string): Promise<ProductionPlanResponse> {
+    return request<ProductionPlanResponse>(`/api/v1/produccion/planes/${encodeURIComponent(planId)}`, { method: "GET" });
+  },
+  getProductionPreview(planId: string, taskId: string): Promise<ProductionPreviewResponse> {
+    return request<ProductionPreviewResponse>(`/api/v1/produccion/planes/${encodeURIComponent(planId)}/tareas/${encodeURIComponent(taskId)}/consumo-previsto`, { method: "GET" });
+  },
+  confirmProduction(planId: string, taskId: string): Promise<ProductionConfirmationResponse> {
+    return request<ProductionConfirmationResponse>(`/api/v1/produccion/planes/${encodeURIComponent(planId)}/tareas/${encodeURIComponent(taskId)}/confirmar`, { method: "POST", body: JSON.stringify({ confirmacion: "CONFIRMAR_PRODUCCION_TERMINADA", usuario: "web" }) });
   },
 
   getBiblioteca(): Promise<BibliotecaResponse> {

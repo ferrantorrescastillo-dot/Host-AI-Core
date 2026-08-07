@@ -12,6 +12,7 @@ from SERVICIOS.importador_inteligente_biblioteca import ImportDocumentService
 from SERVICIOS.menus_inteligentes_service import MenusInteligentesService
 from SERVICIOS.menu_necesidades_service import MenuNecesidadesService
 from SERVICIOS.compras_borradores_service import ComprasBorradoresService
+from SERVICIOS.menu_produccion_service import MenuProduccionService
 
 
 logger = logging.getLogger(__name__)
@@ -28,6 +29,7 @@ class CatalogPublicFacade(CorePublicApi02Facade):
         self._menus_service: MenusInteligentesService | None = None
         self._menu_needs_service: MenuNecesidadesService | None = None
         self._compras_drafts_service: ComprasBorradoresService | None = None
+        self._menu_production_service: MenuProduccionService | None = None
 
     def _get_articulos_service(self) -> ArticulosCatalogReadService:
         if self._articulos_service is None:
@@ -118,6 +120,23 @@ class CatalogPublicFacade(CorePublicApi02Facade):
 
     def crear_pedidos_propuesta_menu(self, menu_id: str, proposal_id: str, body: dict[str, Any]) -> dict[str, Any]:
         return self._library_call(self._get_menu_needs_service().crear_pedidos, menu_id, proposal_id, body)
+
+    def _get_menu_production_service(self) -> MenuProduccionService:
+        if self._menu_production_service is None:
+            self._menu_production_service = MenuProduccionService(self._get_core())
+        return self._menu_production_service
+
+    def crear_plan_produccion_menu(self, menu_id: str, body: dict[str, Any]) -> dict[str, Any]:
+        return {**self._base_payload(), **self._get_menu_production_service().generar(menu_id, body)}
+
+    def plan_produccion(self, plan_id: str) -> dict[str, Any]:
+        return {**self._base_payload(), **self._get_menu_production_service().obtener(plan_id)}
+
+    def consumo_previsto_produccion(self, plan_id: str, tarea_id: str) -> dict[str, Any]:
+        return {**self._base_payload(), **self._get_menu_production_service().consumo_previsto(plan_id, tarea_id)}
+
+    def confirmar_produccion(self, plan_id: str, tarea_id: str, body: dict[str, Any]) -> dict[str, Any]:
+        return {**self._base_payload(), **self._get_menu_production_service().confirmar(plan_id, tarea_id, body)}
 
     def _get_compras_drafts_service(self) -> ComprasBorradoresService:
         if self._compras_drafts_service is None:

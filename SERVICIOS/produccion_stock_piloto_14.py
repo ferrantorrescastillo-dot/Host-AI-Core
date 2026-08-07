@@ -38,7 +38,11 @@ class ProduccionStockPiloto14:
         if float(tarea.cantidad or 0) <= 0:
             return {"ok": False, "estado": "CANTIDAD_INVALIDA", "mensaje": "La tarea tiene una cantidad no válida para cerrar producción."}
 
+        ingredientes_plan = list((getattr(tarea, "requisitos_recursos", {}) or {}).get("ingredientes") or [])
         escandallo = self._buscar_escandallo(tarea.receta_id, tarea.receta or tarea.titulo)
+        if ingredientes_plan:
+            escandallo = {"receta_id": tarea.receta_id, "nombre": tarea.receta or tarea.titulo,
+                          "raciones_base": float(tarea.cantidad or 1), "lineas": ingredientes_plan}
         if not escandallo:
             return {"ok": False, "estado": "SIN_ESCANDALLO", "mensaje": "No se ha localizado un escandallo para calcular los consumos."}
 
@@ -254,6 +258,7 @@ class ProduccionStockPiloto14:
         return {
             "evento": str(getattr(plan, "evento", "") or ""),
             "evento_id": str(getattr(plan, "evento_id", "") or ""),
+            "menu_id": str((getattr(plan, "configuracion_planificacion", {}) or {}).get("menu_id") or ""),
             "servicio": str(getattr(tarea, "origen", "") or ""),
             "pase": str(getattr(tarea, "origen", "") or ""),
             "receta": str(getattr(tarea, "receta", "") or salida.get("nombre") or ""),

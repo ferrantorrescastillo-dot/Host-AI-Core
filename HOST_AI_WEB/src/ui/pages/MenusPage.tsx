@@ -51,6 +51,8 @@ export function MenusPage() {
   const [createdOrders, setCreatedOrders] = useState<Array<{ id: string; proveedor: string; estado: string }>>([]);
   const [orderResult, setOrderResult] = useState<Pick<MenuOrdersResponse, "lineas_incluidas" | "lineas_pendientes" | "lineas_excluidas" | "advertencias"> | null>(null);
   const [providerNames, setProviderNames] = useState<string[]>([]);
+  const [productionLoading, setProductionLoading] = useState(false);
+  const [productionPlanId, setProductionPlanId] = useState("");
 
   useEffect(() => {
     void menusService.list().then((response) => setMenus(response.menus)).catch((reason) => setError(reason as HostAiApiError)).finally(() => setLoading(false));
@@ -146,6 +148,17 @@ export function MenusPage() {
     try { setProposal((await menusService.updatePurchaseProposal(selected.id, proposal.id, { version: proposal.version, lineas: proposal.lineas })).propuesta); setProposalDirty(false); setMessage("Propuesta guardada."); }
     catch (reason) { setMessage((reason as HostAiApiError).message); }
     finally { setProposalLoading(false); }
+  }
+
+  async function generateProductionPlan() {
+    if (!selected) return;
+    setProductionLoading(true); setMessage("");
+    try {
+      const response = await menusService.createProductionPlan(selected.id);
+      setProductionPlanId(response.plan.id);
+      setMessage("Plan de producción generado sin modificar Stock.");
+    } catch (reason) { setMessage((reason as HostAiApiError).message); }
+    finally { setProductionLoading(false); }
   }
 
   async function createOrders() {
@@ -274,6 +287,7 @@ export function MenusPage() {
         <label>Observaciones<textarea aria-label="Observaciones del menú" value={draft.observaciones} onChange={(event) => setDraft({ ...draft, observaciones: event.target.value })} /></label>
         {selected ? <div className="menu-cost-summary"><strong>{selected.coste_completo ? "Coste automático completo" : "Coste parcial"}</strong><span>Total conocido: {formatMoney(selected.coste_total)}</span><span>Por comensal conocido: {formatMoney(selected.coste_por_comensal)}</span>{!selected.coste_completo ? <span className="draft-warning">{selected.lineas_sin_coste} elaboraciones sin coste. El total no es definitivo.</span> : null}{selected.advertencias.map((warning, index) => <p className="draft-warning" key={`${warning}-${index}`}>{warning}</p>)}{selected.incidencias.map((issue, index) => <p className="draft-warning" key={`${issue.tipo}-${index}`}>{issue.detalle || issue.tipo}</p>)}</div> : null}
         <section className="menu-cost-summary" aria-label="Necesidades y compras"><h3>Necesidades y compras</h3><p>Proyección informativa: no descuenta Stock ni crea pedidos.</p><button disabled={!selected || needsLoading} type="button" onClick={() => void loadNeeds()}>{needsLoading ? "Calculando..." : "Calcular necesidades"}</button>{needs ? <><div><strong>{needs.summary.articulos} artículos</strong><span>{needs.summary.cubiertos} cubiertos · {needs.summary.compra_necesaria} con faltante calculado · {needs.summary.candidatas_propuesta} candidatas o pendientes</span></div><label>Filtrar<select aria-label="Filtrar necesidades" value={needsFilter} onChange={(event) => setNeedsFilter(event.target.value)}><option value="todos">Todos</option><option value="compra">Compra necesaria</option><option value="cubiertos">Cubiertos</option><option value="pendientes">Pendientes</option></select></label>{filterNeeds(needs.lines, needsFilter).map((line, index) => <NeedCard key={`${line.articulo_id || line.ingrediente_nombre}-${index}`} line={line} />)}<button disabled={Boolean(proposalDisabledReason(selected, needs, proposalLoading, needsError))} type="button" onClick={() => void generateProposal()}>{proposalLoading ? "Generando propuesta…" : "Generar propuesta de compra"}</button></> : null}{proposalDisabledReason(selected, needs, proposalLoading, needsError) ? <p className="draft-warning">{proposalDisabledReason(selected, needs, proposalLoading, needsError)}</p> : null}{proposal ? <ProposalReview proposal={proposal} providerNames={providerNames} loading={proposalLoading} disabledReason={createDisabledReason} onUpdate={updateProposalLine} onResolveArticle={resolveArticle} onSave={() => void saveProposal()} onCreate={() => void createOrders()} /> : null}{createdOrders.length ? <div role="status"><strong>{createdOrders.length} borradores creados</strong>{createdOrders.map((order) => <span key={order.id}>{order.id} · {order.proveedor} · {order.estado}</span>)}<Link to="/compras">Abrir Compras</Link><span>Stock sin cambios. No se ha enviado ningún pedido.</span></div> : null}</section>
+        <section className="menu-cost-summary" aria-label="Plan de producción"><h3>Producción</h3><p>Genera un borrador operativo. El cálculo no modifica Stock.</p><button disabled={!selected || productionLoading} type="button" onClick={() => void generateProductionPlan()}>{productionLoading ? "Generando plan..." : "Generar plan de producción"}</button>{productionPlanId ? <div role="status"><strong>Plan {productionPlanId} preparado</strong><Link to="/produccion">Abrir Producción</Link></div> : null}</section>
         <div className="menu-actions"><button disabled={saving} type="button" onClick={() => void save()}>{saving ? "Guardando..." : "Guardar menú"}</button>{selected && selected.estado !== "ARCHIVADO" ? <button disabled={saving} type="button" onClick={() => void archive()}>Archivar menú</button> : null}</div>
         {message ? <p role="status">{message}</p> : null}
       </div>

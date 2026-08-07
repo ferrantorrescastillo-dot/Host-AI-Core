@@ -1,0 +1,8 @@
+import type { ApiEnvelopeBase } from "./api";
+export type ProductionIngredient = { nombre: string; articulo_id: string; cantidad: number; unidad: string; disponible: number | null; faltante: number | null; proveedor?: string | null; estado?: string };
+export type ProductionTask = { id: string; titulo: string; receta_id: string; cantidad: number; cantidad_a_producir: number; unidad: string; estado_ejecucion: string; factor_escalado: number; rendimiento_base: number; ingredientes: ProductionIngredient[]; origen: string };
+export type ProductionPlan = { id: string; plan_id: string; nombre: string; menu_id?: string; menu_version?: number; evento_id?: string; comensales: number; fecha?: string; estado: string; elaboraciones: ProductionTask[]; ingredientes: ProductionIngredient[]; advertencias: string[]; errores_bloqueantes: Array<{ code: string; message: string }>; generated_at: string; resumen: { elaboraciones: number; ingredientes: number; faltantes: number; bloqueadas: number } };
+export type ProductionPlanResponse = ApiEnvelopeBase & { plan: ProductionPlan; idempotente?: boolean; stock_modificado?: boolean };
+export type ProductionPreview = { ok: boolean; estado: string; mensaje: string; consumos?: Array<{ nombre: string; articulo_id: string; cantidad: number; unidad: string; disponible: number }>; faltantes?: Array<{ nombre: string; cantidad: number; unidad: string; disponible: number; faltante: number }> };
+export type ProductionPreviewResponse = ApiEnvelopeBase & { consumo_previsto: ProductionPreview; stock_modificado: false };
+export type ProductionConfirmationResponse = ApiEnvelopeBase & { resultado: { estado: string; mensaje: string }; plan: ProductionPlan; stock_modificado: true };
