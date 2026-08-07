@@ -107,6 +107,8 @@ export type MenuProposalLine = {
   unidad_base: string; proveedor: string | null; formato_compra: string | null;
   precio_estimado: number | null; coste_estimado: number | null; estado: string;
   observaciones: string; advertencia: string | null; motivos_pendientes?: string[];
+  proveedor_sugerido?: string | { nombre?: string } | null;
+  proveedor_preferente?: string | { nombre?: string } | null;
 };
 
 export type MenuDraftOrder = { id: string; proveedor: string; estado: "borrador"; lineas: Array<Record<string, unknown>>; importe_estimado: number; observaciones: string };

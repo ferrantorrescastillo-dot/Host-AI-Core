@@ -103,7 +103,7 @@ describe("Selector de elaboraciones de Menús", () => {
       if (url.endsWith("/propuesta-compra") && init?.method === "POST") return { ok: true, status: 201, json: async () => ({ ...envelope,
         propuesta: { id: "MENUPROP-1", estado: "CONFIRMADA", version: 1, coste_estimado: 10, coste_completo: true,
           lineas: [{ id: "LINEA-001", incluir: true, articulo_id: "ART-PATATA", articulo: "Patata", cantidad_necesaria: 2.5,
-            cantidad_faltante: 1.5, cantidad_final_propuesta: 5, unidad_base: "kg", proveedor: "Proveedor A", formato_compra: "saco",
+            cantidad_faltante: 1.5, cantidad_final_propuesta: null, unidad_base: "kg", proveedor: null, proveedor_sugerido: { nombre: "Proveedor A" }, formato_compra: "saco",
             precio_estimado: 2, coste_estimado: 10, estado: "Parcialmente cubierto", observaciones: "", advertencia: null }],
           grupos_proveedor: [{ proveedor: "Proveedor A", lineas: [] }], resumen: { articulos_propuestos: 1, articulos_pendientes: 0, proveedores_pendientes: 0 },
           advertencias: [], crea_pedido: true, modifica_stock: false, datos_reales_modificados: true },
@@ -128,6 +128,8 @@ describe("Selector de elaboraciones de Menús", () => {
     expect(screen.getByText("Líneas listas para pedido: 1")).toBeInTheDocument();
     expect(screen.getByText("Líneas pendientes: 0")).toBeInTheDocument();
     expect(screen.getByText("Proveedores: 1")).toBeInTheDocument();
+    expect(screen.getByLabelText("Cantidad propuesta LINEA-001")).toHaveValue(2.5);
+    expect(screen.getByLabelText("Proveedor LINEA-001")).toHaveValue("Proveedor A");
     expect(await screen.findByText("1 borradores creados")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Abrir Compras" })).toHaveAttribute("href", "/compras");
     expect(screen.getByText("No se ha creado ningún pedido ni modificado Stock.")).toBeInTheDocument();
@@ -172,13 +174,13 @@ describe("Selector de elaboraciones de Menús", () => {
     expect(createButton).toBeDisabled();
     expect(screen.getByText(/No hay líneas listas/)).toBeInTheDocument();
     expect(screen.getByText("Líneas pendientes: 1")).toBeInTheDocument();
-    expect(screen.getByText(/^Cantidad propuesta pendiente/, { selector: "strong" })).toHaveTextContent("(1)");
     expect(screen.getByText(/^Proveedor pendiente/, { selector: "strong" })).toHaveTextContent("(1)");
     expect(screen.getByText("Requiere atención")).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: /Patata: Introduce una cantidad/ }));
-    expect(screen.getByLabelText("Cantidad propuesta LINEA-PENDIENTE")).toHaveFocus();
+    expect(screen.getByLabelText("Cantidad propuesta LINEA-PENDIENTE")).toHaveValue(2);
+    fireEvent.click(screen.getByRole("button", { name: /Patata: Selecciona o escribe un proveedor/ }));
+    expect(screen.getByLabelText("Proveedor LINEA-PENDIENTE")).toHaveFocus();
 
-    fireEvent.change(screen.getByLabelText("Cantidad propuesta LINEA-PENDIENTE"), { target: { value: "2" } });
+    fireEvent.change(screen.getByLabelText("Cantidad propuesta LINEA-PENDIENTE"), { target: { value: "3" } });
     fireEvent.change(screen.getByLabelText("Proveedor LINEA-PENDIENTE"), { target: { value: "Proveedor A" } });
     expect(createButton).toBeEnabled();
     vi.spyOn(window, "confirm").mockReturnValue(true);

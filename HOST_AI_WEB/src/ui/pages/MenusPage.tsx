@@ -115,7 +115,8 @@ export function MenusPage() {
     setProposalLoading(true); setMessage("");
     try {
       const response = await menusService.createPurchaseProposal(selected.id);
-      setProposal(response.propuesta); setProposalDirty(false);
+      const normalized = normalizeProposal(response.propuesta);
+      setProposal(normalized.proposal); setProposalDirty(normalized.changed);
       setCreatedOrders(response.pedidos_creados ?? []);
       setOrderResult(response.lineas_incluidas && response.lineas_pendientes && response.lineas_excluidas
         ? { lineas_incluidas: response.lineas_incluidas, lineas_pendientes: response.lineas_pendientes, lineas_excluidas: response.lineas_excluidas, advertencias: response.advertencias ?? [] }
@@ -295,7 +296,7 @@ function ProposalReview({ proposal, loading, disabledReason, onUpdate, onSave, o
         <header><label className="proposal-include"><input aria-label={`Incluir ${line.articulo || line.id}`} checked={line.incluir} type="checkbox" onChange={(event) => onUpdate(line.id, { incluir: event.target.checked })} /> Incluir artículo</label><strong>{line.articulo || "Artículo sin relacionar"}</strong><span className={`proposal-badge proposal-badge-${tone}`}>{!line.incluir ? "Excluido" : blocking ? "Requiere atención" : "Completo"}</span></header>
         <div className="proposal-info-grid"><div><span>Estado</span><strong>{line.estado}</strong></div><div><span>Necesario</span><strong>{formatQuantity(line.cantidad_necesaria, line.unidad_base)}</strong></div><div><span>Falta calculada</span><strong>{formatQuantity(line.cantidad_faltante, line.unidad_base)}</strong></div><div><span>Formato</span><strong>{line.formato_compra || "Pendiente"}</strong></div><div><span>Precio estimado</span><strong>{line.precio_estimado == null ? "Pendiente" : `${formatMoney(line.precio_estimado)}/${line.unidad_base}`}</strong></div></div>
         <div className="proposal-edit-grid"><label>Cantidad propuesta<input data-field="cantidad" aria-label={`Cantidad propuesta ${line.id}`} min="0" step="any" type="number" value={line.cantidad_final_propuesta ?? ""} onChange={(event) => onUpdate(line.id, { cantidad_final_propuesta: event.target.value === "" ? null : Number(event.target.value) })} /></label><label>Proveedor<input data-field="proveedor" aria-label={`Proveedor ${line.id}`} value={line.proveedor || ""} onChange={(event) => onUpdate(line.id, { proveedor: event.target.value })} /></label><label className="proposal-observations">Observaciones<input data-field="observaciones" aria-label={`Observaciones ${line.id}`} value={line.observaciones} onChange={(event) => onUpdate(line.id, { observaciones: event.target.value })} /></label></div>
-        {issues.length || line.advertencia ? <ul className="proposal-line-messages">{issues.map((issue) => <li className={issue.type === "Precio pendiente" ? "warning" : "blocking"} key={issue.type}>{issue.message}</li>)}{line.advertencia ? <li className="warning">{line.advertencia}</li> : null}</ul> : null}
+        {issues.length || line.advertencia ? <ul className="proposal-line-messages">{issues.map((issue) => <li className={isBlockingIssue(issue) ? "blocking" : "warning"} key={issue.type}>{issue.message}</li>)}{line.advertencia ? <li className="warning">{line.advertencia}</li> : null}</ul> : null}
       </article>;
     })}</div>
     <footer className="proposal-actions"><button disabled={loading} type="button" onClick={onSave}>Guardar propuesta</button><button disabled={loading || Boolean(disabledReason)} type="button" onClick={onCreate}>Crear borradores de pedido</button>{loading ? <p className="proposal-block-message">Espera a que termine la operación en curso.</p> : disabledReason ? <p className="proposal-block-message">{disabledReason}</p> : null}<span>No se ha creado ningún pedido ni modificado Stock.</span></footer>
@@ -311,6 +312,10 @@ function proposalLineIssues(line: MenuProposalLine): ProposalIssue[] {
   if (!line.unidad_base && !line.formato_compra) issues.push({ type: "Formato pendiente", field: "formato", message: "La línea no tiene unidad ni formato de compra." });
   if (line.precio_estimado == null) issues.push({ type: "Precio pendiente", field: "precio", message: "El coste estimado todavía no está disponible." });
   return issues;
+}
+
+function isBlockingIssue(issue: ProposalIssue): boolean {
+  return ["Artículo sin relacionar", "Cantidad propuesta pendiente", "Proveedor pendiente"].includes(issue.type);
 }
 
 function NeedCard({ line }: { line: MenuNeedLine }) {
@@ -336,15 +341,33 @@ function proposalDisabledReason(selected: IntelligentMenu | null, needs: MenuNee
 function isOrderableLine(line: MenuProposalLine) {
   return Boolean(
     line.incluir && line.articulo_id && line.proveedor
-    && line.cantidad_final_propuesta != null && line.cantidad_final_propuesta > 0
-    && (line.unidad_base || line.formato_compra),
+    && line.cantidad_final_propuesta != null && line.cantidad_final_propuesta > 0,
   );
+}
+
+function normalizeProposal(proposal: MenuPurchaseProposalResponse["propuesta"]): { proposal: MenuPurchaseProposalResponse["propuesta"]; changed: boolean } {
+  let changed = false;
+  const lineas = proposal.lineas.map((line) => {
+    const provider = providerName(line.proveedor) || providerName(line.proveedor_sugerido) || providerName(line.proveedor_preferente);
+    const quantity = line.cantidad_final_propuesta == null && line.cantidad_necesaria > 0
+      ? line.cantidad_necesaria
+      : line.cantidad_final_propuesta;
+    if (provider !== providerName(line.proveedor) || quantity !== line.cantidad_final_propuesta) changed = true;
+    return { ...line, proveedor: provider || null, cantidad_final_propuesta: quantity };
+  });
+  return { proposal: { ...proposal, lineas }, changed };
+}
+
+function providerName(value: unknown): string {
+  if (typeof value === "string") return value.trim();
+  if (value && typeof value === "object" && "nombre" in value) return String((value as { nombre?: unknown }).nombre || "").trim();
+  return "";
 }
 
 function orderDisabledReason(proposal: MenuPurchaseProposalResponse["propuesta"] | null, loading: boolean, readyCount: number) {
   if (!proposal) return "Genera primero una propuesta.";
   if (loading) return "Creando borradores…";
-  if (readyCount === 0) return "No hay líneas listas. Revisa artículo, proveedor, cantidad y unidad o formato.";
+  if (readyCount === 0) return "No hay líneas listas. Revisa artículo, proveedor y cantidad.";
   return "";
 }
 
