@@ -470,6 +470,37 @@ class MotorCompras:
         self._guardar()
         return pedido
 
+    def confirmar_borrador_pedido(self, pedido_id: str, *, usuario: str, actualizado_en: str = "") -> tuple[PedidoSugerido, bool]:
+        """Convierte el pedido-borrador canónico en preparado, sin enviarlo ni recibirlo."""
+        pedido = self.pedidos_sugeridos.get(pedido_id)
+        if not pedido:
+            raise KeyError(f"Pedido no encontrado: {pedido_id}")
+        if pedido.estado == "preparado" and pedido.borrador_origen_id == pedido.id:
+            return pedido, True
+        if pedido.estado != "borrador":
+            raise ValueError(f"El pedido no se puede confirmar en estado {pedido.estado}.")
+        if actualizado_en and actualizado_en != pedido.actualizado_en:
+            raise RuntimeError("El borrador cambió desde la última revisión.")
+        if not pedido.lineas:
+            raise ValueError("No se puede confirmar un borrador sin líneas.")
+
+        anterior = PedidoSugerido.from_dict(pedido.to_dict())
+        try:
+            pedido.estado = "preparado"
+            pedido.confirmado_en = datetime.now().isoformat(timespec="seconds")
+            pedido.confirmado_por = str(usuario or "").strip()
+            pedido.borrador_origen_id = pedido.id
+            pedido.tocar(
+                "pedido_confirmado",
+                f"Borrador {pedido.id} confirmado por {pedido.confirmado_por}; {len(pedido.lineas)} líneas; proveedor {pedido.proveedor}; total {pedido.importe_estimado():.2f}.",
+            )
+            if self.db:
+                self.db.guardar("compras_pedidos", [p.to_dict() for p in self.pedidos_sugeridos.values()])
+        except Exception:
+            self.pedidos_sugeridos[pedido_id] = anterior
+            raise
+        return pedido, False
+
     def recibir_pedido(self, pedido_id: str, motor_stock, ubicacion: str = "", caducidades: Optional[Dict[str, str]] = None, costes: Optional[Dict[str, float]] = None) -> Dict[str, Any]:
         pedido = self.pedidos_sugeridos.get(pedido_id)
         if not pedido:

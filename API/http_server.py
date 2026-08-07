@@ -213,6 +213,10 @@ def create_app(platform_api: HostAIPlatformAPI | None = None) -> FastAPI:
     async def patch_compras_borrador(pedido_id: str, request: Request) -> JSONResponse:
         return await _delegate(request, body=await _json_body(request))
 
+    @app.post("/api/v1/compras/borradores/{pedido_id}/confirmar")
+    async def post_confirmar_compras_borrador(pedido_id: str, request: Request) -> JSONResponse:
+        return await _delegate(request, body=await _json_body(request))
+
     @app.post("/api/v1/biblioteca/importaciones")
     async def post_biblioteca_importacion(request: Request) -> JSONResponse:
         parsed: dict[str, Any] = {}

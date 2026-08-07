@@ -180,9 +180,9 @@ describe("Compras", () => {
       if (url.endsWith("/api/v1/dashboard")) return { ok: true, json: async () => dashboard } as Response;
       if (init?.method === "PATCH") {
         const body = JSON.parse(String(init.body));
-        return { ok: true, json: async () => ({ ...dashboard, borrador: { ...draft, ...body, importe_estimado: body.lineas.reduce((sum: number, line: { cantidad: number; precio_unitario: number }) => sum + line.cantidad * line.precio_unitario, 0) } }) } as Response;
+        return { ok: true, json: async () => ({ ...dashboard, borrador: { ...draft, ...body, importe_estimado: body.lineas.reduce((sum: number, line: { cantidad: number; precio_unitario: number }) => sum + line.cantidad * line.precio_unitario, 0) }, revision: { valido: true, errores_bloqueantes: [], advertencias: [] } }) } as Response;
       }
-      return { ok: true, json: async () => ({ ...dashboard, borrador: draft }) } as Response;
+      return { ok: true, json: async () => ({ ...dashboard, borrador: draft, revision: { valido: true, errores_bloqueantes: [], advertencias: [] } }) } as Response;
     });
 
     renderPage();
@@ -195,8 +195,40 @@ describe("Compras", () => {
     expect(screen.getAllByRole("group")).toHaveLength(2);
     await userEvent.click(screen.getAllByRole("button", { name: "Eliminar línea" })[1]);
     await userEvent.click(screen.getByRole("button", { name: "Guardar borrador" }));
-    expect(await screen.findByText("Borrador guardado.")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Crear pedido" })).toBeDisabled();
+    expect(await screen.findByText("Borrador guardado y validado.")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Confirmar y crear pedido" })).toBeEnabled();
     expect(fetchMock).toHaveBeenCalledWith(expect.stringContaining("/api/v1/compras/borradores/PED-1"), expect.objectContaining({ method: "PATCH" }));
+  });
+
+  it("revisa, confirma una vez y muestra el pedido preparado", async () => {
+    const dashboard = payload([], { pedidos: [{ id: "PED-2", proveedor: "Proveedor A", estado: "borrador", lineas: [{ nombre: "Patata", cantidad: 2, unidad: "kg" }], importe_estimado: 6 }] });
+    const draft = { id: "PED-2", proveedor: "Proveedor A", estado: "borrador", lineas: [{ id: "LIN-2", articulo_id: "ART-1", nombre: "Patata", cantidad: 2, unidad: "kg", precio_unitario: 3 }], importe_estimado: 6, creado_en: "2026-08-07T10:00:00", actualizado_en: "2026-08-07T10:00:00", origen: { tipo: "menu", id: "MENU-1", version: 3, propuesta_id: "PROP-1" } };
+    let release!: () => void;
+    const gate = new Promise<void>((resolve) => { release = resolve; });
+    const fetchMock = vi.spyOn(global, "fetch").mockImplementation(async (input, init) => {
+      const url = String(input);
+      if (url.endsWith("/api/v1/dashboard")) return { ok: true, json: async () => dashboard } as Response;
+      if (url.endsWith("/confirmar") && init?.method === "POST") {
+        await gate;
+        return { ok: true, json: async () => ({ ...dashboard, pedido: { ...draft, estado: "preparado", confirmado_en: "2026-08-07T11:00:00" }, borrador: { ...draft, estado: "preparado" }, idempotente: false, advertencias: [], stock_modificado: false, inventario_modificado: false, recepciones_creadas: 0 }) } as Response;
+      }
+      return { ok: true, json: async () => ({ ...dashboard, borrador: draft, revision: { valido: true, errores_bloqueantes: [], advertencias: [{ code: "price_pending", field: "precio", message: "Advertencia informativa" }] } }) } as Response;
+    });
+    vi.spyOn(window, "confirm").mockReturnValue(true);
+
+    renderPage();
+    await userEvent.click(await screen.findByRole("button", { name: "Abrir borrador" }));
+    expect(await screen.findByRole("heading", { name: "Revisión final" })).toBeInTheDocument();
+    expect(screen.getByText("Advertencia informativa")).toBeInTheDocument();
+    const button = screen.getByRole("button", { name: "Confirmar y crear pedido" });
+    await userEvent.click(button);
+    await userEvent.click(button);
+    expect(screen.getByText("Creando pedido...")).toBeInTheDocument();
+    expect(fetchMock.mock.calls.filter(([url]) => String(url).endsWith("/confirmar"))).toHaveLength(1);
+    release();
+    expect(await screen.findByText("Pedido creado correctamente en estado preparado.")).toBeInTheDocument();
+    expect(screen.getByText("Pedido creado:")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Ver pedido creado" })).toHaveAttribute("href", "#pedido-PED-2");
+    expect(window.confirm).toHaveBeenCalledWith(expect.stringContaining("Proveedor A con 1 líneas"));
   });
 });

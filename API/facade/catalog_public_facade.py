@@ -121,7 +121,7 @@ class CatalogPublicFacade(CorePublicApi02Facade):
 
     def _get_compras_drafts_service(self) -> ComprasBorradoresService:
         if self._compras_drafts_service is None:
-            self._compras_drafts_service = ComprasBorradoresService(self._get_core().compras)
+            self._compras_drafts_service = ComprasBorradoresService(self._get_core().compras, self.base_dir)
         return self._compras_drafts_service
 
     def borrador_compra(self, pedido_id: str) -> dict[str, Any]:
@@ -129,6 +129,9 @@ class CatalogPublicFacade(CorePublicApi02Facade):
 
     def actualizar_borrador_compra(self, pedido_id: str, body: dict[str, Any]) -> dict[str, Any]:
         return {**self._base_payload(), **self._get_compras_drafts_service().actualizar(pedido_id, body)}
+
+    def confirmar_borrador_compra(self, pedido_id: str, body: dict[str, Any]) -> dict[str, Any]:
+        return {**self._base_payload(), **self._get_compras_drafts_service().confirmar(pedido_id, body)}
 
     def _get_biblioteca_import_service(self) -> ImportDocumentService:
         if self._biblioteca_import_service is None:

@@ -9,3 +9,10 @@ def draft_handle(request: ApiRequest, facade: CorePublicFacade) -> ApiResponse:
     payload = facade.actualizar_borrador_compra(pedido_id, request.body) if request.method.upper() == "PATCH" else facade.borrador_compra(pedido_id)
     status = 200 if payload.get("ok") else int((payload.get("error") or {}).get("status") or 500)
     return ApiResponse(status_code=status, payload=payload)
+
+
+def confirm_draft_handle(request: ApiRequest, facade: CorePublicFacade) -> ApiResponse:
+    pedido_id = str(request.path).split("/api/v1/compras/borradores/", 1)[-1].rsplit("/confirmar", 1)[0]
+    payload = facade.confirmar_borrador_compra(pedido_id, request.body)
+    status = 200 if payload.get("ok") else int((payload.get("error") or {}).get("status") or 500)
+    return ApiResponse(status_code=status, payload=payload)

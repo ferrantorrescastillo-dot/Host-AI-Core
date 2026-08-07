@@ -65,4 +65,7 @@ export const comprasService = {
   saveDraft(id: string, input: CompraDraftInput): Promise<CompraDraftResponse> {
     return hostAiApiClient.updateCompraDraft(id, input);
   },
+  confirmDraft(id: string, actualizadoEn: string) {
+    return hostAiApiClient.confirmCompraDraft(id, actualizadoEn);
+  },
 };

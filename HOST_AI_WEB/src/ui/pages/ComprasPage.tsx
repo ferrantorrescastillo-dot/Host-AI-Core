@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { HostAiApiError } from "../../api/client";
 import {
   comprasService,
@@ -12,7 +12,7 @@ import type {
 } from "../../types/api";
 import { ErrorState } from "../components/ErrorState";
 import { LoadingState } from "../components/LoadingState";
-import type { CompraDraft, CompraDraftLine } from "../../types/compras";
+import type { CompraDraft, CompraDraftLine, CompraDraftRevision } from "../../types/compras";
 
 export function ComprasPage() {
   const [loading, setLoading] = useState(true);
@@ -172,12 +172,41 @@ function ComprasContent({ data, onSaved }: { data: ComprasResult | null; onSaved
 
 function DraftsSection({ items, onSaved }: { items: ComprasResult["pedidos"]; onSaved: () => void }) {
   const [draft, setDraft] = useState<CompraDraft | null>(null);
+  const [revision, setRevision] = useState<CompraDraftRevision | null>(null);
   const [busy, setBusy] = useState(false);
+  const [dirty, setDirty] = useState(false);
   const [message, setMessage] = useState("");
-  const open = async (id: string) => { setBusy(true); setMessage(""); try { setDraft((await comprasService.getDraft(id)).borrador); } catch (error) { setMessage(error instanceof Error ? error.message : "No se pudo abrir el borrador."); } finally { setBusy(false); } };
-  const changeLine = (index: number, field: keyof CompraDraftLine, value: string) => setDraft((current) => current ? { ...current, lineas: current.lineas.map((line, position) => position === index ? { ...line, [field]: field === "cantidad" || field === "precio_unitario" ? Number(value) : value } : line) } : current);
-  const save = async () => { if (!draft) return; setBusy(true); setMessage(""); try { const response = await comprasService.saveDraft(draft.id, { proveedor: draft.proveedor, observaciones: draft.observaciones, lineas: draft.lineas }); setDraft(response.borrador); setMessage("Borrador guardado."); onSaved(); } catch (error) { setMessage(error instanceof Error ? error.message : "No se pudo guardar el borrador."); } finally { setBusy(false); } };
-  return <section className="feature-block" aria-label="Borradores de pedido"><h3>Borradores de pedido</h3>{items.length ? <ul className="clean-list compras-list">{items.map((item) => <li className="compra-item" key={item.id}><div><strong>{item.proveedor}</strong><p className="meta-line">{item.estado} · {item.observaciones || "Sin referencia"}</p></div><div><p>{item.lineas.length} líneas · {money(item.importe_estimado)}</p><button type="button" onClick={() => void open(item.id)}>Abrir borrador</button></div></li>)}</ul> : <div className="panel-state"><p>No hay borradores de pedido.</p></div>}{busy ? <p>Cargando borrador...</p> : null}{message ? <p role="status">{message}</p> : null}{draft ? <div className="menu-editor"><h4>Editar borrador {draft.id}</h4><p className="meta-line">Menú origen: {draft.origen.id || "No disponible"} · versión {draft.origen.version || "No disponible"} · {formatDate(draft.creado_en)}</p><label>Proveedor<input value={draft.proveedor} onChange={(event) => setDraft({ ...draft, proveedor: event.target.value })} /></label><p className="meta-line">Cambiar el proveedor reagrupará todas las líneas de este borrador.</p>{draft.lineas.map((line, index) => <fieldset key={line.id || index}><legend>Artículo {index + 1}</legend><label>Artículo<input value={line.nombre} onChange={(event) => changeLine(index, "nombre", event.target.value)} /></label><label>Cantidad<input aria-label={`Cantidad ${index + 1}`} type="number" min="0.001" step="any" value={line.cantidad} onChange={(event) => changeLine(index, "cantidad", event.target.value)} /></label><label>Unidad<input value={line.unidad} onChange={(event) => changeLine(index, "unidad", event.target.value)} /></label><label>Precio unitario<input aria-label={`Precio ${index + 1}`} type="number" min="0" step="any" value={line.precio_unitario} onChange={(event) => changeLine(index, "precio_unitario", event.target.value)} /></label><label>Observaciones<input value={line.observaciones || ""} onChange={(event) => changeLine(index, "observaciones", event.target.value)} /></label><button type="button" onClick={() => setDraft({ ...draft, lineas: draft.lineas.filter((_, position) => position !== index) })}>Eliminar línea</button></fieldset>)}<button type="button" onClick={() => setDraft({ ...draft, lineas: [...draft.lineas, { nombre: "", cantidad: 1, unidad: "u", precio_unitario: 0 }] })}>Añadir línea</button><p><strong>Coste estimado:</strong> {money(draft.lineas.reduce((sum, line) => sum + line.cantidad * line.precio_unitario, 0))}</p><button type="button" disabled={busy} onClick={() => void save()}>Guardar borrador</button> <button type="button" disabled>Crear pedido</button></div> : null}</section>;
+  const confirming = useRef(false);
+  const open = async (id: string) => {
+    setBusy(true); setMessage("");
+    try { const response = await comprasService.getDraft(id); setDraft(response.borrador); setRevision(response.revision || null); setDirty(false); }
+    catch (error) { setMessage(error instanceof Error ? error.message : "No se pudo abrir el borrador."); }
+    finally { setBusy(false); }
+  };
+  const updateDraft = (next: CompraDraft) => { setDraft(next); setDirty(true); };
+  const changeLine = (index: number, field: keyof CompraDraftLine, value: string) => {
+    if (!draft) return;
+    updateDraft({ ...draft, lineas: draft.lineas.map((line, position) => position === index ? { ...line, [field]: field === "cantidad" || field === "precio_unitario" ? Number(value) : value } : line) });
+  };
+  const save = async () => {
+    if (!draft) return;
+    setBusy(true); setMessage("");
+    try { const response = await comprasService.saveDraft(draft.id, { proveedor: draft.proveedor, observaciones: draft.observaciones, lineas: draft.lineas }); setDraft(response.borrador); setRevision(response.revision || null); setDirty(false); setMessage("Borrador guardado y validado."); onSaved(); }
+    catch (error) { setMessage(error instanceof Error ? error.message : "No se pudo guardar el borrador."); }
+    finally { setBusy(false); }
+  };
+  const confirm = async () => {
+    if (!draft || dirty || confirming.current || revision?.errores_bloqueantes.length) return;
+    const total = draft.lineas.reduce((sum, line) => sum + line.cantidad * line.precio_unitario, 0);
+    if (!window.confirm(`Se creará un pedido real para ${draft.proveedor} con ${draft.lineas.length} líneas y total estimado ${money(total)}.`)) return;
+    confirming.current = true; setBusy(true); setMessage("Creando pedido...");
+    try { const response = await comprasService.confirmDraft(draft.id, draft.actualizado_en); setDraft(response.pedido); setRevision({ valido: true, errores_bloqueantes: [], advertencias: response.advertencias }); setDirty(false); setMessage(response.idempotente ? "Este borrador ya estaba convertido; se muestra el pedido existente." : "Pedido creado correctamente en estado preparado."); onSaved(); }
+    catch (error) { setMessage(error instanceof Error ? error.message : "No se pudo crear el pedido."); }
+    finally { confirming.current = false; setBusy(false); }
+  };
+  const editable = draft?.estado === "borrador";
+  const total = draft?.lineas.reduce((sum, line) => sum + line.cantidad * line.precio_unitario, 0) || 0;
+  return <section className="feature-block" aria-label="Borradores de pedido"><h3>Borradores y pedidos</h3>{items.length ? <ul className="clean-list compras-list">{items.map((item) => <li className="compra-item" key={item.id}><div><strong>{item.proveedor}</strong><p className="meta-line">{item.estado} · {item.observaciones || "Sin referencia"}</p></div><div><p>{item.lineas.length} líneas · {money(item.importe_estimado)}</p><button type="button" onClick={() => void open(item.id)}>{item.estado === "borrador" ? "Abrir borrador" : "Abrir pedido"}</button></div></li>)}</ul> : <div className="panel-state"><p>No hay borradores ni pedidos.</p></div>}{busy ? <p aria-live="polite">Procesando...</p> : null}{message ? <p role="status">{message}</p> : null}{draft ? <div className="menu-editor" id={`pedido-${draft.id}`}><h4>{editable ? "Editar borrador" : "Pedido"} {draft.id}</h4><p className="meta-line">Menú origen: {draft.origen.id || "No disponible"} · versión {draft.origen.version || "No disponible"} · propuesta {draft.origen.propuesta_id || "No disponible"} · {formatDate(draft.creado_en)}</p><label>Proveedor<input disabled={!editable} value={draft.proveedor} onChange={(event) => updateDraft({ ...draft, proveedor: event.target.value })} /></label>{editable ? <p className="meta-line">Cambiar el proveedor reagrupará todas las líneas de este borrador.</p> : null}{draft.lineas.map((line, index) => <fieldset disabled={!editable} key={line.id || index}><legend>Artículo {index + 1}</legend><label>Artículo<input value={line.nombre} onChange={(event) => changeLine(index, "nombre", event.target.value)} /></label><label>Cantidad<input aria-label={`Cantidad ${index + 1}`} type="number" min="0.001" step="any" value={line.cantidad} onChange={(event) => changeLine(index, "cantidad", event.target.value)} /></label><label>Unidad<input value={line.unidad} onChange={(event) => changeLine(index, "unidad", event.target.value)} /></label><label>Precio unitario<input aria-label={`Precio ${index + 1}`} type="number" min="0" step="any" value={line.precio_unitario} onChange={(event) => changeLine(index, "precio_unitario", event.target.value)} /></label><label>Observaciones<input value={line.observaciones || ""} onChange={(event) => changeLine(index, "observaciones", event.target.value)} /></label>{editable ? <button type="button" onClick={() => updateDraft({ ...draft, lineas: draft.lineas.filter((_, position) => position !== index) })}>Eliminar línea</button> : null}</fieldset>)}{editable ? <button type="button" onClick={() => updateDraft({ ...draft, lineas: [...draft.lineas, { nombre: "", cantidad: 1, unidad: "u", precio_unitario: 0 }] })}>Añadir línea</button> : null}<section className="final-review" aria-label="Revisión final"><h5>Revisión final</h5><dl><div><dt>Proveedor</dt><dd>{draft.proveedor}</dd></div><div><dt>Líneas</dt><dd>{draft.lineas.length}</dd></div><div><dt>Subtotal</dt><dd>{money(total)}</dd></div><div><dt>Impuestos</dt><dd>No desglosados</dd></div><div><dt>Total estimado</dt><dd>{money(total)}</dd></div><div><dt>Estado</dt><dd>{draft.estado}</dd></div></dl>{revision?.errores_bloqueantes.length ? <div role="alert"><strong>Errores que impiden crear el pedido</strong><ul>{revision.errores_bloqueantes.map((issue, index) => <li key={`${issue.code}-${index}`}>{issue.message}</li>)}</ul></div> : null}{revision?.advertencias.length ? <div><strong>Advertencias</strong><ul>{revision.advertencias.map((issue, index) => <li key={`${issue.code}-${index}`}>{issue.message}</li>)}</ul></div> : null}{dirty ? <p className="draft-warning">Guarda los cambios antes de confirmar.</p> : null}{editable ? <><button type="button" disabled={busy || dirty || !revision?.valido} onClick={() => void confirm()}>Confirmar y crear pedido</button><p className="meta-line">El pedido quedará preparado, no enviado. Stock e inventario no cambiarán.</p></> : <><p><strong>Pedido creado:</strong> {draft.id}</p><a href={`#pedido-${draft.id}`}>Ver pedido creado</a><p className="meta-line">Estado preparado: pendiente de envío. No se ha creado recepción.</p></>}</section>{editable ? <button type="button" disabled={busy} onClick={() => void save()}>Guardar borrador</button> : null}</div> : null}</section>;
 }
 
 function money(value: number): string { return value.toLocaleString("es-ES", { style: "currency", currency: "EUR" }); }

@@ -815,6 +815,11 @@ textarea {
 .proposal-line-messages .warning, .proposal-warnings { color: #77621c; }
 .proposal-actions { display: flex; gap: .65rem; align-items: center; flex-wrap: wrap; padding-top: .25rem; }
 .proposal-actions p, .proposal-actions span { flex-basis: 100%; }
+.final-review { display: grid; gap: .75rem; margin-top: 1rem; padding: 1rem; border: 1px solid #cad8ce; border-radius: .8rem; background: #f4f8f5; }
+.final-review h5, .final-review p { margin: 0; }
+.final-review dl { display: grid; grid-template-columns: repeat(3, minmax(9rem, 1fr)); gap: .6rem; margin: 0; }
+.final-review dl div { padding: .55rem; border-radius: .5rem; background: var(--surface); }
+.final-review dd { margin: .2rem 0 0; font-weight: 700; }
 
 @media (max-width: 760px) {
   .draft-review-layout,

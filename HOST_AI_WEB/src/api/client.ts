@@ -18,7 +18,7 @@ import type {
   MenuResponse,
   MenusResponse,
 } from "../types/menus";
-import type { CompraDraftInput, CompraDraftResponse } from "../types/compras";
+import type { CompraConfirmationResponse, CompraDraftInput, CompraDraftResponse } from "../types/compras";
 
 type Envelope = {
   ok: boolean;
@@ -117,6 +117,12 @@ export const hostAiApiClient = {
 
   updateCompraDraft(id: string, input: CompraDraftInput): Promise<CompraDraftResponse> {
     return request<CompraDraftResponse>(`/api/v1/compras/borradores/${encodeURIComponent(id)}`, { method: "PATCH", body: JSON.stringify(input) });
+  },
+
+  confirmCompraDraft(id: string, actualizadoEn: string): Promise<CompraConfirmationResponse> {
+    return request<CompraConfirmationResponse>(`/api/v1/compras/borradores/${encodeURIComponent(id)}/confirmar`, {
+      method: "POST", body: JSON.stringify({ confirmacion: "CONFIRMAR_PEDIDO", usuario: "web", actualizado_en: actualizadoEn }),
+    });
   },
 
   getArticulos(query = ""): Promise<CatalogoResponse> {

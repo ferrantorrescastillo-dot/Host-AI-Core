@@ -96,6 +96,8 @@ class PedidoSugerido:
     origen_version: int = 0
     propuesta_id: str = ""
     confirmado_en: str = ""
+    confirmado_por: str = ""
+    borrador_origen_id: str = ""
     recepciones: List[Dict[str, Any]] = field(default_factory=list)
     incidencias: List[Dict[str, Any]] = field(default_factory=list)
     historial: List[Dict[str, str]] = field(default_factory=list)
@@ -168,6 +170,8 @@ class PedidoSugerido:
             "origen_version": self.origen_version,
             "propuesta_id": self.propuesta_id,
             "confirmado_en": self.confirmado_en,
+            "confirmado_por": self.confirmado_por,
+            "borrador_origen_id": self.borrador_origen_id,
             "recepciones": list(self.recepciones),
             "incidencias": list(self.incidencias),
             "historial": list(self.historial),
