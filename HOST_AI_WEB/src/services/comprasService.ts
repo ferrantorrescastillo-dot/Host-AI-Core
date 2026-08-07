@@ -6,6 +6,7 @@ import type {
   PropuestaCompraListItem,
   ProveedorCompraListItem,
 } from "../types/api";
+import type { CompraDraftInput, CompraDraftResponse } from "../types/compras";
 
 export type ComprasResult = ApiEnvelopeBase & {
   compras: CompraListItem[];
@@ -57,5 +58,11 @@ export const comprasService = {
           : compras.length,
       mensaje: modulo?.mensaje,
     };
+  },
+  getDraft(id: string): Promise<CompraDraftResponse> {
+    return hostAiApiClient.getCompraDraft(id);
+  },
+  saveDraft(id: string, input: CompraDraftInput): Promise<CompraDraftResponse> {
+    return hostAiApiClient.updateCompraDraft(id, input);
   },
 };

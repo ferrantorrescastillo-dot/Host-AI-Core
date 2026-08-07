@@ -205,6 +205,8 @@ class MenuNecesidadesService:
         payload = [{
             "proveedor": provider, "lineas": lines,
             "observaciones": f"Generado desde Menú {menu_id} v{proposal['menu_version']} | propuesta {proposal_id} | usuario {body.get('usuario') or 'web'}",
+            "origen_tipo": "menu", "origen_id": menu_id,
+            "origen_version": proposal["menu_version"], "propuesta_id": proposal_id,
         } for provider, lines in groups.items()]
         if not payload:
             return {"ok": False, "error": {"status": 400, "code": "no_orderable_lines", "message": "No hay líneas válidas para crear borradores."}}

@@ -332,6 +332,10 @@ class MotorCompras:
             preparados.append(PedidoSugerido(
                 proveedor=proveedor, lineas=lineas, estado="borrador",
                 observaciones=str(grupo.get("observaciones") or ""),
+                origen_tipo=str(grupo.get("origen_tipo") or ""),
+                origen_id=str(grupo.get("origen_id") or ""),
+                origen_version=int(grupo.get("origen_version") or 0),
+                propuesta_id=str(grupo.get("propuesta_id") or ""),
             ))
 
         anteriores = dict(self.pedidos_sugeridos)
@@ -409,6 +413,42 @@ class MotorCompras:
         pedido.tocar("linea_eliminada", f"Línea eliminada: {linea_id}.")
         self._guardar()
         return True
+
+    def actualizar_borrador_completo(self, pedido_id: str, datos: Dict[str, Any]) -> PedidoSugerido:
+        """Reemplaza cabecera y lineas de un borrador con una unica persistencia."""
+        pedido = self.pedidos_sugeridos.get(pedido_id)
+        if not pedido:
+            raise KeyError(f"Pedido no encontrado: {pedido_id}")
+        if pedido.estado != "borrador":
+            raise ValueError("Solo se pueden editar pedidos en estado borrador.")
+        proveedor = str(datos.get("proveedor") or "").strip()
+        if not proveedor:
+            raise ValueError("El borrador necesita un proveedor.")
+        nuevas_lineas: List[LineaPedido] = []
+        for raw in list(datos.get("lineas") or []):
+            nombre = str(raw.get("nombre") or "").strip()
+            unidad = str(raw.get("unidad") or "").strip()
+            cantidad = float(raw.get("cantidad") or 0)
+            precio = float(raw.get("precio_unitario") or 0)
+            if not nombre or not unidad:
+                raise ValueError("Cada linea necesita nombre y unidad.")
+            if cantidad <= 0:
+                raise ValueError("La cantidad debe ser mayor que cero.")
+            if precio < 0:
+                raise ValueError("El precio unitario no puede ser negativo.")
+            nuevas_lineas.append(LineaPedido.from_dict({**dict(raw), "nombre": nombre, "unidad": unidad, "cantidad": cantidad, "precio_unitario": precio}))
+        anterior = PedidoSugerido.from_dict(pedido.to_dict())
+        try:
+            pedido.proveedor = proveedor
+            pedido.observaciones = str(datos.get("observaciones") or "").strip()
+            pedido.lineas = nuevas_lineas
+            pedido.tocar("borrador_editado", "Borrador actualizado desde Compras.")
+            if self.db:
+                self.db.guardar("compras_pedidos", [p.to_dict() for p in self.pedidos_sugeridos.values()])
+        except Exception:
+            self.pedidos_sugeridos[pedido_id] = anterior
+            raise
+        return pedido
 
     def cambiar_estado_pedido(self, pedido_id: str, estado: str) -> PedidoSugerido:
         pedido = self.pedidos_sugeridos.get(pedido_id)

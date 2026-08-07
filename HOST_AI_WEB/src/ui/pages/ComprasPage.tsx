@@ -12,6 +12,7 @@ import type {
 } from "../../types/api";
 import { ErrorState } from "../components/ErrorState";
 import { LoadingState } from "../components/LoadingState";
+import type { CompraDraft, CompraDraftLine } from "../../types/compras";
 
 export function ComprasPage() {
   const [loading, setLoading] = useState(true);
@@ -88,13 +89,13 @@ export function ComprasPage() {
           </p>
         </>
       ) : (
-        <ComprasContent data={data} />
+        <ComprasContent data={data} onSaved={() => setRefreshTick((value) => value + 1)} />
       )}
     </section>
   );
 }
 
-function ComprasContent({ data }: { data: ComprasResult | null }) {
+function ComprasContent({ data, onSaved }: { data: ComprasResult | null; onSaved: () => void }) {
   const compras = data?.compras ?? [];
   const propuestas = data?.propuestas ?? [];
   const proveedores = data?.proveedores ?? [];
@@ -158,7 +159,7 @@ function ComprasContent({ data }: { data: ComprasResult | null }) {
       </section>
 
       <PropuestasSection items={propuestas} />
-      <section className="feature-block" aria-label="Borradores de pedido"><h3>Borradores de pedido</h3>{pedidos.length ? <ul className="clean-list compras-list">{pedidos.map((pedido) => <li className="compra-item" key={pedido.id}><div><strong>{pedido.proveedor}</strong><p className="meta-line">{pedido.estado} · {pedido.observaciones || "Sin referencia"}</p></div><p>{pedido.lineas.length} líneas · {pedido.importe_estimado.toLocaleString("es-ES", { style: "currency", currency: "EUR" })}</p></li>)}</ul> : <div className="panel-state"><p>No hay borradores de pedido.</p></div>}</section>
+      <DraftsSection items={pedidos} onSaved={onSaved} />
       <ProveedoresSection items={proveedores} />
       <HistorialSection items={historial} />
       <UnavailableSection
@@ -168,6 +169,18 @@ function ComprasContent({ data }: { data: ComprasResult | null }) {
     </>
   );
 }
+
+function DraftsSection({ items, onSaved }: { items: ComprasResult["pedidos"]; onSaved: () => void }) {
+  const [draft, setDraft] = useState<CompraDraft | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState("");
+  const open = async (id: string) => { setBusy(true); setMessage(""); try { setDraft((await comprasService.getDraft(id)).borrador); } catch (error) { setMessage(error instanceof Error ? error.message : "No se pudo abrir el borrador."); } finally { setBusy(false); } };
+  const changeLine = (index: number, field: keyof CompraDraftLine, value: string) => setDraft((current) => current ? { ...current, lineas: current.lineas.map((line, position) => position === index ? { ...line, [field]: field === "cantidad" || field === "precio_unitario" ? Number(value) : value } : line) } : current);
+  const save = async () => { if (!draft) return; setBusy(true); setMessage(""); try { const response = await comprasService.saveDraft(draft.id, { proveedor: draft.proveedor, observaciones: draft.observaciones, lineas: draft.lineas }); setDraft(response.borrador); setMessage("Borrador guardado."); onSaved(); } catch (error) { setMessage(error instanceof Error ? error.message : "No se pudo guardar el borrador."); } finally { setBusy(false); } };
+  return <section className="feature-block" aria-label="Borradores de pedido"><h3>Borradores de pedido</h3>{items.length ? <ul className="clean-list compras-list">{items.map((item) => <li className="compra-item" key={item.id}><div><strong>{item.proveedor}</strong><p className="meta-line">{item.estado} · {item.observaciones || "Sin referencia"}</p></div><div><p>{item.lineas.length} líneas · {money(item.importe_estimado)}</p><button type="button" onClick={() => void open(item.id)}>Abrir borrador</button></div></li>)}</ul> : <div className="panel-state"><p>No hay borradores de pedido.</p></div>}{busy ? <p>Cargando borrador...</p> : null}{message ? <p role="status">{message}</p> : null}{draft ? <div className="menu-editor"><h4>Editar borrador {draft.id}</h4><p className="meta-line">Menú origen: {draft.origen.id || "No disponible"} · versión {draft.origen.version || "No disponible"} · {formatDate(draft.creado_en)}</p><label>Proveedor<input value={draft.proveedor} onChange={(event) => setDraft({ ...draft, proveedor: event.target.value })} /></label><p className="meta-line">Cambiar el proveedor reagrupará todas las líneas de este borrador.</p>{draft.lineas.map((line, index) => <fieldset key={line.id || index}><legend>Artículo {index + 1}</legend><label>Artículo<input value={line.nombre} onChange={(event) => changeLine(index, "nombre", event.target.value)} /></label><label>Cantidad<input aria-label={`Cantidad ${index + 1}`} type="number" min="0.001" step="any" value={line.cantidad} onChange={(event) => changeLine(index, "cantidad", event.target.value)} /></label><label>Unidad<input value={line.unidad} onChange={(event) => changeLine(index, "unidad", event.target.value)} /></label><label>Precio unitario<input aria-label={`Precio ${index + 1}`} type="number" min="0" step="any" value={line.precio_unitario} onChange={(event) => changeLine(index, "precio_unitario", event.target.value)} /></label><label>Observaciones<input value={line.observaciones || ""} onChange={(event) => changeLine(index, "observaciones", event.target.value)} /></label><button type="button" onClick={() => setDraft({ ...draft, lineas: draft.lineas.filter((_, position) => position !== index) })}>Eliminar línea</button></fieldset>)}<button type="button" onClick={() => setDraft({ ...draft, lineas: [...draft.lineas, { nombre: "", cantidad: 1, unidad: "u", precio_unitario: 0 }] })}>Añadir línea</button><p><strong>Coste estimado:</strong> {money(draft.lineas.reduce((sum, line) => sum + line.cantidad * line.precio_unitario, 0))}</p><button type="button" disabled={busy} onClick={() => void save()}>Guardar borrador</button> <button type="button" disabled>Crear pedido</button></div> : null}</section>;
+}
+
+function money(value: number): string { return value.toLocaleString("es-ES", { style: "currency", currency: "EUR" }); }
 
 function SummaryCard({
   title,

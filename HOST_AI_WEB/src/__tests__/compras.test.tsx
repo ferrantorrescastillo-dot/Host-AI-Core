@@ -171,4 +171,32 @@ describe("Compras", () => {
     ).toBeInTheDocument();
     expect(fetchMock).toHaveBeenCalledTimes(2);
   });
+
+  it("abre, edita y guarda un borrador manteniendolo sin enviar", async () => {
+    const dashboard = payload([], { pedidos: [{ id: "PED-1", proveedor: "Proveedor A", estado: "borrador", lineas: [{ nombre: "Patata", cantidad: 2, unidad: "kg" }], importe_estimado: 6 }] });
+    const draft = { id: "PED-1", proveedor: "Proveedor A", estado: "borrador", lineas: [{ id: "LIN-1", nombre: "Patata", cantidad: 2, unidad: "kg", precio_unitario: 3 }], importe_estimado: 6, creado_en: "2026-08-07T10:00:00", actualizado_en: "2026-08-07T10:00:00", origen: { tipo: "menu", id: "MENU-1", version: 3, propuesta_id: "PROP-1" } };
+    const fetchMock = vi.spyOn(global, "fetch").mockImplementation(async (input, init) => {
+      const url = String(input);
+      if (url.endsWith("/api/v1/dashboard")) return { ok: true, json: async () => dashboard } as Response;
+      if (init?.method === "PATCH") {
+        const body = JSON.parse(String(init.body));
+        return { ok: true, json: async () => ({ ...dashboard, borrador: { ...draft, ...body, importe_estimado: body.lineas.reduce((sum: number, line: { cantidad: number; precio_unitario: number }) => sum + line.cantidad * line.precio_unitario, 0) } }) } as Response;
+      }
+      return { ok: true, json: async () => ({ ...dashboard, borrador: draft }) } as Response;
+    });
+
+    renderPage();
+    await userEvent.click(await screen.findByRole("button", { name: "Abrir borrador" }));
+    expect(await screen.findByText(/Menú origen: MENU-1 · versión 3/)).toBeInTheDocument();
+    const quantity = screen.getByLabelText("Cantidad 1");
+    await userEvent.clear(quantity);
+    await userEvent.type(quantity, "4");
+    await userEvent.click(screen.getByRole("button", { name: "Añadir línea" }));
+    expect(screen.getAllByRole("group")).toHaveLength(2);
+    await userEvent.click(screen.getAllByRole("button", { name: "Eliminar línea" })[1]);
+    await userEvent.click(screen.getByRole("button", { name: "Guardar borrador" }));
+    expect(await screen.findByText("Borrador guardado.")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Crear pedido" })).toBeDisabled();
+    expect(fetchMock).toHaveBeenCalledWith(expect.stringContaining("/api/v1/compras/borradores/PED-1"), expect.objectContaining({ method: "PATCH" }));
+  });
 });

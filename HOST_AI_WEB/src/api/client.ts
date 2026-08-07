@@ -18,6 +18,7 @@ import type {
   MenuResponse,
   MenusResponse,
 } from "../types/menus";
+import type { CompraDraftInput, CompraDraftResponse } from "../types/compras";
 
 type Envelope = {
   ok: boolean;
@@ -108,6 +109,14 @@ async function request<T extends Envelope>(path: string, init?: RequestInit): Pr
 export const hostAiApiClient = {
   getDashboard(): Promise<DashboardResponse> {
     return request<DashboardResponse>("/api/v1/dashboard", { method: "GET" });
+  },
+
+  getCompraDraft(id: string): Promise<CompraDraftResponse> {
+    return request<CompraDraftResponse>(`/api/v1/compras/borradores/${encodeURIComponent(id)}`, { method: "GET" });
+  },
+
+  updateCompraDraft(id: string, input: CompraDraftInput): Promise<CompraDraftResponse> {
+    return request<CompraDraftResponse>(`/api/v1/compras/borradores/${encodeURIComponent(id)}`, { method: "PATCH", body: JSON.stringify(input) });
   },
 
   getArticulos(query = ""): Promise<CatalogoResponse> {

@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from typing import Callable
 
 from API.contracts.http_models import ApiRequest, ApiResponse
-from API.endpoints import articulos, biblioteca, chat, dashboard, eventos, executive, health, menus, plan, version, workflow
+from API.endpoints import articulos, biblioteca, chat, compras, dashboard, eventos, executive, health, menus, plan, version, workflow
 from API.facade.core_public_facade import CorePublicFacade
 from API.infra.response_envelope import build_error_payload, normalize_success_payload
 
@@ -80,6 +80,8 @@ class ApiRouter:
             handler = menus.proposal_handle
         if handler is None and key[0] == "POST" and "/propuesta-compra/" in key[1] and key[1].endswith("/crear-pedidos"):
             handler = menus.proposal_handle
+        if handler is None and key[0] in {"GET", "PATCH"} and key[1].startswith("/api/v1/compras/borradores/"):
+            handler = compras.draft_handle
         if handler is None:
             return ApiResponse(
                 status_code=404,

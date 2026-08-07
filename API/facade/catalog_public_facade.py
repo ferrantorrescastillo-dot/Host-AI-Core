@@ -11,6 +11,7 @@ from SERVICIOS.biblioteca_culinaria_read_service import BibliotecaCulinariaReadS
 from SERVICIOS.importador_inteligente_biblioteca import ImportDocumentService
 from SERVICIOS.menus_inteligentes_service import MenusInteligentesService
 from SERVICIOS.menu_necesidades_service import MenuNecesidadesService
+from SERVICIOS.compras_borradores_service import ComprasBorradoresService
 
 
 logger = logging.getLogger(__name__)
@@ -26,6 +27,7 @@ class CatalogPublicFacade(CorePublicApi02Facade):
         self._biblioteca_import_service: ImportDocumentService | None = None
         self._menus_service: MenusInteligentesService | None = None
         self._menu_needs_service: MenuNecesidadesService | None = None
+        self._compras_drafts_service: ComprasBorradoresService | None = None
 
     def _get_articulos_service(self) -> ArticulosCatalogReadService:
         if self._articulos_service is None:
@@ -116,6 +118,17 @@ class CatalogPublicFacade(CorePublicApi02Facade):
 
     def crear_pedidos_propuesta_menu(self, menu_id: str, proposal_id: str, body: dict[str, Any]) -> dict[str, Any]:
         return self._library_call(self._get_menu_needs_service().crear_pedidos, menu_id, proposal_id, body)
+
+    def _get_compras_drafts_service(self) -> ComprasBorradoresService:
+        if self._compras_drafts_service is None:
+            self._compras_drafts_service = ComprasBorradoresService(self._get_core().compras)
+        return self._compras_drafts_service
+
+    def borrador_compra(self, pedido_id: str) -> dict[str, Any]:
+        return {**self._base_payload(), **self._get_compras_drafts_service().obtener(pedido_id)}
+
+    def actualizar_borrador_compra(self, pedido_id: str, body: dict[str, Any]) -> dict[str, Any]:
+        return {**self._base_payload(), **self._get_compras_drafts_service().actualizar(pedido_id, body)}
 
     def _get_biblioteca_import_service(self) -> ImportDocumentService:
         if self._biblioteca_import_service is None:

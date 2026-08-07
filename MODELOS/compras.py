@@ -91,6 +91,10 @@ class PedidoSugerido:
     lineas: List[LineaPedido] = field(default_factory=list)
     estado: str = "borrador"
     observaciones: str = ""
+    origen_tipo: str = ""
+    origen_id: str = ""
+    origen_version: int = 0
+    propuesta_id: str = ""
     confirmado_en: str = ""
     recepciones: List[Dict[str, Any]] = field(default_factory=list)
     incidencias: List[Dict[str, Any]] = field(default_factory=list)
@@ -159,6 +163,10 @@ class PedidoSugerido:
             "lineas": [l.to_dict() for l in self.lineas],
             "estado": self.estado,
             "observaciones": self.observaciones,
+            "origen_tipo": self.origen_tipo,
+            "origen_id": self.origen_id,
+            "origen_version": self.origen_version,
+            "propuesta_id": self.propuesta_id,
             "confirmado_en": self.confirmado_en,
             "recepciones": list(self.recepciones),
             "incidencias": list(self.incidencias),
