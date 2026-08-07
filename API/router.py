@@ -82,9 +82,8 @@ class ApiRouter:
             handler = menus.proposal_handle
         if handler is None and key[0] == "POST" and key[1].startswith("/api/v1/menus/") and key[1].endswith("/plan-produccion"):
             handler = produccion.handle
-        if handler is None and key[1].startswith("/api/v1/produccion/planes/"):
-            if key[0] == "GET" or (key[0] == "POST" and (key[1].endswith("/confirmar"))):
-                handler = produccion.handle
+        if handler is None and key[0] == "GET" and key[1].startswith("/api/v1/produccion/planes/") and "/tareas/" not in key[1]:
+            handler = produccion.handle
         if handler is None and key[0] == "POST" and key[1].startswith("/api/v1/compras/borradores/") and key[1].endswith("/confirmar"):
             handler = compras.confirm_draft_handle
         if handler is None and key[0] in {"GET", "PATCH"} and key[1].startswith("/api/v1/compras/borradores/"):

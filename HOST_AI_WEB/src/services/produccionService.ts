@@ -1,11 +1,13 @@
 import { hostAiApiClient } from "../api/client";
 import type { ApiEnvelopeBase, ProduccionPlanListItem, ProduccionResumen } from "../types/api";
+import type { ProductionPlan } from "../types/produccion";
 
 export type ProduccionResult = ApiEnvelopeBase & {
   planes: ProduccionPlanListItem[];
   estado?: string;
   total: number;
   resumen: ProduccionResumen;
+  detalles: ProductionPlan[];
   mensaje?: string;
 };
 
@@ -14,6 +16,10 @@ export const produccionService = {
     const response = await hostAiApiClient.getDashboard();
     const modulo = response.dashboard?.modulos?.produccion;
     const planes = Array.isArray(modulo?.items) ? modulo.items : [];
+    const detalles = (await Promise.all(planes.map(async (plan) => {
+      if (!plan.id) return null;
+      return (await hostAiApiClient.getProductionPlan(String(plan.id))).plan;
+    }))).filter((plan): plan is ProductionPlan => plan !== null);
     return {
       ok: response.ok,
       version: response.version,
@@ -26,9 +32,8 @@ export const produccionService = {
       total: typeof modulo?.total === "number" ? modulo.total : planes.length,
       resumen: modulo?.resumen ?? {},
       mensaje: modulo?.mensaje,
+      detalles,
     };
   },
   getPlan: (planId: string) => hostAiApiClient.getProductionPlan(planId),
-  preview: (planId: string, taskId: string) => hostAiApiClient.getProductionPreview(planId, taskId),
-  confirm: (planId: string, taskId: string) => hostAiApiClient.confirmProduction(planId, taskId),
 };

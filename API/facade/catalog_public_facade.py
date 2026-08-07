@@ -132,12 +132,6 @@ class CatalogPublicFacade(CorePublicApi02Facade):
     def plan_produccion(self, plan_id: str) -> dict[str, Any]:
         return {**self._base_payload(), **self._get_menu_production_service().obtener(plan_id)}
 
-    def consumo_previsto_produccion(self, plan_id: str, tarea_id: str) -> dict[str, Any]:
-        return {**self._base_payload(), **self._get_menu_production_service().consumo_previsto(plan_id, tarea_id)}
-
-    def confirmar_produccion(self, plan_id: str, tarea_id: str, body: dict[str, Any]) -> dict[str, Any]:
-        return {**self._base_payload(), **self._get_menu_production_service().confirmar(plan_id, tarea_id, body)}
-
     def _get_compras_drafts_service(self) -> ComprasBorradoresService:
         if self._compras_drafts_service is None:
             self._compras_drafts_service = ComprasBorradoresService(self._get_core().compras, self.base_dir)

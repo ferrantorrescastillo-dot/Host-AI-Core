@@ -35,13 +35,19 @@ function renderPage() {
   return render(<MemoryRouter initialEntries={["/produccion"]}><App /></MemoryRouter>);
 }
 
+function last<T>(items: T[]): T { return items[items.length - 1]; }
+
+function plan(overrides = {}) {
+  return { id: "PLAN-1", plan_id: "PLAN-1", nombre: "Producción boda", menu_id: "MENU-1", menu_version: 1, comensales: 80, fecha: "2026-08-10", estado: "BLOQUEADO", generated_at: "2026-08-08T10:00:00", solo_planificacion: true, stock_modificado: false, advertencias: [], errores_bloqueantes: [], subelaboraciones: [{ nombre: "Fondo", cantidad_a_producir: 3, unidad: "l", origenes: [] }], ingredientes: [{ nombre: "Patata", articulo_id: "ART-1", cantidad: 2.5, unidad: "kg", disponible: 1, faltante: 1.5 }], resumen: { elaboraciones: 1, subelaboraciones: 1, ingredientes: 1, faltantes: 1, bloqueadas: 1, coste_previsto: 5 }, elaboraciones: [{ id: "TAREA-1", titulo: "Ensaladilla", receta_id: "REC-1", cantidad: 10, cantidad_a_producir: 10, unidad: "raciones", estado: "BLOQUEADO", factor_escalado: 2.5, rendimiento_base: 4, coste_estimado: 5, origen: "menu:MENU-1", ingredientes: [{ nombre: "Patata", articulo_id: "ART-1", cantidad: 2.5, unidad: "kg", disponible: 1, faltante: 1.5 }], subelaboraciones: { componentes: [{ tipo: "elaboracion", nombre: "Fondo", cantidad_necesaria: 3, unidad: "l", detalle: { componentes: [] } }] } }], ...overrides };
+}
+
 describe("Producción", () => {
   afterEach(() => vi.restoreAllMocks());
 
   it("muestra planes y tareas reales recibidos del dashboard", async () => {
-    vi.spyOn(global, "fetch").mockResolvedValue({
-      ok: true,
-      json: async () => response([{
+    vi.spyOn(global, "fetch").mockImplementation(async (input) => {
+      if (String(input).includes("/api/v1/produccion/planes/")) return { ok: true, json: async () => ({ ...response([]), plan: plan() }) } as Response;
+      return { ok: true, json: async () => response([{
         id: "PLAN-1",
         nombre: "Producción boda",
         evento: "Boda López",
@@ -58,17 +64,17 @@ describe("Producción", () => {
           unidad: "l",
           bloqueo: "Falta marmita",
         }],
-      }]),
-    } as Response);
+      }]) } as Response;
+    });
 
     renderPage();
     expect(screen.getByText("Cargando producción...")).toBeInTheDocument();
     const listado = await screen.findByLabelText("Planes de producción");
     expect(within(listado).getByText("Producción boda")).toBeInTheDocument();
-    expect(within(listado).getByText("Preparar fondo")).toBeInTheDocument();
-    expect(within(listado).getByText("Bloqueo: Falta marmita")).toBeInTheDocument();
+    expect(within(listado).getByText("Ensaladilla")).toBeInTheDocument();
+    expect(within(listado).getByText("BLOQUEADO — faltan ingredientes")).toBeInTheDocument();
     expect(screen.getByText("Request ID: REQ-PRODUCCION-1")).toBeInTheDocument();
-    expect(global.fetch).toHaveBeenCalledTimes(1);
+    expect(global.fetch).toHaveBeenCalledTimes(2);
     expect(global.fetch).toHaveBeenCalledWith(
       expect.stringContaining("/api/v1/dashboard"),
       expect.objectContaining({ method: "GET" }),
@@ -103,21 +109,20 @@ describe("Producción", () => {
     expect(screen.getByText("Request ID: REQ-PROD-ERROR")).toBeInTheDocument();
   });
 
-  it("previsualiza el consumo y exige confirmación antes de modificar Stock", async () => {
+  it("muestra resumen, ingredientes, dependencias y navegación a Compras sin consumir Stock", async () => {
     const fetchMock = vi.spyOn(global, "fetch").mockImplementation(async (input, init) => {
       const url = String(input);
-      if (url.endsWith("/consumo-previsto")) return { ok: true, json: async () => ({ ...response([]), consumo_previsto: { ok: true, estado: "LISTO", mensaje: "Stock suficiente", consumos: [{ nombre: "Patata", articulo_id: "ART-1", cantidad: 2.5, unidad: "kg", disponible: 10 }], faltantes: [] }, stock_modificado: false }) } as Response;
-      if (url.endsWith("/confirmar") && init?.method === "POST") return { ok: true, json: async () => ({ ...response([]), resultado: { estado: "REGISTRADA", mensaje: "Producción terminada y stock actualizado correctamente." }, plan: {}, stock_modificado: true }) } as Response;
+      if (url.includes("/api/v1/produccion/planes/")) return { ok: true, json: async () => ({ ...response([]), plan: plan() }) } as Response;
       return { ok: true, json: async () => response([{ id: "PLAN-MENU", nombre: "Producción menú", estado: "borrador", tareas: [{ id: "TASK-1", titulo: "Ensaladilla", estado: "pendiente", cantidad: 10, unidad: "raciones" }] }]) } as Response;
     });
-    vi.spyOn(window, "confirm").mockReturnValue(true);
     renderPage();
-    await userEvent.click(await screen.findByRole("button", { name: "Ver consumo previsto" }));
-    expect(await screen.findByText(/Patata: 2,5 kg/)).toBeInTheDocument();
+    expect(last(await screen.findAllByText("Coste previsto"))).toBeInTheDocument();
+    await userEvent.click(last(screen.getAllByRole("button", { name: "Ver ingredientes" })));
+    expect(await screen.findByText(/Faltan 1,5 kg/)).toBeInTheDocument();
+    await userEvent.click(last(screen.getAllByRole("button", { name: "Ver dependencias" })));
+    expect(await screen.findByText(/Fondo: 3 l/)).toBeInTheDocument();
+    expect(last(screen.getAllByRole("link", { name: "Ir a Compras" }))).toHaveAttribute("href", "/compras");
     expect(fetchMock.mock.calls.some(([url]) => String(url).endsWith("/confirmar"))).toBe(false);
-    await userEvent.click(screen.getByRole("button", { name: "Confirmar producción terminada" }));
-    expect(window.confirm).toHaveBeenCalled();
-    expect(await screen.findByText("Producción terminada y stock actualizado correctamente.")).toBeInTheDocument();
-    expect(fetchMock.mock.calls.filter(([url]) => String(url).endsWith("/confirmar"))).toHaveLength(1);
+    expect(screen.queryByText("Confirmar producción terminada")).not.toBeInTheDocument();
   });
 });
