@@ -36,4 +36,5 @@ export const produccionService = {
     };
   },
   getPlan: (planId: string) => hostAiApiClient.getProductionPlan(planId),
+  createPurchaseProposal: (planId: string) => hostAiApiClient.createProductionPurchaseProposal(planId),
 };

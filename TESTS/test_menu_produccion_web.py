@@ -9,6 +9,7 @@ from API.app import HostAIPlatformAPI
 from API.http_server import create_app
 from CORE.host_ai_core import HostAICore
 from SERVICIOS.menu_produccion_service import MenuProduccionService
+from SERVICIOS.menu_necesidades_service import MenuNecesidadesService
 from SERVICIOS.menus_inteligentes_service import MenusInteligentesService
 
 
@@ -74,7 +75,7 @@ def test_stock_insuficiente_bloquea_plan_sin_consumo(tmp_path: Path) -> None:
 
 
 def test_http_expone_solo_planificacion(tmp_path: Path) -> None:
-    _core, menu_id = _seed(tmp_path)
+    _core, menu_id = _seed(tmp_path, stock=1)
     client = TestClient(create_app(HostAIPlatformAPI(base_dir=tmp_path)))
     created = client.post(f"/api/v1/menus/{menu_id}/plan-produccion", json={})
     assert created.status_code == 201
@@ -83,6 +84,10 @@ def test_http_expone_solo_planificacion(tmp_path: Path) -> None:
     task_id = plan["elaboraciones"][0]["id"]
     assert client.get(f"/api/v1/produccion/planes/{plan['id']}/tareas/{task_id}/consumo-previsto").status_code == 404
     assert client.post(f"/api/v1/produccion/planes/{plan['id']}/tareas/{task_id}/confirmar", json={}).status_code == 404
+    proposal = client.post(f"/api/v1/produccion/planes/{plan['id']}/propuesta-compra", json={})
+    assert proposal.status_code == 200
+    assert proposal.json()["propuesta"]["origen"] == "produccion"
+    assert proposal.json()["pedidos_creados"] == []
 
 
 def test_subelaboraciones_detectan_ciclo_y_bloquean_plan(tmp_path: Path) -> None:
@@ -108,3 +113,26 @@ def test_agrupa_subelaboracion_compartida_con_trazabilidad() -> None:
     salsa = aggregated[("REC-SALSA", "l")]
     assert salsa["cantidad_a_producir"] == 5
     assert {origin["elaboracion_id"] for origin in salsa["origenes"]} == {"REC-A", "REC-B"}
+
+
+def test_propuesta_produccion_filtra_pendientes_y_es_idempotente(tmp_path: Path) -> None:
+    class ComprasNoInvocable:
+        def __getattr__(self, name: str):
+            raise AssertionError(f"Producción no debe invocar MotorCompras.{name}")
+
+    service = MenuNecesidadesService(tmp_path, compras=ComprasNoInvocable())
+    lines = [
+        {"articulo_id": "ART-1", "articulo_nombre": "Patata", "ingrediente_nombre": "Patata", "cantidad_necesaria": 5, "cantidad_faltante": 2, "unidad_necesaria": "kg", "estado": "Compra necesaria", "proveedor_preferente": "P1", "cantidad_propuesta_compra": 2, "coste_estimado": 4},
+        {"articulo_id": "ART-2", "articulo_nombre": "Sal", "ingrediente_nombre": "Sal", "cantidad_necesaria": 1, "cantidad_faltante": None, "unidad_necesaria": "kg", "estado": "Stock no disponible"},
+        {"articulo_id": None, "articulo_nombre": None, "ingrediente_nombre": "Especia", "cantidad_necesaria": 1, "cantidad_faltante": None, "unidad_necesaria": "g", "estado": "Sin artículo relacionado"},
+        {"articulo_id": "ART-3", "articulo_nombre": "Leche", "ingrediente_nombre": "Leche", "cantidad_necesaria": 2, "cantidad_faltante": None, "unidad_necesaria": "l", "estado": "Conversión pendiente"},
+    ]
+    service.necesidades = lambda _menu_id: {"ok": True, "necesidades": {"menu_version": 3, "lines": lines}}  # type: ignore[method-assign]
+    trace = {"production_plan_id": "PLAN-1", "event_id": "EV-1", "fecha": "2026-09-01"}
+    first = service.crear_propuesta_faltantes_produccion("MENU-1", trace)
+    repeated = service.crear_propuesta_faltantes_produccion("MENU-1", trace)
+    assert [line["articulo_id"] for line in first["propuesta"]["lineas"]] == ["ART-1"]
+    assert first["propuesta"]["production_plan_id"] == "PLAN-1"
+    assert first["propuesta"]["menu_version"] == 3 and first["propuesta"]["event_id"] == "EV-1"
+    assert first["propuesta"]["crea_pedido"] is False and first["stock_modificado"] is False
+    assert repeated["idempotente"] is True and repeated["propuesta"]["id"] == first["propuesta"]["id"]

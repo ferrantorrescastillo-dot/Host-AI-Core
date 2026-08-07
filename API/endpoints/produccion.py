@@ -12,6 +12,7 @@ def handle(request: ApiRequest, facade: CorePublicFacade) -> ApiResponse:
     else:
         suffix = path.split("/api/v1/produccion/planes/", 1)[-1]
         plan_id = suffix.split("/", 1)[0]
-        payload = facade.plan_produccion(plan_id)
+        payload = (facade.crear_propuesta_compra_produccion(plan_id)
+                   if path.endswith("/propuesta-compra") else facade.plan_produccion(plan_id))
     status = (201 if request.method.upper() == "POST" and path.endswith("/plan-produccion") else 200) if payload.get("ok") else int((payload.get("error") or {}).get("status") or 500)
     return ApiResponse(status_code=status, payload=payload)

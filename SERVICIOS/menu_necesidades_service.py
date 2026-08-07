@@ -133,6 +133,46 @@ class MenuNecesidadesService:
         self._propuestas[proposal_id] = proposal
         return {"ok": True, "propuesta": proposal}
 
+    def crear_propuesta_faltantes_produccion(self, menu_id: str, trace: dict[str, Any]) -> dict[str, Any]:
+        """Crea un borrador de propuesta solo con faltantes ciertos y trazables."""
+        plan_id = str(trace.get("production_plan_id") or "").strip()
+        existing = next((proposal for proposal in self._propuestas.values()
+                         if proposal.get("production_plan_id") == plan_id), None)
+        if existing:
+            return {"ok": True, "propuesta": existing, "idempotente": True,
+                    "stock_modificado": False, "pedidos_creados": []}
+        result = self.necesidades(menu_id)
+        if not result.get("ok"):
+            return result
+        needs = result["necesidades"]
+        known = [line for line in needs["lines"] if self._es_faltante_conocido(line)]
+        if not known:
+            return {"ok": False, "error": {"status": 400, "code": "no_known_shortages", "message": "No hay faltantes conocidos con artículo relacionado para proponer."}}
+        proposal_id = f"MENUPROP-{uuid4().hex[:10].upper()}"
+        lines = [self._proposal_line(line) for line in known]
+        for index, line in enumerate(lines):
+            line.update({"id": f"LINEA-{index + 1:03d}", "incluir": True, "observaciones": ""})
+        proposal = {
+            "id": proposal_id, "menu_id": menu_id, "menu_version": needs["menu_version"],
+            "production_plan_id": plan_id, "event_id": trace.get("event_id") or None,
+            "fecha": trace.get("fecha"), "origen": "produccion", "estado": "BORRADOR",
+            "generated_at": datetime.now(timezone.utc).isoformat(), "lineas": lines,
+            "grupos_proveedor": [], "coste_estimado": 0.0, "coste_completo": False,
+            "advertencias": [], "resumen": {}, "version": 1, "pedidos_creados": [],
+            "crea_pedido": False, "modifica_stock": False, "datos_reales_modificados": False,
+        }
+        self._refresh_proposal(proposal)
+        self._propuestas[proposal_id] = proposal
+        return {"ok": True, "propuesta": proposal, "idempotente": False,
+                "stock_modificado": False, "pedidos_creados": []}
+
+    @staticmethod
+    def _es_faltante_conocido(line: dict[str, Any]) -> bool:
+        missing = line.get("cantidad_faltante", line.get("faltante"))
+        return bool(line.get("articulo_id")) and missing is not None \
+            and float(missing or 0) > 0 \
+            and line.get("estado") not in {"Stock no disponible", "Conversión pendiente", "Sin artículo relacionado"}
+
     def crear_propuesta_con_pedidos(self, menu_id: str, usuario: str = "web") -> dict[str, Any]:
         created = self.crear_propuesta(menu_id)
         if not created.get("ok"):

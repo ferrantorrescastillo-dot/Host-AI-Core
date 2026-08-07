@@ -132,6 +132,9 @@ class CatalogPublicFacade(CorePublicApi02Facade):
     def plan_produccion(self, plan_id: str) -> dict[str, Any]:
         return {**self._base_payload(), **self._get_menu_production_service().obtener(plan_id)}
 
+    def crear_propuesta_compra_produccion(self, plan_id: str) -> dict[str, Any]:
+        return {**self._base_payload(), **self._get_menu_production_service().crear_propuesta_compra(plan_id)}
+
     def _get_compras_drafts_service(self) -> ComprasBorradoresService:
         if self._compras_drafts_service is None:
             self._compras_drafts_service = ComprasBorradoresService(self._get_core().compras, self.base_dir)

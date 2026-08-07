@@ -19,7 +19,7 @@ import type {
   MenusResponse,
 } from "../types/menus";
 import type { CompraConfirmationResponse, CompraDraftInput, CompraDraftResponse } from "../types/compras";
-import type { ProductionPlanResponse } from "../types/produccion";
+import type { ProductionPlanResponse, ProductionProposalResponse } from "../types/produccion";
 
 type Envelope = {
   ok: boolean;
@@ -183,6 +183,9 @@ export const hostAiApiClient = {
   },
   getProductionPlan(planId: string): Promise<ProductionPlanResponse> {
     return request<ProductionPlanResponse>(`/api/v1/produccion/planes/${encodeURIComponent(planId)}`, { method: "GET" });
+  },
+  createProductionPurchaseProposal(planId: string): Promise<ProductionProposalResponse> {
+    return request<ProductionProposalResponse>(`/api/v1/produccion/planes/${encodeURIComponent(planId)}/propuesta-compra`, { method: "POST", body: "{}" });
   },
   getBiblioteca(): Promise<BibliotecaResponse> {
     return request<BibliotecaResponse>("/api/v1/biblioteca", { method: "GET" });

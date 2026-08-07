@@ -96,6 +96,21 @@ class MenuProduccionService:
     def obtener(self, plan_id: str) -> dict[str, Any]:
         return {"ok": True, "plan": self._project(self.core.produccion_real.obtener_plan(plan_id))}
 
+    def crear_propuesta_compra(self, plan_id: str) -> dict[str, Any]:
+        plan = self.core.produccion_real.obtener_plan(plan_id)
+        projected = self._project(plan)
+        menu_id = str(projected.get("menu_id") or "")
+        if not menu_id:
+            return {"ok": False, "error": {"status": 400, "code": "menu_trace_required", "message": "El plan no conserva un menú de origen."}}
+        result = self.necesidades.crear_propuesta_faltantes_produccion(menu_id, {
+            "production_plan_id": plan_id, "event_id": plan.evento_id or None,
+            "fecha": plan.fecha or projected.get("generated_at"),
+        })
+        if result.get("ok") and (result.get("propuesta") or {}).get("id"):
+            plan.configuracion_planificacion["propuesta_compra_id"] = result["propuesta"]["id"]
+            self.core.produccion_real._persistir()
+        return {**result, "clasificacion": self._classification(projected["ingredientes"])}
+
     @staticmethod
     def _project(plan: PlanProduccionReal) -> dict[str, Any]:
         data = plan.to_dict()
@@ -123,15 +138,27 @@ class MenuProduccionService:
         missing = sum(1 for x in ingredients if float(x.get("faltante") or 0) > 0)
         data.update({
             "plan_id": plan.id, "menu_id": config.get("menu_id"), "menu_version": config.get("menu_version"),
+            "propuesta_compra_id": config.get("propuesta_compra_id"),
             "comensales": plan.pax, "elaboraciones": data["tareas"], "ingredientes": ingredients,
             "subelaboraciones": list(subelaboraciones.values()),
             "advertencias": data.get("avisos") or [], "errores_bloqueantes": blockers,
             "generated_at": config.get("generated_at") or plan.creado_en,
             "estado": "BLOQUEADO" if blockers or missing else "LISTO",
+            "clasificacion": MenuProduccionService._classification(ingredients),
             "resumen": {"elaboraciones": len(data["tareas"]), "subelaboraciones": len(subelaboraciones), "ingredientes": len(ingredients), "faltantes": missing, "bloqueadas": sum(x["estado"] == "BLOQUEADO" for x in data["tareas"]), "coste_previsto": round(sum(float(x.get("coste_estimado") or 0) for x in ingredients), 2)},
             "solo_planificacion": True, "stock_modificado": False,
         })
         return data
+
+    @staticmethod
+    def _classification(ingredients: list[dict[str, Any]]) -> dict[str, int]:
+        return {
+            "cubiertos": sum(item.get("faltante") == 0 for item in ingredients),
+            "faltantes_conocidos": sum(MenuNecesidadesService._es_faltante_conocido(item) for item in ingredients),
+            "stock_desconocido": sum(item.get("estado") == "Stock no disponible" for item in ingredients),
+            "sin_relacionar": sum(not item.get("articulo_id") or item.get("estado") == "Sin artículo relacionado" for item in ingredients),
+            "conversion_pendiente": sum(item.get("estado") == "Conversión pendiente" for item in ingredients),
+        }
 
     @staticmethod
     def _collect_subelaborations(node: dict[str, Any], task: dict[str, Any], aggregated: dict[tuple[str, str], dict[str, Any]]) -> None:

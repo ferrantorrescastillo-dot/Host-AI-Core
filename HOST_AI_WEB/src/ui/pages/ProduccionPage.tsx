@@ -37,10 +37,22 @@ export function ProduccionPage() {
 }
 
 function PlanCard({ plan }: { plan: ProductionPlan }) {
+  const [proposalId, setProposalId] = useState(plan.propuesta_compra_id || "");
+  const [proposalLines, setProposalLines] = useState(0);
+  const [proposalBusy, setProposalBusy] = useState(false);
+  const [proposalError, setProposalError] = useState("");
+  const createProposal = async () => {
+    setProposalBusy(true); setProposalError("");
+    try { const response = await produccionService.createPurchaseProposal(plan.id); setProposalId(response.propuesta.id); setProposalLines(response.propuesta.lineas.length); }
+    catch (error) { setProposalError((error as Error).message); }
+    finally { setProposalBusy(false); }
+  };
   return <article className="produccion-card"><header><div><h3>{plan.nombre || "Plan sin nombre"}</h3><p className="meta-line">Menú {plan.menu_id || "sin identificar"} · versión {plan.menu_version || "-"}</p></div><span className="evento-status">{plan.estado}</span></header>
     <dl className="produccion-details"><Detail label="Fecha" value={formatDate(plan.fecha)} /><Detail label="Comensales" value={formatNumber(plan.comensales)} /><Detail label="Elaboraciones" value={formatNumber(plan.resumen.elaboraciones)} /><Detail label="Faltantes" value={formatNumber(plan.resumen.faltantes)} /></dl>
+    <section aria-label={`Clasificación de necesidades de ${plan.nombre}`}><p>Faltantes conocidos: <strong>{plan.clasificacion.faltantes_conocidos}</strong></p><p>Stock desconocido: <strong>{plan.clasificacion.stock_desconocido}</strong></p><p>Sin relacionar: <strong>{plan.clasificacion.sin_relacionar}</strong></p></section>
     <ul className="clean-list produccion-tasks" aria-label={`Tareas de ${plan.nombre}`}>{plan.elaboraciones.map((task) => <TaskCard key={task.id} task={task} />)}</ul>
-    {plan.resumen.faltantes ? <Link to="/compras">Ir a Compras</Link> : null}<p className="meta-line">Planificación de solo lectura: no genera movimientos de Stock.</p>
+    <div className="menu-actions">{proposalId ? <Link to="/compras">Ver propuesta existente</Link> : <button type="button" disabled={proposalBusy || plan.clasificacion.faltantes_conocidos === 0} onClick={() => void createProposal()}>{proposalBusy ? "Generando propuesta..." : "Generar propuesta de compra"}</button>}<Link to="/stock">Revisar stock</Link><Link to="/articulos">Resolver artículos</Link></div>
+    {proposalId ? <p role="status">Propuesta {proposalId} preparada · {proposalLines || plan.clasificacion.faltantes_conocidos} faltantes conocidos · sin pedidos creados.</p> : null}{proposalError ? <p role="alert">{proposalError}</p> : null}<p className="meta-line">Planificación de solo lectura: no genera pedidos ni movimientos de Stock.</p>
   </article>;
 }
 
