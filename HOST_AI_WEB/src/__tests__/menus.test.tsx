@@ -145,6 +145,7 @@ describe("Selector de elaboraciones de Menús", () => {
       precio_estimado: null, coste_estimado: null, estado: "Stock no disponible", observaciones: "", advertencia: "Stock desconocido" };
     vi.spyOn(global, "fetch").mockImplementation(async (input, init) => {
       const url = String(input);
+      if (url.endsWith("/api/v1/dashboard")) return { ok: true, status: 200, json: async () => ({ ...envelope, dashboard: { modulos: { compras: { proveedores: [{ id: "PROV-A", nombre: "Proveedor A", estado: "activo" }] } } } }) } as Response;
       if (url.endsWith("/necesidades")) return { ok: true, status: 200, json: async () => ({ ...envelope, necesidades: {
         menu_id: menu.id, menu_version: 1, comensales: 10, generated_at: "2026-07-31T10:00:00Z", complete: false,
         lines: [], warnings: [], blocking_errors: [], summary: { articulos: 1, cubiertos: 0, compra_necesaria: 0, sin_relacionar: 0, conversiones_pendientes: 0, candidatas_propuesta: 1 },
@@ -177,10 +178,11 @@ describe("Selector de elaboraciones de Menús", () => {
     expect(screen.getByText(/^Proveedor pendiente/, { selector: "strong" })).toHaveTextContent("(1)");
     expect(screen.getByText("Requiere atención")).toBeInTheDocument();
     expect(screen.getByLabelText("Cantidad propuesta LINEA-PENDIENTE")).toHaveValue(2);
-    fireEvent.click(screen.getByRole("button", { name: /Patata: Selecciona o escribe un proveedor/ }));
+    fireEvent.click(screen.getByRole("button", { name: /Patata: Selecciona un proveedor existente/ }));
     expect(screen.getByLabelText("Proveedor LINEA-PENDIENTE")).toHaveFocus();
 
     fireEvent.change(screen.getByLabelText("Cantidad propuesta LINEA-PENDIENTE"), { target: { value: "3" } });
+    await waitFor(() => expect(document.querySelector('option[value="Proveedor A"]')).not.toBeNull());
     fireEvent.change(screen.getByLabelText("Proveedor LINEA-PENDIENTE"), { target: { value: "Proveedor A" } });
     expect(createButton).toBeEnabled();
     vi.spyOn(window, "confirm").mockReturnValue(true);
@@ -189,5 +191,52 @@ describe("Selector de elaboraciones de Menús", () => {
     expect(createButton).toBeDisabled();
     releaseCreation();
     expect(await screen.findByText("No se pudieron crear los borradores.")).toBeInTheDocument();
+  });
+
+  it("busca y relaciona un artículo existente y revalida la línea", async () => {
+    const pendingLine = { id: "LINEA-SIN-ARTICULO", incluir: true, articulo_id: null, articulo: null, cantidad_necesaria: 0.5,
+      cantidad_faltante: null, cantidad_final_propuesta: null, unidad_base: "kg", proveedor: null, formato_compra: null,
+      precio_estimado: null, coste_estimado: null, estado: "Sin artículo relacionado", observaciones: "", advertencia: "Pendiente" };
+    const fetchMock = vi.spyOn(global, "fetch").mockImplementation(async (input, init) => {
+      const url = String(input);
+      if (url.endsWith("/necesidades")) return { ok: true, status: 200, json: async () => ({ ...envelope, necesidades: {
+        menu_id: menu.id, menu_version: 1, comensales: 10, generated_at: "2026-08-07T10:00:00Z", complete: false,
+        lines: [], warnings: [], blocking_errors: [], summary: { articulos: 1, cubiertos: 0, compra_necesaria: 0, sin_relacionar: 1, conversiones_pendientes: 0, candidatas_propuesta: 1 }, solo_lectura: true, datos_reales_modificados: false,
+      } }) } as Response;
+      if (url.endsWith("/propuesta-compra") && init?.method === "POST") return { ok: true, status: 201, json: async () => ({ ...envelope, propuesta: {
+        id: "MENUPROP-ART", estado: "BORRADOR", version: 1, coste_estimado: 0, coste_completo: false, lineas: [pendingLine], grupos_proveedor: [],
+        resumen: { articulos_propuestos: 0, articulos_pendientes: 1, proveedores_pendientes: 1 }, advertencias: ["Pendiente"], crea_pedido: false, modifica_stock: false, datos_reales_modificados: false,
+      } }) } as Response;
+      if (url.includes("/api/v1/articulos?") && init?.method === "GET") return { ok: true, status: 200, json: async () => ({ ...envelope, catalogo: {
+        items: [{ id: "ART-NARANJA", codigo: "ART-NARANJA", nombre: "Naranja", proveedor: "Frutas Sur", precio: 1.8, unidad: "kg", estado: "activo", con_stock: false, tiene_ficha_tecnica: false }],
+        total: 1, page: 1, page_size: 8, total_pages: 1, filtros: { familias: [], proveedores: ["Frutas Sur"], estados: ["activo"] }, capacidades: {},
+      } }) } as Response;
+      if (url.endsWith("/api/v1/articulos/ART-NARANJA")) return { ok: true, status: 200, json: async () => ({ ...envelope, articulo: {
+        id: "ART-NARANJA", codigo: "ART-NARANJA", nombre: "Naranja", proveedor: "Frutas Sur", precio: 1.8, unidad: "kg", unidad_base: "kg", unidad_compra: "caja", estado: "activo", con_stock: false, tiene_ficha_tecnica: false,
+        precio_incluye_iva: false, alergenos: [], stock_detalle: { lotes: [] }, proveedores: [{ nombre: "Frutas Sur", preferente: true }], precios: [], documentos: [], ficha_tecnica: null, recetas: [], escandallos: [], historial: [],
+      } }) } as Response;
+      if (url.includes("/propuesta-compra/") && init?.method === "PATCH") {
+        const body = JSON.parse(String(init.body));
+        return { ok: true, status: 200, json: async () => ({ ...envelope, propuesta: { id: "MENUPROP-ART", estado: "REVISADA", version: 2, coste_estimado: 0.9, coste_completo: true, lineas: body.lineas, grupos_proveedor: [], resumen: { articulos_propuestos: 1, articulos_pendientes: 0, proveedores_pendientes: 0 }, advertencias: [], crea_pedido: false, modifica_stock: false, datos_reales_modificados: false } }) } as Response;
+      }
+      return { ok: true, status: 200, json: async () => ({ ...envelope, menus: [menu], total: 1, resumen: { borradores: 1, activos: 0, archivados: 0 } }) } as Response;
+    });
+
+    render(<MemoryRouter initialEntries={["/menus"]}><App /></MemoryRouter>);
+    fireEvent.click(await screen.findByText("Menú degustación"));
+    fireEvent.click(screen.getByRole("button", { name: "Calcular necesidades" }));
+    await screen.findByText(/1 artículos/);
+    fireEvent.click(screen.getByRole("button", { name: "Generar propuesta de compra" }));
+    const search = await screen.findByLabelText("Buscar artículo LINEA-SIN-ARTICULO");
+    fireEvent.change(search, { target: { value: "naranja" } });
+    fireEvent.click(await screen.findByRole("button", { name: /Naranja/ }));
+
+    await waitFor(() => expect(screen.queryByLabelText("Buscar artículo LINEA-SIN-ARTICULO")).not.toBeInTheDocument());
+    expect(screen.getByText("Naranja")).toBeInTheDocument();
+    expect(screen.getByLabelText("Proveedor LINEA-SIN-ARTICULO")).toHaveValue("Frutas Sur");
+    expect(screen.getByText("Completos").nextElementSibling).toHaveTextContent("1");
+    expect(screen.getByRole("button", { name: "Crear borradores de pedido" })).toBeEnabled();
+    fireEvent.click(screen.getByRole("button", { name: "Guardar propuesta" }));
+    await waitFor(() => expect(fetchMock.mock.calls.some(([url, request]) => String(url).includes("/propuesta-compra/") && request?.method === "PATCH" && String(request.body).includes("ART-NARANJA"))).toBe(true));
   });
 });

@@ -165,15 +165,54 @@ class MenuNecesidadesService:
             change = updates.get(line["id"])
             if not change:
                 continue
+            if "articulo_id" in change and change.get("articulo_id") != line.get("articulo_id"):
+                article_id = str(change.get("articulo_id") or "").strip()
+                product = self.productos.obtener_producto(article_id) if article_id else None
+                if not product:
+                    return {"ok": False, "error": {"status": 400, "code": "article_not_found", "message": "El artículo seleccionado no existe en el catálogo."}}
+                catalog = dict(product.get("catalogo_maestro") or {})
+                line.update({
+                    "articulo_id": article_id,
+                    "articulo": product.get("nombre") or article_id,
+                    "proveedor": product.get("proveedor_preferente") or product.get("proveedor") or catalog.get("proveedor_preferente") or None,
+                    "formato_compra": product.get("unidad_compra") or catalog.get("unidad_compra") or None,
+                    "precio_estimado": self._number(product.get("precio")),
+                    "unidad_base": line.get("unidad_base") or product.get("unidad_base") or catalog.get("unidad_base") or product.get("unidad") or "u",
+                    "advertencia": None,
+                })
             line["incluir"] = bool(change.get("incluir", line["incluir"]))
+            if change.get("proveedor_validado") is False and str(change.get("proveedor") or "").strip():
+                return {"ok": False, "error": {"status": 400, "code": "provider_not_found", "message": "Selecciona un proveedor existente."}}
             line["proveedor"] = str(change.get("proveedor", line.get("proveedor") or "")).strip() or None
+            if "proveedor_validado" in change:
+                line["proveedor_validado"] = bool(change.get("proveedor_validado"))
             line["observaciones"] = str(change.get("observaciones", line.get("observaciones") or ""))
             if "cantidad_final_propuesta" in change:
                 value = change.get("cantidad_final_propuesta")
                 line["cantidad_final_propuesta"] = float(value) if value not in (None, "") else None
+            quantity = self._number(line.get("cantidad_final_propuesta"))
+            price = self._number(line.get("precio_estimado"))
+            line["coste_estimado"] = round(quantity * price, 4) if quantity is not None and price is not None else None
+            line["estado"] = "Completo" if line.get("articulo_id") and line.get("proveedor") and quantity and quantity > 0 else "Requiere atención"
         proposal["version"] += 1
         proposal["estado"] = "REVISADA"
+        self._refresh_proposal(proposal)
         return {"ok": True, "propuesta": proposal}
+
+    @staticmethod
+    def _refresh_proposal(proposal: dict[str, Any]) -> None:
+        lines = proposal["lineas"]
+        groups: dict[str, list[dict[str, Any]]] = {}
+        for line in lines:
+            groups.setdefault(str(line.get("proveedor") or "Sin proveedor asignado"), []).append(line)
+        proposal["grupos_proveedor"] = [{"proveedor": key, "lineas": value} for key, value in groups.items()]
+        proposal["coste_estimado"] = round(sum(float(x.get("coste_estimado") or 0) for x in lines), 4)
+        proposal["coste_completo"] = all(x.get("coste_estimado") is not None for x in lines)
+        proposal["resumen"] = {
+            "articulos_propuestos": sum(bool(x.get("incluir") and x.get("articulo_id")) for x in lines),
+            "articulos_pendientes": sum(bool(x.get("incluir") and not x.get("articulo_id")) for x in lines),
+            "proveedores_pendientes": sum(bool(x.get("incluir") and not x.get("proveedor")) for x in lines),
+        }
 
     def crear_pedidos(self, menu_id: str, proposal_id: str, body: dict[str, Any]) -> dict[str, Any]:
         found = self.obtener_propuesta(menu_id, proposal_id)
@@ -240,8 +279,6 @@ class MenuNecesidadesService:
                 valid_quantity = False
             if not valid_quantity:
                 reasons.append("Falta una cantidad válida.")
-            if not line.get("unidad_base") and not line.get("formato_compra"):
-                reasons.append("Falta unidad o formato de compra.")
             if reasons:
                 pending.append({**line, "motivos_pendientes": reasons})
                 warnings.extend(f"{line.get('articulo') or line.get('id')}: {reason}" for reason in reasons)

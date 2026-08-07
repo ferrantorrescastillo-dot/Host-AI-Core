@@ -141,6 +141,40 @@ def test_stock_desconocido_y_proveedor_pendiente_no_bloquean_propuesta(tmp_path:
     assert proposal["lineas"][0]["estado"] == "Stock no disponible"
 
 
+def test_relaciona_articulo_existente_y_revalida_la_propuesta(tmp_path: Path) -> None:
+    menu_id = _seed(tmp_path, stock=0, linked=False)
+    client = TestClient(create_app(HostAIPlatformAPI(base_dir=tmp_path)))
+    proposal = client.post(f"/api/v1/menus/{menu_id}/propuesta-compra").json()["propuesta"]
+    line = proposal["lineas"][0]
+    assert line["articulo_id"] is None
+
+    reviewed = client.patch(f"/api/v1/menus/{menu_id}/propuesta-compra/{proposal['id']}", json={
+        "version": proposal["version"],
+        "lineas": [{
+            "id": line["id"], "articulo_id": "ART-PATATA", "incluir": True,
+            "cantidad_final_propuesta": line["cantidad_necesaria"], "observaciones": "",
+        }],
+    })
+
+    assert reviewed.status_code == 200
+    updated = reviewed.json()["propuesta"]
+    updated_line = updated["lineas"][0]
+    assert updated_line["articulo_id"] == "ART-PATATA"
+    assert updated_line["articulo"] == "Patata"
+    assert updated_line["proveedor"] == "Proveedor A"
+    assert updated_line["formato_compra"] == "saco"
+    assert updated_line["precio_estimado"] == 2.0
+    assert updated_line["estado"] == "Completo"
+    assert updated["resumen"]["articulos_pendientes"] == 0
+    assert updated["resumen"]["proveedores_pendientes"] == 0
+
+    missing = client.patch(f"/api/v1/menus/{menu_id}/propuesta-compra/{proposal['id']}", json={
+        "version": updated["version"], "lineas": [{"id": line["id"], "articulo_id": "NO-EXISTE"}],
+    })
+    assert missing.status_code == 400
+    assert missing.json()["error"]["code"] == "article_not_found"
+
+
 def test_revisa_propuesta_y_crea_borrador_idempotente_con_origen_sin_tocar_stock(tmp_path: Path) -> None:
     menu_id = _seed(tmp_path, stock=0)
     articles_path = tmp_path / "DATOS/db/articulos.json"

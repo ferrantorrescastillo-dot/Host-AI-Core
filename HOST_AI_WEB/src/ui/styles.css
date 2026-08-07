@@ -804,6 +804,12 @@ textarea {
 .proposal-info-grid span { color: var(--muted); font-size: .8rem; }
 .proposal-edit-grid { grid-template-columns: minmax(9rem, .7fr) minmax(12rem, 1fr) minmax(14rem, 1.5fr); align-items: end; }
 .proposal-edit-grid label { display: grid; gap: .35rem; font-weight: 600; }
+.proposal-edit-grid label small { font-weight: 400; }
+.proposal-resolver { display: grid; gap: .55rem; padding: .75rem; border: 1px solid #ead7b6; border-radius: .65rem; background: #fffbf3; }
+.proposal-resolver label { display: grid; gap: .35rem; font-weight: 600; }
+.proposal-resolver ul { display: grid; gap: .35rem; margin: 0; padding: 0; list-style: none; }
+.proposal-resolver li button { display: flex; width: 100%; justify-content: space-between; gap: .75rem; padding: .55rem .65rem; border: 1px solid var(--border); border-radius: .5rem; background: var(--surface); text-align: left; }
+.proposal-resolver li button span { color: var(--muted); }
 .proposal-line-messages { display: grid; gap: .25rem; }
 .proposal-line-messages .blocking { color: #75450f; }
 .proposal-line-messages .warning, .proposal-warnings { color: #77621c; }

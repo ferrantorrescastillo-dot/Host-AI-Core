@@ -1,7 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { HostAiApiError } from "../../api/client";
+import { articulosService } from "../../services/articulosService";
+import { comprasService } from "../../services/comprasService";
 import { menusService } from "../../services/menusService";
+import type { ArticuloResumen } from "../../types/articulos";
 import type { ElaboracionResumen } from "../../types/biblioteca";
 import type { IntelligentMenu, MenuInput, MenuNeedLine, MenuNeedsResponse, MenuOrdersResponse, MenuProposalLine, MenuPurchaseProposalResponse, MenuState } from "../../types/menus";
 import { BibliotecaNav } from "../components/BibliotecaNav";
@@ -47,6 +50,7 @@ export function MenusPage() {
   const [proposalDirty, setProposalDirty] = useState(false);
   const [createdOrders, setCreatedOrders] = useState<Array<{ id: string; proveedor: string; estado: string }>>([]);
   const [orderResult, setOrderResult] = useState<Pick<MenuOrdersResponse, "lineas_incluidas" | "lineas_pendientes" | "lineas_excluidas" | "advertencias"> | null>(null);
+  const [providerNames, setProviderNames] = useState<string[]>([]);
 
   useEffect(() => {
     void menusService.list().then((response) => setMenus(response.menus)).catch((reason) => setError(reason as HostAiApiError)).finally(() => setLoading(false));
@@ -70,6 +74,13 @@ export function MenusPage() {
     }, 300);
     return () => window.clearTimeout(timer);
   }, [pickerSection, query, category, status, withRecipe, withCosting, page]);
+
+  useEffect(() => {
+    if (!proposal) return;
+    void comprasService.load().then((response) => {
+      setProviderNames(response.proveedores.map((item) => item.nombre?.trim()).filter((name): name is string => Boolean(name)));
+    }).catch(() => setProviderNames([]));
+  }, [Boolean(proposal)]);
 
   const addedIds = useMemo(() => new Set(draft.secciones.flatMap((section) => section.elaboraciones.map((item) => item.elaboracion_id))), [draft.secciones]);
 
@@ -163,6 +174,25 @@ export function MenusPage() {
     setOrderResult(null);
   }
 
+  async function resolveArticle(lineId: string, articleId: string) {
+    const article = (await articulosService.get(articleId)).articulo;
+    const provider = article.proveedor || article.proveedores.find((item) => item.preferente)?.nombre || article.proveedores[0]?.nombre || null;
+    setProviderNames((current) => provider && !current.some((item) => item.localeCompare(provider, undefined, { sensitivity: "accent" }) === 0) ? [...current, provider] : current);
+    const quantity = proposal?.lineas.find((line) => line.id === lineId)?.cantidad_final_propuesta || 0;
+    updateProposalLine(lineId, {
+      articulo_id: article.id,
+      articulo: article.nombre,
+      proveedor: provider,
+      proveedor_validado: Boolean(provider),
+      formato_compra: article.unidad_compra || null,
+      precio_estimado: article.precio ?? null,
+      unidad_base: article.unidad_base || article.unidad || "u",
+      coste_estimado: article.precio == null ? null : article.precio * quantity,
+      estado: provider ? "Completo" : "Proveedor pendiente",
+      advertencia: null,
+    });
+  }
+
   function updateSection(index: number, changes: Partial<MenuInput["secciones"][number]>) {
     setDraft((current) => ({ ...current, secciones: current.secciones.map((section, currentIndex) => currentIndex === index ? { ...section, ...changes } : section) }));
   }
@@ -243,7 +273,7 @@ export function MenusPage() {
         <button type="button" onClick={() => setDraft({ ...draft, secciones: [...draft.secciones, { nombre: "Nueva sección", elaboraciones: [] }] })}>Añadir sección</button>
         <label>Observaciones<textarea aria-label="Observaciones del menú" value={draft.observaciones} onChange={(event) => setDraft({ ...draft, observaciones: event.target.value })} /></label>
         {selected ? <div className="menu-cost-summary"><strong>{selected.coste_completo ? "Coste automático completo" : "Coste parcial"}</strong><span>Total conocido: {formatMoney(selected.coste_total)}</span><span>Por comensal conocido: {formatMoney(selected.coste_por_comensal)}</span>{!selected.coste_completo ? <span className="draft-warning">{selected.lineas_sin_coste} elaboraciones sin coste. El total no es definitivo.</span> : null}{selected.advertencias.map((warning, index) => <p className="draft-warning" key={`${warning}-${index}`}>{warning}</p>)}{selected.incidencias.map((issue, index) => <p className="draft-warning" key={`${issue.tipo}-${index}`}>{issue.detalle || issue.tipo}</p>)}</div> : null}
-        <section className="menu-cost-summary" aria-label="Necesidades y compras"><h3>Necesidades y compras</h3><p>Proyección informativa: no descuenta Stock ni crea pedidos.</p><button disabled={!selected || needsLoading} type="button" onClick={() => void loadNeeds()}>{needsLoading ? "Calculando..." : "Calcular necesidades"}</button>{needs ? <><div><strong>{needs.summary.articulos} artículos</strong><span>{needs.summary.cubiertos} cubiertos · {needs.summary.compra_necesaria} con faltante calculado · {needs.summary.candidatas_propuesta} candidatas o pendientes</span></div><label>Filtrar<select aria-label="Filtrar necesidades" value={needsFilter} onChange={(event) => setNeedsFilter(event.target.value)}><option value="todos">Todos</option><option value="compra">Compra necesaria</option><option value="cubiertos">Cubiertos</option><option value="pendientes">Pendientes</option></select></label>{filterNeeds(needs.lines, needsFilter).map((line, index) => <NeedCard key={`${line.articulo_id || line.ingrediente_nombre}-${index}`} line={line} />)}<button disabled={Boolean(proposalDisabledReason(selected, needs, proposalLoading, needsError))} type="button" onClick={() => void generateProposal()}>{proposalLoading ? "Generando propuesta…" : "Generar propuesta de compra"}</button></> : null}{proposalDisabledReason(selected, needs, proposalLoading, needsError) ? <p className="draft-warning">{proposalDisabledReason(selected, needs, proposalLoading, needsError)}</p> : null}{proposal ? <ProposalReview proposal={proposal} loading={proposalLoading} disabledReason={createDisabledReason} onUpdate={updateProposalLine} onSave={() => void saveProposal()} onCreate={() => void createOrders()} /> : null}{createdOrders.length ? <div role="status"><strong>{createdOrders.length} borradores creados</strong>{createdOrders.map((order) => <span key={order.id}>{order.id} · {order.proveedor} · {order.estado}</span>)}<Link to="/compras">Abrir Compras</Link><span>Stock sin cambios. No se ha enviado ningún pedido.</span></div> : null}</section>
+        <section className="menu-cost-summary" aria-label="Necesidades y compras"><h3>Necesidades y compras</h3><p>Proyección informativa: no descuenta Stock ni crea pedidos.</p><button disabled={!selected || needsLoading} type="button" onClick={() => void loadNeeds()}>{needsLoading ? "Calculando..." : "Calcular necesidades"}</button>{needs ? <><div><strong>{needs.summary.articulos} artículos</strong><span>{needs.summary.cubiertos} cubiertos · {needs.summary.compra_necesaria} con faltante calculado · {needs.summary.candidatas_propuesta} candidatas o pendientes</span></div><label>Filtrar<select aria-label="Filtrar necesidades" value={needsFilter} onChange={(event) => setNeedsFilter(event.target.value)}><option value="todos">Todos</option><option value="compra">Compra necesaria</option><option value="cubiertos">Cubiertos</option><option value="pendientes">Pendientes</option></select></label>{filterNeeds(needs.lines, needsFilter).map((line, index) => <NeedCard key={`${line.articulo_id || line.ingrediente_nombre}-${index}`} line={line} />)}<button disabled={Boolean(proposalDisabledReason(selected, needs, proposalLoading, needsError))} type="button" onClick={() => void generateProposal()}>{proposalLoading ? "Generando propuesta…" : "Generar propuesta de compra"}</button></> : null}{proposalDisabledReason(selected, needs, proposalLoading, needsError) ? <p className="draft-warning">{proposalDisabledReason(selected, needs, proposalLoading, needsError)}</p> : null}{proposal ? <ProposalReview proposal={proposal} providerNames={providerNames} loading={proposalLoading} disabledReason={createDisabledReason} onUpdate={updateProposalLine} onResolveArticle={resolveArticle} onSave={() => void saveProposal()} onCreate={() => void createOrders()} /> : null}{createdOrders.length ? <div role="status"><strong>{createdOrders.length} borradores creados</strong>{createdOrders.map((order) => <span key={order.id}>{order.id} · {order.proveedor} · {order.estado}</span>)}<Link to="/compras">Abrir Compras</Link><span>Stock sin cambios. No se ha enviado ningún pedido.</span></div> : null}</section>
         <div className="menu-actions"><button disabled={saving} type="button" onClick={() => void save()}>{saving ? "Guardando..." : "Guardar menú"}</button>{selected && selected.estado !== "ARCHIVADO" ? <button disabled={saving} type="button" onClick={() => void archive()}>Archivar menú</button> : null}</div>
         {message ? <p role="status">{message}</p> : null}
       </div>
@@ -260,11 +290,13 @@ export function MenusPage() {
 
 type ProposalIssue = { type: string; message: string; field: string };
 
-function ProposalReview({ proposal, loading, disabledReason, onUpdate, onSave, onCreate }: {
+function ProposalReview({ proposal, providerNames, loading, disabledReason, onUpdate, onResolveArticle, onSave, onCreate }: {
   proposal: MenuPurchaseProposalResponse["propuesta"];
+  providerNames: string[];
   loading: boolean;
   disabledReason: string;
   onUpdate: (id: string, changes: Record<string, unknown>) => void;
+  onResolveArticle: (lineId: string, articleId: string) => Promise<void>;
   onSave: () => void;
   onCreate: () => void;
 }) {
@@ -295,7 +327,8 @@ function ProposalReview({ proposal, loading, disabledReason, onUpdate, onSave, o
       return <article className={`proposal-line proposal-line-${tone}`} id={`proposal-line-${line.id}`} key={line.id}>
         <header><label className="proposal-include"><input aria-label={`Incluir ${line.articulo || line.id}`} checked={line.incluir} type="checkbox" onChange={(event) => onUpdate(line.id, { incluir: event.target.checked })} /> Incluir artículo</label><strong>{line.articulo || "Artículo sin relacionar"}</strong><span className={`proposal-badge proposal-badge-${tone}`}>{!line.incluir ? "Excluido" : blocking ? "Requiere atención" : "Completo"}</span></header>
         <div className="proposal-info-grid"><div><span>Estado</span><strong>{line.estado}</strong></div><div><span>Necesario</span><strong>{formatQuantity(line.cantidad_necesaria, line.unidad_base)}</strong></div><div><span>Falta calculada</span><strong>{formatQuantity(line.cantidad_faltante, line.unidad_base)}</strong></div><div><span>Formato</span><strong>{line.formato_compra || "Pendiente"}</strong></div><div><span>Precio estimado</span><strong>{line.precio_estimado == null ? "Pendiente" : `${formatMoney(line.precio_estimado)}/${line.unidad_base}`}</strong></div></div>
-        <div className="proposal-edit-grid"><label>Cantidad propuesta<input data-field="cantidad" aria-label={`Cantidad propuesta ${line.id}`} min="0" step="any" type="number" value={line.cantidad_final_propuesta ?? ""} onChange={(event) => onUpdate(line.id, { cantidad_final_propuesta: event.target.value === "" ? null : Number(event.target.value) })} /></label><label>Proveedor<input data-field="proveedor" aria-label={`Proveedor ${line.id}`} value={line.proveedor || ""} onChange={(event) => onUpdate(line.id, { proveedor: event.target.value })} /></label><label className="proposal-observations">Observaciones<input data-field="observaciones" aria-label={`Observaciones ${line.id}`} value={line.observaciones} onChange={(event) => onUpdate(line.id, { observaciones: event.target.value })} /></label></div>
+        {!line.articulo_id ? <ArticleResolver line={line} onResolve={onResolveArticle} /> : null}
+        <div className="proposal-edit-grid"><label>Cantidad propuesta<input data-field="cantidad" aria-label={`Cantidad propuesta ${line.id}`} min="0" step="any" type="number" value={line.cantidad_final_propuesta ?? ""} onChange={(event) => onUpdate(line.id, { cantidad_final_propuesta: event.target.value === "" ? null : Number(event.target.value) })} /></label><ProviderResolver line={line} providerNames={providerNames} onUpdate={onUpdate} /><label className="proposal-observations">Observaciones<input data-field="observaciones" aria-label={`Observaciones ${line.id}`} value={line.observaciones} onChange={(event) => onUpdate(line.id, { observaciones: event.target.value })} /></label></div>
         {issues.length || line.advertencia ? <ul className="proposal-line-messages">{issues.map((issue) => <li className={isBlockingIssue(issue) ? "blocking" : "warning"} key={issue.type}>{issue.message}</li>)}{line.advertencia ? <li className="warning">{line.advertencia}</li> : null}</ul> : null}
       </article>;
     })}</div>
@@ -303,12 +336,43 @@ function ProposalReview({ proposal, loading, disabledReason, onUpdate, onSave, o
   </div>;
 }
 
+function ProviderResolver({ line, providerNames, onUpdate }: { line: MenuProposalLine; providerNames: string[]; onUpdate: (id: string, changes: Record<string, unknown>) => void }) {
+  const listId = `provider-options-${line.id}`;
+  const change = (value: string) => {
+    const match = providerNames.find((name) => normalizeText(name) === normalizeText(value));
+    onUpdate(line.id, { proveedor: match || value, proveedor_validado: Boolean(match) });
+  };
+  return <label>{line.proveedor ? "Proveedor" : "Proveedor pendiente"}<input data-field="proveedor" aria-label={`Proveedor ${line.id}`} list={listId} placeholder="Buscar proveedor..." value={line.proveedor || ""} onChange={(event) => change(event.target.value)} /><datalist id={listId}>{providerNames.map((name) => <option key={name} value={name} />)}</datalist>{line.proveedor && line.proveedor_validado === false ? <small className="draft-warning">Selecciona un proveedor existente de la lista.</small> : null}</label>;
+}
+
+function ArticleResolver({ line, onResolve }: { line: MenuProposalLine; onResolve: (lineId: string, articleId: string) => Promise<void> }) {
+  const [query, setQuery] = useState(line.articulo || "");
+  const [results, setResults] = useState<ArticuloResumen[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  useEffect(() => {
+    if (query.trim().length < 2) { setResults([]); return; }
+    const timer = window.setTimeout(() => {
+      setLoading(true); setError("");
+      void articulosService.list({ q: query.trim(), page_size: 8 }).then((response) => setResults(response.catalogo.items)).catch((reason) => setError((reason as Error).message)).finally(() => setLoading(false));
+    }, 250);
+    return () => window.clearTimeout(timer);
+  }, [query]);
+  const select = async (articleId: string) => {
+    setLoading(true); setError("");
+    try { await onResolve(line.id, articleId); setResults([]); }
+    catch (reason) { setError((reason as Error).message); }
+    finally { setLoading(false); }
+  };
+  return <section className="proposal-resolver" data-field="articulo" tabIndex={-1}><strong>Artículo pendiente</strong><label>Buscar artículo existente<input aria-label={`Buscar artículo ${line.id}`} placeholder="Nombre, código, alias o texto parcial" value={query} onChange={(event) => setQuery(event.target.value)} /></label>{loading ? <small>Buscando artículos...</small> : null}{error ? <small role="alert" className="draft-warning">{error}</small> : null}{results.length ? <ul>{results.map((article) => <li key={article.id}><button type="button" onClick={() => void select(article.id)}><strong>{article.nombre}</strong><span>{article.codigo} · {article.proveedor || "Sin proveedor"}</span></button></li>)}</ul> : query.trim().length >= 2 && !loading && !error ? <small>No hay artículos coincidentes.</small> : null}</section>;
+}
+
 function proposalLineIssues(line: MenuProposalLine): ProposalIssue[] {
   if (!line.incluir) return [];
   const issues: ProposalIssue[] = [];
   if (!line.articulo_id) issues.push({ type: "Artículo sin relacionar", field: "articulo", message: "Relaciona el artículo antes de crear el borrador." });
   if (line.cantidad_final_propuesta == null || line.cantidad_final_propuesta <= 0) issues.push({ type: "Cantidad propuesta pendiente", field: "cantidad", message: "Introduce una cantidad mayor que cero." });
-  if (!line.proveedor) issues.push({ type: "Proveedor pendiente", field: "proveedor", message: "Selecciona o escribe un proveedor." });
+  if (!line.proveedor || line.proveedor_validado === false) issues.push({ type: "Proveedor pendiente", field: "proveedor", message: "Selecciona un proveedor existente." });
   if (!line.unidad_base && !line.formato_compra) issues.push({ type: "Formato pendiente", field: "formato", message: "La línea no tiene unidad ni formato de compra." });
   if (line.precio_estimado == null) issues.push({ type: "Precio pendiente", field: "precio", message: "El coste estimado todavía no está disponible." });
   return issues;
@@ -340,7 +404,7 @@ function proposalDisabledReason(selected: IntelligentMenu | null, needs: MenuNee
 
 function isOrderableLine(line: MenuProposalLine) {
   return Boolean(
-    line.incluir && line.articulo_id && line.proveedor
+    line.incluir && line.articulo_id && line.proveedor && line.proveedor_validado !== false
     && line.cantidad_final_propuesta != null && line.cantidad_final_propuesta > 0,
   );
 }
@@ -353,7 +417,7 @@ function normalizeProposal(proposal: MenuPurchaseProposalResponse["propuesta"]):
       ? line.cantidad_necesaria
       : line.cantidad_final_propuesta;
     if (provider !== providerName(line.proveedor) || quantity !== line.cantidad_final_propuesta) changed = true;
-    return { ...line, proveedor: provider || null, cantidad_final_propuesta: quantity };
+    return { ...line, proveedor: provider || null, proveedor_validado: Boolean(provider), cantidad_final_propuesta: quantity };
   });
   return { proposal: { ...proposal, lineas }, changed };
 }
@@ -362,6 +426,10 @@ function providerName(value: unknown): string {
   if (typeof value === "string") return value.trim();
   if (value && typeof value === "object" && "nombre" in value) return String((value as { nombre?: unknown }).nombre || "").trim();
   return "";
+}
+
+function normalizeText(value: string): string {
+  return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().toLocaleLowerCase("es");
 }
 
 function orderDisabledReason(proposal: MenuPurchaseProposalResponse["propuesta"] | null, loading: boolean, readyCount: number) {

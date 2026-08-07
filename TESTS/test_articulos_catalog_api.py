@@ -16,7 +16,7 @@ def _fixture(base: Path) -> None:
     db.mkdir(parents=True)
     invoices.mkdir(parents=True)
     (db / "articulos.json").write_text(json.dumps([
-        {"codigo": "ART-001", "nombre": "Tomate pera", "familia": "Verduras", "proveedor": "Huerta Sur", "precio": 2.5, "unidad": "kg", "activo": True}
+        {"codigo": "ART-001", "nombre": "Tomate pera", "alias": "tomate ensalada", "familia": "Verduras", "proveedor": "Huerta Sur", "precio": 2.5, "unidad": "kg", "activo": True}
     ]), encoding="utf-8")
     (db / "proveedores.json").write_text("[]", encoding="utf-8")
     (db / "compras_producto_proveedor.json").write_text(json.dumps([
@@ -38,6 +38,7 @@ def test_catalogo_busca_filtra_pagina_y_detalla_datos_reales(tmp_path: Path) -> 
     listed = service.listar({"q": "tomate", "familia": "Verduras", "page": "1", "page_size": "10"})
     assert listed["catalogo"]["total"] == 1
     assert listed["catalogo"]["items"][0]["stock"] == 8
+    assert service.listar({"q": "ensalada"})["catalogo"]["total"] == 1
     detail = service.obtener("ART-001")
     assert detail["articulo"]["proveedores"][0]["nombre"] == "Huerta Sur"
     assert detail["articulo"]["precios"][0]["precio"] == 2.5

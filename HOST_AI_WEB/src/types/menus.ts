@@ -109,6 +109,7 @@ export type MenuProposalLine = {
   observaciones: string; advertencia: string | null; motivos_pendientes?: string[];
   proveedor_sugerido?: string | { nombre?: string } | null;
   proveedor_preferente?: string | { nombre?: string } | null;
+  proveedor_validado?: boolean;
 };
 
 export type MenuDraftOrder = { id: string; proveedor: string; estado: "borrador"; lineas: Array<Record<string, unknown>>; importe_estimado: number; observaciones: string };

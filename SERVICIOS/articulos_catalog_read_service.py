@@ -98,10 +98,14 @@ class ArticulosCatalogReadService:
         items = [self._summary(p, indexes) for p in products]
         q = self._norm(query.get("q"))
         if q:
-            items = [
-                x for x in items
-                if any(q in self._norm(x.get(k)) for k in ("nombre", "codigo", "familia", "proveedor"))
-            ]
+            matching_ids = {
+                str(product.get("codigo") or "") for product in products
+                if any(q in self._norm(value) for value in (
+                    product.get("nombre"), product.get("codigo"), product.get("familia"),
+                    product.get("proveedor"), product.get("alias"), product.get("aliases"),
+                ))
+            }
+            items = [x for x in items if x["id"] in matching_ids]
         for key in ("familia", "proveedor", "estado"):
             value = self._norm(query.get(key))
             if value:
