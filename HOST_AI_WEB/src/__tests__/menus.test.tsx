@@ -172,6 +172,11 @@ describe("Selector de elaboraciones de Menús", () => {
     expect(createButton).toBeDisabled();
     expect(screen.getByText(/No hay líneas listas/)).toBeInTheDocument();
     expect(screen.getByText("Líneas pendientes: 1")).toBeInTheDocument();
+    expect(screen.getByText(/^Cantidad propuesta pendiente/, { selector: "strong" })).toHaveTextContent("(1)");
+    expect(screen.getByText(/^Proveedor pendiente/, { selector: "strong" })).toHaveTextContent("(1)");
+    expect(screen.getByText("Requiere atención")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /Patata: Introduce una cantidad/ }));
+    expect(screen.getByLabelText("Cantidad propuesta LINEA-PENDIENTE")).toHaveFocus();
 
     fireEvent.change(screen.getByLabelText("Cantidad propuesta LINEA-PENDIENTE"), { target: { value: "2" } });
     fireEvent.change(screen.getByLabelText("Proveedor LINEA-PENDIENTE"), { target: { value: "Proveedor A" } });
