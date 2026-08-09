@@ -53,8 +53,8 @@ class ApiRouter:
         request_id = str(request.request_id or "")
         key = (str(request.method or "").upper(), str(request.path or ""))
         handler = self._table.get(key)
-        if handler is None and key[0] == "GET" and key[1].startswith("/api/v1/articulos/"):
-            handler = articulos.detail_handle
+        if handler is None and key[0] in {"GET", "PATCH"} and key[1].startswith("/api/v1/articulos/"):
+            handler = articulos.detail_handle if key[0] == "GET" else articulos.update_handle
         if handler is None and key[0] == "GET" and key[1].startswith("/api/v1/biblioteca/elaboraciones/"):
             handler = biblioteca.detail_handle
         if handler is None and key[0] in {"GET", "POST", "PATCH"} and key[1].startswith("/api/v1/biblioteca/importaciones/"):

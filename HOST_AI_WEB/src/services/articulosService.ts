@@ -24,4 +24,5 @@ export const articulosService = {
   get(id: string) {
     return hostAiApiClient.getArticulo(id);
   },
+  update: hostAiApiClient.updateArticulo,
 };

@@ -38,6 +38,7 @@ class CatalogPublicFacade(CorePublicApi02Facade):
             self._articulos_service = ArticulosCatalogReadService(
                 self.base_dir,
                 stock=self._get_core().stock,
+                compras=self._get_core().compras,
             )
         return self._articulos_service
 
@@ -60,6 +61,13 @@ class CatalogPublicFacade(CorePublicApi02Facade):
                 code="catalog_unavailable",
                 message="No se pudo consultar el artículo.",
             )
+
+    def actualizar_articulo(self, articulo_id: str, body: dict[str, Any]) -> dict[str, Any]:
+        try:
+            result = self._get_articulos_service().actualizar(articulo_id, dict(body or {}))
+            return {**self._base_payload(), **result}
+        except Exception:
+            return self._error_payload(code="article_update_failed", message="No se pudo actualizar el artículo.")
 
     def _get_stock_adjustments_service(self) -> StockAjustesService:
         if self._stock_adjustments_service is None:

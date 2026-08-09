@@ -42,6 +42,7 @@ export type ArticuloDetalle = ArticuloResumen & {
   unidad_compra?: string | null;
   cantidad_formato?: number | null;
   unidad_base?: string | null;
+  conversion_unidades?: string | null;
   unidad_recetas?: string | null;
   iva?: number | null;
   precio_incluye_iva: boolean;
@@ -57,6 +58,9 @@ export type ArticuloDetalle = ArticuloResumen & {
   recetas: Record<string, unknown>[];
   escandallos: Record<string, unknown>[];
   historial: Array<{ tipo: string; fecha?: string | null; descripcion: string; precio?: number | null; proveedor?: string | null }>;
+  operatividad: { stock: boolean; compras: boolean; escandallos: boolean };
+  edicion: { unidades_base: string[]; proveedores: Array<{ id?: string | null; nombre: string }> };
 };
 
 export type ArticuloResponse = ApiEnvelope & { articulo: ArticuloDetalle };
+export type ArticuloUpdateInput = { nombre: string; familia?: string; unidad_base: string; unidad_compra?: string; cantidad_formato?: number | null; proveedor_preferente?: string; precio?: number | null; referencia_proveedor?: string; marca?: string; conservacion?: string; alergenos?: string[]; observaciones?: string };

@@ -16,10 +16,18 @@ class ArticulosCatalogReadService:
         "page", "page_size", "orden", "direccion",
     }
     SORT_FIELDS = {"nombre", "codigo", "precio", "stock", "actualizacion"}
+    BASE_UNITS = {"kg", "g", "l", "ml", "u"}
+    EDITABLE_FIELDS = {"nombre", "familia", "unidad_base", "unidad_compra", "cantidad_formato", "proveedor_preferente", "precio", "referencia_proveedor", "marca", "conservacion", "alergenos", "observaciones"}
 
-    def __init__(self, base_dir: Path, stock: Any | None = None) -> None:
+    def __init__(self, base_dir: Path, stock: Any | None = None, compras: Any | None = None) -> None:
         self.catalogo = CatalogoMaestroProductos601(base_dir)
         self.stock = stock
+        self.compras = compras
+
+    def _providers(self) -> list[dict[str, Any]]:
+        if self.compras is not None:
+            return list(self.compras.listar_proveedores(incluir_inactivos=False) or [])
+        return []
 
     @staticmethod
     def _norm(value: Any) -> str:
@@ -159,6 +167,7 @@ class ArticulosCatalogReadService:
         stock_item = self._stock_for(product, self._stock_index())
         associations = [dict(x) for x in list(result.get("asociaciones") or []) if isinstance(x, dict)]
         history = [dict(x) for x in list(result.get("historico_precios") or []) if isinstance(x, dict)]
+        preferred_provider = product.get("proveedor_preferente") or product.get("proveedor")
         providers = []
         for row in associations:
             name = row.get("proveedor_nombre") or row.get("proveedor") or row.get("nombre_proveedor")
@@ -177,6 +186,7 @@ class ArticulosCatalogReadService:
             "unidad_compra": product.get("unidad_compra") or None,
             "cantidad_formato": self._number(product.get("cantidad_formato")),
             "unidad_base": product.get("unidad_base") or None,
+            "conversion_unidades": product.get("conversion_unidades") or None,
             "unidad_recetas": product.get("unidad_recetas") or None,
             "iva": self._number(product.get("iva")),
             "precio_incluye_iva": bool(product.get("precio_incluye_iva", False)),
@@ -208,8 +218,60 @@ class ArticulosCatalogReadService:
                 "precio": self._number(x.get("precio")),
                 "proveedor": x.get("proveedor_nombre") or None,
             } for x in history],
+            "operatividad": {
+                "stock": bool(product.get("nombre") and product.get("unidad_base")),
+                "compras": bool(product.get("nombre") and product.get("unidad_base") and preferred_provider and product.get("unidad_compra")),
+                "escandallos": bool(product.get("nombre") and product.get("unidad_base")),
+            },
+            "edicion": {
+                "unidades_base": sorted(self.BASE_UNITS),
+                "proveedores": [{"id": p.get("id") or p.get("codigo"), "nombre": p.get("nombre")} for p in self._providers() if p.get("nombre")],
+            },
         }
         return {"ok": True, "articulo": detail}
+
+    def actualizar(self, article_id: str, body: dict[str, Any]) -> dict[str, Any]:
+        if body.get("confirmacion") != "ACTUALIZAR_ARTICULO_MAESTRO":
+            return self._error("confirmation_required", "Confirma explícitamente la actualización.", 400)
+        unknown = sorted(set(body) - self.EDITABLE_FIELDS - {"confirmacion"})
+        if unknown:
+            return self._error("invalid_field", f"Campos no admitidos: {', '.join(unknown)}.", 400)
+        current = self.catalogo.repositorio.obtener_producto(article_id)
+        if not current:
+            return self._error("article_not_found", "Artículo no encontrado.", 404)
+        changes = {key: body[key] for key in self.EDITABLE_FIELDS if key in body}
+        name = str(changes.get("nombre", current.get("nombre")) or "").strip()
+        base_unit = str(changes.get("unidad_base", current.get("unidad_base")) or "").strip().lower()
+        if not name:
+            return self._error("invalid_name", "El nombre es obligatorio.", 400)
+        if base_unit not in self.BASE_UNITS:
+            return self._error("invalid_base_unit", "Selecciona una unidad base válida.", 400)
+        changes["nombre"] = name
+        changes["unidad_base"] = base_unit
+        if "cantidad_formato" in changes and changes["cantidad_formato"] not in (None, ""):
+            value = self._number(changes["cantidad_formato"])
+            if value is None or value <= 0:
+                return self._error("invalid_format_quantity", "La cantidad por formato debe ser mayor que cero.", 400)
+            changes["cantidad_formato"] = value
+        if "precio" in changes and changes["precio"] not in (None, ""):
+            value = self._number(changes["precio"])
+            if value is None or value <= 0:
+                return self._error("invalid_price", "El precio debe ser mayor que cero.", 400)
+            changes["precio"] = value
+        provider = str(changes.get("proveedor_preferente") or "").strip()
+        if provider:
+            providers = self._providers()
+            match = next((p for p in providers if self._norm(p.get("nombre")) == self._norm(provider)), None)
+            if not match:
+                return self._error("provider_not_found", "Selecciona un proveedor existente.", 400)
+            changes["proveedor_preferente"] = str(match.get("nombre"))
+            changes["proveedor"] = str(match.get("nombre"))
+        elif "proveedor_preferente" in changes:
+            changes["proveedor"] = ""
+        updated = self.catalogo.editar(article_id, changes)
+        if not updated.get("ok"):
+            return self._error("article_update_failed", str(updated.get("mensaje") or "No se pudo actualizar el artículo."), 400)
+        return {**self.obtener(article_id), "datos_reales_modificados": True, "mensaje": "Artículo actualizado correctamente."}
 
     @staticmethod
     def _error(code: str, message: str, status: int) -> dict[str, Any]:

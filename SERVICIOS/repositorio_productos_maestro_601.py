@@ -101,11 +101,10 @@ class RepositorioProductosMaestro601:
         if forzar_archivado or art.get("activo") is False:
             return ESTADO_ARCHIVADO
         nombre = str(art.get("nombre") or "").strip()
-        precio = art.get("precio")
         unidad = str(art.get("unidad") or "").strip()
         if not nombre:
             return ESTADO_PENDIENTE
-        if precio in (None, "", 0, 0.0) or not unidad:
+        if not unidad:
             return ESTADO_PENDIENTE
         return ESTADO_ACTIVO
 

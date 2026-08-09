@@ -15,6 +15,12 @@ def detail_handle(request: ApiRequest, facade: CorePublicFacade) -> ApiResponse:
     return ApiResponse(status_code=_status(payload), payload=payload)
 
 
+def update_handle(request: ApiRequest, facade: CorePublicFacade) -> ApiResponse:
+    article_id = str(request.path or "").rsplit("/", 1)[-1]
+    payload = facade.actualizar_articulo(article_id, request.body)
+    return ApiResponse(status_code=_status(payload), payload=payload)
+
+
 def _status(payload: dict) -> int:
     if payload.get("ok"):
         return 200

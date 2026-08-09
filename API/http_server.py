@@ -153,6 +153,10 @@ def create_app(platform_api: HostAIPlatformAPI | None = None) -> FastAPI:
     async def get_articulo(articulo_id: str, request: Request) -> JSONResponse:
         return await _delegate(request)
 
+    @app.patch("/api/v1/articulos/{articulo_id}")
+    async def patch_articulo(articulo_id: str, request: Request) -> JSONResponse:
+        return await _delegate(request, body=await _json_body(request))
+
     @app.get("/api/v1/biblioteca")
     async def get_biblioteca(request: Request) -> JSONResponse:
         return await _delegate(request)

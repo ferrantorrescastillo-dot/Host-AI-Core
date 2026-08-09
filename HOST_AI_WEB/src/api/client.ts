@@ -1,6 +1,6 @@
 import { HOST_AI_API_BASE_URL } from "../config/env";
 import type { ChatResponse, DashboardResponse } from "../types/api";
-import type { ArticuloResponse, CatalogoResponse } from "../types/articulos";
+import type { ArticuloResponse, ArticuloUpdateInput, CatalogoResponse } from "../types/articulos";
 import type {
   BibliotecaImportProposalsResponse,
   BibliotecaImportResponse,
@@ -136,6 +136,9 @@ export const hostAiApiClient = {
 
   getArticulo(id: string): Promise<ArticuloResponse> {
     return request<ArticuloResponse>(`/api/v1/articulos/${encodeURIComponent(id)}`, { method: "GET" });
+  },
+  updateArticulo(id: string, input: ArticuloUpdateInput): Promise<ArticuloResponse & { mensaje: string }> {
+    return request<ArticuloResponse & { mensaje: string }>(`/api/v1/articulos/${encodeURIComponent(id)}`, { method: "PATCH", body: JSON.stringify({ ...input, confirmacion: "ACTUALIZAR_ARTICULO_MAESTRO" }) });
   },
 
   getMenus(): Promise<MenusResponse> {
