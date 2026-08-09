@@ -128,10 +128,25 @@ function StockMovementForm({ data, articles, search, setSearch, loadArticles, co
   const [notes, setNotes] = useState("");
   const [confirmExisting, setConfirmExisting] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [searching, setSearching] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const selected = articles.find((article) => article.id === articleId);
   const existing = data?.existencias.find((item) => item.articulo_id === articleId || item.clave === articleId);
+
+  const performSearch = async () => {
+    setSearching(true); setError("");
+    try { await loadArticles(); setHasSearched(true); }
+    catch (reason) { setError((reason as Error).message); }
+    finally { setSearching(false); }
+  };
+
+  const selectArticle = (article: ArticuloResumen) => {
+    setArticleId(article.id);
+    setUnit(article.unidad || "");
+    setConfirmExisting(false);
+  };
 
   const save = async () => {
     setBusy(true); setError(""); setMessage("");
@@ -142,8 +157,9 @@ function StockMovementForm({ data, articles, search, setSearch, loadArticles, co
   };
 
   return <section className="stock-section" aria-label="Registrar inventario o ajuste"><h3>Registrar inventario / ajuste</h3>
-    <div className="menu-actions"><label>Buscar artículo<input value={search} onChange={(event) => setSearch(event.target.value)} /></label><button type="button" onClick={() => void loadArticles()}>Buscar</button></div>
-    <label>Artículo<select aria-label="Artículo" value={articleId} onChange={(event) => { const id = event.target.value; setArticleId(id); const article = articles.find((item) => item.id === id); setUnit(article?.unidad || ""); }}><option value="">Selecciona un artículo</option>{articles.map((article) => <option key={article.id} value={article.id}>{article.nombre} · {article.codigo}</option>)}</select></label>
+    <div className="menu-actions"><label>Buscar artículo<input value={search} onChange={(event) => setSearch(event.target.value)} /></label><button type="button" disabled={searching} onClick={() => void performSearch()}>{searching ? "Buscando..." : "Buscar"}</button></div>
+    {hasSearched ? articles.length ? <ul className="clean-list" aria-label="Resultados de artículos">{articles.map((article) => <li key={article.id}><button type="button" aria-pressed={article.id === articleId} onClick={() => selectArticle(article)}>{article.nombre} · {article.codigo}</button></li>)}</ul> : <p role="status">No se encontraron artículos.</p> : null}
+    <label>Artículo<select aria-label="Artículo" value={articleId} onChange={(event) => { const article = articles.find((item) => item.id === event.target.value); if (article) selectArticle(article); else setArticleId(""); }}><option value="">Selecciona un artículo</option>{articles.map((article) => <option key={article.id} value={article.id}>{article.nombre} · {article.codigo}</option>)}</select></label>
     <label>Tipo de movimiento<select aria-label="Tipo de movimiento" value={type} onChange={(event) => setType(event.target.value as StockMovementType)}><option value="INVENTARIO_INICIAL">Inventario inicial</option><option value="AJUSTE_POSITIVO">Ajuste positivo</option><option value="AJUSTE_NEGATIVO">Ajuste negativo</option></select></label>
     <label>Cantidad<input aria-label="Cantidad" type="number" min="0" step="any" value={quantity} onChange={(event) => setQuantity(event.target.value)} /></label><label>Unidad<input aria-label="Unidad" value={unit} onChange={(event) => setUnit(event.target.value)} /></label>
     <label>Lote (opcional)<input value={lot} onChange={(event) => setLot(event.target.value)} /></label><label>Ubicación (opcional)<input value={location} onChange={(event) => setLocation(event.target.value)} /></label><label>Caducidad (opcional)<input type="date" value={expiry} onChange={(event) => setExpiry(event.target.value)} /></label><label>Observaciones (opcional)<textarea value={notes} onChange={(event) => setNotes(event.target.value)} /></label>

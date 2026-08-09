@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
@@ -52,7 +52,7 @@ function renderPage() {
 }
 
 describe("Stock", () => {
-  afterEach(() => vi.restoreAllMocks());
+  afterEach(() => { cleanup(); vi.restoreAllMocks(); });
 
   it("muestra existencias, lotes, movimientos y alertas del dashboard", async () => {
     vi.spyOn(global, "fetch").mockResolvedValue({
@@ -124,11 +124,28 @@ describe("Stock", () => {
     await userEvent.click(last(screen.getAllByRole("button", { name: "Registrar inventario / ajuste" })));
     await userEvent.type(last(screen.getAllByLabelText("Buscar artículo")), "Patata");
     await userEvent.click(last(screen.getAllByRole("button", { name: "Buscar" })));
-    await userEvent.selectOptions(last(await screen.findAllByLabelText("Artículo")), "ART-PATATA");
+    await userEvent.click(last(await screen.findAllByRole("button", { name: "Patata Monalisa · ART-PATATA" })));
+    expect(last(screen.getAllByLabelText("Artículo"))).toHaveValue("ART-PATATA");
     await userEvent.type(last(screen.getAllByLabelText("Cantidad")), "0.5");
     await userEvent.click(last(screen.getAllByRole("button", { name: "Guardar movimiento" })));
     expect(await screen.findByText(/Movimiento registrado correctamente. Stock actual: 0,5 kg/)).toBeInTheDocument();
     expect((await screen.findAllByText("Patata Monalisa")).length).toBeGreaterThan(0);
     expect(fetchMock.mock.calls.some(([url, init]) => String(url).endsWith("/stock/movimientos") && init?.method === "POST")).toBe(true);
+  });
+
+  it("muestra cero resultados sin seleccionar ni modificar Stock", async () => {
+    const fetchMock = vi.spyOn(global, "fetch").mockImplementation(async (input) => {
+      const url = String(input);
+      if (url.includes("/api/v1/articulos?")) return { ok: true, json: async () => ({ ok: true, version: "6.1", api_version: "1.0", request_id: "REQ-EMPTY", modo_seguro: true, datos_reales_modificados: false, catalogo: { items: [], total: 0, page: 1, page_size: 25, total_pages: 0, filtros: { familias: [], proveedores: [], estados: [] }, capacidades: {} } }) } as Response;
+      return { ok: true, json: async () => response([]) } as Response;
+    });
+    renderPage();
+    await screen.findByText("No hay existencias de stock registradas.");
+    await userEvent.click(last(screen.getAllByRole("button", { name: "Registrar inventario / ajuste" })));
+    await userEvent.type(last(screen.getAllByLabelText("Buscar artículo")), "No existe");
+    await userEvent.click(last(screen.getAllByRole("button", { name: "Buscar" })));
+    expect(await screen.findByText("No se encontraron artículos.")).toBeInTheDocument();
+    expect(last(screen.getAllByLabelText("Artículo"))).toHaveValue("");
+    expect(fetchMock.mock.calls.some(([url]) => String(url).includes("/stock/movimientos"))).toBe(false);
   });
 });

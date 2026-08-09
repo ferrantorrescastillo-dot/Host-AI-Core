@@ -83,3 +83,22 @@ def test_endpoint_no_crea_pedidos_recepciones_ni_produccion(tmp_path: Path) -> N
     payload = response.json()
     assert payload["pedidos_creados"] == 0 and payload["recepciones_creadas"] == 0
     assert payload["movimiento"]["trazabilidad"]["production_plan_id"] == "PLAN-1"
+
+
+def test_busqueda_stock_reutiliza_catalogo_sin_modificar_datos(tmp_path: Path) -> None:
+    core, _service = _seed(tmp_path)
+    client = TestClient(create_app(HostAIPlatformAPI(base_dir=tmp_path)))
+    lotes_before = (tmp_path / "DATOS/db/stock_lotes.json").read_bytes()
+    movements_before = (tmp_path / "DATOS/db/stock_movimientos.json").read_bytes()
+
+    for term in ("Patata", "patata monalisa", "ART-PAT"):
+        response = client.get("/api/v1/articulos", params={"q": term, "page_size": 25})
+        assert response.status_code == 200
+        item = response.json()["catalogo"]["items"][0]
+        assert item["id"] == "ART-PATATA" and item["nombre"] == "Patata Monalisa"
+
+    empty = client.get("/api/v1/articulos", params={"q": "NO-EXISTE"}).json()
+    assert empty["catalogo"]["items"] == [] and empty["catalogo"]["total"] == 0
+    assert not core.stock.movimientos and not core.stock.lotes
+    assert (tmp_path / "DATOS/db/stock_lotes.json").read_bytes() == lotes_before
+    assert (tmp_path / "DATOS/db/stock_movimientos.json").read_bytes() == movements_before
