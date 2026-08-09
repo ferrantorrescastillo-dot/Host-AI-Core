@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { HostAiApiError } from "../../api/client";
+import { articulosService } from "../../services/articulosService";
 import { stockService, type StockResult } from "../../services/stockService";
+import type { ArticuloResumen } from "../../types/articulos";
+import type { StockMovementInput, StockMovementType } from "../../types/stock";
 import type {
   StockAlerta,
   StockExistencia,
@@ -16,6 +20,10 @@ export function StockPage() {
   const [errorRequestId, setErrorRequestId] = useState<string | null>(null);
   const [data, setData] = useState<StockResult | null>(null);
   const [refreshTick, setRefreshTick] = useState(0);
+  const [showForm, setShowForm] = useState(false);
+  const [articles, setArticles] = useState<ArticuloResumen[]>([]);
+  const [search, setSearch] = useState("");
+  const location = useLocation();
 
   useEffect(() => {
     let active = true;
@@ -45,7 +53,7 @@ export function StockPage() {
     };
   }, [refreshTick]);
 
-  if (loading) return <LoadingState label="Cargando stock..." />;
+  if (loading && !data) return <LoadingState label="Cargando stock..." />;
 
   return (
     <section className="panel" role="region" aria-labelledby="stock-title">
@@ -58,6 +66,7 @@ export function StockPage() {
         <button type="button" onClick={() => setRefreshTick((value) => value + 1)}>
           {error ? "Reintentar" : "Actualizar"}
         </button>
+        <button type="button" onClick={() => setShowForm((value) => !value)}>Registrar inventario / ajuste</button>
       </header>
 
       {error ? (
@@ -67,6 +76,7 @@ export function StockPage() {
         </>
       ) : (
         <>
+          {showForm ? <StockMovementForm data={data} articles={articles} search={search} setSearch={setSearch} loadArticles={async () => { const response = await articulosService.list({ q: search, page_size: 25 }); setArticles(response.catalogo.items); }} context={new URLSearchParams(location.search)} onSaved={() => setRefreshTick((value) => value + 1)} /> : null}
           <section className="safe-mode" aria-label="Estado de seguridad">
             <p><strong>Modo seguro:</strong> {data?.modo_seguro ? "Activo" : "Inactivo"}</p>
             <p><strong>Datos reales modificados:</strong> {data?.datos_reales_modificados ? "Sí" : "No"}</p>
@@ -105,6 +115,42 @@ export function StockPage() {
       )}
     </section>
   );
+}
+
+function StockMovementForm({ data, articles, search, setSearch, loadArticles, context, onSaved }: { data: StockResult | null; articles: ArticuloResumen[]; search: string; setSearch: (value: string) => void; loadArticles: () => Promise<void>; context: URLSearchParams; onSaved: () => void }) {
+  const [articleId, setArticleId] = useState(context.get("article_id") || "");
+  const [type, setType] = useState<StockMovementType>("INVENTARIO_INICIAL");
+  const [quantity, setQuantity] = useState("");
+  const [unit, setUnit] = useState("");
+  const [location, setLocation] = useState("");
+  const [expiry, setExpiry] = useState("");
+  const [lot, setLot] = useState("");
+  const [notes, setNotes] = useState("");
+  const [confirmExisting, setConfirmExisting] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const selected = articles.find((article) => article.id === articleId);
+  const existing = data?.existencias.find((item) => item.articulo_id === articleId || item.clave === articleId);
+
+  const save = async () => {
+    setBusy(true); setError(""); setMessage("");
+    const input: StockMovementInput = { article_id: articleId, tipo: type, cantidad: Number(quantity), unidad: unit, lote: lot, ubicacion: location, caducidad: expiry, observaciones: notes, production_plan_id: context.get("production_plan_id") || undefined, return_to: context.get("return_to") || undefined, confirmar_existente: confirmExisting };
+    try { const response = await stockService.createMovement(input); setMessage(`${response.mensaje} Stock actual: ${formatQuantity(response.stock_actual, unit)}.`); onSaved(); }
+    catch (reason) { setError((reason as Error).message); }
+    finally { setBusy(false); }
+  };
+
+  return <section className="stock-section" aria-label="Registrar inventario o ajuste"><h3>Registrar inventario / ajuste</h3>
+    <div className="menu-actions"><label>Buscar artículo<input value={search} onChange={(event) => setSearch(event.target.value)} /></label><button type="button" onClick={() => void loadArticles()}>Buscar</button></div>
+    <label>Artículo<select aria-label="Artículo" value={articleId} onChange={(event) => { const id = event.target.value; setArticleId(id); const article = articles.find((item) => item.id === id); setUnit(article?.unidad || ""); }}><option value="">Selecciona un artículo</option>{articles.map((article) => <option key={article.id} value={article.id}>{article.nombre} · {article.codigo}</option>)}</select></label>
+    <label>Tipo de movimiento<select aria-label="Tipo de movimiento" value={type} onChange={(event) => setType(event.target.value as StockMovementType)}><option value="INVENTARIO_INICIAL">Inventario inicial</option><option value="AJUSTE_POSITIVO">Ajuste positivo</option><option value="AJUSTE_NEGATIVO">Ajuste negativo</option></select></label>
+    <label>Cantidad<input aria-label="Cantidad" type="number" min="0" step="any" value={quantity} onChange={(event) => setQuantity(event.target.value)} /></label><label>Unidad<input aria-label="Unidad" value={unit} onChange={(event) => setUnit(event.target.value)} /></label>
+    <label>Lote (opcional)<input value={lot} onChange={(event) => setLot(event.target.value)} /></label><label>Ubicación (opcional)<input value={location} onChange={(event) => setLocation(event.target.value)} /></label><label>Caducidad (opcional)<input type="date" value={expiry} onChange={(event) => setExpiry(event.target.value)} /></label><label>Observaciones (opcional)<textarea value={notes} onChange={(event) => setNotes(event.target.value)} /></label>
+    {type === "INVENTARIO_INICIAL" && existing && Number(existing.cantidad) > 0 ? <label className="draft-warning"><input type="checkbox" checked={confirmExisting} onChange={(event) => setConfirmExisting(event.target.checked)} />Ya existe {formatQuantity(existing.cantidad, existing.unidad)}. Confirmo que quiero corregir el inventario a la cantidad indicada.</label> : null}
+    <button type="button" disabled={busy || !selected || !quantity || !unit || Boolean(type === "INVENTARIO_INICIAL" && existing && !confirmExisting)} onClick={() => void save()}>{busy ? "Registrando..." : "Guardar movimiento"}</button>
+    {message ? <p role="status">{message}</p> : null}{error ? <p role="alert">{error}</p> : null}{context.get("return_to") === "produccion" && message ? <Link to="/produccion">Volver a Producción</Link> : null}
+  </section>;
 }
 
 function Alertas({ alertas }: { alertas: StockAlerta[] }) {

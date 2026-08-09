@@ -13,6 +13,7 @@ from SERVICIOS.menus_inteligentes_service import MenusInteligentesService
 from SERVICIOS.menu_necesidades_service import MenuNecesidadesService
 from SERVICIOS.compras_borradores_service import ComprasBorradoresService
 from SERVICIOS.menu_produccion_service import MenuProduccionService
+from SERVICIOS.stock_ajustes_service import StockAjustesService
 
 
 logger = logging.getLogger(__name__)
@@ -30,6 +31,7 @@ class CatalogPublicFacade(CorePublicApi02Facade):
         self._menu_needs_service: MenuNecesidadesService | None = None
         self._compras_drafts_service: ComprasBorradoresService | None = None
         self._menu_production_service: MenuProduccionService | None = None
+        self._stock_adjustments_service: StockAjustesService | None = None
 
     def _get_articulos_service(self) -> ArticulosCatalogReadService:
         if self._articulos_service is None:
@@ -58,6 +60,14 @@ class CatalogPublicFacade(CorePublicApi02Facade):
                 code="catalog_unavailable",
                 message="No se pudo consultar el artículo.",
             )
+
+    def _get_stock_adjustments_service(self) -> StockAjustesService:
+        if self._stock_adjustments_service is None:
+            self._stock_adjustments_service = StockAjustesService(self._get_core())
+        return self._stock_adjustments_service
+
+    def registrar_movimiento_stock(self, body: dict[str, Any]) -> dict[str, Any]:
+        return {**self._base_payload(), **self._get_stock_adjustments_service().registrar(dict(body or {}))}
 
     def _get_biblioteca_service(self) -> BibliotecaCulinariaReadService:
         if self._biblioteca_service is None:

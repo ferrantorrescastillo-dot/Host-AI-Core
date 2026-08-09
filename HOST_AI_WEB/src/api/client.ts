@@ -20,6 +20,7 @@ import type {
 } from "../types/menus";
 import type { CompraConfirmationResponse, CompraDraftInput, CompraDraftResponse } from "../types/compras";
 import type { ProductionPlanResponse, ProductionProposalResponse } from "../types/produccion";
+import type { StockMovementInput, StockMovementResponse } from "../types/stock";
 
 type Envelope = {
   ok: boolean;
@@ -110,6 +111,9 @@ async function request<T extends Envelope>(path: string, init?: RequestInit): Pr
 export const hostAiApiClient = {
   getDashboard(): Promise<DashboardResponse> {
     return request<DashboardResponse>("/api/v1/dashboard", { method: "GET" });
+  },
+  createStockMovement(input: StockMovementInput): Promise<StockMovementResponse> {
+    return request<StockMovementResponse>("/api/v1/stock/movimientos", { method: "POST", body: JSON.stringify({ ...input, confirmacion: "REGISTRAR_MOVIMIENTO_STOCK", usuario: "web" }) });
   },
 
   getCompraDraft(id: string): Promise<CompraDraftResponse> {

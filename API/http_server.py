@@ -141,6 +141,10 @@ def create_app(platform_api: HostAIPlatformAPI | None = None) -> FastAPI:
     async def get_dashboard(request: Request) -> JSONResponse:
         return await _delegate(request)
 
+    @app.post("/api/v1/stock/movimientos")
+    async def post_stock_movimiento(request: Request) -> JSONResponse:
+        return await _delegate(request, body=await _json_body(request))
+
     @app.get("/api/v1/articulos")
     async def get_articulos(request: Request) -> JSONResponse:
         return await _delegate(request)

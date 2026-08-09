@@ -1,7 +1,12 @@
 import { render, screen, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import userEvent from "@testing-library/user-event";
 import { App } from "../ui/App";
+
+function last<T>(items: T[]): T {
+  return items[items.length - 1];
+}
 
 function response(existencias: unknown[]) {
   return {
@@ -104,5 +109,26 @@ describe("Stock", () => {
     renderPage();
     expect(await screen.findByText("Stock no disponible temporalmente.")).toBeInTheDocument();
     expect(screen.getByText("Request ID: REQ-STOCK-ERROR")).toBeInTheDocument();
+  });
+
+  it("busca un artículo, registra inventario y refresca existencia y movimientos", async () => {
+    let saved = false;
+    const fetchMock = vi.spyOn(global, "fetch").mockImplementation(async (input, init) => {
+      const url = String(input);
+      if (url.includes("/api/v1/articulos?")) return { ok: true, json: async () => ({ ok: true, version: "6.1", api_version: "1.0", request_id: "REQ-ART", modo_seguro: true, datos_reales_modificados: false, catalogo: { items: [{ id: "ART-PATATA", codigo: "ART-PATATA", nombre: "Patata Monalisa", unidad: "kg", estado: "activo", con_stock: false, tiene_ficha_tecnica: false }], total: 1, page: 1, page_size: 25, total_pages: 1, filtros: { familias: [], proveedores: [], estados: [] }, capacidades: {} } }) } as Response;
+      if (url.endsWith("/api/v1/stock/movimientos") && init?.method === "POST") { saved = true; return { ok: true, status: 201, json: async () => ({ ok: true, version: "6.1", api_version: "1.0", request_id: "REQ-MOV", modo_seguro: true, datos_reales_modificados: true, movimiento: { id: "MOV-2", movement_id: "MOV-2", tipo: "inventario_inicial", nombre: "Patata Monalisa", cantidad: 0.5, unidad: "kg", article_id: "ART-PATATA", signo: 1, usuario: "web", origen: "inventario_inicial" }, stock_anterior: 0, stock_actual: 0.5, mensaje: "Movimiento registrado correctamente.", pedidos_creados: 0, recepciones_creadas: 0 }) } as Response; }
+      return { ok: true, json: async () => response(saved ? [{ clave: "ART-PATATA", articulo_id: "ART-PATATA", nombre: "Patata Monalisa", cantidad: 0.5, unidad: "kg", familia: "Verduras", lotes: [{ id: "LOTE-2" }] }] : []) } as Response;
+    });
+    renderPage();
+    await screen.findByText("No hay existencias de stock registradas.");
+    await userEvent.click(last(screen.getAllByRole("button", { name: "Registrar inventario / ajuste" })));
+    await userEvent.type(last(screen.getAllByLabelText("Buscar artículo")), "Patata");
+    await userEvent.click(last(screen.getAllByRole("button", { name: "Buscar" })));
+    await userEvent.selectOptions(last(await screen.findAllByLabelText("Artículo")), "ART-PATATA");
+    await userEvent.type(last(screen.getAllByLabelText("Cantidad")), "0.5");
+    await userEvent.click(last(screen.getAllByRole("button", { name: "Guardar movimiento" })));
+    expect(await screen.findByText(/Movimiento registrado correctamente. Stock actual: 0,5 kg/)).toBeInTheDocument();
+    expect((await screen.findAllByText("Patata Monalisa")).length).toBeGreaterThan(0);
+    expect(fetchMock.mock.calls.some(([url, init]) => String(url).endsWith("/stock/movimientos") && init?.method === "POST")).toBe(true);
   });
 });

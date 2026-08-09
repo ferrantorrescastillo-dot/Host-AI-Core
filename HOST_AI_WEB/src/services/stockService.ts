@@ -21,6 +21,7 @@ export type StockResult = ApiEnvelopeBase & {
 };
 
 export const stockService = {
+  createMovement: hostAiApiClient.createStockMovement,
   async load(): Promise<StockResult> {
     const response = await hostAiApiClient.getDashboard();
     const modulo = response.dashboard?.modulos?.stock;

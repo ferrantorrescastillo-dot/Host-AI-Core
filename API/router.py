@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from typing import Callable
 
 from API.contracts.http_models import ApiRequest, ApiResponse
-from API.endpoints import articulos, biblioteca, chat, compras, dashboard, eventos, executive, health, menus, plan, produccion, version, workflow
+from API.endpoints import articulos, biblioteca, chat, compras, dashboard, eventos, executive, health, menus, plan, produccion, stock, version, workflow
 from API.facade.core_public_facade import CorePublicFacade
 from API.infra.response_envelope import build_error_payload, normalize_success_payload
 
@@ -26,6 +26,7 @@ ROUTES: tuple[Route, ...] = (
     Route("GET", "/api/v1/version", version.handle),
     Route("GET", "/api/v1/executive", executive.handle),
     Route("GET", "/api/v1/dashboard", dashboard.handle),
+    Route("POST", "/api/v1/stock/movimientos", stock.movement_handle),
     Route("GET", "/api/v1/articulos", articulos.list_handle),
     Route("GET", "/api/v1/biblioteca", biblioteca.summary_handle),
     Route("GET", "/api/v1/biblioteca/elaboraciones", biblioteca.list_handle),
