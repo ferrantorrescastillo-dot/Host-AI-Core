@@ -13,6 +13,7 @@ def handle(request: ApiRequest, facade: CorePublicFacade) -> ApiResponse:
         suffix = path.split("/api/v1/produccion/planes/", 1)[-1]
         plan_id = suffix.split("/", 1)[0]
         payload = (facade.crear_propuesta_compra_produccion(plan_id) if path.endswith("/propuesta-compra")
+                   else facade.registrar_stock_desde_produccion(plan_id, request.body) if path.endswith("/stock-resolution/movement")
                    else facade.relacionar_articulo_produccion(plan_id, request.body) if path.endswith("/stock-resolution/article")
                    else facade.revision_stock_produccion(plan_id) if path.endswith("/stock-resolution")
                    else facade.plan_produccion(plan_id))

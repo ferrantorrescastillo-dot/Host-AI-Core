@@ -1,13 +1,24 @@
 from __future__ import annotations
 
 from datetime import datetime
+from copy import deepcopy
 import json
 from pathlib import Path
+import os
+import tempfile
 from typing import Any
 
 from MODELOS.produccion_real import PlanProduccionReal, TareaProduccionReal
 from SERVICIOS.menu_necesidades_service import MenuNecesidadesService
 from SERVICIOS.menus_inteligentes_service import MenusInteligentesService
+from SERVICIOS.articulos_catalog_read_service import ArticulosCatalogReadService
+from SERVICIOS.stock_ajustes_service import StockAjustesService
+
+
+class _ProductionStockAbort(Exception):
+    def __init__(self, result: dict[str, Any]) -> None:
+        self.result = result
+        super().__init__(str((result.get("error") or {}).get("message") or "No se pudo registrar Stock."))
 
 
 class MenuProduccionService:
@@ -132,6 +143,73 @@ class MenuProduccionService:
         return {"ok": True, "revision_stock": {"production_plan_id": plan_id, "plan_nombre": plan.get("nombre"),
             "menu_id": plan.get("menu_id"), "menu_version": plan.get("menu_version"), "event_id": plan.get("evento_id"),
             "ingredientes": rows, "resumen": summary, "stock_modificado": False}}
+
+    def registrar_inventario_desde_revision(self, plan_id: str, body: dict[str, Any]) -> dict[str, Any]:
+        """Confirma una unidad sugerida y registra Stock como una sola operación lógica."""
+        if body.get("confirmacion") != "REGISTRAR_STOCK_DESDE_PRODUCCION":
+            return self._error(400, "confirmation_required", "Confirma el registro de Stock desde Producción.")
+        review = self.revisar_stock(plan_id)
+        article_id = str(body.get("article_id") or "").strip()
+        row = next((item for item in review["revision_stock"]["ingredientes"] if item.get("articulo_id") == article_id), None)
+        if not row:
+            return self._error(404, "production_article_not_found", "El artículo no pertenece a este plan de Producción.")
+        selected_unit = str(body.get("unidad") or "").strip().lower()
+        product = self.necesidades.productos.obtener_producto(article_id) or {}
+        canonical_unit = str(product.get("unidad_base") or product.get("unidad") or "").strip().lower()
+        suggested = bool(product.get("unidad_base_sugerida"))
+        if not selected_unit:
+            return self._error(400, "unit_required", "Selecciona una unidad base.")
+        if not suggested and selected_unit != canonical_unit:
+            return self._error(409, "confirmed_unit_mismatch", f"La unidad confirmada del artículo es {canonical_unit}.")
+
+        article_path = Path(self.core.base_dir) / "DATOS" / "db" / "articulos.json"
+        article_before = article_path.read_bytes()
+        lots_before, movements_before = deepcopy(self.core.stock.lotes), deepcopy(self.core.stock.movimientos)
+        try:
+            if suggested:
+                articles = ArticulosCatalogReadService(self.core.base_dir, stock=self.core.stock, compras=self.core.compras)
+                update = articles.actualizar(article_id, {
+                    "confirmacion": "ACTUALIZAR_ARTICULO_MAESTRO", "nombre": str(product.get("nombre") or article_id),
+                    "unidad_base": selected_unit,
+                })
+                if not update.get("ok"):
+                    return update
+                confirmed = update["articulo"]
+                if confirmed.get("unidad_base_sugerida") or str(confirmed.get("unidad_base") or "").lower() != selected_unit:
+                    raise RuntimeError("La unidad seleccionada no quedó confirmada en la ficha canónica.")
+            movement_body = {**body, "confirmacion": "REGISTRAR_MOVIMIENTO_STOCK", "production_plan_id": plan_id,
+                             "unidad": selected_unit}
+            result = StockAjustesService(self.core).registrar(movement_body)
+            if not result.get("ok"):
+                raise _ProductionStockAbort(result)
+            refreshed = self.revisar_stock(plan_id)["revision_stock"]
+            return {**result, "revision_stock": refreshed, "unidad_canonica": selected_unit}
+        except _ProductionStockAbort as exc:
+            self._rollback_stock_resolution(article_path, article_before, lots_before, movements_before)
+            return exc.result
+        except Exception:
+            self._rollback_stock_resolution(article_path, article_before, lots_before, movements_before)
+            raise
+
+    def _rollback_stock_resolution(self, article_path: Path, article_before: bytes,
+                                   lots_before: dict[str, Any], movements_before: dict[str, Any]) -> None:
+        fd, temporary = tempfile.mkstemp(prefix=f".{article_path.name}.", dir=str(article_path.parent))
+        try:
+            with os.fdopen(fd, "wb") as stream:
+                stream.write(article_before)
+                stream.flush()
+                os.fsync(stream.fileno())
+            os.replace(temporary, article_path)
+        finally:
+            if os.path.exists(temporary):
+                os.unlink(temporary)
+        self.core.stock.lotes = lots_before
+        self.core.stock.movimientos = movements_before
+        self.core.stock._guardar_automatico()
+
+    @staticmethod
+    def _error(status: int, code: str, message: str) -> dict[str, Any]:
+        return {"ok": False, "error": {"status": status, "code": code, "message": message}}
 
     def relacionar_articulo(self, plan_id: str, body: dict[str, Any]) -> dict[str, Any]:
         if body.get("confirmacion") != "RELACIONAR_INGREDIENTE_ARTICULO":

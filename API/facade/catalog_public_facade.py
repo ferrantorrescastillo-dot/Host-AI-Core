@@ -157,6 +157,9 @@ class CatalogPublicFacade(CorePublicApi02Facade):
     def revision_stock_produccion(self, plan_id: str) -> dict[str, Any]:
         return {**self._base_payload(), **self._get_menu_production_service().revisar_stock(plan_id)}
 
+    def registrar_stock_desde_produccion(self, plan_id: str, body: dict[str, Any]) -> dict[str, Any]:
+        return {**self._base_payload(), **self._get_menu_production_service().registrar_inventario_desde_revision(plan_id, body)}
+
     def relacionar_articulo_produccion(self, plan_id: str, body: dict[str, Any]) -> dict[str, Any]:
         return {**self._base_payload(), **self._get_menu_production_service().relacionar_articulo(plan_id, body)}
 

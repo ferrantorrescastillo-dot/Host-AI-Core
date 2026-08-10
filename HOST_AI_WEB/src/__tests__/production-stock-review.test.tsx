@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom/vitest";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { ProductionStockReviewPage } from "../ui/pages/ProductionStockReviewPage";
@@ -28,20 +28,29 @@ describe("resolución masiva de Stock", () => {
   it("registra inventario con trazabilidad y refresca la fila", async () => {
     const fetchMock = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
       const url = String(input);
-      const payload = url.includes("stock/movimientos") ? { ...envelope, movimiento: { movement_id: "MOV-1" }, stock_anterior: 0, stock_actual: 2, mensaje: "Movimiento registrado", pedidos_creados: 0, recepciones_creadas: 0 }
-        : url.includes("/articulos/ART-2") && init?.method === "PATCH" ? { ...envelope, articulo: { nombre: "Zanahoria", unidad_base: "kg", unidad_base_sugerida: false } }
-        : url.includes("/articulos/ART-2") ? { ...envelope, articulo: { nombre: "Zanahoria", unidad_base: "kg", unidad_base_sugerida: true } }
+      const payload = url.includes("stock-resolution/movement") ? { ...envelope, movimiento: { movement_id: "MOV-1", unidad: "kg" }, stock_anterior: 0, stock_actual: 2, mensaje: "Movimiento registrado", pedidos_creados: 0, recepciones_creadas: 0 }
         : { ...envelope, revision_stock: review };
       return { ok: true, json: async () => payload };
     });
     vi.stubGlobal("fetch", fetchMock);
     render(<MemoryRouter initialEntries={["/produccion/PLAN-1/stock"]}><Routes><Route path="/produccion/:planId/stock" element={<ProductionStockReviewPage/>}/></Routes></MemoryRouter>);
     await screen.findByText("Zanahoria"); fireEvent.change(screen.getByLabelText("Cantidad"), { target: { value: "2" } }); fireEvent.click(screen.getByRole("button", { name: "Registrar inventario" }));
-    await waitFor(() => expect(fetchMock.mock.calls.some(([url]) => String(url).includes("stock/movimientos"))).toBe(true));
-    const patchIndex = fetchMock.mock.calls.findIndex(([url, init]) => String(url).includes("/articulos/ART-2") && init?.method === "PATCH");
-    const movementIndex = fetchMock.mock.calls.findIndex(([url]) => String(url).includes("stock/movimientos"));
-    expect(patchIndex).toBeGreaterThan(-1); expect(patchIndex).toBeLessThan(movementIndex);
-    expect(JSON.parse(String(fetchMock.mock.calls[patchIndex][1]?.body))).toMatchObject({ unidad_base: "kg" });
+    await waitFor(() => expect(fetchMock.mock.calls.some(([url]) => String(url).includes("stock-resolution/movement"))).toBe(true));
+    const movementIndex = fetchMock.mock.calls.findIndex(([url]) => String(url).includes("stock-resolution/movement"));
+    expect(fetchMock.mock.calls.filter(([url]) => String(url).includes("/articulos/ART-2"))).toHaveLength(0);
     expect(JSON.parse(String(fetchMock.mock.calls[movementIndex][1]?.body))).toMatchObject({ unidad: "kg", production_plan_id: "PLAN-1" });
+  });
+  it("explica una incompatibilidad confirmada y no ofrece registrar inventario", async () => {
+    const incompatible = { ...review, resumen: { ...review.resumen, stock_desconocido: 0, conversion_pendiente: 1 }, ingredientes: [{
+      nombre: "Naranja de zumo", articulo_id: "ART000216", cantidad: .057, unidad: "kg", unidad_base: "l",
+      unidad_base_sugerida: false, disponible: null, faltante: null, estado_resolucion: "CONVERSION_PENDIENTE",
+    }] };
+    vi.stubGlobal("fetch", vi.fn(async () => ({ ok: true, json: async () => ({ ...envelope, revision_stock: incompatible }) })));
+    render(<MemoryRouter initialEntries={["/produccion/PLAN-1/stock"]}><Routes><Route path="/produccion/:planId/stock" element={<ProductionStockReviewPage/>}/></Routes></MemoryRouter>);
+    expect(await screen.findByText("Unidad del artículo: l")).toBeInTheDocument();
+    const card = screen.getByText("Naranja de zumo").closest("article") as HTMLElement;
+    expect(screen.getByText("Necesidad del escandallo: 0,057 kg")).toBeInTheDocument();
+    expect(screen.getByText(/Conversión pendiente/)).toBeInTheDocument();
+    expect(within(card).queryByRole("button", { name: "Registrar inventario" })).not.toBeInTheDocument();
   });
 });

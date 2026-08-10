@@ -199,7 +199,7 @@ def test_revision_relaciona_articulo_existente_y_detecta_unidad_pendiente(tmp_pa
     assert pending["estado_resolucion"] == "FALTANTE_CONOCIDO"
 
 
-def test_unidad_sugerida_kg_se_confirma_antes_del_inventario_y_refresca_plan(tmp_path: Path) -> None:
+def test_ruta_real_confirma_kg_y_registra_inventario_antes_de_refrescar_plan(tmp_path: Path) -> None:
     _core, menu_id = _seed(tmp_path, stock=0)
     recipes_path = tmp_path / "DATOS/db/escandallos_canonicos.json"
     recipes = json.loads(recipes_path.read_text(encoding="utf-8"))
@@ -214,19 +214,55 @@ def test_unidad_sugerida_kg_se_confirma_antes_del_inventario_y_refresca_plan(tmp
     assert initial["cantidad"] == 0.057 and initial["unidad_base"] == "kg"
     assert initial["unidad_base_sugerida"] is True and initial["estado_resolucion"] == "STOCK_DESCONOCIDO"
 
-    confirmed = client.patch("/api/v1/articulos/ART-PATATA", json={
-        "confirmacion": "ACTUALIZAR_ARTICULO_MAESTRO", "nombre": "Patata", "unidad_base": "kg",
-    })
-    assert confirmed.status_code == 200 and confirmed.json()["articulo"]["unidad_base_sugerida"] is False
-    movement = client.post("/api/v1/stock/movimientos", json={
-        "confirmacion": "REGISTRAR_MOVIMIENTO_STOCK", "article_id": "ART-PATATA",
+    movement = client.post(f"/api/v1/produccion/planes/{plan['id']}/stock-resolution/movement", json={
+        "confirmacion": "REGISTRAR_STOCK_DESDE_PRODUCCION", "article_id": "ART-PATATA",
         "tipo": "INVENTARIO_INICIAL", "cantidad": 2, "unidad": "kg", "production_plan_id": plan["id"],
     })
-    assert movement.status_code == 201 and movement.json()["movimiento"]["unidad"] == "kg"
+    assert movement.status_code == 200 and movement.json()["movimiento"]["unidad"] == "kg"
+    confirmed = client.get("/api/v1/articulos/ART-PATATA").json()["articulo"]
+    assert confirmed["unidad_base"] == "kg" and confirmed["unidad_base_sugerida"] is False
     refreshed = client.get(f"/api/v1/produccion/planes/{plan['id']}/stock-resolution").json()["revision_stock"]["ingredientes"][0]
     assert refreshed["unidad_base"] == "kg" and refreshed["disponible"] == 2
     assert refreshed["cantidad"] == 0.057 and refreshed["faltante"] == 0
     assert refreshed["estado_resolucion"] == "CUBIERTO"
+
+
+def test_ruta_real_revierte_unidad_si_falla_el_movimiento(tmp_path: Path, monkeypatch) -> None:
+    from SERVICIOS.stock_ajustes_service import StockAjustesService
+
+    _core, menu_id = _seed(tmp_path, stock=0)
+    articles_path = tmp_path / "DATOS/db/articulos.json"
+    articles = json.loads(articles_path.read_text(encoding="utf-8")); articles[0]["unidad"] = ""
+    _write(articles_path, articles); _write(tmp_path / "DATOS/db/stock_lotes.json", [])
+    client = TestClient(create_app(HostAIPlatformAPI(base_dir=tmp_path)))
+    plan = client.post(f"/api/v1/menus/{menu_id}/plan-produccion", json={}).json()["plan"]
+    monkeypatch.setattr(StockAjustesService, "registrar", lambda self, body: {
+        "ok": False, "error": {"status": 409, "code": "simulated_stock_failure", "message": "Fallo simulado."},
+    })
+
+    failed = client.post(f"/api/v1/produccion/planes/{plan['id']}/stock-resolution/movement", json={
+        "confirmacion": "REGISTRAR_STOCK_DESDE_PRODUCCION", "article_id": "ART-PATATA",
+        "tipo": "INVENTARIO_INICIAL", "cantidad": 2, "unidad": "kg",
+    })
+    assert failed.status_code == 409
+    article = client.get("/api/v1/articulos/ART-PATATA").json()["articulo"]
+    assert article["unidad_base"] == "kg" and article["unidad_base_sugerida"] is True
+    assert json.loads((tmp_path / "DATOS/db/stock_movimientos.json").read_text(encoding="utf-8")) == []
+
+
+def test_ruta_real_no_permite_sustituir_unidad_l_confirmada_por_kg(tmp_path: Path) -> None:
+    _core, menu_id = _seed(tmp_path, stock=0)
+    articles_path = tmp_path / "DATOS/db/articulos.json"
+    articles = json.loads(articles_path.read_text(encoding="utf-8")); articles[0]["unidad"] = "l"
+    _write(articles_path, articles); _write(tmp_path / "DATOS/db/stock_lotes.json", [])
+    client = TestClient(create_app(HostAIPlatformAPI(base_dir=tmp_path)))
+    plan = client.post(f"/api/v1/menus/{menu_id}/plan-produccion", json={}).json()["plan"]
+    response = client.post(f"/api/v1/produccion/planes/{plan['id']}/stock-resolution/movement", json={
+        "confirmacion": "REGISTRAR_STOCK_DESDE_PRODUCCION", "article_id": "ART-PATATA",
+        "tipo": "INVENTARIO_INICIAL", "cantidad": 2, "unidad": "kg",
+    })
+    assert response.status_code == 409 and response.json()["error"]["code"] == "confirmed_unit_mismatch"
+    assert json.loads((tmp_path / "DATOS/db/stock_movimientos.json").read_text(encoding="utf-8")) == []
 
 
 def test_unidad_l_y_necesidad_kg_sin_conversion_permanece_pendiente(tmp_path: Path) -> None:

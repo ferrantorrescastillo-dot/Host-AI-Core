@@ -197,6 +197,11 @@ export const hostAiApiClient = {
   getProductionStockReview(planId: string): Promise<ProductionStockReviewResponse> {
     return request<ProductionStockReviewResponse>(`/api/v1/produccion/planes/${encodeURIComponent(planId)}/stock-resolution`, { method: "GET" });
   },
+  createProductionStockMovement(planId: string, input: StockMovementInput): Promise<StockMovementResponse> {
+    return request<StockMovementResponse>(`/api/v1/produccion/planes/${encodeURIComponent(planId)}/stock-resolution/movement`, {
+      method: "POST", body: JSON.stringify({ ...input, confirmacion: "REGISTRAR_STOCK_DESDE_PRODUCCION", usuario: "web" }),
+    });
+  },
   linkProductionIngredient(planId: string, input: { elaboration_id: string; ingredient_name: string; article_id: string }): Promise<ProductionStockReviewResponse> {
     return request<ProductionStockReviewResponse>(`/api/v1/produccion/planes/${encodeURIComponent(planId)}/stock-resolution/article`, { method: "POST", body: JSON.stringify({ ...input, confirmacion: "RELACIONAR_INGREDIENTE_ARTICULO" }) });
   },
