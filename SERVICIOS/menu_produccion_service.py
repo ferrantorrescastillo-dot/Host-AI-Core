@@ -14,7 +14,7 @@ class MenuProduccionService:
     def __init__(self, core: Any) -> None:
         self.core = core
         self.menus = MenusInteligentesService(core.base_dir)
-        self.necesidades = MenuNecesidadesService(core.base_dir, compras=core.compras)
+        self.necesidades = MenuNecesidadesService(core.base_dir, compras=core.compras, stock_motor=core.stock)
 
     def generar(self, menu_id: str, body: dict[str, Any] | None = None) -> dict[str, Any]:
         body = dict(body or {})
@@ -111,9 +111,28 @@ class MenuProduccionService:
             self.core.produccion_real._persistir()
         return {**result, "clasificacion": self._classification(projected["ingredientes"])}
 
-    @staticmethod
-    def _project(plan: PlanProduccionReal) -> dict[str, Any]:
+    def _project(self, plan: PlanProduccionReal) -> dict[str, Any]:
         data = plan.to_dict()
+        config = data.get("configuracion_planificacion") or {}
+        current = self.necesidades.necesidades(str(config.get("menu_id") or ""))
+        if current.get("ok"):
+            fresh = current["necesidades"]
+            config["ingredientes_agrupados"] = list(fresh.get("lines") or [])
+            fresh_by_key = {
+                (str(x.get("articulo_id") or "").casefold(), str(x.get("unidad_necesaria") or "u").casefold()): x
+                for x in fresh.get("lines") or []
+            }
+            for task in data["tareas"]:
+                for item in (task.get("requisitos_recursos") or {}).get("ingredientes") or []:
+                    line = fresh_by_key.get((str(item.get("articulo_id") or "").casefold(), str(item.get("unidad") or "u").casefold()))
+                    if line:
+                        item.update({
+                            "disponible": line.get("stock_disponible"),
+                            "faltante": line.get("cantidad_faltante"),
+                            "estado": line.get("estado"),
+                            "estado_stock": line.get("estado_stock"),
+                            "stock_disponible": line.get("stock_disponible"),
+                        })
         subelaboraciones: dict[tuple[str, str], dict[str, Any]] = {}
         for task in data["tareas"]:
             task["ingredientes"] = list((task.get("requisitos_recursos") or {}).get("ingredientes") or [])
@@ -125,14 +144,15 @@ class MenuProduccionService:
             task["subelaboraciones"] = resources.get("arbol_subelaboraciones") or {}
             task["coste_estimado"] = round(float(resources.get("coste_estimado") or 0), 2)
             task["estado"] = "BLOQUEADO" if any(float(x.get("faltante") or 0) > 0 for x in task["ingredientes"]) else "LISTO"
-            MenuProduccionService._collect_subelaborations(task["subelaboraciones"], task, subelaboraciones)
-        config = data.get("configuracion_planificacion") or {}
+            self._collect_subelaborations(task["subelaboraciones"], task, subelaboraciones)
         ingredients = [{
             "nombre": item.get("articulo_nombre") or item.get("ingrediente_nombre"),
             "articulo_id": item.get("articulo_id") or "", "cantidad": item.get("cantidad_necesaria") or 0,
             "unidad": item.get("unidad_necesaria") or "u", "disponible": item.get("stock_disponible"),
             "faltante": item.get("cantidad_faltante"), "proveedor": item.get("proveedor_preferente"),
             "estado": item.get("estado"), "coste_estimado": item.get("coste_estimado"),
+            "cantidad_necesaria": item.get("cantidad_necesaria") or 0,
+            "stock_disponible": item.get("stock_disponible"), "estado_stock": item.get("estado_stock"),
         } for item in config.get("ingredientes_agrupados") or [item for task in data["tareas"] for item in task["ingredientes"]]]
         blockers = config.get("errores_bloqueantes") or []
         missing = sum(1 for x in ingredients if float(x.get("faltante") or 0) > 0)
@@ -144,7 +164,7 @@ class MenuProduccionService:
             "advertencias": data.get("avisos") or [], "errores_bloqueantes": blockers,
             "generated_at": config.get("generated_at") or plan.creado_en,
             "estado": "BLOQUEADO" if blockers or missing else "LISTO",
-            "clasificacion": MenuProduccionService._classification(ingredients),
+            "clasificacion": self._classification(ingredients),
             "resumen": {"elaboraciones": len(data["tareas"]), "subelaboraciones": len(subelaboraciones), "ingredientes": len(ingredients), "faltantes": missing, "bloqueadas": sum(x["estado"] == "BLOQUEADO" for x in data["tareas"]), "coste_previsto": round(sum(float(x.get("coste_estimado") or 0) for x in ingredients), 2)},
             "solo_planificacion": True, "stock_modificado": False,
         })

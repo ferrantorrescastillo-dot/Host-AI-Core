@@ -119,6 +119,7 @@ class CatalogPublicFacade(CorePublicApi02Facade):
             self._menu_needs_service = MenuNecesidadesService(
                 self.base_dir,
                 compras=self._get_core().compras,
+                stock_motor=self._get_core().stock,
             )
         return self._menu_needs_service
 

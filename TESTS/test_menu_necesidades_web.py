@@ -34,8 +34,9 @@ def _seed(base: Path, *, stock: float = 1, linked: bool = True, recipe_unit: str
     }])
     _write(base / "DATOS/db/proveedores.json", [])
     _write(base / "DATOS/db/compras_producto_proveedor.json", [])
-    _write(base / "DATOS/db/stock_inicial.json", [{
-        "codigo": "ART-PATATA", "articulo": "Patata", "stock_actual": stock, "unidad": stock_unit,
+    _write(base / "DATOS/db/stock_lotes.json", [{
+        "id": "LOTE-PATATA", "nombre": "Patata", "articulo_id": "ART-PATATA",
+        "cantidad": stock, "unidad": stock_unit,
     }])
     _write(base / "DATOS/db/stock_movimientos.json", [])
     _write(base / "DATOS/facturas/historico_precios.json", {"registros": []})
@@ -92,7 +93,7 @@ def test_conversion_incompatible_no_inventa_faltante(tmp_path: Path) -> None:
 
 def test_api_genera_propuesta_y_crea_borrador_visible_en_compras_sin_modificar_stock(tmp_path: Path) -> None:
     menu_id = _seed(tmp_path, stock=0)
-    stock_path = tmp_path / "DATOS/db/stock_inicial.json"
+    stock_path = tmp_path / "DATOS/db/stock_lotes.json"
     before_stock = stock_path.read_bytes()
     client = TestClient(create_app(HostAIPlatformAPI(base_dir=tmp_path)))
 
@@ -124,7 +125,7 @@ def test_api_genera_propuesta_y_crea_borrador_visible_en_compras_sin_modificar_s
 
 def test_stock_desconocido_y_proveedor_pendiente_no_bloquean_propuesta(tmp_path: Path) -> None:
     menu_id = _seed(tmp_path)
-    _write(tmp_path / "DATOS/db/stock_inicial.json", [])
+    _write(tmp_path / "DATOS/db/stock_lotes.json", [])
     articles = json.loads((tmp_path / "DATOS/db/articulos.json").read_text(encoding="utf-8"))
     articles[0]["proveedor"] = ""
     articles[0]["catalogo_maestro"]["proveedor_preferente"] = ""
@@ -182,7 +183,7 @@ def test_revisa_propuesta_y_crea_borrador_idempotente_con_origen_sin_tocar_stock
     articles[0]["proveedor"] = ""
     articles[0]["catalogo_maestro"]["proveedor_preferente"] = ""
     _write(articles_path, articles)
-    stock_path = tmp_path / "DATOS/db/stock_inicial.json"
+    stock_path = tmp_path / "DATOS/db/stock_lotes.json"
     before_stock = stock_path.read_bytes()
     client = TestClient(create_app(HostAIPlatformAPI(base_dir=tmp_path)))
     proposal = client.post(f"/api/v1/menus/{menu_id}/propuesta-compra").json()["propuesta"]

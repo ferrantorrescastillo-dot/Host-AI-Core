@@ -24,13 +24,64 @@ def _seed(base: Path, stock: float = 10) -> tuple[HostAICore, str]:
         "ingredientes": [{"nombre": "Patata", "articulo_id": "ART-PATATA", "cantidad": 1, "unidad": "kg"}],
     }}]})
     _write(base / "DATOS/db/articulos.json", [{"codigo": "ART-PATATA", "nombre": "Patata", "unidad": "kg", "precio": 2, "proveedor": "Proveedor A"}])
-    _write(base / "DATOS/db/stock_inicial.json", [{"codigo": "ART-PATATA", "articulo": "Patata", "stock_actual": stock, "unidad": "kg"}])
-    for name, value in {"stock_lotes": [], "stock_movimientos": [], "planes_produccion": [], "escandallos": []}.items():
+    for name, value in {
+        "stock_lotes": [{"id": "LOTE-PATATA", "nombre": "Patata", "cantidad": stock, "unidad": "kg", "articulo_id": "ART-PATATA"}],
+        "stock_movimientos": [], "planes_produccion": [], "escandallos": [],
+    }.items():
         _write(base / f"DATOS/db/{name}.json", value)
     menu = MenusInteligentesService(base).crear({"nombre": "Menú 10 pax", "comensales": 10, "secciones": [{"nombre": "Principal", "elaboraciones": [{"elaboracion_id": "REC-ENS", "cantidad": 1}]}]})["menu"]
     core = HostAICore(base)
-    core.stock.registrar_entrada("Patata", stock, "kg", articulo_id="ART-PATATA", motivo="fixture")
     return core, menu["id"]
+
+
+def test_produccion_usa_stock_canonico_y_refresca_plan_existente(tmp_path: Path) -> None:
+    core, menu_id = _seed(tmp_path, stock=0.5)
+    recipes_path = tmp_path / "DATOS/db/escandallos_canonicos.json"
+    recipes = json.loads(recipes_path.read_text(encoding="utf-8"))
+    recipes["escandallos"][0]["receta"]["ingredientes"][0]["cantidad"] = 0.3
+    _write(recipes_path, recipes)
+    service = MenuProduccionService(core)
+
+    plan = service.generar(menu_id, {})["plan"]
+    ingredient = plan["ingredientes"][0]
+    assert ingredient["cantidad_necesaria"] == 0.75
+    assert ingredient["stock_disponible"] == 0.5
+    assert ingredient["faltante"] == 0.25
+    assert ingredient["estado_stock"] == "STOCK_INSUFICIENTE"
+
+    core.stock.lotes["LOTE-PATATA"].cantidad = 1
+    refreshed = service.obtener(plan["id"])["plan"]["ingredientes"][0]
+    assert refreshed["stock_disponible"] == 1
+    assert refreshed["faltante"] == 0
+
+
+def test_stock_canonico_distingue_cero_desconocido_unidad_e_identidad(tmp_path: Path) -> None:
+    core, menu_id = _seed(tmp_path, stock=0)
+    service = MenuProduccionService(core)
+    zero = service.generar(menu_id, {})["plan"]["ingredientes"][0]
+    assert zero["stock_disponible"] == 0
+    assert zero["faltante"] == 2.5
+
+    core.stock.lotes.clear()
+    unknown = service.obtener(next(iter(core.produccion_real.planes)))["plan"]["ingredientes"][0]
+    assert unknown["stock_disponible"] is None
+    assert unknown["faltante"] is None
+    assert unknown["estado_stock"] == "ARTICULO_SIN_INVENTARIO"
+
+    from MODELOS.stock import LoteStock
+    core.stock.lotes["LOTE-OTRA"] = LoteStock(
+        id="LOTE-OTRA", nombre="Patata", articulo_id="ART-OTRA", cantidad=99, unidad="kg"
+    )
+    still_unknown = service.obtener(next(iter(core.produccion_real.planes)))["plan"]["ingredientes"][0]
+    assert still_unknown["stock_disponible"] is None
+
+    core.stock.lotes["LOTE-PATATA"] = LoteStock(
+        id="LOTE-PATATA", nombre="Patata", articulo_id="ART-PATATA", cantidad=8, unidad="u"
+    )
+    incompatible = service.obtener(next(iter(core.produccion_real.planes)))["plan"]["ingredientes"][0]
+    assert incompatible["stock_disponible"] is None
+    assert incompatible["faltante"] is None
+    assert incompatible["estado_stock"] == "UNIDAD_INCOMPATIBLE"
 
 
 def test_genera_plan_escalado_agrupado_y_no_modifica_stock(tmp_path: Path) -> None:
@@ -70,7 +121,7 @@ def test_stock_insuficiente_bloquea_plan_sin_consumo(tmp_path: Path) -> None:
     plan = service.generar(menu_id, {})["plan"]
     assert plan["estado"] == "BLOQUEADO"
     assert plan["elaboraciones"][0]["estado"] == "BLOQUEADO"
-    assert plan["ingredientes"][0]["faltante"] == 0.5
+    assert plan["ingredientes"][0]["faltante"] == 1.5
     assert len(core.stock.movimientos) == before
 
 

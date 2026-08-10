@@ -7,6 +7,8 @@ from difflib import SequenceMatcher
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+from MOTORES.motor_stock import MotorStock
+from SERVICIOS.base_datos_local import BaseDatosLocal
 from SERVICIOS.escalador_explosion_recetas_556ab import MotorEscaladoExplosion556AB
 
 
@@ -84,18 +86,24 @@ class CruceStockProduccion556C:
 
     VERSION = "5.5.6CD.1"
 
-    def __init__(self, base_dir: Path):
+    def __init__(self, base_dir: Path, stock_motor: MotorStock | None = None):
         self.base_dir = Path(base_dir).resolve()
         self.db_dir = self.base_dir / "DATOS" / "db"
         self.motor = MotorEscaladoExplosion556AB(self.base_dir)
-        self.stock = _load_list(self.db_dir / "stock_inicial.json")
-        self.movimientos = _load_list(self.db_dir / "stock_movimientos.json")
+        self.stock_motor = stock_motor or MotorStock(BaseDatosLocal(self.base_dir))
+        self.stock: List[Dict[str, Any]] = []
         self.articulos = _load_list(self.db_dir / "articulos.json")
 
-        self.stock_por_id = {_codigo(x).casefold(): x for x in self.stock if _codigo(x)}
-        self.stock_por_nombre = {_norm(_nombre(x)): x for x in self.stock if _nombre(x)}
+        self.stock_por_id: Dict[str, Dict[str, Any]] = {}
+        self.stock_por_nombre: Dict[str, Dict[str, Any]] = {}
         self.articulos_por_id = {_codigo(x).casefold(): x for x in self.articulos if _codigo(x)}
         self.articulos_por_nombre = {_norm(_nombre(x)): x for x in self.articulos if _nombre(x)}
+
+    def _refrescar_stock(self) -> None:
+        """Lee el mismo agregado canónico que expone la página de Stock."""
+        self.stock = list(self.stock_motor.stock_actual().get("items") or [])
+        self.stock_por_id = {_codigo(x).casefold(): x for x in self.stock if _codigo(x)}
+        self.stock_por_nombre = {_norm(_nombre(x)): x for x in self.stock if _nombre(x)}
 
     def _resolver_articulo(self, articulo_id: Optional[str], nombre: str) -> tuple[Optional[Dict[str, Any]], str, float]:
         if articulo_id:
@@ -131,6 +139,11 @@ class CruceStockProduccion556C:
             if fila:
                 return fila, "STOCK_ID_EXACTO"
 
+        # Si existe una identidad estable, no se degrada a nombre: dos artículos
+        # parecidos nunca deben compartir existencias por accidente.
+        if ids:
+            return None, "SIN_REGISTRO_INVENTARIO"
+
         nombres = [_nombre(articulo or {}), nombre]
         for value in nombres:
             n = _norm(value)
@@ -146,42 +159,11 @@ class CruceStockProduccion556C:
                 return candidatos[0], "STOCK_NOMBRE_CONTENIDO"
         return None, "SIN_REGISTRO_INVENTARIO"
 
-    def _movimientos_relacionados(self, fila: Dict[str, Any]) -> List[Dict[str, Any]]:
-        code = _codigo(fila).casefold()
-        name = _norm(_nombre(fila))
-        relacionados = []
-        for mov in self.movimientos:
-            mov_code = _codigo(mov).casefold()
-            mov_name = _norm(_nombre(mov))
-            if (code and mov_code == code) or (name and mov_name == name):
-                relacionados.append(mov)
-        relacionados.sort(key=lambda m: str(m.get("fecha_hora") or m.get("creado_en") or m.get("fecha") or ""))
-        return relacionados
-
     def _stock_actual(self, fila: Dict[str, Any]) -> tuple[float, str, Optional[Dict[str, Any]]]:
-        relacionados = self._movimientos_relacionados(fila)
-        con_saldo = [m for m in relacionados if m.get("stock_despues") is not None]
-        if con_saldo:
-            ultimo = con_saldo[-1]
-            return _float(ultimo.get("stock_despues")), "DATOS/db/stock_movimientos.json:stock_despues", ultimo
-
-        actual = _float(fila.get("stock_actual", fila.get("cantidad", 0)))
-        # Solo aplica movimientos sin saldo absoluto. Evita sumar movimientos que ya incluyen stock_despues.
-        for mov in relacionados:
-            if mov.get("stock_despues") is not None:
-                continue
-            cantidad = _float(mov.get("cantidad"))
-            tipo = _norm(mov.get("tipo"))
-            if tipo in ("entrada", "ajuste positivo", "devolucion", "devolucion entrada"):
-                actual += cantidad
-            elif tipo in ("salida", "consumo", "merma", "ajuste negativo"):
-                actual -= cantidad
-        fuente = "DATOS/db/stock_inicial.json"
-        if relacionados:
-            fuente += " + DATOS/db/stock_movimientos.json"
-        return max(actual, 0.0), fuente, relacionados[-1] if relacionados else None
+        return max(_float(fila.get("cantidad")), 0.0), "MotorStock.stock_actual", None
 
     def cruzar(self, termino: str, objetivo: float, unidad_objetivo: str = "personas") -> Dict[str, Any]:
+        self._refrescar_stock()
         explosion = self.motor.explotar(termino, objetivo, unidad_objetivo)
         lineas: List[Dict[str, Any]] = []
         incidencias = 0
@@ -279,7 +261,7 @@ class CruceStockProduccion556C:
             "lineas": lineas, "total_lineas": len(lineas), "total_faltantes": incidencias,
             "total_sin_registro_stock": sin_inventario, "total_articulos_no_localizados": sin_articulo,
             "produccion_viable": incidencias == 0, "explosion": explosion,
-            "fuentes": ["DATOS/db/articulos.json", "DATOS/db/stock_inicial.json", "DATOS/db/stock_movimientos.json"],
+            "fuentes": ["DATOS/db/articulos.json", "MotorStock.stock_actual"],
             "solo_lectura": True, "datos_reales_modificados": False,
         }
 

@@ -11,15 +11,16 @@ from SERVICIOS.menus_inteligentes_service import MenusInteligentesService
 from SERVICIOS.repositorio_productos_maestro_601 import RepositorioProductosMaestro601
 from SERVICIOS.base_datos_local import BaseDatosLocal
 from MOTORES.motor_compras import MotorCompras
+from MOTORES.motor_stock import MotorStock
 
 
 class MenuNecesidadesService:
     """Proyecta necesidades y crea borradores controlados sin modificar Stock."""
 
-    def __init__(self, base_dir: Path, compras: MotorCompras | None = None) -> None:
+    def __init__(self, base_dir: Path, compras: MotorCompras | None = None, stock_motor: MotorStock | None = None) -> None:
         self.base_dir = Path(base_dir)
         self.menus = MenusInteligentesService(self.base_dir)
-        self.stock = CruceStockProduccion556C(self.base_dir)
+        self.stock = CruceStockProduccion556C(self.base_dir, stock_motor=stock_motor)
         self.productos = RepositorioProductosMaestro601(self.base_dir)
         self.compras = compras
         self._propuestas: dict[str, dict[str, Any]] = {}
@@ -356,7 +357,8 @@ class MenuNecesidadesService:
             "stock_comprometido": 0.0 if stock_known else None,
             "stock_disponible": item.get("disponible") if stock_known else None,
             "cantidad_faltante": None, "unidad_stock": item.get("unidad_stock") or item.get("unidad"),
-            "estado": "Stock no disponible", "conversion": item.get("metodo_enlace_stock"),
+            "estado": "Stock no disponible", "estado_stock": item.get("estado"),
+            "conversion": item.get("metodo_enlace_stock"),
             "proveedor_preferente": product.get("proveedor_preferente") or product.get("proveedor") or item.get("proveedor") or None,
             "formato_compra": product.get("unidad_compra") or None,
             "cantidad_formato": self._number(product.get("cantidad_formato")),
