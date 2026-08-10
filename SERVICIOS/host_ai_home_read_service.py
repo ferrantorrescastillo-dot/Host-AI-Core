@@ -260,7 +260,7 @@ class HostAIHomeReadService:
         historial = list(getattr(compras, "listar_historial_compras")() or [])
         listar_pedidos = getattr(compras, "listar_pedidos", None)
         pedidos = (
-            list(listar_pedidos(estado="borrador") or [])
+            list(listar_pedidos() or [])
             if callable(listar_pedidos)
             else []
         )

@@ -36,6 +36,16 @@ def test_borrador_desde_pedido_no_modifica_stock_y_conserva_contrato(tmp_path: P
     assert stock_path.read_bytes() == before
 
 
+def test_dashboard_expone_pedido_preparado_como_recepcionable(tmp_path: Path) -> None:
+    client, order_id = _seed(tmp_path)
+    response = client.get("/api/v1/dashboard")
+    assert response.status_code == 200
+    pedidos = response.json()["dashboard"]["modulos"]["compras"]["pedidos"]
+    pedido = next(item for item in pedidos if item["id"] == order_id)
+    assert pedido["estado"] == "preparado"
+    assert pedido["lineas"][0]["nombre"] == "Patata Monalisa"
+
+
 def test_recepcion_parcial_y_segunda_recepcion_completan_sin_duplicar(tmp_path: Path) -> None:
     client, order_id = _seed(tmp_path)
     first = client.post(f"/api/v1/compras/pedidos/{order_id}/recepciones", json={}).json()["recepcion"]
