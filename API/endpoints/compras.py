@@ -16,3 +16,22 @@ def confirm_draft_handle(request: ApiRequest, facade: CorePublicFacade) -> ApiRe
     payload = facade.confirmar_borrador_compra(pedido_id, request.body)
     status = 200 if payload.get("ok") else int((payload.get("error") or {}).get("status") or 500)
     return ApiResponse(status_code=status, payload=payload)
+
+
+def reception_handle(request: ApiRequest, facade: CorePublicFacade) -> ApiResponse:
+    path = str(request.path)
+    if "/pedidos/" in path:
+        pedido_id = path.split("/api/v1/compras/pedidos/", 1)[-1].rsplit("/recepciones", 1)[0]
+        payload = facade.crear_recepcion_compra(pedido_id, request.body)
+        success_status = 201
+    else:
+        reception_id = path.split("/api/v1/compras/recepciones/", 1)[-1].rsplit("/confirmar", 1)[0]
+        if request.method.upper() == "PATCH":
+            payload = facade.actualizar_recepcion_compra(reception_id, request.body)
+        elif path.endswith("/confirmar"):
+            payload = facade.confirmar_recepcion_compra(reception_id, request.body)
+        else:
+            payload = facade.recepcion_compra(reception_id)
+        success_status = 200
+    status = success_status if payload.get("ok") else int((payload.get("error") or {}).get("status") or 500)
+    return ApiResponse(status_code=status, payload=payload)

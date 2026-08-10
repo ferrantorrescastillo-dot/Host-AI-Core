@@ -466,7 +466,7 @@ class RecepcionCompra:
     confirmado_en: str = ""
     actualizado_en: str = ""
 
-    ESTADOS_VALIDOS = {"parcial", "completa", "confirmada", "pendiente", "cancelada"}
+    ESTADOS_VALIDOS = {"borrador", "parcial", "completa", "confirmada", "pendiente", "cancelada"}
 
     def __post_init__(self):
         if not self.id:

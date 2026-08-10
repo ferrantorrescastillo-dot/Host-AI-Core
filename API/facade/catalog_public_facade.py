@@ -12,6 +12,7 @@ from SERVICIOS.importador_inteligente_biblioteca import ImportDocumentService
 from SERVICIOS.menus_inteligentes_service import MenusInteligentesService
 from SERVICIOS.menu_necesidades_service import MenuNecesidadesService
 from SERVICIOS.compras_borradores_service import ComprasBorradoresService
+from SERVICIOS.compras_recepciones_service import ComprasRecepcionesService
 from SERVICIOS.menu_produccion_service import MenuProduccionService
 from SERVICIOS.stock_ajustes_service import StockAjustesService
 
@@ -30,6 +31,7 @@ class CatalogPublicFacade(CorePublicApi02Facade):
         self._menus_service: MenusInteligentesService | None = None
         self._menu_needs_service: MenuNecesidadesService | None = None
         self._compras_drafts_service: ComprasBorradoresService | None = None
+        self._compras_receptions_service: ComprasRecepcionesService | None = None
         self._menu_production_service: MenuProduccionService | None = None
         self._stock_adjustments_service: StockAjustesService | None = None
 
@@ -178,6 +180,23 @@ class CatalogPublicFacade(CorePublicApi02Facade):
 
     def confirmar_borrador_compra(self, pedido_id: str, body: dict[str, Any]) -> dict[str, Any]:
         return {**self._base_payload(), **self._get_compras_drafts_service().confirmar(pedido_id, body)}
+
+    def _get_compras_receptions_service(self) -> ComprasRecepcionesService:
+        if self._compras_receptions_service is None:
+            self._compras_receptions_service = ComprasRecepcionesService(self._get_core())
+        return self._compras_receptions_service
+
+    def crear_recepcion_compra(self, pedido_id: str, body: dict[str, Any]) -> dict[str, Any]:
+        return {**self._base_payload(), **self._get_compras_receptions_service().crear(pedido_id, body)}
+
+    def recepcion_compra(self, reception_id: str) -> dict[str, Any]:
+        return {**self._base_payload(), **self._get_compras_receptions_service().obtener(reception_id)}
+
+    def actualizar_recepcion_compra(self, reception_id: str, body: dict[str, Any]) -> dict[str, Any]:
+        return {**self._base_payload(), **self._get_compras_receptions_service().actualizar(reception_id, body)}
+
+    def confirmar_recepcion_compra(self, reception_id: str, body: dict[str, Any]) -> dict[str, Any]:
+        return {**self._base_payload(), **self._get_compras_receptions_service().confirmar(reception_id, body)}
 
     def _get_biblioteca_import_service(self) -> ImportDocumentService:
         if self._biblioteca_import_service is None:

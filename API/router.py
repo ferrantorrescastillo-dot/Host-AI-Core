@@ -93,6 +93,10 @@ class ApiRouter:
             handler = compras.confirm_draft_handle
         if handler is None and key[0] in {"GET", "PATCH"} and key[1].startswith("/api/v1/compras/borradores/"):
             handler = compras.draft_handle
+        if handler is None and key[0] == "POST" and key[1].startswith("/api/v1/compras/pedidos/") and key[1].endswith("/recepciones"):
+            handler = compras.reception_handle
+        if handler is None and key[0] in {"GET", "PATCH", "POST"} and key[1].startswith("/api/v1/compras/recepciones/"):
+            handler = compras.reception_handle
         if handler is None:
             return ApiResponse(
                 status_code=404,
