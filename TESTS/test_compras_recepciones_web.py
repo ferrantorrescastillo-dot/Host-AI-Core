@@ -46,6 +46,21 @@ def test_dashboard_expone_pedido_preparado_como_recepcionable(tmp_path: Path) ->
     assert pedido["lineas"][0]["nombre"] == "Patata Monalisa"
 
 
+def test_confirmacion_atomica_rechaza_una_version_antigua_sin_tocar_stock(tmp_path: Path) -> None:
+    client, order_id = _seed(tmp_path)
+    reception = client.post(f"/api/v1/compras/pedidos/{order_id}/recepciones", json={}).json()["recepcion"]
+    visible_line = {**reception["lineas"][0], "received_quantity": 1}
+    response = client.post(f"/api/v1/compras/recepciones/{reception['id']}/confirmar", json={
+        "confirmacion": "CONFIRMAR_RECEPCION", "actualizado_en": "VERSION-ANTIGUA", "lineas": [visible_line],
+    })
+    assert response.status_code == 409
+    assert response.json()["error"]["code"] == "stale_reception"
+    current = client.get(f"/api/v1/compras/recepciones/{reception['id']}").json()["recepcion"]
+    assert current["estado"] == "BORRADOR"
+    assert current["lineas"][0]["received_quantity"] == 10
+    assert json.loads((tmp_path / "DATOS/db/stock_movimientos.json").read_text(encoding="utf-8")) == []
+
+
 def test_recepcion_parcial_y_segunda_recepcion_completan_sin_duplicar(tmp_path: Path) -> None:
     client, order_id = _seed(tmp_path)
     first = client.post(f"/api/v1/compras/pedidos/{order_id}/recepciones", json={}).json()["recepcion"]
@@ -80,10 +95,21 @@ def test_recepcion_realista_010_mas_015_cierra_solo_al_completar(tmp_path: Path)
     orders_path.write_text(json.dumps(orders), encoding="utf-8")
     # Reabrir la API hace que MotorCompras lea la cantidad contractual actualizada del fixture.
     client = TestClient(create_app(platform_api=HostAIPlatformAPI(base_dir=tmp_path)))
-    client.patch(f"/api/v1/compras/recepciones/{first['id']}", json={"lineas": [first_line]})
-    result1 = client.post(f"/api/v1/compras/recepciones/{first['id']}/confirmar", json={"confirmacion": "CONFIRMAR_RECEPCION"}).json()
+    first_line.update({"lot": "LOTE-VISIBLE", "expiry": "2026-12-31", "location": "Cámara 1", "received_price": 2.25, "observations": "Caja revisada"})
+    result1 = client.post(f"/api/v1/compras/recepciones/{first['id']}/confirmar", json={
+        "confirmacion": "CONFIRMAR_RECEPCION", "actualizado_en": first["actualizado_en"],
+        "fecha": "2026-08-10", "referencia": "ALB-VISIBLE", "observaciones": "Recepción visible",
+        "lineas": [first_line],
+    }).json()
     assert result1["pedido"]["estado"] == "parcialmente_recibido"
     assert result1["movimientos"][0]["cantidad"] == 0.10
+    assert result1["movimientos"][0]["trazabilidad"] | {
+        "lot": "LOTE-VISIBLE", "expiry": "2026-12-31", "location": "Cámara 1"
+    } == result1["movimientos"][0]["trazabilidad"]
+    confirmed_line = result1["recepcion"]["lineas"][0]
+    assert confirmed_line["received_price"] == 2.25
+    assert confirmed_line["observations"] == "Caja revisada"
+    assert result1["recepcion"]["referencia"] == "ALB-VISIBLE"
     second = client.post(f"/api/v1/compras/pedidos/{order_id}/recepciones", json={}).json()["recepcion"]
     assert second["lineas"][0]["previously_received"] == 0.10
     assert second["lineas"][0]["pending_quantity"] == 0.15

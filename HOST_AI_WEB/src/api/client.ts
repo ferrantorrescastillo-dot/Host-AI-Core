@@ -18,7 +18,7 @@ import type {
   MenuResponse,
   MenusResponse,
 } from "../types/menus";
-import type { CompraConfirmationResponse, CompraDraftInput, CompraDraftResponse, PurchaseReceptionResponse, ReceptionLine } from "../types/compras";
+import type { CompraConfirmationResponse, CompraDraftInput, CompraDraftResponse, PurchaseReception, PurchaseReceptionResponse, ReceptionLine } from "../types/compras";
 import type { ProductionPlanResponse, ProductionProposalResponse, ProductionStockReviewResponse } from "../types/produccion";
 import type { StockMovementInput, StockMovementResponse } from "../types/stock";
 
@@ -135,8 +135,8 @@ export const hostAiApiClient = {
   updatePurchaseReception(id: string, lineas: ReceptionLine[], header: Record<string, unknown>): Promise<PurchaseReceptionResponse> {
     return request<PurchaseReceptionResponse>(`/api/v1/compras/recepciones/${encodeURIComponent(id)}`, { method: "PATCH", body: JSON.stringify({ ...header, lineas }) });
   },
-  confirmPurchaseReception(id: string): Promise<PurchaseReceptionResponse> {
-    return request<PurchaseReceptionResponse>(`/api/v1/compras/recepciones/${encodeURIComponent(id)}/confirmar`, { method: "POST", body: JSON.stringify({ confirmacion: "CONFIRMAR_RECEPCION", usuario: "web" }) });
+  confirmPurchaseReception(reception: PurchaseReception): Promise<PurchaseReceptionResponse> {
+    return request<PurchaseReceptionResponse>(`/api/v1/compras/recepciones/${encodeURIComponent(reception.id)}/confirmar`, { method: "POST", body: JSON.stringify({ confirmacion: "CONFIRMAR_RECEPCION", usuario: "web", actualizado_en: reception.actualizado_en, fecha: reception.fecha, referencia: reception.referencia, observaciones: reception.observaciones, lineas: reception.lineas }) });
   },
 
   getArticulos(query = ""): Promise<CatalogoResponse> {

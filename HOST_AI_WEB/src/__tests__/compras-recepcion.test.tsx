@@ -9,14 +9,14 @@ afterEach(() => { cleanup(); vi.restoreAllMocks(); });
 it("guarda la cantidad visible antes de confirmar una recepción parcial y evita doble confirmación", async () => {
   const envelope = { ok: true, version: "6", api_version: "1", request_id: "REQ", modo_seguro: true, datos_reales_modificados: false };
   const dashboard = { ...envelope, dashboard: { modulos: { compras: { estado: "datos_disponibles", total: 0, items: [], propuestas: [], proveedores: [], historial: [], pedidos: [{ id: "PED-3", proveedor: "Proveedor A", estado: "preparado", lineas: [{ nombre: "Patata", cantidad: 10, unidad: "kg" }], importe_estimado: 20 }] } } } };
-  const draft = { id: "REC-1", reception_id: "REC-1", order_id: "PED-3", proveedor: "Proveedor A", fecha: "2026-08-10", referencia: "", estado: "BORRADOR", observaciones: "", confirmable: true, incidencias: [], lineas: [{ order_line_id: "LIN-1", article_id: "ART-1", article_name: "Patata", ordered_quantity: 10, previously_received: 0, pending_quantity: 10, received_quantity: 10, unit: "kg", order_price: 2, received_price: null, lot: "", expiry: "", location: "", observations: "", incidences: [] }] };
+  const draft = { id: "REC-1", reception_id: "REC-1", order_id: "PED-3", proveedor: "Proveedor A", fecha: "2026-08-10", referencia: "", actualizado_en: "2026-08-10T10:00:00", estado: "BORRADOR", observaciones: "", confirmable: true, incidencias: [], lineas: [{ order_line_id: "LIN-1", article_id: "ART-1", article_name: "Patata", ordered_quantity: 10, previously_received: 0, pending_quantity: 10, received_quantity: 10, unit: "kg", order_price: 2, received_price: null, lot: "", expiry: "", location: "", observations: "", incidences: [] }] };
   let saved: any = draft; let release!: () => void; const gate = new Promise<void>((resolve) => { release = resolve; });
   const fetchMock = vi.spyOn(global, "fetch").mockImplementation(async (input, init) => {
     const url = String(input);
     if (url.endsWith("/api/v1/dashboard")) return { ok: true, json: async () => dashboard } as Response;
     if (url.includes("/pedidos/PED-3/recepciones")) return { ok: true, json: async () => ({ ...envelope, recepcion: draft, stock_modificado: false }) } as Response;
     if (url.endsWith("/recepciones/REC-1") && init?.method === "PATCH") { const body = JSON.parse(String(init.body)); const issue = { code: "DIFERENCIA_CANTIDAD", message: "Pendiente 10 y recibido ahora 6.", bloqueante: false }; saved = { ...draft, lineas: body.lineas.map((line: Record<string, unknown>) => ({ ...line, incidences: [issue] })), incidencias: [issue] }; return { ok: true, json: async () => ({ ...envelope, recepcion: saved, stock_modificado: false }) } as Response; }
-    if (url.endsWith("/recepciones/REC-1/confirmar")) { await gate; return { ok: true, json: async () => ({ ...envelope, recepcion: { ...saved, estado: "CONFIRMADA", confirmable: false }, idempotente: false, stock_modificado: true }) } as Response; }
+    if (url.endsWith("/recepciones/REC-1/confirmar")) { const body = JSON.parse(String(init?.body)); saved = { ...draft, referencia: body.referencia, observaciones: body.observaciones, lineas: body.lineas }; await gate; return { ok: true, json: async () => ({ ...envelope, recepcion: { ...saved, estado: "CONFIRMADA", confirmable: false }, idempotente: false, stock_modificado: true }) } as Response; }
     throw new Error(`URL inesperada ${url}`);
   });
   vi.spyOn(window, "confirm").mockReturnValue(true);
@@ -24,10 +24,17 @@ it("guarda la cantidad visible antes de confirmar una recepción parcial y evita
   await userEvent.click(await screen.findByRole("button", { name: /Registrar.*PED-3/ }));
   expect(await screen.findByText(/Pedido: 10 kg/)).toHaveTextContent(/Ya recibido: 0 kg.*Pendiente: 10 kg/);
   const quantity = screen.getByLabelText("Cantidad recibida 1"); await userEvent.clear(quantity); await userEvent.type(quantity, "6");
+  await userEvent.type(screen.getByLabelText("Precio recibido 1"), "2.25");
+  await userEvent.type(screen.getByLabelText("Lote 1"), "LOTE-VISIBLE");
+  await userEvent.type(screen.getByLabelText("Caducidad 1"), "2026-12-31");
+  await userEvent.type(screen.getByLabelText("Ubicación 1"), "Cámara 1");
+  await userEvent.type(screen.getByLabelText("Observaciones recepción 1"), "Caja revisada");
   const confirm = screen.getByRole("button", { name: /Confirmar/ }); await userEvent.click(confirm); await userEvent.click(confirm);
-  expect(await screen.findByText("Pendiente 10 y recibido ahora 6.")).toBeInTheDocument();
-  const patchCall = fetchMock.mock.calls.find(([url, options]) => String(url).endsWith("/recepciones/REC-1") && options?.method === "PATCH");
-  expect(JSON.parse(String(patchCall?.[1]?.body)).lineas[0].received_quantity).toBe(6);
+  const confirmCall = fetchMock.mock.calls.find(([url]) => String(url).endsWith("/recepciones/REC-1/confirmar"));
+  const body = JSON.parse(String(confirmCall?.[1]?.body));
+  expect(body.actualizado_en).toBe(draft.actualizado_en);
+  expect(body.lineas[0]).toMatchObject({ received_quantity: 6, received_price: 2.25, lot: "LOTE-VISIBLE", expiry: "2026-12-31", location: "Cámara 1", observations: "Caja revisada" });
+  expect(fetchMock.mock.calls.some(([, options]) => options?.method === "PATCH")).toBe(false);
   expect(fetchMock.mock.calls.filter(([url]) => String(url).endsWith("/recepciones/REC-1/confirmar"))).toHaveLength(1);
   release();
   await waitFor(() => expect(screen.getAllByRole("status").some((item) => item.textContent?.includes("CONFIRMADA"))).toBe(true));

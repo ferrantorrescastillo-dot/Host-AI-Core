@@ -6,7 +6,7 @@ import type {
   PropuestaCompraListItem,
   ProveedorCompraListItem,
 } from "../types/api";
-import type { CompraDraftInput, CompraDraftResponse, ReceptionLine } from "../types/compras";
+import type { CompraDraftInput, CompraDraftResponse, PurchaseReception, ReceptionLine } from "../types/compras";
 
 export type ComprasResult = ApiEnvelopeBase & {
   compras: CompraListItem[];
@@ -70,5 +70,5 @@ export const comprasService = {
   },
   createReception: (orderId: string) => hostAiApiClient.createPurchaseReception(orderId),
   saveReception: (id: string, lines: ReceptionLine[], header: Record<string, unknown>) => hostAiApiClient.updatePurchaseReception(id, lines, header),
-  confirmReception: (id: string) => hostAiApiClient.confirmPurchaseReception(id),
+  confirmReception: (reception: PurchaseReception) => hostAiApiClient.confirmPurchaseReception(reception),
 };

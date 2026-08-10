@@ -73,6 +73,13 @@ class ComprasRecepcionesService:
             return self._error(404, "reception_not_found", "Recepci\u00f3n no encontrada.")
         if reception.estado != "borrador":
             return self._error(409, "confirmed_reception_immutable", "Una recepci\u00f3n confirmada no se puede reescribir.")
+        self._apply_changes(reception, body)
+        reception.tocar()
+        self._validate(reception)
+        self.compras._guardar()
+        return {"ok": True, "recepcion": self._project(reception), "stock_modificado": False}
+
+    def _apply_changes(self, reception: RecepcionCompra, body: dict[str, Any]) -> None:
         updates = {str(line.get("order_line_id") or ""): line for line in list(body.get("lineas") or [])}
         for line in reception.lineas:
             change = updates.get(str(line.get("order_line_id") or ""))
@@ -99,10 +106,6 @@ class ComprasRecepcionesService:
                 reception.trazabilidad[key] = str(body.get(key) or "")
         if "observaciones" in body:
             reception.observaciones = str(body.get("observaciones") or "")
-        reception.tocar()
-        self._validate(reception)
-        self.compras._guardar()
-        return {"ok": True, "recepcion": self._project(reception), "stock_modificado": False}
 
     def confirmar(self, reception_id: str, body: dict[str, Any]) -> dict[str, Any]:
         reception = self.compras.recepciones_compra.get(reception_id)
@@ -112,15 +115,23 @@ class ComprasRecepcionesService:
             return {"ok": True, "recepcion": self._project(reception), "idempotente": True, "stock_modificado": False}
         if str(body.get("confirmacion") or "") != "CONFIRMAR_RECEPCION":
             return self._error(400, "confirmation_required", "Debes confirmar expl\u00edcitamente la recepci\u00f3n.")
+        expected_version = str(body.get("actualizado_en") or "")
+        if expected_version and expected_version != reception.actualizado_en:
+            return self._error(409, "stale_reception", "La recepci\u00f3n cambió desde que se abrió. Recárgala antes de confirmar.")
+        purchases = deepcopy(self.compras.recepciones_compra)
+        if "lineas" in body:
+            self._apply_changes(reception, body)
         issues = self._validate(reception)
         blocking = [issue for issue in issues if issue.get("bloqueante")]
         if blocking:
+            self.compras.recepciones_compra = purchases
             return {"ok": False, "error": {"status": 400, "code": "invalid_reception", "message": "La recepci\u00f3n contiene incidencias bloqueantes."}, "incidencias": blocking}
         pedido = self.compras.obtener_pedido(reception.pedido_id)
         if not pedido:
+            self.compras.recepciones_compra = purchases
             return self._error(404, "order_not_found", "Pedido no encontrado.")
         stock_lots, stock_moves = deepcopy(self.stock.lotes), deepcopy(self.stock.movimientos)
-        purchases, order_before = deepcopy(self.compras.recepciones_compra), deepcopy(pedido.to_dict())
+        order_before = deepcopy(pedido.to_dict())
         movements = []
         try:
             for line in reception.lineas:
