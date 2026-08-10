@@ -53,7 +53,7 @@ def test_recepcion_parcial_y_segunda_recepcion_completan_sin_duplicar(tmp_path: 
     saved = client.patch(f"/api/v1/compras/recepciones/{first['id']}", json={"referencia": "ALB-1", "lineas": [line]}).json()["recepcion"]
     assert any(issue["code"] == "DIFERENCIA_CANTIDAD" for issue in saved["incidencias"])
     confirmed = client.post(f"/api/v1/compras/recepciones/{first['id']}/confirmar", json={"confirmacion": "CONFIRMAR_RECEPCION"})
-    assert confirmed.status_code == 200 and confirmed.json()["pedido"]["estado"] == "preparado"
+    assert confirmed.status_code == 200 and confirmed.json()["pedido"]["estado"] == "parcialmente_recibido"
     movement = confirmed.json()["movimientos"][0]
     assert movement["cantidad"] == 6 and movement["trazabilidad"]["reception_id"] == first["id"]
     assert movement["trazabilidad"] | {"lot": "L-1", "expiry": "2026-12-31", "location": "Cámara"} == movement["trazabilidad"]
@@ -67,6 +67,58 @@ def test_recepcion_parcial_y_segunda_recepcion_completan_sin_duplicar(tmp_path: 
     done = client.post(f"/api/v1/compras/recepciones/{second['id']}/confirmar", json={"confirmacion": "CONFIRMAR_RECEPCION"})
     assert done.json()["pedido"]["estado"] == "recibido"
     assert sum(item["cantidad"] for item in json.loads((tmp_path / "DATOS/db/stock_movimientos.json").read_text(encoding="utf-8"))) == 10
+
+
+def test_recepcion_realista_010_mas_015_cierra_solo_al_completar(tmp_path: Path) -> None:
+    client, order_id = _seed(tmp_path)
+    first = client.post(f"/api/v1/compras/pedidos/{order_id}/recepciones", json={}).json()["recepcion"]
+    first_line = {**first["lineas"][0], "ordered_quantity": 0.25, "pending_quantity": 0.25, "received_quantity": 0.10}
+    # El pedido temporal reproduce exactamente 0,25 kg sin tocar datos reales.
+    orders_path = tmp_path / "DATOS/db/compras_pedidos.json"
+    orders = json.loads(orders_path.read_text(encoding="utf-8"))
+    orders[0]["lineas"][0]["cantidad"] = 0.25
+    orders_path.write_text(json.dumps(orders), encoding="utf-8")
+    # Reabrir la API hace que MotorCompras lea la cantidad contractual actualizada del fixture.
+    client = TestClient(create_app(platform_api=HostAIPlatformAPI(base_dir=tmp_path)))
+    client.patch(f"/api/v1/compras/recepciones/{first['id']}", json={"lineas": [first_line]})
+    result1 = client.post(f"/api/v1/compras/recepciones/{first['id']}/confirmar", json={"confirmacion": "CONFIRMAR_RECEPCION"}).json()
+    assert result1["pedido"]["estado"] == "parcialmente_recibido"
+    assert result1["movimientos"][0]["cantidad"] == 0.10
+    second = client.post(f"/api/v1/compras/pedidos/{order_id}/recepciones", json={}).json()["recepcion"]
+    assert second["lineas"][0]["previously_received"] == 0.10
+    assert second["lineas"][0]["pending_quantity"] == 0.15
+    assert second["lineas"][0]["received_quantity"] == 0.15
+    result2 = client.post(f"/api/v1/compras/recepciones/{second['id']}/confirmar", json={"confirmacion": "CONFIRMAR_RECEPCION"}).json()
+    assert result2["pedido"]["estado"] == "recibido"
+    quantities = [item["cantidad"] for item in json.loads((tmp_path / "DATOS/db/stock_movimientos.json").read_text(encoding="utf-8"))]
+    assert quantities == [0.10, 0.15]
+    repeated = client.post(f"/api/v1/compras/recepciones/{second['id']}/confirmar", json={"confirmacion": "CONFIRMAR_RECEPCION"}).json()
+    assert repeated["idempotente"] is True
+    assert [item["cantidad"] for item in json.loads((tmp_path / "DATOS/db/stock_movimientos.json").read_text(encoding="utf-8"))] == quantities
+
+
+def test_pedido_multilinea_sigue_parcial_si_una_linea_tiene_pendiente(tmp_path: Path) -> None:
+    _write(tmp_path / "DATOS/db/articulos.json", [
+        {"codigo": "ART-A", "nombre": "A", "unidad": "kg"},
+        {"codigo": "ART-B", "nombre": "B", "unidad": "kg"},
+    ])
+    motor = MotorCompras(BaseDatosLocal(tmp_path)); motor.crear_proveedor_manual("Proveedor A")
+    order = motor.crear_pedidos_borrador_transaccional([{"proveedor": "Proveedor A", "lineas": [
+        {"nombre": "A", "articulo_id": "ART-A", "cantidad": 10, "unidad": "kg"},
+        {"nombre": "B", "articulo_id": "ART-B", "cantidad": 5, "unidad": "kg"},
+    ]}])[0]
+    motor.confirmar_borrador_pedido(order["id"], usuario="test")
+    client = TestClient(create_app(platform_api=HostAIPlatformAPI(base_dir=tmp_path)))
+    reception = client.post(f"/api/v1/compras/pedidos/{order['id']}/recepciones", json={}).json()["recepcion"]
+    lines = [{**line, "received_quantity": 10 if line["article_id"] == "ART-A" else 2} for line in reception["lineas"]]
+    client.patch(f"/api/v1/compras/recepciones/{reception['id']}", json={"lineas": lines})
+    confirmed = client.post(f"/api/v1/compras/recepciones/{reception['id']}/confirmar", json={"confirmacion": "CONFIRMAR_RECEPCION"}).json()
+    assert confirmed["pedido"]["estado"] == "parcialmente_recibido"
+    next_reception = client.post(f"/api/v1/compras/pedidos/{order['id']}/recepciones", json={}).json()["recepcion"]
+    assert len(next_reception["lineas"]) == 1
+    assert next_reception["lineas"][0]["article_id"] == "ART-B"
+    assert next_reception["lineas"][0]["previously_received"] == 2
+    assert next_reception["lineas"][0]["pending_quantity"] == 3
 
 
 def test_cantidad_distinta_registra_exactamente_y_no_actualiza_precio_maestro(tmp_path: Path) -> None:

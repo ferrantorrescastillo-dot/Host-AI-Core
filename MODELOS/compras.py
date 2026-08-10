@@ -107,7 +107,7 @@ class PedidoSugerido:
     enviado_en: str = ""
     recibido_en: str = ""
 
-    ESTADOS_VALIDOS = {"borrador", "preparado", "enviado", "recibido", "cancelado"}
+    ESTADOS_VALIDOS = {"borrador", "preparado", "enviado", "parcialmente_recibido", "recibido", "cancelado"}
 
     def __post_init__(self):
         if not self.id:

@@ -6,7 +6,7 @@ import { App } from "../ui/App";
 
 afterEach(() => { cleanup(); vi.restoreAllMocks(); });
 
-it("abre, guarda y confirma una recepcion parcial sin doble confirmacion", async () => {
+it("guarda la cantidad visible antes de confirmar una recepción parcial y evita doble confirmación", async () => {
   const envelope = { ok: true, version: "6", api_version: "1", request_id: "REQ", modo_seguro: true, datos_reales_modificados: false };
   const dashboard = { ...envelope, dashboard: { modulos: { compras: { estado: "datos_disponibles", total: 0, items: [], propuestas: [], proveedores: [], historial: [], pedidos: [{ id: "PED-3", proveedor: "Proveedor A", estado: "preparado", lineas: [{ nombre: "Patata", cantidad: 10, unidad: "kg" }], importe_estimado: 20 }] } } } };
   const draft = { id: "REC-1", reception_id: "REC-1", order_id: "PED-3", proveedor: "Proveedor A", fecha: "2026-08-10", referencia: "", estado: "BORRADOR", observaciones: "", confirmable: true, incidencias: [], lineas: [{ order_line_id: "LIN-1", article_id: "ART-1", article_name: "Patata", ordered_quantity: 10, previously_received: 0, pending_quantity: 10, received_quantity: 10, unit: "kg", order_price: 2, received_price: null, lot: "", expiry: "", location: "", observations: "", incidences: [] }] };
@@ -24,9 +24,10 @@ it("abre, guarda y confirma una recepcion parcial sin doble confirmacion", async
   await userEvent.click(await screen.findByRole("button", { name: /Registrar.*PED-3/ }));
   expect(await screen.findByText(/Pedido: 10 kg/)).toHaveTextContent(/Ya recibido: 0 kg.*Pendiente: 10 kg/);
   const quantity = screen.getByLabelText("Cantidad recibida 1"); await userEvent.clear(quantity); await userEvent.type(quantity, "6");
-  await userEvent.click(screen.getByRole("button", { name: /Guardar borrador/ }));
-  expect(await screen.findByText("Pendiente 10 y recibido ahora 6.")).toBeInTheDocument();
   const confirm = screen.getByRole("button", { name: /Confirmar/ }); await userEvent.click(confirm); await userEvent.click(confirm);
+  expect(await screen.findByText("Pendiente 10 y recibido ahora 6.")).toBeInTheDocument();
+  const patchCall = fetchMock.mock.calls.find(([url, options]) => String(url).endsWith("/recepciones/REC-1") && options?.method === "PATCH");
+  expect(JSON.parse(String(patchCall?.[1]?.body)).lineas[0].received_quantity).toBe(6);
   expect(fetchMock.mock.calls.filter(([url]) => String(url).endsWith("/recepciones/REC-1/confirmar"))).toHaveLength(1);
   release();
   await waitFor(() => expect(screen.getAllByRole("status").some((item) => item.textContent?.includes("CONFIRMADA"))).toBe(true));
@@ -56,4 +57,15 @@ it("tras confirmar un pedido lo muestra y permite abrir su recepción sin modifi
   expect(await screen.findByRole("heading", { name: `Recepción ${reception.id}` })).toBeInTheDocument();
   expect(screen.getByText(/Pedido: 0.25 kg.*Ya recibido: 0 kg.*Pendiente: 0.25 kg/)).toBeInTheDocument();
   expect(fetchMock.mock.calls.some(([url]) => String(url).includes("stock"))).toBe(false);
+});
+
+it("mantiene Registrar recepción para pedidos parciales y la retira al completarlos", async () => {
+  const envelope = { ok: true, version: "6", api_version: "1", request_id: "REQ", modo_seguro: true, datos_reales_modificados: false };
+  vi.spyOn(global, "fetch").mockResolvedValue({ ok: true, json: async () => ({ ...envelope, dashboard: { modulos: { compras: { estado: "datos_disponibles", total: 0, items: [], propuestas: [], proveedores: [], historial: [], pedidos: [
+    { id: "PED-PARCIAL", proveedor: "PAU GAVALDA", estado: "parcialmente_recibido", lineas: [{ nombre: "Patata Monalisa", cantidad: 0.25, unidad: "kg" }], importe_estimado: 0.5 },
+    { id: "PED-COMPLETO", proveedor: "PAU GAVALDA", estado: "recibido", lineas: [{ nombre: "Patata Monalisa", cantidad: 0.25, unidad: "kg" }], importe_estimado: 0.5 },
+  ] } } } }) } as Response);
+  render(<MemoryRouter initialEntries={["/compras"]}><App /></MemoryRouter>);
+  expect(await screen.findByRole("button", { name: "Registrar recepción de PED-PARCIAL" })).toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: "Registrar recepción de PED-COMPLETO" })).not.toBeInTheDocument();
 });

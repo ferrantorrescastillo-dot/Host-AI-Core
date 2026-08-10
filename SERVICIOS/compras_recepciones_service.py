@@ -23,7 +23,7 @@ class ComprasRecepcionesService:
         pedido = self.compras.obtener_pedido(pedido_id)
         if not pedido:
             return self._error(404, "order_not_found", "Pedido no encontrado.")
-        if pedido.estado not in {"preparado", "enviado"}:
+        if pedido.estado not in {"preparado", "enviado", "parcialmente_recibido"}:
             return self._error(409, "order_not_receivable", f"El pedido no admite recepci\u00f3n en estado {pedido.estado}.")
         existing = next((r for r in self.compras.recepciones_compra.values()
                          if r.pedido_id == pedido_id and r.estado == "borrador"), None)
@@ -151,7 +151,7 @@ class ComprasRecepcionesService:
             reception.stock_aplicado = True; reception.stock_aplicado_en = reception.confirmado_en; reception.tocar()
             received = self._received_by_line(pedido.id)
             complete = all(received.get(line.id, 0.0) >= float(line.cantidad) - 1e-9 for line in pedido.lineas)
-            pedido.estado = "recibido" if complete else "preparado"
+            pedido.estado = "recibido" if complete else "parcialmente_recibido"
             if complete: pedido.recibido_en = reception.confirmado_en
             pedido.recepciones.append({"id": reception.id, "creado_en": reception.creado_en, "estado": reception.estado, "lineas": len(movements)})
             pedido.tocar("recepcion_confirmada", f"Recepci\u00f3n {reception.id} confirmada con {len(movements)} entradas de Stock.")

@@ -227,8 +227,10 @@ describe("Compras", () => {
     expect(fetchMock.mock.calls.filter(([url]) => String(url).endsWith("/confirmar"))).toHaveLength(1);
     release();
     expect(await screen.findByText("Pedido creado correctamente en estado preparado.")).toBeInTheDocument();
-    expect(screen.getByText("Pedido creado:")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Ver pedido creado" })).toHaveAttribute("href", "#pedido-PED-2");
+    expect(screen.getByText("Pedido:")).toBeInTheDocument();
+    expect(screen.getByText("Estado preparado: pendiente de recepción.")).toBeInTheDocument();
+    expect(screen.queryByText(/No se ha creado recepción/)).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Ver pedido" })).toHaveAttribute("href", "#pedido-PED-2");
     expect(window.confirm).toHaveBeenCalledWith(expect.stringContaining("Proveedor A con 1 líneas"));
   });
 });
