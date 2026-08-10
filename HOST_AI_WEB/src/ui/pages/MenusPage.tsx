@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import { HostAiApiError } from "../../api/client";
 import { articulosService } from "../../services/articulosService";
 import { comprasService } from "../../services/comprasService";
@@ -21,6 +21,8 @@ function emptyDraft(): MenuInput {
 }
 
 export function MenusPage() {
+  const [searchParams] = useSearchParams();
+  const deepLinkLoaded = useRef(false);
   const [menus, setMenus] = useState<IntelligentMenu[]>([]);
   const [selected, setSelected] = useState<IntelligentMenu | null>(null);
   const [draft, setDraft] = useState<MenuInput>(emptyDraft);
@@ -55,7 +57,20 @@ export function MenusPage() {
   const [productionPlanId, setProductionPlanId] = useState("");
 
   useEffect(() => {
-    void menusService.list().then((response) => setMenus(response.menus)).catch((reason) => setError(reason as HostAiApiError)).finally(() => setLoading(false));
+    void menusService.list().then(async (response) => {
+      setMenus(response.menus);
+      const menuId = searchParams.get("menu_id"); const proposalId = searchParams.get("proposal_id");
+      if (!deepLinkLoaded.current && menuId && proposalId) {
+        deepLinkLoaded.current = true;
+        const menu = response.menus.find((item) => item.id === menuId);
+        if (!menu) throw new Error("No se encontr\u00f3 el men\u00fa asociado a la propuesta.");
+        edit(menu);
+        const loaded = await menusService.getPurchaseProposal(menuId, proposalId);
+        const normalized = normalizeProposal(loaded.propuesta);
+        setProposal(normalized.proposal); setProposalDirty(normalized.changed);
+        setMessage("Propuesta de Producci\u00f3n cargada para revisi\u00f3n.");
+      }
+    }).catch((reason) => setError(reason as HostAiApiError)).finally(() => setLoading(false));
   }, []);
 
   useEffect(() => {
@@ -340,7 +355,7 @@ function ProposalReview({ proposal, providerNames, loading, disabledReason, onUp
       const tone = !line.incluir ? "excluded" : blocking ? "pending" : issues.length ? "warning" : "complete";
       return <article className={`proposal-line proposal-line-${tone}`} id={`proposal-line-${line.id}`} key={line.id}>
         <header><label className="proposal-include"><input aria-label={`Incluir ${line.articulo || line.id}`} checked={line.incluir} type="checkbox" onChange={(event) => onUpdate(line.id, { incluir: event.target.checked })} /> Incluir artículo</label><strong>{line.articulo || "Artículo sin relacionar"}</strong><span className={`proposal-badge proposal-badge-${tone}`}>{!line.incluir ? "Excluido" : blocking ? "Requiere atención" : "Completo"}</span></header>
-        <div className="proposal-info-grid"><div><span>Estado</span><strong>{line.estado}</strong></div><div><span>Necesario</span><strong>{formatQuantity(line.cantidad_necesaria, line.unidad_base)}</strong></div><div><span>Falta calculada</span><strong>{formatQuantity(line.cantidad_faltante, line.unidad_base)}</strong></div><div><span>Formato</span><strong>{line.formato_compra || "Pendiente"}</strong></div><div><span>Precio estimado</span><strong>{line.precio_estimado == null ? "Pendiente" : `${formatMoney(line.precio_estimado)}/${line.unidad_base}`}</strong></div></div>
+        <div className="proposal-info-grid"><div><span>Estado</span><strong>{line.estado}</strong></div><div><span>Necesario</span><strong>{formatQuantity(line.cantidad_necesaria, line.unidad_base)}</strong></div><div><span>Disponible</span><strong>{line.cantidad_disponible == null ? "Desconocido" : formatQuantity(line.cantidad_disponible, line.unidad_base)}</strong></div><div><span>Falta calculada</span><strong>{formatQuantity(line.cantidad_faltante, line.unidad_base)}</strong></div><div><span>Formato</span><strong>{line.formato_compra || "Pendiente"}</strong></div><div><span>Precio estimado</span><strong>{line.precio_estimado == null ? "Pendiente" : `${formatMoney(line.precio_estimado)}/${line.unidad_base}`}</strong></div></div>
         {!line.articulo_id ? <ArticleResolver line={line} onResolve={onResolveArticle} /> : null}
         <div className="proposal-edit-grid"><label>Cantidad propuesta<input data-field="cantidad" aria-label={`Cantidad propuesta ${line.id}`} min="0" step="any" type="number" value={line.cantidad_final_propuesta ?? ""} onChange={(event) => onUpdate(line.id, { cantidad_final_propuesta: event.target.value === "" ? null : Number(event.target.value) })} /></label><ProviderResolver line={line} providerNames={providerNames} onUpdate={onUpdate} /><label className="proposal-observations">Observaciones<input data-field="observaciones" aria-label={`Observaciones ${line.id}`} value={line.observaciones} onChange={(event) => onUpdate(line.id, { observaciones: event.target.value })} /></label></div>
         {issues.length || line.advertencia ? <ul className="proposal-line-messages">{issues.map((issue) => <li className={isBlockingIssue(issue) ? "blocking" : "warning"} key={issue.type}>{issue.message}</li>)}{line.advertencia ? <li className="warning">{line.advertencia}</li> : null}</ul> : null}

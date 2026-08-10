@@ -142,7 +142,9 @@ class CatalogPublicFacade(CorePublicApi02Facade):
 
     def _get_menu_production_service(self) -> MenuProduccionService:
         if self._menu_production_service is None:
-            self._menu_production_service = MenuProduccionService(self._get_core())
+            self._menu_production_service = MenuProduccionService(
+                self._get_core(), necesidades=self._get_menu_needs_service()
+            )
         return self._menu_production_service
 
     def crear_plan_produccion_menu(self, menu_id: str, body: dict[str, Any]) -> dict[str, Any]:

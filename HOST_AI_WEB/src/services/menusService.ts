@@ -11,6 +11,7 @@ export const menusService = {
   archive: (id: string, version: number) => hostAiApiClient.archiveMenu(id, version),
   needs: (id: string) => hostAiApiClient.getMenuNeeds(id),
   createPurchaseProposal: (id: string) => hostAiApiClient.createMenuPurchaseProposal(id),
+  getPurchaseProposal: (menuId: string, proposalId: string) => hostAiApiClient.getMenuPurchaseProposal(menuId, proposalId),
   updatePurchaseProposal: (menuId: string, proposalId: string, input: Record<string, unknown>) => hostAiApiClient.updateMenuPurchaseProposal(menuId, proposalId, input),
   createDraftOrders: (menuId: string, proposalId: string, version: number) => hostAiApiClient.createMenuDraftOrders(menuId, proposalId, version),
   createProductionPlan: (menuId: string) => hostAiApiClient.createMenuProductionPlan(menuId),

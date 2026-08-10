@@ -239,4 +239,22 @@ describe("Selector de elaboraciones de Menús", () => {
     fireEvent.click(screen.getByRole("button", { name: "Guardar propuesta" }));
     await waitFor(() => expect(fetchMock.mock.calls.some(([url, request]) => String(url).includes("/propuesta-compra/") && request?.method === "PATCH" && String(request.body).includes("ART-NARANJA"))).toBe(true));
   });
+  it("abre por enlace la propuesta creada desde Produccion", async () => {
+    const fetchMock = vi.spyOn(global, "fetch").mockImplementation(async (input) => {
+      const url = String(input);
+      if (url.includes(`/propuesta-compra/PROP-PROD`)) return { ok: true, status: 200, json: async () => ({ ...envelope, propuesta: {
+        id: "PROP-PROD", menu_id: menu.id, menu_version: 1, production_plan_id: "PLAN-1", origen: "produccion",
+        estado: "BORRADOR", version: 1, coste_estimado: 0, coste_completo: false,
+        lineas: [{ id: "LINEA-001", incluir: true, articulo_id: "ART-PATATA", articulo: "Patata Monalisa", cantidad_necesaria: .75, cantidad_disponible: .5, cantidad_faltante: .25, cantidad_final_propuesta: .25, unidad_base: "kg", proveedor: null, formato_compra: null, precio_estimado: null, coste_estimado: null, estado: "Compra necesaria", observaciones: "", advertencia: null }],
+        grupos_proveedor: [], resumen: { articulos_propuestos: 1, articulos_pendientes: 1, proveedores_pendientes: 1 }, advertencias: [], crea_pedido: false, modifica_stock: false, datos_reales_modificados: false,
+      } }) } as Response;
+      return { ok: true, status: 200, json: async () => ({ ...envelope, menus: [menu], total: 1, resumen: { borradores: 1, activos: 0, archivados: 0 } }) } as Response;
+    });
+    render(<MemoryRouter initialEntries={[`/menus?menu_id=${menu.id}&proposal_id=PROP-PROD`]}><App /></MemoryRouter>);
+    expect(await screen.findByRole("heading", { name: "Revisar propuesta" })).toBeInTheDocument();
+    expect(screen.getByText("Patata Monalisa")).toBeInTheDocument();
+    expect(screen.getByText("Disponible").nextElementSibling).toHaveTextContent("0,5 kg");
+    expect(screen.getByLabelText("Cantidad propuesta LINEA-001")).toHaveValue(.25);
+    expect(fetchMock.mock.calls.some(([url]) => String(url).includes("/propuesta-compra/PROP-PROD"))).toBe(true);
+  });
 });

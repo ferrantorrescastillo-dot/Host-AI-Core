@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { articulosService } from "../../services/articulosService";
 import { produccionService } from "../../services/produccionService";
 import { stockService } from "../../services/stockService";
@@ -9,18 +9,33 @@ import type { ProductionIngredient, ProductionStockReview } from "../../types/pr
 const filters: Record<string, string | undefined> = { Todos: undefined, Pendientes: "PENDIENTE", "Stock desconocido": "STOCK_DESCONOCIDO", Faltantes: "FALTANTE_CONOCIDO", "Sin relacionar": "SIN_ARTICULO", "Unidad pendiente": "UNIDAD_PENDIENTE", Cubiertos: "CUBIERTO" };
 
 export function ProductionStockReviewPage() {
-  const { planId = "" } = useParams(); const [review, setReview] = useState<ProductionStockReview>(); const [error, setError] = useState(""); const [filter, setFilter] = useState("Todos"); const [query, setQuery] = useState("");
+  const { planId = "" } = useParams(); const navigate = useNavigate(); const [review, setReview] = useState<ProductionStockReview>(); const [error, setError] = useState(""); const [actionError, setActionError] = useState(""); const [proposalBusy, setProposalBusy] = useState(false); const [filter, setFilter] = useState("Todos"); const [query, setQuery] = useState("");
   const refresh = async () => { try { setReview((await produccionService.getStockReview(planId)).revision_stock); setError(""); } catch (e) { setError((e as Error).message); } };
   useEffect(() => { void refresh(); }, [planId]);
   if (error) return <section className="panel"><h2>Revisar stock del plan</h2><p role="alert">{error}</p><button onClick={() => void refresh()}>Reintentar</button></section>;
   if (!review) return <p>Cargando revisión de stock...</p>;
   const wanted = filters[filter]; const rows = review.ingredientes.filter((x) => (!wanted || (wanted === "PENDIENTE" ? x.estado_resolucion !== "CUBIERTO" : x.estado_resolucion === wanted)) && `${x.nombre} ${x.articulo_id}`.toLowerCase().includes(query.toLowerCase()));
   const r = review.resumen;
+  const generateProposal = async () => {
+    if (proposalBusy) return;
+    setActionError("");
+    if (!r.faltantes_conocidos) {
+      setActionError(`No hay faltantes de stock conocidos para generar una propuesta. Hay ${r.stock_desconocido} ingredientes cuyo stock todav\u00eda es desconocido.`);
+      return;
+    }
+    setProposalBusy(true);
+    try {
+      const response = await produccionService.createPurchaseProposal(planId);
+      navigate(`/menus?menu_id=${encodeURIComponent(response.propuesta.menu_id)}&proposal_id=${encodeURIComponent(response.propuesta.id)}`);
+    } catch (e) { setActionError((e as Error).message); }
+    finally { setProposalBusy(false); }
+  };
   return <section className="panel"><header className="dashboard-header"><div><p className="eyebrow">Producción</p><h2>Revisar stock del plan</h2><p>{review.plan_nombre} · Menú {review.menu_id} · versión {review.menu_version}</p></div><Link to="/produccion">Volver a Producción</Link></header>
     <section className="dashboard-grid" aria-label="Resumen de resolución"><Summary title="Ingredientes totales" value={r.ingredientes_totales}/><Summary title="Cubiertos" value={r.cubiertos}/><Summary title="Faltantes conocidos" value={r.faltantes_conocidos}/><Summary title="Stock desconocido" value={r.stock_desconocido}/><Summary title="Sin relacionar" value={r.sin_relacionar}/><Summary title="Unidad pendiente" value={r.unidad_pendiente}/></section>
     <div className="menu-actions" aria-label="Filtros">{Object.keys(filters).map((x) => <button key={x} aria-pressed={filter === x} onClick={() => setFilter(x)}>{x}</button>)}<label>Buscar ingrediente o artículo<input value={query} onChange={(e) => setQuery(e.target.value)}/></label></div>
     <div className="produccion-list">{rows.map((item, index) => <ResolutionCard key={`${item.articulo_id}-${item.nombre}-${index}`} item={item} planId={planId} refresh={refresh}/>)}</div>
-    <button disabled={!r.faltantes_conocidos} onClick={async () => { try { await produccionService.createPurchaseProposal(planId); await refresh(); } catch (e) { setError((e as Error).message); } }}>Generar propuesta de compra</button>
+    <button disabled={proposalBusy} onClick={() => void generateProposal()}>{proposalBusy ? "Generando propuesta..." : "Generar propuesta de compra"}</button>
+    {actionError ? <p role="alert">{actionError}</p> : null}
   </section>;
 }
 

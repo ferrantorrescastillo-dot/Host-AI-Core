@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom/vitest";
-import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { ProductionStockReviewPage } from "../ui/pages/ProductionStockReviewPage";
@@ -11,7 +11,7 @@ const review = { production_plan_id: "PLAN-1", plan_nombre: "Production · pbd",
 ] };
 
 describe("resolución masiva de Stock", () => {
-  afterEach(() => vi.unstubAllGlobals());
+  afterEach(() => { cleanup(); vi.unstubAllGlobals(); });
   it("muestra contexto, filtra pendientes y conserva el regreso al plan", async () => {
     vi.stubGlobal("fetch", vi.fn(async () => ({ ok: true, json: async () => ({ ...envelope, revision_stock: review }) })));
     render(<MemoryRouter initialEntries={["/produccion/PLAN-1/stock"]}><Routes><Route path="/produccion/:planId/stock" element={<ProductionStockReviewPage/>}/></Routes></MemoryRouter>);
@@ -66,5 +66,36 @@ describe("resolución masiva de Stock", () => {
     const card = matches[matches.length - 1].closest("article") as HTMLElement;
     expect(within(card).queryByText(/Conversión pendiente: la unidad confirmada/)).not.toBeInTheDocument();
     expect(within(card).getByText(/inventario histórico en otra unidad.*2 l/i)).toBeInTheDocument();
+  });
+  it("genera una sola propuesta y navega a su revision", async () => {
+    let resolveProposal!: (value: Response) => void;
+    const pending = new Promise<Response>((resolve) => { resolveProposal = resolve; });
+    const fetchMock = vi.fn(async (input: RequestInfo | URL) => String(input).endsWith("/propuesta-compra")
+      ? pending : ({ ok: true, json: async () => ({ ...envelope, revision_stock: review }) } as Response));
+    vi.stubGlobal("fetch", fetchMock);
+    render(<MemoryRouter initialEntries={["/produccion/PLAN-1/stock"]}><Routes><Route path="/produccion/:planId/stock" element={<ProductionStockReviewPage/>}/><Route path="/menus" element={<p>Revision de propuesta</p>}/></Routes></MemoryRouter>);
+    const button = await screen.findByRole("button", { name: "Generar propuesta de compra" });
+    fireEvent.click(button); fireEvent.click(button);
+    expect(fetchMock.mock.calls.filter(([url]) => String(url).endsWith("/propuesta-compra"))).toHaveLength(1);
+    resolveProposal({ ok: true, json: async () => ({ ...envelope, propuesta: { id: "PROP-1", menu_id: "MENU-1" } }) } as Response);
+    expect(await screen.findByText("Revision de propuesta")).toBeInTheDocument();
+  });
+  it("muestra un error del backend sin fallo silencioso", async () => {
+    vi.stubGlobal("fetch", vi.fn(async (input: RequestInfo | URL) => String(input).endsWith("/propuesta-compra")
+      ? ({ ok: false, status: 500, json: async () => ({ ...envelope, ok: false, error: { message: "Compras no disponible" } }) } as Response)
+      : ({ ok: true, json: async () => ({ ...envelope, revision_stock: review }) } as Response)));
+    render(<MemoryRouter initialEntries={["/produccion/PLAN-1/stock"]}><Routes><Route path="/produccion/:planId/stock" element={<ProductionStockReviewPage/>}/></Routes></MemoryRouter>);
+    fireEvent.click(await screen.findByRole("button", { name: "Generar propuesta de compra" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("Compras no disponible");
+    expect(screen.getByText("Patata")).toBeInTheDocument();
+  });
+  it("explica cero faltantes conocidos sin llamar al backend", async () => {
+    const noKnown = { ...review, resumen: { ...review.resumen, faltantes_conocidos: 0, stock_desconocido: 17 }, ingredientes: review.ingredientes.slice(1) };
+    const fetchMock = vi.fn(async (_input: RequestInfo | URL) => ({ ok: true, json: async () => ({ ...envelope, revision_stock: noKnown }) } as Response));
+    vi.stubGlobal("fetch", fetchMock);
+    render(<MemoryRouter initialEntries={["/produccion/PLAN-1/stock"]}><Routes><Route path="/produccion/:planId/stock" element={<ProductionStockReviewPage/>}/></Routes></MemoryRouter>);
+    fireEvent.click(await screen.findByRole("button", { name: "Generar propuesta de compra" }));
+    expect(screen.getByRole("alert")).toHaveTextContent("Hay 17 ingredientes cuyo stock todav");
+    expect(fetchMock.mock.calls.filter(([url]) => String(url).endsWith("/propuesta-compra"))).toHaveLength(0);
   });
 });

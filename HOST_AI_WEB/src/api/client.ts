@@ -177,6 +177,10 @@ export const hostAiApiClient = {
     return request<MenuPurchaseProposalResponse>(`/api/v1/menus/${encodeURIComponent(id)}/propuesta-compra`, { method: "POST" });
   },
 
+  getMenuPurchaseProposal(menuId: string, proposalId: string): Promise<MenuPurchaseProposalResponse> {
+    return request<MenuPurchaseProposalResponse>(`/api/v1/menus/${encodeURIComponent(menuId)}/propuesta-compra/${encodeURIComponent(proposalId)}`, { method: "GET" });
+  },
+
   updateMenuPurchaseProposal(menuId: string, proposalId: string, input: Record<string, unknown>): Promise<MenuPurchaseProposalResponse> {
     return request<MenuPurchaseProposalResponse>(`/api/v1/menus/${encodeURIComponent(menuId)}/propuesta-compra/${encodeURIComponent(proposalId)}`, { method: "PATCH", body: JSON.stringify(input) });
   },

@@ -93,6 +93,7 @@ export type MenuNeedsResponse = ApiEnvelopeBase & { necesidades: {
 } };
 export type MenuPurchaseProposalResponse = ApiEnvelopeBase & { propuesta: {
   id: string; estado: "BORRADOR" | "REVISADA" | "CONFIRMADA"; version: number; coste_estimado: number; coste_completo: boolean;
+  menu_id: string; menu_version?: number; production_plan_id?: string; origen?: string;
   lineas: MenuProposalLine[]; grupos_proveedor: Array<{ proveedor: string; lineas: MenuProposalLine[] }>;
   resumen: { articulos_propuestos: number; articulos_pendientes: number; proveedores_pendientes: number };
   advertencias: string[];
@@ -104,6 +105,7 @@ advertencias?: string[]; errores?: Array<{ code?: string; message: string }> };
 export type MenuProposalLine = {
   id: string; incluir: boolean; articulo_id: string | null; articulo: string | null;
   cantidad_necesaria: number; cantidad_faltante: number | null; cantidad_final_propuesta: number | null;
+  cantidad_disponible?: number | null;
   unidad_base: string; proveedor: string | null; formato_compra: string | null;
   precio_estimado: number | null; coste_estimado: number | null; estado: string;
   observaciones: string; advertencia: string | null; motivos_pendientes?: string[];

@@ -415,6 +415,7 @@ class MenuNecesidadesService:
         return {
             "articulo_id": line.get("articulo_id"), "articulo": line.get("articulo_nombre"),
             "cantidad_faltante": missing, "cantidad_necesaria": line.get("cantidad_necesaria"),
+            "cantidad_disponible": line.get("stock_disponible"),
             "unidad_base": line.get("unidad_necesaria"), "estado": line.get("estado"),
             "proveedor": line.get("proveedor_preferente"), "formato_compra": line.get("formato_compra"),
             "cantidad_formatos": (round(float(proposed) / float(line["cantidad_formato"]), 4) if proposed is not None and line.get("cantidad_formato") else None),

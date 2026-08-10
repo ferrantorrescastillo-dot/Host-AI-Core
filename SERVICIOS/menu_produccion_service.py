@@ -24,10 +24,10 @@ class _ProductionStockAbort(Exception):
 class MenuProduccionService:
     """Orquesta Menús, Producción Real y Stock sin duplicar sus reglas."""
 
-    def __init__(self, core: Any) -> None:
+    def __init__(self, core: Any, necesidades: MenuNecesidadesService | None = None) -> None:
         self.core = core
         self.menus = MenusInteligentesService(core.base_dir)
-        self.necesidades = MenuNecesidadesService(core.base_dir, compras=core.compras, stock_motor=core.stock)
+        self.necesidades = necesidades or MenuNecesidadesService(core.base_dir, compras=core.compras, stock_motor=core.stock)
 
     def generar(self, menu_id: str, body: dict[str, Any] | None = None) -> dict[str, Any]:
         body = dict(body or {})
@@ -122,7 +122,13 @@ class MenuProduccionService:
         if result.get("ok") and (result.get("propuesta") or {}).get("id"):
             plan.configuracion_planificacion["propuesta_compra_id"] = result["propuesta"]["id"]
             self.core.produccion_real._persistir()
-        return {**result, "clasificacion": self._classification(projected["ingredientes"])}
+        classification = self._classification(projected["ingredientes"])
+        if not result.get("ok") and (result.get("error") or {}).get("code") == "no_known_shortages":
+            result["error"]["message"] = (
+                "No hay faltantes de stock conocidos para generar una propuesta. "
+                f"Hay {classification['stock_desconocido']} ingredientes cuyo stock todav\u00eda es desconocido."
+            )
+        return {**result, "clasificacion": classification}
 
     def revisar_stock(self, plan_id: str) -> dict[str, Any]:
         plan = self._project(self.core.produccion_real.obtener_plan(plan_id))

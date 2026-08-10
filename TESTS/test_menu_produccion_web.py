@@ -136,10 +136,23 @@ def test_http_expone_solo_planificacion(tmp_path: Path) -> None:
     task_id = plan["elaboraciones"][0]["id"]
     assert client.get(f"/api/v1/produccion/planes/{plan['id']}/tareas/{task_id}/consumo-previsto").status_code == 404
     assert client.post(f"/api/v1/produccion/planes/{plan['id']}/tareas/{task_id}/confirmar", json={}).status_code == 404
+    stock_path = tmp_path / "DATOS/db/stock_lotes.json"
+    stock_before = stock_path.read_bytes()
     proposal = client.post(f"/api/v1/produccion/planes/{plan['id']}/propuesta-compra", json={})
     assert proposal.status_code == 200
     assert proposal.json()["propuesta"]["origen"] == "produccion"
     assert proposal.json()["pedidos_creados"] == []
+    proposal_body = proposal.json()["propuesta"]
+    assert proposal_body["production_plan_id"] == plan["id"]
+    assert proposal_body["menu_id"] == menu_id
+    assert proposal_body["lineas"][0]["cantidad_necesaria"] == 2.5
+    assert proposal_body["lineas"][0]["cantidad_disponible"] == 1
+    assert proposal_body["lineas"][0]["cantidad_faltante"] == 1.5
+    assert client.get(f"/api/v1/menus/{menu_id}/propuesta-compra/{proposal_body['id']}").status_code == 200
+    repeated = client.post(f"/api/v1/produccion/planes/{plan['id']}/propuesta-compra", json={})
+    assert repeated.json()["idempotente"] is True
+    assert repeated.json()["propuesta"]["id"] == proposal_body["id"]
+    assert stock_path.read_bytes() == stock_before
 
 
 def test_revision_masiva_clasifica_refresca_y_no_escribe_al_consultar(tmp_path: Path) -> None:
@@ -347,7 +360,9 @@ def test_propuesta_produccion_filtra_pendientes_y_es_idempotente(tmp_path: Path)
 
     service = MenuNecesidadesService(tmp_path, compras=ComprasNoInvocable())
     lines = [
-        {"articulo_id": "ART-1", "articulo_nombre": "Patata", "ingrediente_nombre": "Patata", "cantidad_necesaria": 5, "cantidad_faltante": 2, "unidad_necesaria": "kg", "estado": "Compra necesaria", "proveedor_preferente": "P1", "cantidad_propuesta_compra": 2, "coste_estimado": 4},
+        {"articulo_id": "ART-1", "articulo_nombre": "Patata", "ingrediente_nombre": "Patata", "cantidad_necesaria": 5, "stock_disponible": 3, "cantidad_faltante": 2, "unidad_necesaria": "kg", "estado": "Compra necesaria", "proveedor_preferente": "P1", "cantidad_propuesta_compra": 2, "coste_estimado": 4},
+        {"articulo_id": "ART-COVERED", "articulo_nombre": "Cubierto", "cantidad_necesaria": 1, "cantidad_faltante": 0, "unidad_necesaria": "kg", "estado": "Cubierto"},
+        {"articulo_id": "ART-ZERO", "articulo_nombre": "Cero", "cantidad_necesaria": 0, "cantidad_faltante": 0, "unidad_necesaria": "kg", "estado": "Compra necesaria"},
         {"articulo_id": "ART-2", "articulo_nombre": "Sal", "ingrediente_nombre": "Sal", "cantidad_necesaria": 1, "cantidad_faltante": None, "unidad_necesaria": "kg", "estado": "Stock no disponible"},
         {"articulo_id": None, "articulo_nombre": None, "ingrediente_nombre": "Especia", "cantidad_necesaria": 1, "cantidad_faltante": None, "unidad_necesaria": "g", "estado": "Sin artículo relacionado"},
         {"articulo_id": "ART-3", "articulo_nombre": "Leche", "ingrediente_nombre": "Leche", "cantidad_necesaria": 2, "cantidad_faltante": None, "unidad_necesaria": "l", "estado": "Conversión pendiente"},
@@ -357,6 +372,7 @@ def test_propuesta_produccion_filtra_pendientes_y_es_idempotente(tmp_path: Path)
     first = service.crear_propuesta_faltantes_produccion("MENU-1", trace)
     repeated = service.crear_propuesta_faltantes_produccion("MENU-1", trace)
     assert [line["articulo_id"] for line in first["propuesta"]["lineas"]] == ["ART-1"]
+    assert first["propuesta"]["lineas"][0]["cantidad_disponible"] == 3
     assert first["propuesta"]["production_plan_id"] == "PLAN-1"
     assert first["propuesta"]["menu_version"] == 3 and first["propuesta"]["event_id"] == "EV-1"
     assert first["propuesta"]["crea_pedido"] is False and first["stock_modificado"] is False
