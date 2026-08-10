@@ -502,3 +502,30 @@ class RecepcionCompra:
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
+
+
+@dataclass
+class ReceptionDocumentExtractionLine:
+    """Contrato futuro de extracción; no ejecuta OCR ni produce escrituras."""
+    source_text: str = ""
+    article_name: str = ""
+    supplier_reference: str = ""
+    quantity: float | None = None
+    unit: str = ""
+    unit_price: float | None = None
+    lot: str = ""
+    expiration_date: str = ""
+    confidence: float | None = None
+    matched_article_id: str = ""
+    issues: List[str] = field(default_factory=list)
+
+
+@dataclass
+class ReceptionDocumentExtraction:
+    """Salida revisable prevista para IA/OCR; nunca confirma una recepción."""
+    supplier_name: str = ""
+    supplier_reference: str = ""
+    delivery_note_number: str = ""
+    delivery_date: str = ""
+    order_reference: str = ""
+    lines: List[ReceptionDocumentExtractionLine] = field(default_factory=list)

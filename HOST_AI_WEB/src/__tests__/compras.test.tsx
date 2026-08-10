@@ -264,4 +264,36 @@ describe("Compras", () => {
     expect(await screen.findByRole("button", { name: `Registrar recepción de ${draft.id}` })).toBeInTheDocument();
     expect(fetchMock.mock.calls.some(([url]) => String(url).includes("stock"))).toBe(false);
   });
+
+  it("adjunta, muestra y quita un albarán sin tocar Stock", async () => {
+    const order = { id: "PED-DOC", proveedor: "Proveedor A", estado: "preparado", lineas: [{ nombre: "Patata", cantidad: 1, unidad: "kg" }], importe_estimado: 2 };
+    const baseReception = { id: "REC-DOC", reception_id: "REC-DOC", order_id: order.id, proveedor: order.proveedor, fecha: "2026-08-10", referencia: "", estado: "BORRADOR", actualizado_en: "v1", lineas: [{ order_line_id: "LIN-1", article_id: "ART-1", article_name: "Patata", ordered_quantity: 1, previously_received: 0, pending_quantity: 1, received_quantity: 1, unit: "kg", canonical_unit: "kg", stock_quantity: 1, order_price: 2, received_price: null, lot: "", expiry: "", location: "", observations: "", incidences: [] }], incidencias: [], observaciones: "", confirmable: true, documento: null };
+    const document = { document_id: "DOC-1", nombre: "ALB-123.pdf", tipo_mime: "application/pdf", tamano: 20, fecha_subida: "2026-08-10T10:00:00", usuario: "web", proveedor: order.proveedor, order_id: order.id, reception_id: baseReception.id, referencia: "", fecha_albaran: "", observaciones: "", checksum_sha256: "abc", estado: "PENDIENTE_REVISION" };
+    let attached = false;
+    const fetchMock = vi.spyOn(global, "fetch").mockImplementation(async (input, init) => {
+      const url = String(input);
+      if (url.endsWith("/api/v1/dashboard")) return { ok: true, json: async () => payload([], { pedidos: [order] }) } as Response;
+      if (url.endsWith(`/pedidos/${order.id}/recepciones`)) return { ok: true, json: async () => ({ ...payload([]), recepcion: baseReception, stock_modificado: false }) } as Response;
+      if (url.endsWith(`/recepciones/${baseReception.id}/documento`) && init?.method === "POST") { const body = JSON.parse(String(init.body)); if (body.nombre.endsWith(".exe")) return { ok: false, status: 400, json: async () => ({ ...payload([]), ok: false, error: { code: "unsupported_document_format", message: "Formato de documento no admitido." } }) } as Response; attached = true; return { ok: true, json: async () => ({ ...payload([]), recepcion: { ...baseReception, documento: document, document_id: document.document_id }, documento: document, stock_modificado: false }) } as Response; }
+      if (url.endsWith(`/recepciones/${baseReception.id}/documento`) && init?.method === "DELETE") { attached = false; return { ok: true, json: async () => ({ ...payload([]), recepcion: baseReception, stock_modificado: false }) } as Response; }
+      throw new Error(`URL inesperada ${url}`);
+    });
+    renderPage();
+    await userEvent.click(await screen.findByRole("button", { name: `Registrar recepción de ${order.id}` }));
+    const invalid = new File(["bad"], "malware.exe", { type: "application/octet-stream" });
+    Object.defineProperty(invalid, "arrayBuffer", { value: async () => new TextEncoder().encode("bad").buffer });
+    await userEvent.upload(screen.getByLabelText("Adjuntar albarán"), invalid, { applyAccept: false });
+    expect(await screen.findByText("Formato de documento no admitido.")).toBeInTheDocument();
+    const file = new File(["%PDF fake"], document.nombre, { type: document.tipo_mime });
+    Object.defineProperty(file, "arrayBuffer", { value: async () => new TextEncoder().encode("%PDF fake").buffer });
+    await userEvent.upload(screen.getByLabelText("Adjuntar albarán"), file);
+    expect(await screen.findByText(document.nombre)).toBeInTheDocument();
+    expect(screen.getByText("Estado: Pendiente de revisión")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Ver documento" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Continuar recepción" })).toHaveAttribute("href", "#lineas-recepcion");
+    await userEvent.click(screen.getByRole("button", { name: "Quitar documento" }));
+    expect(await screen.findByLabelText("Adjuntar albarán")).toBeInTheDocument();
+    expect(attached).toBe(false);
+    expect(fetchMock.mock.calls.some(([url]) => String(url).includes("stock"))).toBe(false);
+  });
 });

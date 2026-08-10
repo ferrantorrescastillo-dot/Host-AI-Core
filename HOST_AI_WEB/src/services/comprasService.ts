@@ -74,4 +74,11 @@ export const comprasService = {
   createReception: (orderId: string) => hostAiApiClient.createPurchaseReception(orderId),
   saveReception: (id: string, lines: ReceptionLine[], header: Record<string, unknown>) => hostAiApiClient.updatePurchaseReception(id, lines, header),
   confirmReception: (reception: PurchaseReception) => hostAiApiClient.confirmPurchaseReception(reception),
+  attachReceptionDocument: async (id: string, file: File, referencia = "") => {
+    const bytes = new Uint8Array(await file.arrayBuffer()); let binary = "";
+    for (let index = 0; index < bytes.length; index += 0x8000) binary += String.fromCharCode(...bytes.subarray(index, index + 0x8000));
+    return hostAiApiClient.attachPurchaseReceptionDocument(id, { nombre: file.name, tipo_mime: file.type || "application/octet-stream", contenido_base64: btoa(binary), usuario: "web", referencia });
+  },
+  getReceptionDocument: (id: string) => hostAiApiClient.getPurchaseReceptionDocument(id),
+  removeReceptionDocument: (id: string) => hostAiApiClient.removePurchaseReceptionDocument(id),
 };

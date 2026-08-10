@@ -1,12 +1,16 @@
 from __future__ import annotations
 
+import base64
+import hashlib
 from copy import deepcopy
 from datetime import datetime
+from pathlib import Path
 from typing import Any
 from uuid import uuid4
 
 from MODELOS.compras import RecepcionCompra
 from SERVICIOS.cruce_stock_produccion_556c import _canon_unidad, _convertir
+from SERVICIOS.importador_inteligente_biblioteca import ImportDocumentService
 from SERVICIOS.repositorio_productos_maestro_601 import RepositorioProductosMaestro601
 
 
@@ -18,6 +22,93 @@ class ComprasRecepcionesService:
         self.compras = core.compras
         self.stock = core.stock
         self.productos = RepositorioProductosMaestro601(core.base_dir)
+        self.documents_dir = Path(core.base_dir) / "DATOS" / "documentos" / "recepciones"
+
+    def adjuntar_documento(self, reception_id: str, body: dict[str, Any]) -> dict[str, Any]:
+        reception = self.compras.recepciones_compra.get(reception_id)
+        if not reception:
+            return self._error(404, "reception_not_found", "Recepción no encontrada.")
+        if reception.estado != "borrador":
+            return self._error(409, "confirmed_reception_immutable", "La evidencia de una recepción confirmada es inmutable.")
+        filename = Path(str(body.get("nombre") or "")).name
+        suffix = Path(filename).suffix.lower()
+        if suffix not in ImportDocumentService.ALLOWED_EXTENSIONS:
+            return self._error(400, "unsupported_document_format", "Formato de documento no admitido.")
+        try:
+            content = base64.b64decode(str(body.get("contenido_base64") or ""), validate=True)
+        except (ValueError, TypeError):
+            return self._error(400, "invalid_document_content", "El contenido del documento no es válido.")
+        if not content:
+            return self._error(400, "empty_document", "El documento está vacío.")
+        if len(content) > ImportDocumentService.MAX_BYTES:
+            return self._error(413, "document_too_large", "El documento supera el límite de 10 MB.")
+        checksum = hashlib.sha256(content).hexdigest()
+        current = dict(reception.trazabilidad.get("documento") or {})
+        if current.get("checksum_sha256") == checksum:
+            return {"ok": True, "recepcion": self._project(reception), "documento": current,
+                    "idempotente": True, "stock_modificado": False}
+        if current:
+            return self._error(409, "document_already_attached", "La recepción ya tiene un documento adjunto.")
+        document_id = f"DOC-REC-{uuid4().hex[:12].upper()}"
+        target = self.documents_dir / f"{document_id}{suffix}"
+        target.parent.mkdir(parents=True, exist_ok=True)
+        temp = target.with_suffix(target.suffix + ".tmp")
+        temp.write_bytes(content)
+        temp.replace(target)
+        now = datetime.now().isoformat(timespec="seconds")
+        document = {
+            "document_id": document_id, "nombre": filename,
+            "tipo_mime": str(body.get("tipo_mime") or "application/octet-stream"),
+            "tamano": len(content), "fecha_subida": now,
+            "usuario": str(body.get("usuario") or "web"), "proveedor": reception.proveedor,
+            "order_id": reception.pedido_id, "reception_id": reception.id,
+            "referencia": str(body.get("referencia") or ""), "fecha_albaran": str(body.get("fecha_albaran") or ""),
+            "observaciones": str(body.get("observaciones") or ""), "checksum_sha256": checksum,
+            "estado": "PENDIENTE_REVISION", "ruta_relativa": str(target.relative_to(Path(self.core.base_dir))).replace("\\", "/"),
+        }
+        trace_before = deepcopy(reception.trazabilidad)
+        reception.trazabilidad["documento"] = document
+        reception.trazabilidad.update({"document_id": document_id, "document_name": filename,
+                                       "document_type": "albaran", "document_reference": document["referencia"]})
+        reception.tocar()
+        try:
+            self.compras._guardar()
+        except Exception:
+            reception.trazabilidad = trace_before
+            target.unlink(missing_ok=True)
+            raise
+        return {"ok": True, "recepcion": self._project(reception), "documento": document,
+                "idempotente": False, "stock_modificado": False}
+
+    def obtener_documento(self, reception_id: str) -> dict[str, Any]:
+        reception = self.compras.recepciones_compra.get(reception_id)
+        if not reception:
+            return self._error(404, "reception_not_found", "Recepción no encontrada.")
+        document = dict(reception.trazabilidad.get("documento") or {})
+        if not document:
+            return self._error(404, "document_not_found", "La recepción no tiene documento adjunto.")
+        path = Path(self.core.base_dir) / str(document.get("ruta_relativa") or "")
+        if not path.is_file() or self.documents_dir.resolve() not in path.resolve().parents:
+            return self._error(404, "document_file_not_found", "No se encuentra el archivo documental.")
+        return {"ok": True, "documento": {**document, "contenido_base64": base64.b64encode(path.read_bytes()).decode("ascii")},
+                "stock_modificado": False}
+
+    def quitar_documento(self, reception_id: str) -> dict[str, Any]:
+        reception = self.compras.recepciones_compra.get(reception_id)
+        if not reception:
+            return self._error(404, "reception_not_found", "Recepción no encontrada.")
+        if reception.estado != "borrador":
+            return self._error(409, "confirmed_reception_immutable", "La evidencia de una recepción confirmada es inmutable.")
+        document = dict(reception.trazabilidad.pop("documento", {}) or {})
+        for key in ("document_id", "document_name", "document_type", "document_reference"):
+            reception.trazabilidad[key] = ""
+        reception.tocar(); self.compras._guardar()
+        if document:
+            path = Path(self.core.base_dir) / str(document.get("ruta_relativa") or "")
+            if path.is_file() and self.documents_dir.resolve() in path.resolve().parents:
+                path.unlink()
+        return {"ok": True, "recepcion": self._project(reception), "documento_eliminado": bool(document),
+                "stock_modificado": False}
 
     def crear(self, pedido_id: str, body: dict[str, Any] | None = None) -> dict[str, Any]:
         pedido = self.compras.obtener_pedido(pedido_id)
@@ -106,6 +197,18 @@ class ComprasRecepcionesService:
                 reception.trazabilidad[key] = str(body.get(key) or "")
         if "observaciones" in body:
             reception.observaciones = str(body.get("observaciones") or "")
+        document = reception.trazabilidad.get("documento")
+        if isinstance(document, dict):
+            mapping = {"referencia": "referencia", "fecha_albaran": "fecha_albaran", "observaciones": "observaciones"}
+            for source, target in mapping.items():
+                if source in body:
+                    document[target] = str(body.get(source) or "")
+            if any(key in body for key in mapping):
+                document["estado"] = "REVISADO"
+            document["proveedor"] = reception.proveedor
+            document["order_id"] = reception.pedido_id
+            document["reception_id"] = reception.id
+            reception.trazabilidad["document_reference"] = str(document.get("referencia") or "")
 
     def confirmar(self, reception_id: str, body: dict[str, Any]) -> dict[str, Any]:
         reception = self.compras.recepciones_compra.get(reception_id)
@@ -148,6 +251,7 @@ class ComprasRecepcionesService:
                     "unit_received": line.get("unit"), "quantity": stock_quantity, "unit": stock_unit,
                     "lot": line.get("lot") or "", "expiry": line.get("expiry") or "", "location": line.get("location") or "",
                     "origin": "recepcion_compra",
+                    "document_id": reception.trazabilidad.get("document_id") or "",
                 }
                 result = self.stock.registrar_entrada(
                     nombre=str(line.get("article_name") or ""), cantidad=stock_quantity, unidad=stock_unit,
@@ -224,6 +328,7 @@ class ComprasRecepcionesService:
             "referencia": reception.trazabilidad.get("referencia"), "document_id": reception.trazabilidad.get("document_id"),
             "document_name": reception.trazabilidad.get("document_name"), "document_type": reception.trazabilidad.get("document_type"),
             "document_reference": reception.trazabilidad.get("document_reference"),
+            "documento": reception.trazabilidad.get("documento"),
             "estado": reception.estado.upper(), "confirmable": reception.estado == "borrador" and not any(x.get("bloqueante") for x in reception.incidencias),
         })
         return data

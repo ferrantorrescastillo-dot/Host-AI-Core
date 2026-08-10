@@ -201,6 +201,15 @@ class CatalogPublicFacade(CorePublicApi02Facade):
     def confirmar_recepcion_compra(self, reception_id: str, body: dict[str, Any]) -> dict[str, Any]:
         return {**self._base_payload(), **self._get_compras_receptions_service().confirmar(reception_id, body)}
 
+    def adjuntar_documento_recepcion_compra(self, reception_id: str, body: dict[str, Any]) -> dict[str, Any]:
+        return {**self._base_payload(), **self._get_compras_receptions_service().adjuntar_documento(reception_id, body)}
+
+    def documento_recepcion_compra(self, reception_id: str) -> dict[str, Any]:
+        return {**self._base_payload(), **self._get_compras_receptions_service().obtener_documento(reception_id)}
+
+    def quitar_documento_recepcion_compra(self, reception_id: str) -> dict[str, Any]:
+        return {**self._base_payload(), **self._get_compras_receptions_service().quitar_documento(reception_id)}
+
     def _get_biblioteca_import_service(self) -> ImportDocumentService:
         if self._biblioteca_import_service is None:
             self._biblioteca_import_service = ImportDocumentService(self.base_dir)

@@ -1,4 +1,5 @@
 import json
+import base64
 from pathlib import Path
 
 from fastapi.testclient import TestClient
@@ -183,3 +184,63 @@ def test_unidad_canonicamente_convertible_se_registra_en_unidad_base(tmp_path: P
     assert movement["unidad"] == "kg"
     assert movement["trazabilidad"]["quantity_received"] == 10
     assert movement["trazabilidad"]["unit_received"] == "g"
+
+
+def test_albaran_se_adjunta_sin_stock_y_permanece_trazable_al_confirmar(tmp_path: Path) -> None:
+    client, order_id = _seed(tmp_path)
+    reception = client.post(f"/api/v1/compras/pedidos/{order_id}/recepciones", json={}).json()["recepcion"]
+    stock_path = tmp_path / "DATOS/db/stock_movimientos.json"
+    stock_before = stock_path.read_bytes()
+    payload = {
+        "nombre": "ALB-PROVEEDOR.pdf", "tipo_mime": "application/pdf",
+        "contenido_base64": base64.b64encode(b"%PDF-1.4 fake delivery note").decode("ascii"),
+        "usuario": "test", "referencia": "ALB-123",
+    }
+    attached = client.post(f"/api/v1/compras/recepciones/{reception['id']}/documento", json=payload)
+    assert attached.status_code == 201
+    document = attached.json()["documento"]
+    assert document["order_id"] == order_id and document["reception_id"] == reception["id"]
+    assert document["proveedor"] == "Proveedor A" and document["estado"] == "PENDIENTE_REVISION"
+    assert document["checksum_sha256"] and stock_path.read_bytes() == stock_before
+    duplicate = client.post(f"/api/v1/compras/recepciones/{reception['id']}/documento", json=payload).json()
+    assert duplicate["idempotente"] is True and duplicate["documento"]["document_id"] == document["document_id"]
+    viewed = client.get(f"/api/v1/compras/recepciones/{reception['id']}/documento").json()["documento"]
+    assert base64.b64decode(viewed["contenido_base64"]) == b"%PDF-1.4 fake delivery note"
+    saved = client.patch(f"/api/v1/compras/recepciones/{reception['id']}", json={
+        "referencia": "ALB-124", "fecha_albaran": "2026-08-10", "observaciones": "Revisado manualmente",
+    }).json()["recepcion"]
+    assert saved["documento"]["referencia"] == "ALB-124"
+    assert saved["documento"]["fecha_albaran"] == "2026-08-10"
+    assert stock_path.read_bytes() == stock_before
+    confirmed = client.post(f"/api/v1/compras/recepciones/{reception['id']}/confirmar", json={"confirmacion": "CONFIRMAR_RECEPCION"}).json()
+    assert confirmed["recepcion"]["documento"]["document_id"] == document["document_id"]
+    assert confirmed["movimientos"][0]["trazabilidad"]["document_id"] == document["document_id"]
+    assert client.delete(f"/api/v1/compras/recepciones/{reception['id']}/documento").status_code == 409
+
+
+def test_albaran_puede_quitarse_y_recepcion_sin_documento_sigue_operativa(tmp_path: Path) -> None:
+    client, order_id = _seed(tmp_path)
+    reception = client.post(f"/api/v1/compras/pedidos/{order_id}/recepciones", json={}).json()["recepcion"]
+    stock_path = tmp_path / "DATOS/db/stock_movimientos.json"; before = stock_path.read_bytes()
+    payload = {"nombre": "albaran.xlsx", "tipo_mime": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+               "contenido_base64": base64.b64encode(b"temporary spreadsheet").decode("ascii")}
+    client.post(f"/api/v1/compras/recepciones/{reception['id']}/documento", json=payload)
+    removed = client.delete(f"/api/v1/compras/recepciones/{reception['id']}/documento").json()
+    assert removed["documento_eliminado"] is True and removed["recepcion"]["documento"] is None
+    assert before == stock_path.read_bytes()
+    confirmed = client.post(f"/api/v1/compras/recepciones/{reception['id']}/confirmar", json={"confirmacion": "CONFIRMAR_RECEPCION"})
+    assert confirmed.status_code == 200 and confirmed.json()["stock_modificado"] is True
+
+
+def test_albaran_rechaza_formato_y_tamano_sin_modificar_stock(tmp_path: Path, monkeypatch) -> None:
+    from SERVICIOS.importador_inteligente_biblioteca import ImportDocumentService
+    monkeypatch.setattr(ImportDocumentService, "MAX_BYTES", 4)
+    client, order_id = _seed(tmp_path)
+    reception = client.post(f"/api/v1/compras/pedidos/{order_id}/recepciones", json={}).json()["recepcion"]
+    stock_path = tmp_path / "DATOS/db/stock_movimientos.json"; before = stock_path.read_bytes()
+    bad = client.post(f"/api/v1/compras/recepciones/{reception['id']}/documento", json={
+        "nombre": "malware.exe", "contenido_base64": base64.b64encode(b"x").decode("ascii")})
+    assert bad.status_code == 400
+    large = client.post(f"/api/v1/compras/recepciones/{reception['id']}/documento", json={
+        "nombre": "grande.pdf", "contenido_base64": base64.b64encode(b"xxxxx").decode("ascii")})
+    assert large.status_code == 413 and stock_path.read_bytes() == before

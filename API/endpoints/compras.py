@@ -41,3 +41,18 @@ def reception_handle(request: ApiRequest, facade: CorePublicFacade) -> ApiRespon
         success_status = 200
     status = success_status if payload.get("ok") else int((payload.get("error") or {}).get("status") or 500)
     return ApiResponse(status_code=status, payload=payload)
+
+
+def reception_document_handle(request: ApiRequest, facade: CorePublicFacade) -> ApiResponse:
+    reception_id = str(request.path).split("/api/v1/compras/recepciones/", 1)[-1].rsplit("/documento", 1)[0]
+    if request.method.upper() == "POST":
+        payload = facade.adjuntar_documento_recepcion_compra(reception_id, request.body)
+        success_status = 201
+    elif request.method.upper() == "DELETE":
+        payload = facade.quitar_documento_recepcion_compra(reception_id)
+        success_status = 200
+    else:
+        payload = facade.documento_recepcion_compra(reception_id)
+        success_status = 200
+    status = success_status if payload.get("ok") else int((payload.get("error") or {}).get("status") or 500)
+    return ApiResponse(status_code=status, payload=payload)

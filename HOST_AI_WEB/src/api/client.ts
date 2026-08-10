@@ -18,7 +18,7 @@ import type {
   MenuResponse,
   MenusResponse,
 } from "../types/menus";
-import type { CompraConfirmationResponse, CompraDraftInput, CompraDraftResponse, PurchaseReception, PurchaseReceptionResponse, ReceptionLine } from "../types/compras";
+import type { CompraConfirmationResponse, CompraDraftInput, CompraDraftResponse, PurchaseReception, PurchaseReceptionResponse, ReceptionDocumentResponse, ReceptionLine } from "../types/compras";
 import type { ProductionPlanResponse, ProductionProposalResponse, ProductionStockReviewResponse } from "../types/produccion";
 import type { StockMovementInput, StockMovementResponse } from "../types/stock";
 
@@ -140,6 +140,15 @@ export const hostAiApiClient = {
   },
   confirmPurchaseReception(reception: PurchaseReception): Promise<PurchaseReceptionResponse> {
     return request<PurchaseReceptionResponse>(`/api/v1/compras/recepciones/${encodeURIComponent(reception.id)}/confirmar`, { method: "POST", body: JSON.stringify({ confirmacion: "CONFIRMAR_RECEPCION", usuario: "web", actualizado_en: reception.actualizado_en, fecha: reception.fecha, referencia: reception.referencia, observaciones: reception.observaciones, lineas: reception.lineas }) });
+  },
+  attachPurchaseReceptionDocument(id: string, input: { nombre: string; tipo_mime: string; contenido_base64: string; usuario: string; referencia?: string }): Promise<ReceptionDocumentResponse> {
+    return request<ReceptionDocumentResponse>(`/api/v1/compras/recepciones/${encodeURIComponent(id)}/documento`, { method: "POST", body: JSON.stringify(input) });
+  },
+  getPurchaseReceptionDocument(id: string): Promise<ReceptionDocumentResponse> {
+    return request<ReceptionDocumentResponse>(`/api/v1/compras/recepciones/${encodeURIComponent(id)}/documento`, { method: "GET" });
+  },
+  removePurchaseReceptionDocument(id: string): Promise<PurchaseReceptionResponse> {
+    return request<PurchaseReceptionResponse>(`/api/v1/compras/recepciones/${encodeURIComponent(id)}/documento`, { method: "DELETE" });
   },
 
   getArticulos(query = ""): Promise<CatalogoResponse> {
