@@ -509,14 +509,16 @@ class ReceptionDocumentExtractionLine:
     """Contrato futuro de extracción; no ejecuta OCR ni produce escrituras."""
     source_text: str = ""
     article_name: str = ""
-    supplier_reference: str = ""
+    supplier_article_reference: str = ""
     quantity: float | None = None
     unit: str = ""
     unit_price: float | None = None
+    line_total: float | None = None
     lot: str = ""
     expiration_date: str = ""
     confidence: float | None = None
     matched_article_id: str = ""
+    match_status: str = "SIN_MATCH"
     issues: List[str] = field(default_factory=list)
 
 
@@ -524,8 +526,15 @@ class ReceptionDocumentExtractionLine:
 class ReceptionDocumentExtraction:
     """Salida revisable prevista para IA/OCR; nunca confirma una recepción."""
     supplier_name: str = ""
+    supplier_tax_id: str = ""
     supplier_reference: str = ""
     delivery_note_number: str = ""
     delivery_date: str = ""
     order_reference: str = ""
+    currency: str = "EUR"
+    subtotal: float | None = None
+    taxes: float | None = None
+    total: float | None = None
+    confidence: float | None = None
+    warnings: List[str] = field(default_factory=list)
     lines: List[ReceptionDocumentExtractionLine] = field(default_factory=list)

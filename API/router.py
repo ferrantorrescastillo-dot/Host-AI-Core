@@ -101,6 +101,8 @@ class ApiRouter:
             handler = compras.reception_handle
         if key[0] in {"GET", "POST", "DELETE"} and key[1].startswith("/api/v1/compras/recepciones/") and key[1].endswith("/documento"):
             handler = compras.reception_document_handle
+        if key[0] == "POST" and key[1].startswith("/api/v1/compras/recepciones/") and (key[1].endswith("/documento/analizar") or key[1].endswith("/extraccion/aplicar")):
+            handler = compras.reception_extraction_handle
         if handler is None:
             return ApiResponse(
                 status_code=404,

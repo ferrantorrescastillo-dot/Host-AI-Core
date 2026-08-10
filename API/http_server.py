@@ -281,6 +281,14 @@ def create_app(platform_api: HostAIPlatformAPI | None = None) -> FastAPI:
     async def delete_documento_compras_recepcion(reception_id: str, request: Request) -> JSONResponse:
         return await _delegate(request)
 
+    @app.post("/api/v1/compras/recepciones/{reception_id}/documento/analizar")
+    async def post_analizar_documento_compras_recepcion(reception_id: str, request: Request) -> JSONResponse:
+        return await _delegate(request, body=await _json_body(request))
+
+    @app.post("/api/v1/compras/recepciones/{reception_id}/extraccion/aplicar")
+    async def post_aplicar_extraccion_compras_recepcion(reception_id: str, request: Request) -> JSONResponse:
+        return await _delegate(request, body=await _json_body(request))
+
     @app.post("/api/v1/biblioteca/importaciones")
     async def post_biblioteca_importacion(request: Request) -> JSONResponse:
         parsed: dict[str, Any] = {}

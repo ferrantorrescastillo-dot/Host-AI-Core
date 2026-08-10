@@ -1,5 +1,6 @@
 import json
 import base64
+from io import BytesIO
 from pathlib import Path
 
 from fastapi.testclient import TestClient
@@ -244,3 +245,141 @@ def test_albaran_rechaza_formato_y_tamano_sin_modificar_stock(tmp_path: Path, mo
     large = client.post(f"/api/v1/compras/recepciones/{reception['id']}/documento", json={
         "nombre": "grande.pdf", "contenido_base64": base64.b64encode(b"xxxxx").decode("ascii")})
     assert large.status_code == 413 and stock_path.read_bytes() == before
+
+
+def _attach_for_extraction(client: TestClient, reception_id: str, name: str = "albaran.jpg", content: bytes = b"fake image") -> None:
+    response = client.post(f"/api/v1/compras/recepciones/{reception_id}/documento", json={
+        "nombre": name, "tipo_mime": "image/jpeg" if name.endswith(".jpg") else "application/pdf",
+        "contenido_base64": base64.b64encode(content).decode("ascii"),
+    })
+    assert response.status_code == 201
+
+
+def test_extraccion_imagen_propone_linea_exacta_y_aplicar_no_toca_stock(tmp_path: Path) -> None:
+    client, order_id = _seed(tmp_path)
+    articles = json.loads((tmp_path / "DATOS/db/articulos.json").read_text(encoding="utf-8"))
+    articles[0]["catalogo_maestro"] = {"referencia_proveedor": "PAT-01"}
+    (tmp_path / "DATOS/db/articulos.json").write_text(json.dumps(articles), encoding="utf-8")
+    client = TestClient(create_app(platform_api=HostAIPlatformAPI(base_dir=tmp_path)))
+    reception = client.post(f"/api/v1/compras/pedidos/{order_id}/recepciones", json={}).json()["recepcion"]
+    _attach_for_extraction(client, reception["id"])
+    stock_path = tmp_path / "DATOS/db/stock_movimientos.json"; before = stock_path.read_bytes()
+    text = "Proveedor A\nPedido %s\nAlbaran ALB-77 10/08/2026\nRef PAT-01 Patata 6 kg 2,20 13,20 lote L-77 cad 31/12/2026\nTotal 13,20" % order_id
+    analyzed = client.post(f"/api/v1/compras/recepciones/{reception['id']}/documento/analizar", json={"texto_ocr": text})
+    assert analyzed.status_code == 200
+    extraction = analyzed.json()["extraccion"]; line = extraction["lines"][0]
+    assert analyzed.json()["recepcion"]["confirmable"] is False
+    assert extraction["provider_match"]["status"] == "PROVEEDOR_COINCIDE"
+    assert line["matched_article_id"] == "ART-1" and line["match_status"] == "MATCH_EXACTO"
+    assert line["quantity"] == 6 and line["unit_price"] == 2.2 and line["line_total"] == 13.2
+    assert line["price_variation_pct"] == 10
+    assert line["lot"] == "L-77" and line["expiration_date"] == "31/12/2026"
+    assert any(issue["code"] == "CANTIDAD_DISTINTA" for issue in line["issues"])
+    assert any(issue["code"] == "PRECIO_DISTINTO" for issue in line["issues"])
+    assert stock_path.read_bytes() == before
+    applied = client.post(f"/api/v1/compras/recepciones/{reception['id']}/extraccion/aplicar", json={
+        "extraction_id": extraction["extraction_id"], "lines": extraction["lines"],
+    })
+    assert applied.status_code == 200 and applied.json()["confirmada"] is False
+    assert applied.json()["recepcion"]["confirmable"] is True
+    assert applied.json()["recepcion"]["lineas"][0]["received_quantity"] == 6
+    assert applied.json()["recepcion"]["lineas"][0]["received_price"] == 2.2
+    assert stock_path.read_bytes() == before
+    confirmed = client.post(f"/api/v1/compras/recepciones/{reception['id']}/confirmar", json={"confirmacion": "CONFIRMAR_RECEPCION"}).json()
+    assert confirmed["movimientos"][0]["cantidad"] == 6
+    assert confirmed["movimientos"][0]["trazabilidad"]["document_id"] == extraction["document_id"]
+    assert confirmed["movimientos"][0]["trazabilidad"]["extraction_id"] == extraction["extraction_id"]
+
+
+def test_extraccion_proveedor_incorrecto_y_unidad_incompatible_bloquean_aplicar(tmp_path: Path) -> None:
+    client, order_id = _seed(tmp_path)
+    reception = client.post(f"/api/v1/compras/pedidos/{order_id}/recepciones", json={}).json()["recepcion"]
+    _attach_for_extraction(client, reception["id"])
+    result = client.post(f"/api/v1/compras/recepciones/{reception['id']}/documento/analizar", json={
+        "texto_ocr": "Proveedor totalmente distinto\nPatata Monalisa 2 l 2,00 4,00",
+    }).json()["extraccion"]
+    assert result["provider_match"]["status"] == "PROVEEDOR_NO_COINCIDE"
+    assert any(issue["code"] == "CONVERSION_PENDIENTE" for issue in result["lines"][0]["issues"])
+    applied = client.post(f"/api/v1/compras/recepciones/{reception['id']}/extraccion/aplicar", json={
+        "extraction_id": result["extraction_id"], "lines": result["lines"],
+    })
+    assert applied.status_code == 400
+    assert json.loads((tmp_path / "DATOS/db/stock_movimientos.json").read_text(encoding="utf-8")) == []
+
+
+def test_extraccion_ambigua_desconocida_y_reanalisis_no_duplican(tmp_path: Path) -> None:
+    _write(tmp_path / "DATOS/db/articulos.json", [
+        {"codigo": "ART-A", "nombre": "Tomate rojo", "unidad": "kg"},
+        {"codigo": "ART-B", "nombre": "Tomate rojo", "unidad": "kg"},
+    ])
+    motor = MotorCompras(BaseDatosLocal(tmp_path)); motor.crear_proveedor_manual("Proveedor A")
+    order = motor.crear_pedidos_borrador_transaccional([{"proveedor": "Proveedor A", "lineas": [{"nombre": "Tomate rojo", "articulo_id": "ART-A", "cantidad": 2, "unidad": "kg", "precio_unitario": 1}]}])[0]
+    motor.confirmar_borrador_pedido(order["id"], usuario="test")
+    client = TestClient(create_app(platform_api=HostAIPlatformAPI(base_dir=tmp_path)))
+    reception = client.post(f"/api/v1/compras/pedidos/{order['id']}/recepciones", json={}).json()["recepcion"]
+    _attach_for_extraction(client, reception["id"])
+    first = client.post(f"/api/v1/compras/recepciones/{reception['id']}/documento/analizar", json={"texto_ocr": "Proveedor A\nTomate rojo 2 kg 1,00 2,00"}).json()["extraccion"]
+    assert first["lines"][0]["match_status"] == "AMBIGUO"
+    second = client.post(f"/api/v1/compras/recepciones/{reception['id']}/documento/analizar", json={"texto_ocr": "Proveedor A\nProducto imposible xyz 2 kg 1,00 2,00"}).json()["extraccion"]
+    assert second["extraction_id"] == first["extraction_id"]
+    assert len(second["lines"]) == 1 and second["lines"][0]["match_status"] == "SIN_MATCH"
+
+
+def test_pdf_sin_lector_ni_ocr_devuelve_bloqueo_honesto(tmp_path: Path) -> None:
+    client, order_id = _seed(tmp_path)
+    reception = client.post(f"/api/v1/compras/pedidos/{order_id}/recepciones", json={}).json()["recepcion"]
+    _attach_for_extraction(client, reception["id"], "albaran.pdf", b"%PDF-1.4 scanned")
+    response = client.post(f"/api/v1/compras/recepciones/{reception['id']}/documento/analizar", json={})
+    assert response.status_code == 422 and response.json()["error"]["code"] == "ocr_required"
+    assert json.loads((tmp_path / "DATOS/db/stock_movimientos.json").read_text(encoding="utf-8")) == []
+
+
+def test_pdf_con_texto_embebido_se_extrae_por_lector_canonico(tmp_path: Path) -> None:
+    from pypdf import PdfWriter
+    from pypdf.generic import DecodedStreamObject, DictionaryObject, NameObject
+    client, order_id = _seed(tmp_path)
+    writer = PdfWriter(); writer.add_blank_page(width=612, height=792); page = writer.pages[0]
+    font = DictionaryObject({NameObject("/Type"): NameObject("/Font"), NameObject("/Subtype"): NameObject("/Type1"), NameObject("/BaseFont"): NameObject("/Helvetica"), NameObject("/Encoding"): NameObject("/WinAnsiEncoding")})
+    resources = DictionaryObject({NameObject("/Font"): DictionaryObject({NameObject("/F1"): font})})
+    stream = DecodedStreamObject(); stream.set_data(f"BT /F1 12 Tf 72 720 Td (Proveedor A) Tj 0 -20 Td (Patata Monalisa 10 kg 2.00 20.00) Tj ET".encode("ascii"))
+    page[NameObject("/Resources")] = resources; page[NameObject("/Contents")] = writer._add_object(stream)
+    buffer = BytesIO(); writer.write(buffer)
+    reception = client.post(f"/api/v1/compras/pedidos/{order_id}/recepciones", json={}).json()["recepcion"]
+    _attach_for_extraction(client, reception["id"], "estructurado.pdf", buffer.getvalue())
+    analyzed = client.post(f"/api/v1/compras/recepciones/{reception['id']}/documento/analizar", json={})
+    assert analyzed.status_code == 200
+    extraction = analyzed.json()["extraccion"]
+    assert extraction["method"] == "pypdf" and extraction["summary"]["detected_lines"] == 1
+    assert extraction["lines"][0]["matched_article_id"] == "ART-1"
+
+
+def test_excel_se_extrae_con_lector_nativo(tmp_path: Path) -> None:
+    from openpyxl import Workbook
+    client, order_id = _seed(tmp_path)
+    workbook = Workbook(); sheet = workbook.active
+    sheet.append(["Proveedor A"]); sheet.append(["Patata Monalisa 10 kg 2,00 20,00"])
+    buffer = BytesIO(); workbook.save(buffer)
+    reception = client.post(f"/api/v1/compras/pedidos/{order_id}/recepciones", json={}).json()["recepcion"]
+    response = client.post(f"/api/v1/compras/recepciones/{reception['id']}/documento", json={
+        "nombre": "albaran.xlsx", "tipo_mime": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "contenido_base64": base64.b64encode(buffer.getvalue()).decode("ascii"),
+    })
+    assert response.status_code == 201
+    analyzed = client.post(f"/api/v1/compras/recepciones/{reception['id']}/documento/analizar", json={}).json()["extraccion"]
+    assert analyzed["method"] == "lector_nativo" and analyzed["summary"]["detected_lines"] == 1
+    assert analyzed["lines"][0]["match_status"] == "MATCH_EXACTO"
+
+
+def test_word_se_extrae_con_lector_nativo(tmp_path: Path) -> None:
+    from docx import Document
+    client, order_id = _seed(tmp_path)
+    document = Document(); document.add_paragraph("Proveedor A"); document.add_paragraph("Patata Monalisa 10 kg 2,00 20,00")
+    buffer = BytesIO(); document.save(buffer)
+    reception = client.post(f"/api/v1/compras/pedidos/{order_id}/recepciones", json={}).json()["recepcion"]
+    attached = client.post(f"/api/v1/compras/recepciones/{reception['id']}/documento", json={
+        "nombre": "albaran.docx", "tipo_mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "contenido_base64": base64.b64encode(buffer.getvalue()).decode("ascii"),
+    })
+    assert attached.status_code == 201
+    analyzed = client.post(f"/api/v1/compras/recepciones/{reception['id']}/documento/analizar", json={}).json()["extraccion"]
+    assert analyzed["method"] == "lector_nativo" and analyzed["lines"][0]["matched_article_id"] == "ART-1"

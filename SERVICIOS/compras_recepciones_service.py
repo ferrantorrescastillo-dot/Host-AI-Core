@@ -218,6 +218,9 @@ class ComprasRecepcionesService:
             return {"ok": True, "recepcion": self._project(reception), "idempotente": True, "stock_modificado": False}
         if str(body.get("confirmacion") or "") != "CONFIRMAR_RECEPCION":
             return self._error(400, "confirmation_required", "Debes confirmar expl\u00edcitamente la recepci\u00f3n.")
+        extraction = dict(reception.trazabilidad.get("extraccion_documental") or {})
+        if extraction and (not extraction.get("applied_at") or extraction.get("application_blocking_issues")):
+            return self._error(409, "document_review_pending", "La propuesta documental debe revisarse y aplicarse antes de confirmar.")
         expected_version = str(body.get("actualizado_en") or "")
         if expected_version and expected_version != reception.actualizado_en:
             return self._error(409, "stale_reception", "La recepci\u00f3n cambió desde que se abrió. Recárgala antes de confirmar.")
@@ -252,6 +255,7 @@ class ComprasRecepcionesService:
                     "lot": line.get("lot") or "", "expiry": line.get("expiry") or "", "location": line.get("location") or "",
                     "origin": "recepcion_compra",
                     "document_id": reception.trazabilidad.get("document_id") or "",
+                    "extraction_id": (reception.trazabilidad.get("extraccion_documental") or {}).get("extraction_id") or "",
                 }
                 result = self.stock.registrar_entrada(
                     nombre=str(line.get("article_name") or ""), cantidad=stock_quantity, unidad=stock_unit,
@@ -323,13 +327,16 @@ class ComprasRecepcionesService:
     def _project(self, reception: RecepcionCompra) -> dict[str, Any]:
         self._validate(reception)
         data = reception.to_dict()
+        extraction = dict(reception.trazabilidad.get("extraccion_documental") or {})
+        document_review_pending = bool(extraction and (not extraction.get("applied_at") or extraction.get("application_blocking_issues")))
         data.update({
             "reception_id": reception.id, "order_id": reception.pedido_id, "fecha": reception.trazabilidad.get("fecha"),
             "referencia": reception.trazabilidad.get("referencia"), "document_id": reception.trazabilidad.get("document_id"),
             "document_name": reception.trazabilidad.get("document_name"), "document_type": reception.trazabilidad.get("document_type"),
             "document_reference": reception.trazabilidad.get("document_reference"),
             "documento": reception.trazabilidad.get("documento"),
-            "estado": reception.estado.upper(), "confirmable": reception.estado == "borrador" and not any(x.get("bloqueante") for x in reception.incidencias),
+            "extraccion_documental": reception.trazabilidad.get("extraccion_documental"),
+            "estado": reception.estado.upper(), "confirmable": reception.estado == "borrador" and not document_review_pending and not any(x.get("bloqueante") for x in reception.incidencias),
         })
         return data
 

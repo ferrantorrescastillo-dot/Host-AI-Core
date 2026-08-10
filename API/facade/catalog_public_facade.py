@@ -13,6 +13,7 @@ from SERVICIOS.menus_inteligentes_service import MenusInteligentesService
 from SERVICIOS.menu_necesidades_service import MenuNecesidadesService
 from SERVICIOS.compras_borradores_service import ComprasBorradoresService
 from SERVICIOS.compras_recepciones_service import ComprasRecepcionesService
+from SERVICIOS.compras_recepcion_extraction_service import ComprasRecepcionExtractionService
 from SERVICIOS.menu_produccion_service import MenuProduccionService
 from SERVICIOS.stock_ajustes_service import StockAjustesService
 
@@ -32,6 +33,7 @@ class CatalogPublicFacade(CorePublicApi02Facade):
         self._menu_needs_service: MenuNecesidadesService | None = None
         self._compras_drafts_service: ComprasBorradoresService | None = None
         self._compras_receptions_service: ComprasRecepcionesService | None = None
+        self._compras_reception_extraction_service: ComprasRecepcionExtractionService | None = None
         self._menu_production_service: MenuProduccionService | None = None
         self._stock_adjustments_service: StockAjustesService | None = None
 
@@ -209,6 +211,17 @@ class CatalogPublicFacade(CorePublicApi02Facade):
 
     def quitar_documento_recepcion_compra(self, reception_id: str) -> dict[str, Any]:
         return {**self._base_payload(), **self._get_compras_receptions_service().quitar_documento(reception_id)}
+
+    def _get_compras_reception_extraction_service(self) -> ComprasRecepcionExtractionService:
+        if self._compras_reception_extraction_service is None:
+            self._compras_reception_extraction_service = ComprasRecepcionExtractionService(self._get_core())
+        return self._compras_reception_extraction_service
+
+    def analizar_documento_recepcion_compra(self, reception_id: str, body: dict[str, Any]) -> dict[str, Any]:
+        return {**self._base_payload(), **self._get_compras_reception_extraction_service().analizar(reception_id, body)}
+
+    def aplicar_extraccion_recepcion_compra(self, reception_id: str, body: dict[str, Any]) -> dict[str, Any]:
+        return {**self._base_payload(), **self._get_compras_reception_extraction_service().aplicar(reception_id, body)}
 
     def _get_biblioteca_import_service(self) -> ImportDocumentService:
         if self._biblioteca_import_service is None:

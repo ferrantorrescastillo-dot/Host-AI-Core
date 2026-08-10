@@ -18,7 +18,7 @@ import type {
   MenuResponse,
   MenusResponse,
 } from "../types/menus";
-import type { CompraConfirmationResponse, CompraDraftInput, CompraDraftResponse, PurchaseReception, PurchaseReceptionResponse, ReceptionDocumentResponse, ReceptionLine } from "../types/compras";
+import type { CompraConfirmationResponse, CompraDraftInput, CompraDraftResponse, PurchaseReception, PurchaseReceptionResponse, ReceptionDocumentResponse, ReceptionExtractionLine, ReceptionExtractionResponse, ReceptionLine } from "../types/compras";
 import type { ProductionPlanResponse, ProductionProposalResponse, ProductionStockReviewResponse } from "../types/produccion";
 import type { StockMovementInput, StockMovementResponse } from "../types/stock";
 
@@ -149,6 +149,12 @@ export const hostAiApiClient = {
   },
   removePurchaseReceptionDocument(id: string): Promise<PurchaseReceptionResponse> {
     return request<PurchaseReceptionResponse>(`/api/v1/compras/recepciones/${encodeURIComponent(id)}/documento`, { method: "DELETE" });
+  },
+  analyzePurchaseReceptionDocument(id: string, textoOcr = ""): Promise<ReceptionExtractionResponse> {
+    return request<ReceptionExtractionResponse>(`/api/v1/compras/recepciones/${encodeURIComponent(id)}/documento/analizar`, { method: "POST", body: JSON.stringify({ texto_ocr: textoOcr }) });
+  },
+  applyPurchaseReceptionExtraction(id: string, extractionId: string, lines: ReceptionExtractionLine[]): Promise<ReceptionExtractionResponse> {
+    return request<ReceptionExtractionResponse>(`/api/v1/compras/recepciones/${encodeURIComponent(id)}/extraccion/aplicar`, { method: "POST", body: JSON.stringify({ extraction_id: extractionId, lines }) });
   },
 
   getArticulos(query = ""): Promise<CatalogoResponse> {

@@ -56,3 +56,12 @@ def reception_document_handle(request: ApiRequest, facade: CorePublicFacade) -> 
         success_status = 200
     status = success_status if payload.get("ok") else int((payload.get("error") or {}).get("status") or 500)
     return ApiResponse(status_code=status, payload=payload)
+
+
+def reception_extraction_handle(request: ApiRequest, facade: CorePublicFacade) -> ApiResponse:
+    path = str(request.path)
+    reception_id = path.split("/api/v1/compras/recepciones/", 1)[-1].split("/", 1)[0]
+    payload = (facade.aplicar_extraccion_recepcion_compra(reception_id, request.body)
+               if path.endswith("/aplicar") else facade.analizar_documento_recepcion_compra(reception_id, request.body))
+    status = 200 if payload.get("ok") else int((payload.get("error") or {}).get("status") or 500)
+    return ApiResponse(status_code=status, payload=payload)

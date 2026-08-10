@@ -124,30 +124,29 @@ class LectorPDFFacturas:
         }
 
     def _extraer_texto_pdf(self, ruta: Path) -> tuple[List[PaginaPDF], str]:
-        # Preferimos PyPDF2/pypdf si están disponibles.
-        try:
-            from PyPDF2 import PdfReader
-            reader = PdfReader(str(ruta))
-            paginas = []
-            for i, page in enumerate(reader.pages, start=1):
-                texto = page.extract_text() or ""
-                paginas.append(PaginaPDF(numero=i, texto=texto, caracteres=len(texto)))
-            return paginas, "PyPDF2"
-        except Exception:
-            pass
-
+        # Preferimos pypdf, sucesor mantenido de PyPDF2.
+        method = "pypdf"
         try:
             from pypdf import PdfReader
+        except ImportError:
+            method = "PyPDF2"
+            try:
+                from PyPDF2 import PdfReader
+            except ImportError as exc:
+                raise RuntimeError(
+                    "No se pudo leer el PDF. Instala pypdf. "
+                    "Este sprint no usa OCR todavía."
+                ) from exc
+        try:
             reader = PdfReader(str(ruta))
             paginas = []
             for i, page in enumerate(reader.pages, start=1):
                 texto = page.extract_text() or ""
                 paginas.append(PaginaPDF(numero=i, texto=texto, caracteres=len(texto)))
-            return paginas, "pypdf"
+            return paginas, method
         except Exception as exc:
             raise RuntimeError(
-                "No se pudo leer el PDF. Instala PyPDF2 o pypdf. "
-                "Este sprint no usa OCR todavía."
+                "No se pudo extraer texto del PDF; puede estar dañado o requerir OCR."
             ) from exc
 
     def _detectar_numero_factura(self, texto: str) -> str:

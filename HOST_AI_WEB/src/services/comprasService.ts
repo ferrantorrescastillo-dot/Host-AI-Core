@@ -81,4 +81,6 @@ export const comprasService = {
   },
   getReceptionDocument: (id: string) => hostAiApiClient.getPurchaseReceptionDocument(id),
   removeReceptionDocument: (id: string) => hostAiApiClient.removePurchaseReceptionDocument(id),
+  analyzeReceptionDocument: (id: string, textoOcr = "") => hostAiApiClient.analyzePurchaseReceptionDocument(id, textoOcr),
+  applyReceptionExtraction: (id: string, extractionId: string, lines: import("../types/compras").ReceptionExtractionLine[]) => hostAiApiClient.applyPurchaseReceptionExtraction(id, extractionId, lines),
 };

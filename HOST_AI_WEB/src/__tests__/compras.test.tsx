@@ -269,11 +269,15 @@ describe("Compras", () => {
     const order = { id: "PED-DOC", proveedor: "Proveedor A", estado: "preparado", lineas: [{ nombre: "Patata", cantidad: 1, unidad: "kg" }], importe_estimado: 2 };
     const baseReception = { id: "REC-DOC", reception_id: "REC-DOC", order_id: order.id, proveedor: order.proveedor, fecha: "2026-08-10", referencia: "", estado: "BORRADOR", actualizado_en: "v1", lineas: [{ order_line_id: "LIN-1", article_id: "ART-1", article_name: "Patata", ordered_quantity: 1, previously_received: 0, pending_quantity: 1, received_quantity: 1, unit: "kg", canonical_unit: "kg", stock_quantity: 1, order_price: 2, received_price: null, lot: "", expiry: "", location: "", observations: "", incidences: [] }], incidencias: [], observaciones: "", confirmable: true, documento: null };
     const document = { document_id: "DOC-1", nombre: "ALB-123.pdf", tipo_mime: "application/pdf", tamano: 20, fecha_subida: "2026-08-10T10:00:00", usuario: "web", proveedor: order.proveedor, order_id: order.id, reception_id: baseReception.id, referencia: "", fecha_albaran: "", observaciones: "", checksum_sha256: "abc", estado: "PENDIENTE_REVISION" };
+    const extractionLine = { source_text: "Patata 1 kg 2,00 2,00", supplier_article_reference: "PAT-1", article_name: "Patata", quantity: 1, unit: "kg", unit_price: 2, line_total: 2, lot: "", expiration_date: "", confidence: 96, matched_article_id: "ART-1", match_status: "MATCH_EXACTO", comparison_status: "COINCIDE", candidates: [{ article_id: "ART-1", name: "Patata", score: 100, method: "nombre_exacto", unit: "kg" }], order_line_id: "LIN-1", ordered_quantity: 1, previously_received: 0, pending_quantity: 1, order_unit: "kg", order_price: 2, price_variation_pct: 0, issues: [], accepted: true };
+    const extraction = { extraction_id: "EXT-1", document_id: document.document_id, reception_id: baseReception.id, order_id: order.id, supplier_name: order.proveedor, supplier_tax_id: "", supplier_reference: "", delivery_note_number: "ALB-123", delivery_date: "2026-08-10", order_reference: order.id, currency: "EUR", subtotal: 2, taxes: 0, total: 2, confidence: 96, warnings: [], provider_match: { status: "PROVEEDOR_COINCIDE", expected: order.proveedor, detected: order.proveedor, confidence: 100, issues: [] }, lines: [extractionLine], issues: [], method: "texto_manual_ocr", model: "reglas_host_ai", analyzed_at: "2026-08-10T10:01:00", summary: { detected_lines: 1, exact_matches: 1, requires_review: 0, blocking_issues: 0 } };
     let attached = false;
     const fetchMock = vi.spyOn(global, "fetch").mockImplementation(async (input, init) => {
       const url = String(input);
       if (url.endsWith("/api/v1/dashboard")) return { ok: true, json: async () => payload([], { pedidos: [order] }) } as Response;
       if (url.endsWith(`/pedidos/${order.id}/recepciones`)) return { ok: true, json: async () => ({ ...payload([]), recepcion: baseReception, stock_modificado: false }) } as Response;
+      if (url.endsWith(`/recepciones/${baseReception.id}/documento/analizar`)) { const body = JSON.parse(String(init?.body)); if (!body.texto_ocr) return { ok: false, status: 422, json: async () => ({ ...payload([]), ok: false, error: { code: "ocr_required", message: "El documento necesita OCR real o transcripción." } }) } as Response; return { ok: true, json: async () => ({ ...payload([]), recepcion: { ...baseReception, documento: document }, extraccion: extraction, propuesta: extraction, stock_modificado: false }) } as Response; }
+      if (url.endsWith(`/recepciones/${baseReception.id}/extraccion/aplicar`)) return { ok: true, json: async () => ({ ...payload([]), recepcion: { ...baseReception, documento: document, lineas: [{ ...baseReception.lineas[0], received_quantity: extractionLine.quantity }] }, extraccion: extraction, stock_modificado: false, confirmada: false }) } as Response;
       if (url.endsWith(`/recepciones/${baseReception.id}/documento`) && init?.method === "POST") { const body = JSON.parse(String(init.body)); if (body.nombre.endsWith(".exe")) return { ok: false, status: 400, json: async () => ({ ...payload([]), ok: false, error: { code: "unsupported_document_format", message: "Formato de documento no admitido." } }) } as Response; attached = true; return { ok: true, json: async () => ({ ...payload([]), recepcion: { ...baseReception, documento: document, document_id: document.document_id }, documento: document, stock_modificado: false }) } as Response; }
       if (url.endsWith(`/recepciones/${baseReception.id}/documento`) && init?.method === "DELETE") { attached = false; return { ok: true, json: async () => ({ ...payload([]), recepcion: baseReception, stock_modificado: false }) } as Response; }
       throw new Error(`URL inesperada ${url}`);
@@ -291,6 +295,17 @@ describe("Compras", () => {
     expect(screen.getByText("Estado: Pendiente de revisión")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Ver documento" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Continuar recepción" })).toHaveAttribute("href", "#lineas-recepcion");
+    await userEvent.click(screen.getByRole("button", { name: "Analizar albarán" }));
+    expect(await screen.findByText("El documento necesita OCR real o transcripción.")).toBeInTheDocument();
+    await userEvent.type(screen.getByLabelText("Texto OCR del albarán"), "Proveedor A Patata 1 kg 2,00 2,00");
+    await userEvent.click(screen.getByRole("button", { name: "Analizar albarán" }));
+    expect(await screen.findByRole("heading", { name: "Albarán analizado" })).toBeInTheDocument();
+    expect(screen.getByText(/Líneas detectadas: 1/)).toBeInTheDocument();
+    const quantityProposal = screen.getByLabelText("Cantidad propuesta 1");
+    await userEvent.clear(quantityProposal); await userEvent.type(quantityProposal, "0.4");
+    await userEvent.click(screen.getByRole("button", { name: "Aplicar al borrador de recepción" }));
+    expect(await screen.findByText("Propuesta aplicada al borrador. Revisa y confirma manualmente; Stock sin cambios.")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Volver a analizar" })).toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: "Quitar documento" }));
     expect(await screen.findByLabelText("Adjuntar albarán")).toBeInTheDocument();
     expect(attached).toBe(false);
