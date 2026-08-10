@@ -26,10 +26,22 @@ describe("resolución masiva de Stock", () => {
     expect(screen.getByRole("link", { name: "Volver a Producción" })).toHaveAttribute("href", "/produccion");
   });
   it("registra inventario con trazabilidad y refresca la fila", async () => {
-    const fetchMock = vi.fn(async (input: RequestInfo | URL) => ({ ok: true, json: async () => String(input).includes("stock/movimientos") ? ({ ...envelope, movimiento: { movement_id: "MOV-1" }, stock_anterior: 0, stock_actual: 2, mensaje: "Movimiento registrado", pedidos_creados: 0, recepciones_creadas: 0 }) : ({ ...envelope, revision_stock: review }) }));
+    const fetchMock = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+      const url = String(input);
+      const payload = url.includes("stock/movimientos") ? { ...envelope, movimiento: { movement_id: "MOV-1" }, stock_anterior: 0, stock_actual: 2, mensaje: "Movimiento registrado", pedidos_creados: 0, recepciones_creadas: 0 }
+        : url.includes("/articulos/ART-2") && init?.method === "PATCH" ? { ...envelope, articulo: { nombre: "Zanahoria", unidad_base: "kg", unidad_base_sugerida: false } }
+        : url.includes("/articulos/ART-2") ? { ...envelope, articulo: { nombre: "Zanahoria", unidad_base: "kg", unidad_base_sugerida: true } }
+        : { ...envelope, revision_stock: review };
+      return { ok: true, json: async () => payload };
+    });
     vi.stubGlobal("fetch", fetchMock);
     render(<MemoryRouter initialEntries={["/produccion/PLAN-1/stock"]}><Routes><Route path="/produccion/:planId/stock" element={<ProductionStockReviewPage/>}/></Routes></MemoryRouter>);
     await screen.findByText("Zanahoria"); fireEvent.change(screen.getByLabelText("Cantidad"), { target: { value: "2" } }); fireEvent.click(screen.getByRole("button", { name: "Registrar inventario" }));
     await waitFor(() => expect(fetchMock.mock.calls.some(([url]) => String(url).includes("stock/movimientos"))).toBe(true));
+    const patchIndex = fetchMock.mock.calls.findIndex(([url, init]) => String(url).includes("/articulos/ART-2") && init?.method === "PATCH");
+    const movementIndex = fetchMock.mock.calls.findIndex(([url]) => String(url).includes("stock/movimientos"));
+    expect(patchIndex).toBeGreaterThan(-1); expect(patchIndex).toBeLessThan(movementIndex);
+    expect(JSON.parse(String(fetchMock.mock.calls[patchIndex][1]?.body))).toMatchObject({ unidad_base: "kg" });
+    expect(JSON.parse(String(fetchMock.mock.calls[movementIndex][1]?.body))).toMatchObject({ unidad: "kg", production_plan_id: "PLAN-1" });
   });
 });
