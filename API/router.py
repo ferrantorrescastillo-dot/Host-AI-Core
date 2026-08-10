@@ -89,6 +89,8 @@ class ApiRouter:
             handler = produccion.handle
         if handler is None and key[0] in {"GET", "POST"} and key[1].startswith("/api/v1/produccion/planes/") and "/stock-resolution" in key[1]:
             handler = produccion.handle
+        if handler is None and key == ("POST", "/api/v1/compras/borradores"):
+            handler = compras.create_manual_draft_handle
         if handler is None and key[0] == "POST" and key[1].startswith("/api/v1/compras/borradores/") and key[1].endswith("/confirmar"):
             handler = compras.confirm_draft_handle
         if handler is None and key[0] in {"GET", "PATCH"} and key[1].startswith("/api/v1/compras/borradores/"):

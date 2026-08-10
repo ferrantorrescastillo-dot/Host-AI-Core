@@ -13,6 +13,50 @@ class ComprasBorradoresService:
         self.compras = compras
         self.productos = RepositorioProductosMaestro601(base_dir) if base_dir is not None else None
 
+    def crear_manual(self, body: dict[str, Any]) -> dict[str, Any]:
+        provider_id = str(body.get("proveedor_id") or "").strip()
+        provider_name = str(body.get("proveedor") or "").strip()
+        provider = next((item for item in self.compras.listar_proveedores(incluir_inactivos=False)
+                         if (provider_id and str(item.get("id") or "") == provider_id)
+                         or (provider_name and str(item.get("nombre") or "").casefold() == provider_name.casefold())), None)
+        if not provider:
+            return self._error(400, "invalid_provider", "Selecciona un proveedor activo existente.")
+        lines = []
+        for index, raw in enumerate(list(body.get("lineas") or [])):
+            article_id = str(raw.get("articulo_id") or "").strip()
+            product = self.productos.obtener_producto(article_id) if self.productos is not None and article_id else None
+            if not product:
+                return self._error(400, "invalid_article", f"Selecciona un artículo existente en la línea {index + 1}.")
+            name = str(product.get("nombre") or raw.get("nombre") or "").strip()
+            association = next((item for item in self.compras.listar_proveedores_producto(name)
+                                if str(item.get("proveedor_id") or "") == str(provider.get("id") or "")), None)
+            unit = str(raw.get("unidad") or product.get("unidad_compra")
+                       or (association or {}).get("unidad_precio") or product.get("unidad_base") or product.get("unidad") or "kg").strip()
+            price_raw = raw.get("precio_unitario")
+            if price_raw in (None, ""):
+                price_raw = (association or {}).get("precio_habitual")
+            if price_raw in (None, ""):
+                price_raw = product.get("precio") or 0
+            lines.append({
+                "nombre": name, "articulo_id": article_id, "cantidad": raw.get("cantidad"),
+                "unidad": unit, "precio_unitario": price_raw,
+                "observaciones": str(raw.get("observaciones") or ""),
+            })
+        if not lines:
+            return self._error(400, "empty_order", "Añade al menos un artículo al pedido.")
+        group = {
+            "proveedor": str(provider.get("nombre") or ""), "lineas": lines,
+            "fecha": str(body.get("fecha") or ""), "referencia": str(body.get("referencia") or ""),
+            "observaciones": str(body.get("observaciones") or ""),
+            "origen_tipo": "manual", "origen_id": "compras", "origen_version": 1,
+        }
+        try:
+            created = self.compras.crear_pedidos_borrador_transaccional([group])[0]
+        except (TypeError, ValueError) as exc:
+            return self._error(400, "invalid_draft", str(exc))
+        data = self._serializar(created)
+        return {"ok": True, "borrador": data, "revision": self._revision(created), "stock_modificado": False}
+
     def obtener(self, pedido_id: str) -> dict[str, Any]:
         pedido = self.compras.obtener_pedido(pedido_id)
         if not pedido:

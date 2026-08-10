@@ -149,3 +149,61 @@ def test_validacion_final_bloquea_linea_vacia_y_cantidad_cero(tmp_path: Path) ->
     zero = service.confirmar(pedido_id, {"confirmacion": "CONFIRMAR_PEDIDO", "usuario": "chef"})
     assert zero["ok"] is False
     assert any(item["code"] == "invalid_quantity" for item in zero["revision"]["errores_bloqueantes"])
+
+
+def test_pedido_manual_usa_contrato_canonico_y_recepcion_parcial(tmp_path: Path) -> None:
+    motor = MotorCompras(BaseDatosLocal(tmp_path))
+    provider = motor.crear_proveedor_manual("PAU GAVALDA")
+    (tmp_path / "DATOS/db/articulos.json").write_text(json.dumps([{
+        "codigo": "ART-PATATA", "nombre": "Patata Monalisa", "unidad_base": "kg",
+        "unidad_compra": "kg", "precio": 2,
+    }]), encoding="utf-8")
+    client = TestClient(create_app(platform_api=HostAIPlatformAPI(base_dir=tmp_path)))
+    stock_path = tmp_path / "DATOS/db/stock_movimientos.json"
+    before = stock_path.read_bytes()
+    created = client.post("/api/v1/compras/borradores", json={
+        "proveedor_id": provider.id, "proveedor": provider.nombre, "fecha": "2026-08-10",
+        "referencia": "MANUAL-1", "observaciones": "Pedido desde Compras",
+        "lineas": [{"articulo_id": "ART-PATATA", "cantidad": 1, "precio_unitario": 2}],
+    })
+    assert created.status_code == 201
+    draft = created.json()["borrador"]
+    assert draft["estado"] == "borrador"
+    assert draft["origen"] == {"tipo": "manual", "id": "compras", "version": 1, "propuesta_id": ""}
+    assert draft["fecha"] == "2026-08-10" and draft["referencia"] == "MANUAL-1"
+    assert draft["lineas"][0] | {"nombre": "Patata Monalisa", "unidad": "kg", "precio_unitario": 2} == draft["lineas"][0]
+    assert draft["importe_estimado"] == 2 and stock_path.read_bytes() == before
+    confirmed = client.post(f"/api/v1/compras/borradores/{draft['id']}/confirmar", json={
+        "confirmacion": "CONFIRMAR_PEDIDO", "actualizado_en": draft["actualizado_en"],
+    }).json()
+    assert confirmed["pedido"]["estado"] == "preparado"
+    assert confirmed["stock_modificado"] is False and stock_path.read_bytes() == before
+    reception = client.post(f"/api/v1/compras/pedidos/{draft['id']}/recepciones", json={}).json()["recepcion"]
+    line = {**reception["lineas"][0], "received_quantity": 0.4}
+    partial = client.post(f"/api/v1/compras/recepciones/{reception['id']}/confirmar", json={
+        "confirmacion": "CONFIRMAR_RECEPCION", "actualizado_en": reception["actualizado_en"], "lineas": [line],
+    }).json()
+    assert partial["pedido"]["estado"] == "parcialmente_recibido"
+    assert partial["movimientos"][0]["cantidad"] == 0.4
+    remaining = client.post(f"/api/v1/compras/pedidos/{draft['id']}/recepciones", json={}).json()["recepcion"]
+    assert remaining["lineas"][0]["previously_received"] == 0.4
+    assert remaining["lineas"][0]["pending_quantity"] == 0.6
+    complete = client.post(f"/api/v1/compras/recepciones/{remaining['id']}/confirmar", json={
+        "confirmacion": "CONFIRMAR_RECEPCION", "actualizado_en": remaining["actualizado_en"], "lineas": remaining["lineas"],
+    }).json()
+    assert complete["pedido"]["estado"] == "recibido"
+    assert [row["cantidad"] for row in json.loads(stock_path.read_text(encoding="utf-8"))] == [0.4, 0.6]
+
+
+def test_pedido_manual_multilinea_reutiliza_defaults_canonicos(tmp_path: Path) -> None:
+    motor = MotorCompras(BaseDatosLocal(tmp_path)); provider = motor.crear_proveedor_manual("Proveedor A")
+    (tmp_path / "DATOS/db/articulos.json").write_text(json.dumps([
+        {"codigo": "ART-A", "nombre": "A", "unidad": "kg", "precio": 3, "catalogo_maestro": {"unidad_compra": "u", "unidad_base": "kg"}},
+        {"codigo": "ART-B", "nombre": "B"},
+    ]), encoding="utf-8")
+    client = TestClient(create_app(platform_api=HostAIPlatformAPI(base_dir=tmp_path)))
+    result = client.post("/api/v1/compras/borradores", json={"proveedor_id": provider.id, "lineas": [
+        {"articulo_id": "ART-A", "cantidad": 2}, {"articulo_id": "ART-B", "cantidad": 3, "precio_unitario": 1},
+    ]}).json()["borrador"]
+    assert [(line["unidad"], line["precio_unitario"]) for line in result["lineas"]] == [("u", 3), ("kg", 1)]
+    assert result["importe_estimado"] == 9

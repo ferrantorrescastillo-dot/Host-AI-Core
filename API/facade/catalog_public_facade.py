@@ -175,6 +175,9 @@ class CatalogPublicFacade(CorePublicApi02Facade):
     def borrador_compra(self, pedido_id: str) -> dict[str, Any]:
         return {**self._base_payload(), **self._get_compras_drafts_service().obtener(pedido_id)}
 
+    def crear_borrador_compra_manual(self, body: dict[str, Any]) -> dict[str, Any]:
+        return {**self._base_payload(), **self._get_compras_drafts_service().crear_manual(body)}
+
     def actualizar_borrador_compra(self, pedido_id: str, body: dict[str, Any]) -> dict[str, Any]:
         return {**self._base_payload(), **self._get_compras_drafts_service().actualizar(pedido_id, body)}
 

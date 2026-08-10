@@ -13,6 +13,8 @@ import type {
 import { ErrorState } from "../components/ErrorState";
 import { LoadingState } from "../components/LoadingState";
 import type { CompraDraft, CompraDraftLine, CompraDraftRevision, PurchaseReception, ReceptionLine } from "../../types/compras";
+import { articulosService } from "../../services/articulosService";
+import type { ArticuloResumen } from "../../types/articulos";
 
 export function ComprasPage() {
   const [loading, setLoading] = useState(true);
@@ -159,12 +161,34 @@ function ComprasContent({ data, onSaved }: { data: ComprasResult | null; onSaved
       </section>
 
       <PropuestasSection items={propuestas} />
+      <ManualOrderSection providers={proveedores} onSaved={onSaved} />
       <DraftsSection items={pedidos} onSaved={onSaved} />
       <RecepcionesSection items={pedidos} onSaved={onSaved} />
       <ProveedoresSection items={proveedores} />
       <HistorialSection items={historial} />
     </>
   );
+}
+
+function ManualOrderSection({ providers, onSaved }: { providers: ProveedorCompraListItem[]; onSaved: () => void }) {
+  const [open, setOpen] = useState(false);
+  const [providerQuery, setProviderQuery] = useState("");
+  const [provider, setProvider] = useState<ProveedorCompraListItem | null>(null);
+  const [articleQuery, setArticleQuery] = useState("");
+  const [articles, setArticles] = useState<ArticuloResumen[]>([]);
+  const [lines, setLines] = useState<CompraDraftLine[]>([]);
+  const [fecha, setFecha] = useState(() => new Date().toISOString().slice(0, 10));
+  const [referencia, setReferencia] = useState("");
+  const [observaciones, setObservaciones] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState("");
+  const matchingProviders = providers.filter((item) => (item.nombre || "").toLocaleLowerCase("es").includes(providerQuery.toLocaleLowerCase("es")));
+  const searchArticles = async () => { setBusy(true); setMessage(""); try { const response = await articulosService.list({ q: articleQuery, page_size: 20 }); setArticles(response.catalogo.items); } catch (error) { setMessage(error instanceof Error ? error.message : "No se pudo buscar en Artículos."); } finally { setBusy(false); } };
+  const addArticle = async (item: ArticuloResumen) => { if (!provider) return; setBusy(true); try { const detail = (await articulosService.get(item.id)).articulo; const relation = detail.proveedores.find((row) => row.id === provider.id || row.nombre?.toLocaleLowerCase("es") === provider.nombre?.toLocaleLowerCase("es")); setLines((current) => [...current, { articulo_id: item.id, nombre: detail.nombre, cantidad: 1, unidad: detail.unidad_compra || detail.unidad_base || "kg", precio_unitario: relation?.precio ?? detail.precio ?? 0, observaciones: "" }]); setArticles([]); setArticleQuery(""); } catch (error) { setMessage(error instanceof Error ? error.message : "No se pudo seleccionar el artículo."); } finally { setBusy(false); } };
+  const changeLine = (index: number, field: keyof CompraDraftLine, value: string) => setLines((current) => current.map((line, position) => position === index ? { ...line, [field]: field === "cantidad" || field === "precio_unitario" ? Number(value || 0) : value } : line));
+  const total = lines.reduce((sum, line) => sum + line.cantidad * line.precio_unitario, 0);
+  const save = async () => { if (!provider) { setMessage("Selecciona un proveedor real."); return; } setBusy(true); setMessage(""); try { const response = await comprasService.createManualDraft({ proveedor: provider.nombre || "", proveedor_id: provider.id, fecha, referencia, observaciones, lineas: lines }); setMessage(`Borrador ${response.borrador.id} guardado. Stock sin cambios. Ábrelo en Borradores y pedidos para revisarlo y confirmarlo.`); setOpen(false); setLines([]); onSaved(); } catch (error) { setMessage(error instanceof Error ? error.message : "No se pudo guardar el pedido."); } finally { setBusy(false); } };
+  return <section className="feature-block" aria-label="Nuevo pedido manual"><button type="button" onClick={() => setOpen((value) => !value)}>Nuevo pedido</button>{message ? <p role="status">{message}</p> : null}{open ? <div className="menu-editor"><h3>Nuevo pedido</h3><label>Buscar proveedor<input value={providerQuery} onChange={(event) => setProviderQuery(event.target.value)} /></label><ul>{matchingProviders.map((item) => <li key={item.id || item.nombre}><button type="button" onClick={() => setProvider(item)}>{item.nombre}</button></li>)}</ul><p>Proveedor seleccionado: <strong>{provider?.nombre || "Ninguno"}</strong></p><label>Fecha<input type="date" value={fecha} onChange={(event) => setFecha(event.target.value)} /></label><label>Referencia<input value={referencia} onChange={(event) => setReferencia(event.target.value)} /></label><label>Observaciones<input value={observaciones} onChange={(event) => setObservaciones(event.target.value)} /></label><h4>Artículos</h4><label>Buscar artículo<input value={articleQuery} onChange={(event) => setArticleQuery(event.target.value)} /></label><button type="button" disabled={busy || !provider || !articleQuery.trim()} onClick={() => void searchArticles()}>Añadir artículo</button><ul>{articles.map((item) => <li key={item.id}><button type="button" onClick={() => void addArticle(item)}>{item.nombre} · {item.codigo}</button></li>)}</ul>{lines.map((line, index) => <fieldset key={`${line.articulo_id}-${index}`}><legend>{line.nombre}</legend><p>article_id: {line.articulo_id}</p><label>Cantidad<input aria-label={`Cantidad manual ${index + 1}`} type="number" min="0.001" step="any" value={line.cantidad} onChange={(event) => changeLine(index, "cantidad", event.target.value)} /></label><label>Unidad<input aria-label={`Unidad manual ${index + 1}`} value={line.unidad} onChange={(event) => changeLine(index, "unidad", event.target.value)} /></label><label>Precio unitario<input aria-label={`Precio manual ${index + 1}`} type="number" min="0" step="any" value={line.precio_unitario} onChange={(event) => changeLine(index, "precio_unitario", event.target.value)} /></label><label>Observaciones de línea<input value={line.observaciones || ""} onChange={(event) => changeLine(index, "observaciones", event.target.value)} /></label><p>Subtotal: {money(line.cantidad * line.precio_unitario)}</p><button type="button" onClick={() => setLines((current) => current.filter((_, position) => position !== index))}>Eliminar línea</button></fieldset>)}<p><strong>Total pedido: {money(total)}</strong></p><button type="button" disabled={busy || !provider || !lines.length} onClick={() => void save()}>Guardar borrador</button><p className="meta-line">Guardar el borrador no modifica Stock.</p></div> : null}</section>;
 }
 
 function DraftsSection({ items, onSaved }: { items: ComprasResult["pedidos"]; onSaved: () => void }) {

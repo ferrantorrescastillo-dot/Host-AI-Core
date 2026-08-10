@@ -119,6 +119,9 @@ export const hostAiApiClient = {
   getCompraDraft(id: string): Promise<CompraDraftResponse> {
     return request<CompraDraftResponse>(`/api/v1/compras/borradores/${encodeURIComponent(id)}`, { method: "GET" });
   },
+  createManualCompraDraft(input: CompraDraftInput): Promise<CompraDraftResponse> {
+    return request<CompraDraftResponse>("/api/v1/compras/borradores", { method: "POST", body: JSON.stringify(input) });
+  },
 
   updateCompraDraft(id: string, input: CompraDraftInput): Promise<CompraDraftResponse> {
     return request<CompraDraftResponse>(`/api/v1/compras/borradores/${encodeURIComponent(id)}`, { method: "PATCH", body: JSON.stringify(input) });

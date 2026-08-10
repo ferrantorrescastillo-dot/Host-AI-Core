@@ -332,6 +332,7 @@ class MotorCompras:
             preparados.append(PedidoSugerido(
                 proveedor=proveedor, lineas=lineas, estado="borrador",
                 observaciones=str(grupo.get("observaciones") or ""),
+                fecha=str(grupo.get("fecha") or ""), referencia=str(grupo.get("referencia") or ""),
                 origen_tipo=str(grupo.get("origen_tipo") or ""),
                 origen_id=str(grupo.get("origen_id") or ""),
                 origen_version=int(grupo.get("origen_version") or 0),
@@ -441,6 +442,8 @@ class MotorCompras:
         try:
             pedido.proveedor = proveedor
             pedido.observaciones = str(datos.get("observaciones") or "").strip()
+            pedido.fecha = str(datos.get("fecha") or pedido.fecha or "").strip()
+            pedido.referencia = str(datos.get("referencia") or pedido.referencia or "").strip()
             pedido.lineas = nuevas_lineas
             pedido.tocar("borrador_editado", "Borrador actualizado desde Compras.")
             if self.db:

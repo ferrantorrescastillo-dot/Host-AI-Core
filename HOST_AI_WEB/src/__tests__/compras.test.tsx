@@ -233,4 +233,35 @@ describe("Compras", () => {
     expect(screen.getByRole("link", { name: "Ver pedido" })).toHaveAttribute("href", "#pedido-PED-2");
     expect(window.confirm).toHaveBeenCalledWith(expect.stringContaining("Proveedor A con 1 líneas"));
   });
+
+  it("crea un pedido manual buscando proveedor y artículo, calcula total y lo deja recepcionable", async () => {
+    const provider = { id: "PROV-PAU", nombre: "PAU GAVALDA", estado: "activo" };
+    const line = { id: "LIN-MANUAL", articulo_id: "ART-PATATA", nombre: "Patata Monalisa", cantidad: 1, unidad: "kg", precio_unitario: 2, observaciones: "" };
+    const draft = { id: "PED-MANUAL", proveedor: provider.nombre, estado: "borrador", fecha: "2026-08-10", referencia: "REF-1", observaciones: "", lineas: [line], importe_estimado: 2, creado_en: "2026-08-10T10:00:00", actualizado_en: "2026-08-10T10:00:00", origen: { tipo: "manual", id: "compras", version: 1, propuesta_id: "" } };
+    let orderState: "none" | "draft" | "prepared" = "none";
+    const fetchMock = vi.spyOn(global, "fetch").mockImplementation(async (input, init) => {
+      const url = String(input);
+      if (url.endsWith("/api/v1/dashboard")) return { ok: true, json: async () => payload([], { proveedores: [provider], pedidos: orderState === "none" ? [] : [{ ...draft, estado: orderState === "draft" ? "borrador" : "preparado" }] }) } as Response;
+      if (url.includes("/api/v1/articulos?") && init?.method === "GET") return { ok: true, json: async () => ({ ...payload([]), catalogo: { items: [{ id: "ART-PATATA", codigo: "ART-PATATA", nombre: "Patata Monalisa", precio: 2, unidad: "kg", estado: "activo", con_stock: false, tiene_ficha_tecnica: false }], total: 1, page: 1, page_size: 20, total_pages: 1, filtros: { familias: [], proveedores: [], estados: [] }, capacidades: {} } }) } as Response;
+      if (url.endsWith("/api/v1/articulos/ART-PATATA")) return { ok: true, json: async () => ({ ...payload([]), articulo: { id: "ART-PATATA", codigo: "ART-PATATA", nombre: "Patata Monalisa", unidad_compra: "kg", unidad_base: "kg", precio: 2, proveedores: [{ id: provider.id, nombre: provider.nombre, preferente: true, precio: 2, unidad: "kg" }] } }) } as Response;
+      if (url.endsWith("/api/v1/compras/borradores") && init?.method === "POST") { orderState = "draft"; return { ok: true, json: async () => ({ ...payload([]), borrador: draft, revision: { valido: true, errores_bloqueantes: [], advertencias: [] }, stock_modificado: false }) } as Response; }
+      if (url.endsWith(`/borradores/${draft.id}/confirmar`)) { orderState = "prepared"; return { ok: true, json: async () => ({ ...payload([]), pedido: { ...draft, estado: "preparado" }, borrador: { ...draft, estado: "preparado" }, idempotente: false, advertencias: [], stock_modificado: false, inventario_modificado: false, recepciones_creadas: 0 }) } as Response; }
+      if (url.endsWith(`/borradores/${draft.id}`)) return { ok: true, json: async () => ({ ...payload([]), borrador: draft, revision: { valido: true, errores_bloqueantes: [], advertencias: [] } }) } as Response;
+      throw new Error(`URL inesperada ${url}`);
+    });
+    vi.spyOn(window, "confirm").mockReturnValue(true);
+    renderPage();
+    await userEvent.click(await screen.findByRole("button", { name: "Nuevo pedido" }));
+    await userEvent.type(screen.getByLabelText("Buscar proveedor"), "PAU");
+    await userEvent.click(screen.getByRole("button", { name: provider.nombre }));
+    await userEvent.type(screen.getByLabelText("Buscar artículo"), "Patata");
+    await userEvent.click(screen.getByRole("button", { name: "Añadir artículo" }));
+    await userEvent.click(await screen.findByRole("button", { name: /Patata Monalisa · ART-PATATA/ }));
+    expect(await screen.findByText("Total pedido: 2,00 €")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Guardar borrador" }));
+    await userEvent.click(await screen.findByRole("button", { name: "Abrir borrador" }));
+    await userEvent.click(screen.getByRole("button", { name: "Confirmar y crear pedido" }));
+    expect(await screen.findByRole("button", { name: `Registrar recepción de ${draft.id}` })).toBeInTheDocument();
+    expect(fetchMock.mock.calls.some(([url]) => String(url).includes("stock"))).toBe(false);
+  });
 });
