@@ -287,6 +287,7 @@ class MenuProduccionService:
             "estado": item.get("estado"), "coste_estimado": item.get("coste_estimado"),
             "cantidad_necesaria": item.get("cantidad_necesaria") or 0,
             "stock_disponible": item.get("stock_disponible"), "estado_stock": item.get("estado_stock"),
+            "inventario_incompatible": list(item.get("inventario_incompatible") or []),
             "origenes": list(item.get("origenes") or []),
         } for item in config.get("ingredientes_agrupados") or [item for task in data["tareas"] for item in task["ingredientes"]]]
         blockers = config.get("errores_bloqueantes") or []

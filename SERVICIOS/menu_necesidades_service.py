@@ -366,6 +366,7 @@ class MenuNecesidadesService:
             "precio_estimado": self._number(product.get("precio")), "fecha_precio": product.get("fecha_precio") or None,
             "motivo_no_resuelto": None, "_stock_known": stock_known,
             "_conversion_pending": conversion_pending,
+            "inventario_incompatible": list(item.get("inventario_incompatible") or []),
         }
 
     def _finish(self, line: dict[str, Any]) -> None:

@@ -10,6 +10,7 @@ from typing import Any, Dict, List, Optional
 from MOTORES.motor_stock import MotorStock
 from SERVICIOS.base_datos_local import BaseDatosLocal
 from SERVICIOS.escalador_explosion_recetas_556ab import MotorEscaladoExplosion556AB
+from SERVICIOS.repositorio_productos_maestro_601 import RepositorioProductosMaestro601
 
 
 def _norm(value: Any) -> str:
@@ -91,8 +92,9 @@ class CruceStockProduccion556C:
         self.db_dir = self.base_dir / "DATOS" / "db"
         self.motor = MotorEscaladoExplosion556AB(self.base_dir)
         self.stock_motor = stock_motor or MotorStock(BaseDatosLocal(self.base_dir))
+        self.productos = RepositorioProductosMaestro601(self.base_dir)
         self.stock: List[Dict[str, Any]] = []
-        self.articulos = _load_list(self.db_dir / "articulos.json")
+        self.articulos = self.productos.listar_productos()
 
         self.stock_por_id: Dict[str, Dict[str, Any]] = {}
         self.stock_por_nombre: Dict[str, Dict[str, Any]] = {}
@@ -101,6 +103,9 @@ class CruceStockProduccion556C:
 
     def _refrescar_stock(self) -> None:
         """Lee el mismo agregado canónico que expone la página de Stock."""
+        self.articulos = self.productos.listar_productos()
+        self.articulos_por_id = {_codigo(x).casefold(): x for x in self.articulos if _codigo(x)}
+        self.articulos_por_nombre = {_norm(_nombre(x)): x for x in self.articulos if _nombre(x)}
         self.stock = list(self.stock_motor.stock_actual().get("items") or [])
         self.stock_por_id = {_codigo(x).casefold(): x for x in self.stock if _codigo(x)}
         self.stock_por_nombre = {_norm(_nombre(x)): x for x in self.stock if _nombre(x)}
@@ -162,6 +167,32 @@ class CruceStockProduccion556C:
     def _stock_actual(self, fila: Dict[str, Any]) -> tuple[float, str, Optional[Dict[str, Any]]]:
         return max(_float(fila.get("cantidad")), 0.0), "MotorStock.stock_actual", None
 
+    def _stock_compatible(self, articulo: Dict[str, Any], articulo_id: Optional[str], nombre: str,
+                          unidad_requerida: str) -> tuple[Optional[Dict[str, Any]], list[Dict[str, Any]]]:
+        """Separa lotes compatibles sin sumar unidades físicas distintas por article_id."""
+        stable_ids = {str(value).casefold() for value in (articulo_id, _codigo(articulo)) if value}
+        normalized_names = {_norm(value) for value in (_nombre(articulo), nombre) if _norm(value)}
+        candidates = []
+        for lot in self.stock_motor.lotes.values():
+            same_id = bool(stable_ids) and str(lot.articulo_id or "").casefold() in stable_ids
+            same_name = not stable_ids and _norm(lot.nombre) in normalized_names
+            if lot.cantidad >= 0 and (same_id or same_name):
+                candidates.append(lot.to_dict())
+        compatible, incompatible = [], []
+        for lot in candidates:
+            converted = _convertir(_float(lot.get("cantidad")), str(lot.get("unidad") or ""), unidad_requerida)
+            (compatible if converted is not None else incompatible).append({**lot, "cantidad_convertida": converted})
+        if not compatible:
+            return None, incompatible
+        first = compatible[0]
+        return {
+            "articulo_id": _codigo(articulo) or articulo_id or "", "nombre": _nombre(articulo) or nombre,
+            "cantidad": round(sum(float(lot["cantidad_convertida"]) for lot in compatible), 4),
+            "unidad": unidad_requerida, "familia": articulo.get("familia") or "",
+            "ubicacion": first.get("ubicacion") or "", "proveedor": first.get("proveedor") or articulo.get("proveedor") or "",
+            "lotes": compatible,
+        }, incompatible
+
     def cruzar(self, termino: str, objetivo: float, unidad_objetivo: str = "personas") -> Dict[str, Any]:
         self._refrescar_stock()
         explosion = self.motor.explotar(termino, objetivo, unidad_objetivo)
@@ -174,9 +205,9 @@ class CruceStockProduccion556C:
             nombre_ing = str(ing.get("nombre") or "Ingrediente")
             articulo_id_ing = ing.get("articulo_id")
             articulo, metodo_art, confianza_art = self._resolver_articulo(articulo_id_ing, nombre_ing)
-            fila, metodo_stock = self._resolver_stock(articulo, articulo_id_ing, nombre_ing)
             requerido = _float(ing.get("cantidad"))
             unidad_req = _canon_unidad(ing.get("unidad") or "u")
+            fila, metodo_stock = self._resolver_stock(articulo, articulo_id_ing, nombre_ing)
 
             base = {
                 "nombre": nombre_ing,
@@ -200,6 +231,30 @@ class CruceStockProduccion556C:
                 incidencias += 1
                 sin_articulo += 1
                 continue
+
+            unidad_articulo = _canon_unidad(
+                articulo.get("unidad_base") or (articulo.get("catalogo_maestro") or {}).get("unidad_base")
+                or articulo.get("unidad") or ""
+            )
+            if _convertir(1.0, unidad_articulo, unidad_req) is None:
+                disponible_stock, unidad_stock = (self._stock_actual(fila)[0], _canon_unidad(fila.get("unidad") or unidad_articulo)) if fila else (0.0, unidad_articulo)
+                base.update({
+                    "disponible": round(disponible_stock, 4), "unidad_stock": unidad_stock,
+                    "faltante": round(requerido, 4), "restante": 0.0,
+                    "estado": "UNIDAD_INCOMPATIBLE", "stock_localizado": fila is not None,
+                    "proveedor": (fila or {}).get("proveedor") or articulo.get("proveedor"),
+                    "ubicacion": (fila or {}).get("ubicacion"),
+                })
+                lineas.append(base)
+                incidencias += 1
+                continue
+
+            fila, lotes_incompatibles = self._stock_compatible(articulo, articulo_id_ing, nombre_ing, unidad_req)
+            metodo_stock = "STOCK_ID_EXACTO_COMPATIBLE" if fila else "SIN_REGISTRO_INVENTARIO_COMPATIBLE"
+            if lotes_incompatibles:
+                base["inventario_incompatible"] = [{
+                    "lote_id": lot.get("id"), "cantidad": lot.get("cantidad"), "unidad": lot.get("unidad"),
+                } for lot in lotes_incompatibles]
 
             if fila is None:
                 base.update({

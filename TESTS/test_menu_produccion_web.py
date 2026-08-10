@@ -81,7 +81,8 @@ def test_stock_canonico_distingue_cero_desconocido_unidad_e_identidad(tmp_path: 
     incompatible = service.obtener(next(iter(core.produccion_real.planes)))["plan"]["ingredientes"][0]
     assert incompatible["stock_disponible"] is None
     assert incompatible["faltante"] is None
-    assert incompatible["estado_stock"] == "UNIDAD_INCOMPATIBLE"
+    assert incompatible["estado_stock"] == "ARTICULO_SIN_INVENTARIO"
+    assert incompatible["inventario_incompatible"] == [{"lote_id": "LOTE-PATATA", "cantidad": 8, "unidad": "u"}]
 
 
 def test_genera_plan_escalado_agrupado_y_no_modifica_stock(tmp_path: Path) -> None:
@@ -277,6 +278,41 @@ def test_unidad_l_y_necesidad_kg_sin_conversion_permanece_pendiente(tmp_path: Pa
     assert row["unidad_base"] == "l" and row["unidad"] == "kg"
     assert row["disponible"] is None and row["faltante"] is None
     assert row["estado_resolucion"] == "CONVERSION_PENDIENTE"
+
+    updated = client.patch("/api/v1/articulos/ART-PATATA", json={
+        "confirmacion": "ACTUALIZAR_ARTICULO_MAESTRO", "nombre": "Patata", "unidad_base": "kg",
+    })
+    assert updated.status_code == 200
+    refreshed = client.get(f"/api/v1/produccion/planes/{plan['id']}/stock-resolution").json()["revision_stock"]["ingredientes"][0]
+    assert refreshed["unidad_base"] == "kg" and refreshed["unidad"] == "kg"
+    assert refreshed["estado_resolucion"] == "STOCK_DESCONOCIDO"
+    assert refreshed["disponible"] is None and refreshed["faltante"] is None
+    assert refreshed["inventario_incompatible"] == [{"lote_id": "LOTE-L", "cantidad": 2, "unidad": "l"}]
+
+
+def test_refresco_usa_stock_compatible_actual_y_calcula_faltante(tmp_path: Path) -> None:
+    _core, menu_id = _seed(tmp_path, stock=0)
+    recipes_path = tmp_path / "DATOS/db/escandallos_canonicos.json"
+    recipes = json.loads(recipes_path.read_text(encoding="utf-8"))
+    recipes["escandallos"][0]["receta"]["ingredientes"][0]["cantidad"] = 0.0228
+    _write(recipes_path, recipes)
+    articles_path = tmp_path / "DATOS/db/articulos.json"
+    articles = json.loads(articles_path.read_text(encoding="utf-8")); articles[0]["unidad"] = "l"
+    _write(articles_path, articles)
+    _write(tmp_path / "DATOS/db/stock_lotes.json", [
+        {"id": "LOTE-OLD-L", "nombre": "Patata", "articulo_id": "ART-PATATA", "cantidad": 2, "unidad": "l"},
+        {"id": "LOTE-KG", "nombre": "Patata", "articulo_id": "ART-PATATA", "cantidad": 0.02, "unidad": "kg"},
+    ])
+    client = TestClient(create_app(HostAIPlatformAPI(base_dir=tmp_path)))
+    plan = client.post(f"/api/v1/menus/{menu_id}/plan-produccion", json={}).json()["plan"]
+    assert client.get(f"/api/v1/produccion/planes/{plan['id']}/stock-resolution").json()["revision_stock"]["ingredientes"][0]["estado_resolucion"] == "CONVERSION_PENDIENTE"
+    client.patch("/api/v1/articulos/ART-PATATA", json={
+        "confirmacion": "ACTUALIZAR_ARTICULO_MAESTRO", "nombre": "Patata", "unidad_base": "kg",
+    })
+    row = client.get(f"/api/v1/produccion/planes/{plan['id']}/stock-resolution").json()["revision_stock"]["ingredientes"][0]
+    assert row["cantidad"] == 0.057 and row["disponible"] == 0.02 and row["faltante"] == 0.037
+    assert row["estado_resolucion"] == "FALTANTE_CONOCIDO"
+    assert row["inventario_incompatible"] == [{"lote_id": "LOTE-OLD-L", "cantidad": 2, "unidad": "l"}]
 
 
 def test_subelaboraciones_detectan_ciclo_y_bloquean_plan(tmp_path: Path) -> None:

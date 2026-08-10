@@ -53,4 +53,18 @@ describe("resolución masiva de Stock", () => {
     expect(screen.getByText(/Conversión pendiente/)).toBeInTheDocument();
     expect(within(card).queryByRole("button", { name: "Registrar inventario" })).not.toBeInTheDocument();
   });
+  it("no conserva conversión pendiente cuando artículo y necesidad ya están en kg", async () => {
+    const recalculated = { ...review, resumen: { ...review.resumen, stock_desconocido: 1, conversion_pendiente: 0 }, ingredientes: [{
+      nombre: "Naranja de zumo", articulo_id: "ART000216", cantidad: .057, unidad: "kg", unidad_base: "kg",
+      unidad_base_sugerida: false, disponible: null, faltante: null, estado_resolucion: "STOCK_DESCONOCIDO",
+      inventario_incompatible: [{ lote_id: "LOTE-OLD", cantidad: 2, unidad: "l" }],
+    }] };
+    vi.stubGlobal("fetch", vi.fn(async () => ({ ok: true, json: async () => ({ ...envelope, revision_stock: recalculated }) })));
+    render(<MemoryRouter initialEntries={["/produccion/PLAN-1/stock"]}><Routes><Route path="/produccion/:planId/stock" element={<ProductionStockReviewPage/>}/></Routes></MemoryRouter>);
+    expect(await screen.findByText("STOCK_DESCONOCIDO")).toBeInTheDocument();
+    const matches = screen.getAllByText("Naranja de zumo");
+    const card = matches[matches.length - 1].closest("article") as HTMLElement;
+    expect(within(card).queryByText(/Conversión pendiente: la unidad confirmada/)).not.toBeInTheDocument();
+    expect(within(card).getByText(/inventario histórico en otra unidad.*2 l/i)).toBeInTheDocument();
+  });
 });
