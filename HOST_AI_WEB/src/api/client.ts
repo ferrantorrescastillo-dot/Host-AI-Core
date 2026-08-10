@@ -19,7 +19,7 @@ import type {
   MenusResponse,
 } from "../types/menus";
 import type { CompraConfirmationResponse, CompraDraftInput, CompraDraftResponse } from "../types/compras";
-import type { ProductionPlanResponse, ProductionProposalResponse } from "../types/produccion";
+import type { ProductionPlanResponse, ProductionProposalResponse, ProductionStockReviewResponse } from "../types/produccion";
 import type { StockMovementInput, StockMovementResponse } from "../types/stock";
 
 type Envelope = {
@@ -193,6 +193,12 @@ export const hostAiApiClient = {
   },
   createProductionPurchaseProposal(planId: string): Promise<ProductionProposalResponse> {
     return request<ProductionProposalResponse>(`/api/v1/produccion/planes/${encodeURIComponent(planId)}/propuesta-compra`, { method: "POST", body: "{}" });
+  },
+  getProductionStockReview(planId: string): Promise<ProductionStockReviewResponse> {
+    return request<ProductionStockReviewResponse>(`/api/v1/produccion/planes/${encodeURIComponent(planId)}/stock-resolution`, { method: "GET" });
+  },
+  linkProductionIngredient(planId: string, input: { elaboration_id: string; ingredient_name: string; article_id: string }): Promise<ProductionStockReviewResponse> {
+    return request<ProductionStockReviewResponse>(`/api/v1/produccion/planes/${encodeURIComponent(planId)}/stock-resolution/article`, { method: "POST", body: JSON.stringify({ ...input, confirmacion: "RELACIONAR_INGREDIENTE_ARTICULO" }) });
   },
   getBiblioteca(): Promise<BibliotecaResponse> {
     return request<BibliotecaResponse>("/api/v1/biblioteca", { method: "GET" });

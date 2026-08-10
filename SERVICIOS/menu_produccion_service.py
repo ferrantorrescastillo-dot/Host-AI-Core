@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from datetime import datetime
+import json
+from pathlib import Path
 from typing import Any
 
 from MODELOS.produccion_real import PlanProduccionReal, TareaProduccionReal
@@ -111,6 +113,59 @@ class MenuProduccionService:
             self.core.produccion_real._persistir()
         return {**result, "clasificacion": self._classification(projected["ingredientes"])}
 
+    def revisar_stock(self, plan_id: str) -> dict[str, Any]:
+        plan = self._project(self.core.produccion_real.obtener_plan(plan_id))
+        products = self.necesidades.productos
+        rows = []
+        for item in plan["ingredientes"]:
+            product = products.obtener_producto(str(item.get("articulo_id") or "")) or {}
+            state = self._resolution_state(item, product)
+            rows.append({**item, "ingrediente": item.get("nombre"),
+                "unidad_requerida": item.get("unidad"), "unidad_base": product.get("unidad_base") or product.get("unidad") or None,
+                "estado_resolucion": state})
+        summary = {"ingredientes_totales": len(rows)}
+        for key, state in (("cubiertos", "CUBIERTO"), ("faltantes_conocidos", "FALTANTE_CONOCIDO"),
+                           ("stock_desconocido", "STOCK_DESCONOCIDO"), ("sin_relacionar", "SIN_ARTICULO"),
+                           ("unidad_pendiente", "UNIDAD_PENDIENTE"), ("conversion_pendiente", "CONVERSION_PENDIENTE")):
+            summary[key] = sum(row["estado_resolucion"] == state for row in rows)
+        return {"ok": True, "revision_stock": {"production_plan_id": plan_id, "plan_nombre": plan.get("nombre"),
+            "menu_id": plan.get("menu_id"), "menu_version": plan.get("menu_version"), "event_id": plan.get("evento_id"),
+            "ingredientes": rows, "resumen": summary, "stock_modificado": False}}
+
+    def relacionar_articulo(self, plan_id: str, body: dict[str, Any]) -> dict[str, Any]:
+        if body.get("confirmacion") != "RELACIONAR_INGREDIENTE_ARTICULO":
+            return {"ok": False, "error": {"status": 400, "code": "confirmation_required", "message": "Confirma la relación del ingrediente."}}
+        article_id = str(body.get("article_id") or "").strip()
+        if not self.necesidades.productos.obtener_producto(article_id):
+            return {"ok": False, "error": {"status": 404, "code": "article_not_found", "message": "El artículo seleccionado no existe."}}
+        recipe_id, ingredient_name = str(body.get("elaboration_id") or "").strip(), str(body.get("ingredient_name") or "").strip()
+        path = Path(self.core.base_dir) / "DATOS" / "db" / "escandallos_canonicos.json"
+        try: data = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            return {"ok": False, "error": {"status": 500, "code": "recipes_unavailable", "message": "No se pudo leer el catálogo de recetas."}}
+        entries = data if isinstance(data, list) else data.get("escandallos", [])
+        changed = False
+        for entry in entries:
+            recipe = entry.get("receta") if isinstance(entry.get("receta"), dict) else entry
+            if str(recipe.get("codigo") or recipe.get("id") or "") != recipe_id: continue
+            for ingredient in recipe.get("ingredientes") or []:
+                if str(ingredient.get("nombre") or "").strip().casefold() == ingredient_name.casefold():
+                    ingredient["articulo_id"] = article_id; changed = True; break
+        if not changed:
+            return {"ok": False, "error": {"status": 404, "code": "ingredient_not_found", "message": "No se encontró el ingrediente en la elaboración de origen."}}
+        path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+        self.necesidades.stock.motor = type(self.necesidades.stock.motor)(self.core.base_dir)
+        return {**self.revisar_stock(plan_id), "datos_reales_modificados": True, "relacion_guardada": True}
+
+    @staticmethod
+    def _resolution_state(item: dict[str, Any], product: dict[str, Any]) -> str:
+        if not item.get("articulo_id"): return "SIN_ARTICULO"
+        if not (product.get("unidad_base") or product.get("unidad")): return "UNIDAD_PENDIENTE"
+        if item.get("estado_stock") == "UNIDAD_INCOMPATIBLE": return "CONVERSION_PENDIENTE"
+        if item.get("disponible") is None: return "STOCK_DESCONOCIDO"
+        if float(item.get("faltante") or 0) > 0: return "FALTANTE_CONOCIDO"
+        return "CUBIERTO"
+
     def _project(self, plan: PlanProduccionReal) -> dict[str, Any]:
         data = plan.to_dict()
         config = data.get("configuracion_planificacion") or {}
@@ -153,6 +208,7 @@ class MenuProduccionService:
             "estado": item.get("estado"), "coste_estimado": item.get("coste_estimado"),
             "cantidad_necesaria": item.get("cantidad_necesaria") or 0,
             "stock_disponible": item.get("stock_disponible"), "estado_stock": item.get("estado_stock"),
+            "origenes": list(item.get("origenes") or []),
         } for item in config.get("ingredientes_agrupados") or [item for task in data["tareas"] for item in task["ingredientes"]]]
         blockers = config.get("errores_bloqueantes") or []
         missing = sum(1 for x in ingredients if float(x.get("faltante") or 0) > 0)

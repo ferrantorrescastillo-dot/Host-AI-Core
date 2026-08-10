@@ -154,6 +154,12 @@ class CatalogPublicFacade(CorePublicApi02Facade):
     def crear_propuesta_compra_produccion(self, plan_id: str) -> dict[str, Any]:
         return {**self._base_payload(), **self._get_menu_production_service().crear_propuesta_compra(plan_id)}
 
+    def revision_stock_produccion(self, plan_id: str) -> dict[str, Any]:
+        return {**self._base_payload(), **self._get_menu_production_service().revisar_stock(plan_id)}
+
+    def relacionar_articulo_produccion(self, plan_id: str, body: dict[str, Any]) -> dict[str, Any]:
+        return {**self._base_payload(), **self._get_menu_production_service().relacionar_articulo(plan_id, body)}
+
     def _get_compras_drafts_service(self) -> ComprasBorradoresService:
         if self._compras_drafts_service is None:
             self._compras_drafts_service = ComprasBorradoresService(self._get_core().compras, self.base_dir)

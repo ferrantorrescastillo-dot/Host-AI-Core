@@ -122,7 +122,7 @@ describe("Producción", () => {
     expect(await screen.findByText(/Faltan 1,5 kg/)).toBeInTheDocument();
     await userEvent.click(last(screen.getAllByRole("button", { name: "Ver dependencias" })));
     expect(await screen.findByText(/Fondo: 3 l/)).toBeInTheDocument();
-    expect(last(screen.getAllByRole("link", { name: "Revisar stock" }))).toHaveAttribute("href", "/stock?production_plan_id=PLAN-1&return_to=produccion");
+    expect(last(screen.getAllByRole("link", { name: "Revisar stock" }))).toHaveAttribute("href", "/produccion/PLAN-1/stock");
     expect(last(screen.getAllByRole("link", { name: "Resolver artículos" }))).toHaveAttribute("href", "/articulos");
     expect(fetchMock.mock.calls.some(([url]) => String(url).endsWith("/confirmar"))).toBe(false);
     expect(screen.queryByText("Confirmar producción terminada")).not.toBeInTheDocument();

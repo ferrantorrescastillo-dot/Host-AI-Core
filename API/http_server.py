@@ -225,6 +225,14 @@ def create_app(platform_api: HostAIPlatformAPI | None = None) -> FastAPI:
     async def post_propuesta_compra_produccion(plan_id: str, request: Request) -> JSONResponse:
         return await _delegate(request, body=await _json_body(request))
 
+    @app.get("/api/v1/produccion/planes/{plan_id}/stock-resolution")
+    async def get_revision_stock_produccion(plan_id: str, request: Request) -> JSONResponse:
+        return await _delegate(request)
+
+    @app.post("/api/v1/produccion/planes/{plan_id}/stock-resolution/article")
+    async def post_relacion_articulo_produccion(plan_id: str, request: Request) -> JSONResponse:
+        return await _delegate(request, body=await _json_body(request))
+
     @app.get("/api/v1/compras/borradores/{pedido_id}")
     async def get_compras_borrador(pedido_id: str, request: Request) -> JSONResponse:
         return await _delegate(request)

@@ -7,6 +7,7 @@ import { HomePage } from "./pages/HomePage";
 import { EventosPage } from "./pages/EventosPage";
 import { ComprasPage } from "./pages/ComprasPage";
 import { ProduccionPage } from "./pages/ProduccionPage";
+import { ProductionStockReviewPage } from "./pages/ProductionStockReviewPage";
 import { StockPage } from "./pages/StockPage";
 import { NotFoundPage } from "./pages/NotFoundPage";
 import { PlaceholderPage } from "./pages/PlaceholderPage";
@@ -29,6 +30,7 @@ export function App() {
         <Route path="/chat" element={<ChatPage />} />
         <Route path="/eventos" element={<EventosPage />} />
         <Route path="/produccion" element={<ProduccionPage />} />
+        <Route path="/produccion/:planId/stock" element={<ProductionStockReviewPage />} />
         <Route path="/compras" element={<ComprasPage />} />
         <Route path="/stock" element={<StockPage />} />
         <Route path="/menus" element={<MenusPage />} />

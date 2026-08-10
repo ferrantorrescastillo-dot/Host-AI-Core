@@ -1,0 +1,40 @@
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { articulosService } from "../../services/articulosService";
+import { produccionService } from "../../services/produccionService";
+import { stockService } from "../../services/stockService";
+import type { ArticuloResumen } from "../../types/articulos";
+import type { ProductionIngredient, ProductionStockReview } from "../../types/produccion";
+
+const filters: Record<string, string | undefined> = { Todos: undefined, Pendientes: "PENDIENTE", "Stock desconocido": "STOCK_DESCONOCIDO", Faltantes: "FALTANTE_CONOCIDO", "Sin relacionar": "SIN_ARTICULO", "Unidad pendiente": "UNIDAD_PENDIENTE", Cubiertos: "CUBIERTO" };
+
+export function ProductionStockReviewPage() {
+  const { planId = "" } = useParams(); const [review, setReview] = useState<ProductionStockReview>(); const [error, setError] = useState(""); const [filter, setFilter] = useState("Todos"); const [query, setQuery] = useState("");
+  const refresh = async () => { try { setReview((await produccionService.getStockReview(planId)).revision_stock); setError(""); } catch (e) { setError((e as Error).message); } };
+  useEffect(() => { void refresh(); }, [planId]);
+  if (error) return <section className="panel"><h2>Revisar stock del plan</h2><p role="alert">{error}</p><button onClick={() => void refresh()}>Reintentar</button></section>;
+  if (!review) return <p>Cargando revisión de stock...</p>;
+  const wanted = filters[filter]; const rows = review.ingredientes.filter((x) => (!wanted || (wanted === "PENDIENTE" ? x.estado_resolucion !== "CUBIERTO" : x.estado_resolucion === wanted)) && `${x.nombre} ${x.articulo_id}`.toLowerCase().includes(query.toLowerCase()));
+  const r = review.resumen;
+  return <section className="panel"><header className="dashboard-header"><div><p className="eyebrow">Producción</p><h2>Revisar stock del plan</h2><p>{review.plan_nombre} · Menú {review.menu_id} · versión {review.menu_version}</p></div><Link to="/produccion">Volver a Producción</Link></header>
+    <section className="dashboard-grid" aria-label="Resumen de resolución"><Summary title="Ingredientes totales" value={r.ingredientes_totales}/><Summary title="Cubiertos" value={r.cubiertos}/><Summary title="Faltantes conocidos" value={r.faltantes_conocidos}/><Summary title="Stock desconocido" value={r.stock_desconocido}/><Summary title="Sin relacionar" value={r.sin_relacionar}/><Summary title="Unidad pendiente" value={r.unidad_pendiente}/></section>
+    <div className="menu-actions" aria-label="Filtros">{Object.keys(filters).map((x) => <button key={x} aria-pressed={filter === x} onClick={() => setFilter(x)}>{x}</button>)}<label>Buscar ingrediente o artículo<input value={query} onChange={(e) => setQuery(e.target.value)}/></label></div>
+    <div className="produccion-list">{rows.map((item, index) => <ResolutionCard key={`${item.articulo_id}-${item.nombre}-${index}`} item={item} planId={planId} refresh={refresh}/>)}</div>
+    <button disabled={!r.faltantes_conocidos} onClick={async () => { try { await produccionService.createPurchaseProposal(planId); await refresh(); } catch (e) { setError((e as Error).message); } }}>Generar propuesta de compra</button>
+  </section>;
+}
+
+function ResolutionCard({ item, planId, refresh }: { item: ProductionIngredient; planId: string; refresh: () => Promise<void> }) {
+  const [search, setSearch] = useState(item.nombre); const [articles, setArticles] = useState<ArticuloResumen[]>([]); const [quantity, setQuantity] = useState(""); const [type, setType] = useState<"INVENTARIO_INICIAL"|"AJUSTE_POSITIVO"|"AJUSTE_NEGATIVO">("INVENTARIO_INICIAL"); const [unit, setUnit] = useState(item.unidad_base || ""); const [location, setLocation] = useState(""); const [lot, setLot] = useState(""); const [expiry, setExpiry] = useState(""); const [notes, setNotes] = useState(""); const [message, setMessage] = useState("");
+  const find = async () => setArticles((await articulosService.list({ q: search, page_size: 20 })).catalogo.items);
+  const link = async (article: ArticuloResumen) => { await produccionService.linkIngredient(planId, { elaboration_id: item.origenes?.[0]?.elaboracion_id || "", ingredient_name: item.nombre, article_id: article.id }); await refresh(); };
+  const saveUnit = async () => { const detail = (await articulosService.get(item.articulo_id)).articulo; await articulosService.update(item.articulo_id, { nombre: detail.nombre, unidad_base: unit }); await refresh(); };
+  const saveStock = async () => { const response = await stockService.createMovement({ article_id: item.articulo_id, tipo: type, cantidad: Number(quantity), unidad: item.unidad_base || "", ubicacion: location, lote: lot, caducidad: expiry, observaciones: notes, production_plan_id: planId, return_to: `/produccion/${planId}/stock` }); setMessage(response.mensaje); await refresh(); };
+  return <article className="produccion-card"><h3>{item.nombre}</h3><p>Artículo: {item.articulo_id || "Sin relacionar"}</p><p>Necesario: {amount(item.cantidad, item.unidad)}</p><p>Unidad base: {item.unidad_base || "Pendiente"}</p><p>Stock: {item.disponible === null ? "Desconocido" : amount(item.disponible, item.unidad)}</p><p>Faltante: {item.faltante === null ? "No calculado" : amount(item.faltante, item.unidad)}</p><strong>{item.estado_resolucion}</strong>
+    {item.estado_resolucion === "SIN_ARTICULO" ? <div><label>Buscar artículo<input value={search} onChange={(e) => setSearch(e.target.value)}/></label><button onClick={() => void find()}>Buscar</button>{articles.map((a) => <button key={a.id} onClick={() => void link(a)}>{a.nombre} · {a.codigo}</button>)}</div> : null}
+    {item.estado_resolucion === "UNIDAD_PENDIENTE" ? <div><label>Unidad base<select value={unit} onChange={(e) => setUnit(e.target.value)}><option value="">Seleccionar</option>{["kg","g","l","ml","u"].map((u) => <option key={u}>{u}</option>)}</select></label><button disabled={!unit} onClick={() => void saveUnit()}>Completar artículo</button></div> : null}
+    {item.estado_resolucion === "STOCK_DESCONOCIDO" ? <div><label>Tipo<select value={type} onChange={(e) => setType(e.target.value as typeof type)}><option value="INVENTARIO_INICIAL">Inventario inicial</option><option value="AJUSTE_POSITIVO">Ajuste positivo</option><option value="AJUSTE_NEGATIVO">Ajuste negativo</option></select></label><label>Cantidad<input type="number" value={quantity} onChange={(e) => setQuantity(e.target.value)}/></label><label>Unidad<input readOnly value={item.unidad_base || ""}/></label><label>Ubicación opcional<input value={location} onChange={(e) => setLocation(e.target.value)}/></label><label>Lote opcional<input value={lot} onChange={(e) => setLot(e.target.value)}/></label><label>Caducidad opcional<input type="date" value={expiry} onChange={(e) => setExpiry(e.target.value)}/></label><label>Observaciones opcionales<textarea value={notes} onChange={(e) => setNotes(e.target.value)}/></label><button disabled={!quantity} onClick={() => void saveStock()}>Registrar inventario</button></div> : null}{message ? <p role="status">{message}</p> : null}
+  </article>;
+}
+function Summary({title,value}:{title:string;value:number}) { return <article className="data-card"><h3>{title}</h3><p className="stat-value">{value}</p></article>; }
+function amount(value:number|null, unit:string) { return value === null ? "Desconocido" : `${new Intl.NumberFormat("es-ES").format(value)} ${unit}`; }

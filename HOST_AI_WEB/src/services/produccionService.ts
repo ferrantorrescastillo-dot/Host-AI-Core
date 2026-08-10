@@ -37,4 +37,6 @@ export const produccionService = {
   },
   getPlan: (planId: string) => hostAiApiClient.getProductionPlan(planId),
   createPurchaseProposal: (planId: string) => hostAiApiClient.createProductionPurchaseProposal(planId),
+  getStockReview: (planId: string) => hostAiApiClient.getProductionStockReview(planId),
+  linkIngredient: (planId: string, input: { elaboration_id: string; ingredient_name: string; article_id: string }) => hostAiApiClient.linkProductionIngredient(planId, input),
 };
