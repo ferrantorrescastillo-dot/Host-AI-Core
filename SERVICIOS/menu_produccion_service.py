@@ -122,7 +122,8 @@ class MenuProduccionService:
             state = self._resolution_state(item, product)
             rows.append({**item, "ingrediente": item.get("nombre"),
                 "unidad_requerida": item.get("unidad"), "unidad_base": product.get("unidad_base") or product.get("unidad") or None,
-                "estado_resolucion": state})
+                "unidad_base_sugerida": bool(product.get("unidad_base_sugerida")),
+                "estado_unidad_base": product.get("estado_unidad_base") or "CONFIRMADA", "estado_resolucion": state})
         summary = {"ingredientes_totales": len(rows)}
         for key, state in (("cubiertos", "CUBIERTO"), ("faltantes_conocidos", "FALTANTE_CONOCIDO"),
                            ("stock_desconocido", "STOCK_DESCONOCIDO"), ("sin_relacionar", "SIN_ARTICULO"),

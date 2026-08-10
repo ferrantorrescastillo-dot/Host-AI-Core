@@ -127,7 +127,10 @@ class RepositorioProductosMaestro601:
         out["referencia_proveedor"] = str(meta.get("referencia_proveedor") or "")
         out["unidad_compra"] = str(meta.get("unidad_compra") or out.get("unidad") or "")
         out["cantidad_formato"] = str(meta.get("cantidad_formato") or "")
-        out["unidad_base"] = str(meta.get("unidad_base") or out.get("unidad") or "")
+        stored_unit = str(meta.get("unidad_base") or out.get("unidad") or "").strip()
+        out["unidad_base"] = stored_unit or "kg"
+        out["unidad_base_sugerida"] = bool(meta.get("unidad_base_sugerida", not stored_unit))
+        out["estado_unidad_base"] = "SUGERIDA_PENDIENTE_REVISION" if out["unidad_base_sugerida"] else "CONFIRMADA"
         out["unidad_recetas"] = str(meta.get("unidad_recetas") or out.get("unidad") or "")
         out["conversion_unidades"] = str(meta.get("conversion_unidades") or "")
         out["iva"] = str(meta.get("iva") or "")
@@ -202,6 +205,8 @@ class RepositorioProductosMaestro601:
             raise ValueError("Ya existe un producto con ese código.")
 
         now = datetime.now().isoformat(timespec="seconds")
+        supplied_unit = str(datos.get("unidad_base") or datos.get("unidad") or "").strip()
+        base_unit = supplied_unit or "kg"
         registro = {
             "codigo": codigo,
             "nombre": nombre,
@@ -209,7 +214,7 @@ class RepositorioProductosMaestro601:
             "proveedor": str(datos.get("proveedor") or "").strip() or None,
             "familia": str(datos.get("familia") or "").strip() or None,
             "precio": self._to_float_or_none(datos.get("precio")),
-            "unidad": str(datos.get("unidad_base") or datos.get("unidad") or "").strip() or None,
+            "unidad": base_unit,
             "activo": True,
             "origen": "catalogo_maestro_601",
             "fecha_importacion": now,
@@ -219,7 +224,8 @@ class RepositorioProductosMaestro601:
                 "referencia_proveedor": str(datos.get("referencia_proveedor") or "").strip(),
                 "unidad_compra": str(datos.get("unidad_compra") or "").strip(),
                 "cantidad_formato": str(datos.get("cantidad_formato") or "").strip(),
-                "unidad_base": str(datos.get("unidad_base") or "").strip(),
+                "unidad_base": base_unit,
+                "unidad_base_sugerida": not bool(supplied_unit),
                 "unidad_recetas": str(datos.get("unidad_recetas") or "").strip(),
                 "conversion_unidades": str(datos.get("conversion_unidades") or "").strip(),
                 "iva": str(datos.get("iva") or "").strip(),
@@ -276,6 +282,7 @@ class RepositorioProductosMaestro601:
                 art["precio"] = self._to_float_or_none(cambios.get("precio"))
             if "unidad_base" in cambios and cambios.get("unidad_base") is not None:
                 art["unidad"] = str(cambios.get("unidad_base") or "").strip() or None
+                meta["unidad_base_sugerida"] = False
             if "activo" in cambios and cambios.get("activo") is not None:
                 art["activo"] = bool(cambios.get("activo"))
 

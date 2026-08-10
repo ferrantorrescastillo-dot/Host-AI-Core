@@ -186,6 +186,8 @@ class ArticulosCatalogReadService:
             "unidad_compra": product.get("unidad_compra") or None,
             "cantidad_formato": self._number(product.get("cantidad_formato")),
             "unidad_base": product.get("unidad_base") or None,
+            "unidad_base_sugerida": bool(product.get("unidad_base_sugerida")),
+            "estado_unidad_base": product.get("estado_unidad_base") or "CONFIRMADA",
             "conversion_unidades": product.get("conversion_unidades") or None,
             "unidad_recetas": product.get("unidad_recetas") or None,
             "iva": self._number(product.get("iva")),

@@ -194,7 +194,9 @@ def test_revision_relaciona_articulo_existente_y_detecta_unidad_pendiente(tmp_pa
     _write(articles_path, articles)
     refreshed_service = MenuProduccionService(HostAICore(tmp_path))
     pending = refreshed_service.revisar_stock(plan["id"])["revision_stock"]["ingredientes"][0]
-    assert pending["estado_resolucion"] == "UNIDAD_PENDIENTE"
+    assert pending["unidad_base"] == "kg"
+    assert pending["unidad_base_sugerida"] is True
+    assert pending["estado_resolucion"] == "FALTANTE_CONOCIDO"
 
 
 def test_subelaboraciones_detectan_ciclo_y_bloquean_plan(tmp_path: Path) -> None:

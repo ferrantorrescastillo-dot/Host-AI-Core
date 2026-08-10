@@ -42,6 +42,8 @@ export type ArticuloDetalle = ArticuloResumen & {
   unidad_compra?: string | null;
   cantidad_formato?: number | null;
   unidad_base?: string | null;
+  unidad_base_sugerida?: boolean;
+  estado_unidad_base?: "SUGERIDA_PENDIENTE_REVISION" | "CONFIRMADA";
   conversion_unidades?: string | null;
   unidad_recetas?: string | null;
   iva?: number | null;

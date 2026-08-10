@@ -7,6 +7,7 @@ from fastapi.testclient import TestClient
 
 from API.app import HostAIPlatformAPI
 from API.http_server import create_app
+from SERVICIOS.repositorio_productos_maestro_601 import RepositorioProductosMaestro601
 
 
 def _write(path: Path, value: object) -> None:
@@ -47,7 +48,43 @@ def test_valida_unidad_proveedor_precio_y_articulo_incompleto(tmp_path: Path) ->
         payload = client.patch("/api/v1/articulos/ART-PATATA", json=_update(**changes)).json()
         assert payload["error"]["code"] == code
     detail = client.get("/api/v1/articulos/ART-PATATA").json()["articulo"]
-    assert detail["operatividad"]["stock"] is False
+    assert detail["unidad_base"] == "kg"
+    assert detail["unidad_base_sugerida"] is True
+    assert detail["estado_unidad_base"] == "SUGERIDA_PENDIENTE_REVISION"
+    assert detail["operatividad"]["stock"] is True
+
+
+def test_unidad_sugerida_respeta_existentes_y_se_confirma_al_editar(tmp_path: Path) -> None:
+    client = _client(tmp_path)
+    suggested = client.get("/api/v1/articulos/ART-PATATA").json()["articulo"]
+    assert suggested["unidad_base"] == "kg" and suggested["unidad_base_sugerida"] is True
+    changed = client.patch("/api/v1/articulos/ART-PATATA", json=_update(unidad_base="l")).json()["articulo"]
+    assert changed["unidad_base"] == "l" and changed["unidad_base_sugerida"] is False
+    assert changed["conversion_unidades"] is None
+
+    stored = json.loads((tmp_path / "DATOS/db/articulos.json").read_text(encoding="utf-8"))[0]
+    assert stored["unidad"] == "l"
+    stored["unidad"] = "kg"; stored["catalogo_maestro"]["unidad_base"] = "kg"
+    _write(tmp_path / "DATOS/db/articulos.json", [stored])
+    existing = _client_from_existing(tmp_path).get("/api/v1/articulos/ART-PATATA").json()["articulo"]
+    assert existing["unidad_base"] == "kg" and existing["unidad_base_sugerida"] is False
+
+
+def test_stock_acepta_kg_sugerido_sin_crear_conversion(tmp_path: Path) -> None:
+    client = _client(tmp_path)
+    movement = client.post("/api/v1/stock/movimientos", json={"article_id": "ART-PATATA", "tipo": "INVENTARIO_INICIAL", "cantidad": 2, "unidad": "kg", "confirmacion": "REGISTRAR_MOVIMIENTO_STOCK"})
+    assert movement.status_code == 201 and movement.json()["stock_actual"] == 2
+    article = client.get("/api/v1/articulos/ART-PATATA").json()["articulo"]
+    assert article["unidad_base_sugerida"] is True and article["conversion_unidades"] is None
+
+
+def test_articulo_nuevo_sin_unidad_persiste_kg_sugerido(tmp_path: Path) -> None:
+    repository = RepositorioProductosMaestro601(tmp_path)
+    created = repository.crear_producto({"codigo": "ART-NUEVO", "nombre": "Producto importado"})
+    assert created["unidad_base"] == "kg" and created["unidad_base_sugerida"] is True
+    raw = json.loads((tmp_path / "DATOS/db/articulos.json").read_text(encoding="utf-8"))[0]
+    assert raw["unidad"] == "kg"
+    assert raw["catalogo_maestro"]["unidad_base_sugerida"] is True
 
 
 def test_unidad_base_integra_stock_y_no_rompe_compras(tmp_path: Path) -> None:
