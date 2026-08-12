@@ -279,6 +279,109 @@ class HostAIToolExecutor:
             },
         )
 
+    def _tool_buscar_articulos(self, params: dict[str, Any], _ctx: dict[str, Any]) -> HostAIToolResult:
+        termino = str(params.get("termino") or "").strip()
+        if not termino:
+            return self._article_search_result(
+                estado="REQUIERE_TERMINO",
+                termino="",
+                articulos=[],
+                total=0,
+                mensaje="Indica un nombre o codigo de articulo para buscar.",
+            )
+        if self.articulos_read_service is None:
+            return self._article_search_result(
+                estado="SERVICIO_NO_DISPONIBLE",
+                termino=termino,
+                articulos=[],
+                total=0,
+                mensaje="El catalogo de articulos no esta disponible en este entorno.",
+            )
+
+        result = dict(self.articulos_read_service.listar({"q": termino, "page": 1, "page_size": 10}) or {})
+        if result.get("ok") is False:
+            return self._article_search_result(
+                estado="ERROR",
+                termino=termino,
+                articulos=[],
+                total=0,
+                mensaje="No se pudo consultar el catalogo de articulos.",
+            )
+        catalogo = dict(result.get("catalogo") or {})
+        items = [self._article_basic(item) for item in list(catalogo.get("items") or [])[:10]]
+        exact_code = [item for item in items if self._norm_text(item.get("codigo")) == self._norm_text(termino)]
+        exact_name = [item for item in items if self._norm_text(item.get("nombre")) == self._norm_text(termino)]
+
+        selected = exact_code if len(exact_code) == 1 else exact_name if len(exact_name) == 1 else []
+        if selected:
+            items = selected
+            estado = "OK"
+            total = 1
+        else:
+            total = int(catalogo.get("total") or len(items))
+            estado = "OK" if len(items) == 1 else "AMBIGUO" if items else "NO_ENCONTRADO"
+
+        if estado == "OK":
+            item = items[0]
+            mensaje = f"{item['codigo']} — {item['nombre']} — {item.get('unidad') or 'unidad no definida'} — {item.get('estado') or 'estado no informado'}."
+        elif estado == "AMBIGUO":
+            lines = [f"{index}. {item['codigo']} — {item['nombre']} — {item.get('unidad') or 'unidad no definida'}" for index, item in enumerate(items, start=1)]
+            mensaje = f"He encontrado {total} articulos relacionados con '{termino}':\n" + "\n".join(lines) + "\nIndica el numero, codigo o nombre exacto."
+        else:
+            mensaje = f"No encuentro ningun articulo que coincida con '{termino}'."
+
+        return self._article_search_result(
+            estado=estado,
+            termino=termino,
+            articulos=items,
+            total=total,
+            mensaje=mensaje,
+        )
+
+    def _article_search_result(
+        self,
+        *,
+        estado: str,
+        termino: str,
+        articulos: list[dict[str, Any]],
+        total: int,
+        mensaje: str,
+    ) -> HostAIToolResult:
+        return HostAIToolResult(
+            estado="OK" if estado not in {"ERROR", "SERVICIO_NO_DISPONIBLE"} else "ERROR",
+            mensaje=mensaje,
+            datos={
+                "estado": estado,
+                "termino": termino,
+                "total_encontrados": int(total),
+                "articulos": articulos[:10],
+                "puede_abrir_buscador": False,
+                "busqueda_sugerida": termino,
+                "fuente": "catalogo_articulos_canonico",
+                "solo_lectura": True,
+                "datos_reales_modificados": False,
+            },
+            contexto_actualizado={
+                "contexto_activo": "CATALOGO",
+                "ultima_busqueda": termino,
+                "ultima_lista_mostrada": articulos[:10],
+            } if articulos else {},
+        )
+
+    @staticmethod
+    def _article_basic(item: dict[str, Any]) -> dict[str, Any]:
+        estado = str(item.get("estado") or "")
+        estado_norm = estado.strip().lower()
+        activo = True if estado_norm == "activo" else False if estado_norm in {"inactivo", "archivado"} else None
+        return {
+            "article_id": str(item.get("id") or ""),
+            "codigo": str(item.get("codigo") or ""),
+            "nombre": str(item.get("nombre") or ""),
+            "unidad": item.get("unidad") or None,
+            "estado": estado or None,
+            "activo": activo,
+        }
+
     @staticmethod
     def _stock_resumen(stock: dict[str, Any]) -> dict[str, Any]:
         source = dict(stock.get("resumen") or {})

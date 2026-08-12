@@ -14,6 +14,7 @@ from SERVICIOS.host_ai_deterministic_intent_router import (
     INTENT_AYUDA,
     INTENT_ABRIR_MODULO,
     INTENT_BUSCAR_RECETA,
+    INTENT_BUSCAR_ARTICULOS,
     INTENT_CONSULTAR_MARGEN_ACTUAL,
     INTENT_CONSULTAR_ESTADO_STOCK,
     INTENT_DESCONOCIDA,
@@ -143,12 +144,31 @@ class ServicioChatHostAIShell:
         self._mensajes.append(MensajeChatHostAI(rol="usuario", tipo=TIPO_USUARIO, texto=contenido))
         self._procesando = True
         try:
-            stock_match = self.router.detectar(contenido)
+            article_selection = self._seleccion_articulo_contextual(contenido)
+            selection_term = str((article_selection or {}).get("termino") or "")
+            stock_match = self.router.detectar(selection_term or contenido)
             if stock_match.intent == INTENT_CONSULTAR_ESTADO_STOCK:
                 respuesta = self._resolver_stock_conversacional(
                     contenido,
                     dict(contexto or {}),
                     stock_match,
+                )
+                salida = MensajeChatHostAI(
+                    rol="host_ai",
+                    tipo=str(respuesta.get("tipo_mensaje") or TIPO_RESULTADO),
+                    texto=str(respuesta.get("mensaje") or ""),
+                    datos=dict(respuesta.get("datos") or {}),
+                )
+                self._mensajes.append(salida)
+                self._registrar_log(contenido, respuesta, inicio)
+                return self._normalizar(salida)
+
+            if stock_match.intent == INTENT_BUSCAR_ARTICULOS:
+                respuesta = self._resolver_articulos_conversacional(
+                    contenido,
+                    dict(contexto or {}),
+                    stock_match,
+                    seleccion=article_selection,
                 )
                 salida = MensajeChatHostAI(
                     rol="host_ai",
@@ -396,6 +416,94 @@ class ServicioChatHostAIShell:
                 "datos_reales_modificados": False,
             },
         }
+
+    def _resolver_articulos_conversacional(
+        self,
+        texto: str,
+        contexto: dict[str, Any],
+        match: Any,
+        seleccion: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        termino = str((match.terms or {}).get("termino") or "").strip()
+        tr = self.tool_executor.execute(
+            "buscar_articulos",
+            params={"termino": termino, "limite": 10},
+            session_context=self._session.to_dict(),
+        )
+        self._session.ultima_intencion = match.intent
+        self._session.registrar_accion("INTENCION", match.intent)
+        self._aplicar_resultado_tool_en_sesion(tr.to_dict())
+        tool_context = dict(tr.datos or {})
+        if seleccion and tool_context.get("estado") == "OK" and len(list(tool_context.get("articulos") or [])) == 1:
+            articulo_seleccionado = dict(list(tool_context.get("articulos") or [])[0])
+            tool_context.update(
+                {
+                    "seleccion_resuelta": True,
+                    "seleccion_original": str(seleccion.get("seleccion_original") or texto),
+                    "indice_seleccionado": seleccion.get("indice_seleccionado"),
+                    "criterio_seleccion": str(seleccion.get("criterio_seleccion") or ""),
+                    "articulo_seleccionado": articulo_seleccionado,
+                }
+            )
+        engine = self._consultar_engine(texto, contexto, tool_context=tool_context)
+        provider = str(engine.get("proveedor") or "").upper()
+        mensaje = tr.mensaje
+        if provider == "OPENAI" and str(engine.get("estado") or "") == "OK":
+            mensaje = self._mensaje_engine(engine)
+        return {
+            "tipo_mensaje": TIPO_RESULTADO if tr.estado == "OK" else TIPO_ERROR,
+            "mensaje": mensaje,
+            "datos": {
+                "engine": engine,
+                "intent": match.to_dict(),
+                "tool": {"id": "buscar_articulos", "estado": tr.estado, "duracion_ms": tr.duracion_ms},
+                "tool_context": tool_context,
+                "resultados": list(tool_context.get("articulos") or []),
+                "datos_reales_modificados": False,
+            },
+        }
+
+    def _seleccion_articulo_contextual(self, texto: str) -> dict[str, Any] | None:
+        if str(self._session.contexto_activo or "").upper() != "CATALOGO":
+            return None
+        items = [dict(item) for item in list(self._session.ultima_lista_mostrada or []) if isinstance(item, dict)]
+        if not items:
+            return None
+        norm = self._normalizar_texto(texto)
+        ordinales = {
+            "1": 0, "la 1": 0, "el 1": 0, "la primera": 0, "el primero": 0,
+            "2": 1, "la 2": 1, "el 2": 1, "la segunda": 1, "el segundo": 1,
+            "3": 2, "la 3": 2, "el 3": 2, "la tercera": 2, "el tercero": 2,
+        }
+        index = ordinales.get(norm)
+        if norm in {"la ultima", "el ultimo", "ultima", "ultimo"}:
+            index = len(items) - 1
+        if index is not None:
+            if 0 <= index < len(items):
+                return {
+                    "termino": str(items[index].get("codigo") or items[index].get("article_id") or ""),
+                    "seleccion_original": texto,
+                    "indice_seleccionado": index + 1,
+                    "criterio_seleccion": "ordinal",
+                }
+            return None
+        exact = [
+            item for item in items
+            if norm in {
+                self._normalizar_texto(str(item.get("codigo") or "")),
+                self._normalizar_texto(str(item.get("article_id") or "")),
+                self._normalizar_texto(str(item.get("nombre") or "")),
+            }
+        ]
+        if len(exact) == 1:
+            selected_index = items.index(exact[0])
+            return {
+                "termino": str(exact[0].get("codigo") or exact[0].get("article_id") or ""),
+                "seleccion_original": texto,
+                "indice_seleccionado": selected_index + 1,
+                "criterio_seleccion": "identificador_o_nombre_exacto",
+            }
+        return None
 
     def _resolver_consulta_modulos(
         self,

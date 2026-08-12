@@ -18,6 +18,7 @@ INTENT_MOSTRAR_MENU_ACTUAL = "MOSTRAR_MENU_ACTUAL"
 INTENT_CONSULTAR_MARGEN_ACTUAL = "CONSULTAR_MARGEN_ACTUAL"
 INTENT_MOSTRAR_ESTADO_GENERAL = "MOSTRAR_ESTADO_GENERAL"
 INTENT_CONSULTAR_ESTADO_STOCK = "CONSULTAR_ESTADO_STOCK"
+INTENT_BUSCAR_ARTICULOS = "BUSCAR_ARTICULOS"
 INTENT_AYUDA = "AYUDA"
 INTENT_DESCONOCIDA = "DESCONOCIDA"
 
@@ -69,6 +70,10 @@ class HostAIDeterministicIntentRouter:
         stock = self._extract_stock_query(norm)
         if stock is not None:
             return IntentMatch(INTENT_CONSULTAR_ESTADO_STOCK, 0.98, stock)
+
+        articulo = self._extract_article_query(norm)
+        if articulo is not None:
+            return IntentMatch(INTENT_BUSCAR_ARTICULOS, 0.98, articulo)
 
         if self._contains_any(norm, ["recetas pendientes", "recetas incompletas", "pendientes de completar"]):
             return IntentMatch(INTENT_LISTAR_RECETAS_PENDIENTES, 0.95, {})
@@ -198,6 +203,32 @@ class HostAIDeterministicIntentRouter:
         value = re.sub(r"\b(ahora|actualmente|por favor)\b", " ", str(value or ""))
         return " ".join(value.split()).strip()
 
+    @classmethod
+    def _extract_article_query(cls, norm: str) -> dict[str, Any] | None:
+        if "receta" in norm or "recetas" in norm:
+            return None
+        if re.fullmatch(r"art[\s-]?\d+", norm):
+            return {"termino": norm.replace(" ", ""), "tipo_consulta": "codigo"}
+        patterns = [
+            (r"(?:que articulo es|dime los datos de)\s+(.+)$", "codigo"),
+            (r"(?:busca articulos de|busca articulos que contengan|ensename articulos que contengan)\s+(.+)$", "texto"),
+            (r"(?:buscame|busca)\s+(.+)$", "texto"),
+            (r"(?:que unidad tiene|existe)\s+(.+)$", "detalle"),
+        ]
+        for pattern, query_type in patterns:
+            match = re.search(pattern, norm)
+            if not match:
+                continue
+            termino = cls._clean_article_term(match.group(1))
+            if termino:
+                return {"termino": termino, "tipo_consulta": query_type}
+        return None
+
+    @staticmethod
+    def _clean_article_term(value: str) -> str:
+        value = re.sub(r"\b(articulo|articulos|por favor)\b", " ", str(value or ""))
+        return " ".join(value.split()).strip()
+
     @staticmethod
     def _norm(texto: str) -> str:
         t = unicodedata.normalize("NFKD", str(texto or "").lower().strip())
@@ -221,6 +252,7 @@ __all__ = [
     "INTENT_CONSULTAR_MARGEN_ACTUAL",
     "INTENT_MOSTRAR_ESTADO_GENERAL",
     "INTENT_CONSULTAR_ESTADO_STOCK",
+    "INTENT_BUSCAR_ARTICULOS",
     "INTENT_AYUDA",
     "INTENT_DESCONOCIDA",
 ]

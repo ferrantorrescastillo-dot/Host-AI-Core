@@ -89,12 +89,19 @@ class OpenAIProvider(HostAIProviderBase):
         if not isinstance(tool_context, dict):
             return question
         serialized = json.dumps(tool_context, ensure_ascii=False, sort_keys=True)
+        selection_instruction = ""
+        if tool_context.get("seleccion_resuelta") is True:
+            selection_instruction = (
+                " La selección conversacional ya fue resuelta de forma determinista. "
+                "No vuelvas a interpretar el ordinal o identificador original; presenta únicamente articulo_seleccionado."
+            )
         return (
             f"Pregunta del usuario: {question}\n"
             "Contexto determinista autorizado (JSON):\n"
             f"{serialized}\n"
             "Responde usando exclusivamente este contexto para datos, cantidades y unidades. "
             "No recalcules cifras, no inventes datos y no afirmes haber modificado Stock."
+            f"{selection_instruction}"
         )
 
     def _error(self, message: str) -> HostAIProviderResult:
