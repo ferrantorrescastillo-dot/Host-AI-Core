@@ -9,6 +9,7 @@ from SERVICIOS.host_ai_deterministic_intent_router import (
     INTENT_LISTAR_INCIDENCIAS,
     INTENT_LISTAR_RECETAS_PENDIENTES,
     INTENT_MOSTRAR_ESTADO_GENERAL,
+    INTENT_CONSULTAR_ESTADO_STOCK,
     INTENT_MOSTRAR_EVENTOS_PROXIMOS,
 )
 
@@ -21,6 +22,7 @@ class HostAIToolResolver:
         INTENT_LISTAR_INCIDENCIAS: "listar_incidencias",
         INTENT_MOSTRAR_EVENTOS_PROXIMOS: "mostrar_eventos_proximos",
         INTENT_MOSTRAR_ESTADO_GENERAL: "mostrar_estado_general",
+        INTENT_CONSULTAR_ESTADO_STOCK: "consultar_estado_stock",
     }
 
     SIDEBAR_TO_TOOL = {

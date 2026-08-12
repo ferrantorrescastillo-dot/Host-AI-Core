@@ -7,6 +7,7 @@ import logging
 import time
 
 from SERVICIOS.host_ai_tool_registry import HostAIToolRegistry, TOOL_STATUS_ACTIVADA
+from SERVICIOS.articulos_catalog_read_service import ArticulosCatalogReadService
 
 
 LOGGER = logging.getLogger("host_ai.platform.tools")
@@ -30,9 +31,21 @@ class HostAIToolResult:
 
 
 class HostAIToolExecutor:
-    def __init__(self, registry: HostAIToolRegistry, home_read_service: Any | None = None):
+    def __init__(self, registry: HostAIToolRegistry, home_read_service: Any | None = None, articulos_read_service: Any | None = None):
         self.registry = registry
         self.home_read_service = home_read_service
+        self.articulos_read_service = articulos_read_service or self._build_articulos_read_service()
+
+    def _build_articulos_read_service(self) -> Any | None:
+        core = getattr(self.home_read_service, "core", None)
+        base_dir = getattr(core, "base_dir", None)
+        if core is None or base_dir is None:
+            return None
+        return ArticulosCatalogReadService(
+            base_dir,
+            stock=getattr(core, "stock", None),
+            compras=getattr(core, "compras", None),
+        )
 
     def execute(self, tool_id: str, params: dict[str, Any] | None = None, session_context: dict[str, Any] | None = None) -> HostAIToolResult:
         inicio = time.perf_counter()
@@ -99,13 +112,13 @@ class HostAIToolExecutor:
             result = handler(p, ctx)
             result.tool_id = tool.id
             return self._finish(result, inicio)
-        except Exception as exc:
-            LOGGER.exception("tool_execute_error %s", {"tool_id": tool.id, "error": str(exc)})
+        except Exception:
+            LOGGER.exception("tool_execute_error %s", {"tool_id": tool.id})
             return self._finish(
                 HostAIToolResult(
                     estado="ERROR",
                     mensaje="Error ejecutando la herramienta.",
-                    errores=[str(exc)],
+                    errores=["internal_tool_error"],
                     tool_id=tool.id,
                 ),
                 inicio,
@@ -232,6 +245,111 @@ class HostAIToolExecutor:
             m = dict(modulos.get(clave) or {})
             partes.append(f"{clave}: {m.get('estado', 'desconocido')} ({int(m.get('total') or 0)})")
         return HostAIToolResult(estado="OK", mensaje="Estado general: " + " | ".join(partes), datos={"home": modelo})
+
+    def _tool_consultar_estado_stock(self, params: dict[str, Any], _ctx: dict[str, Any]) -> HostAIToolResult:
+        consulta = str(params.get("consulta") or "resumen").strip().lower()
+        termino = str(params.get("termino") or "").strip()
+        stock = dict(((self._ensure_home().get("modulos") or {}).get("stock") or {}))
+        resumen = self._stock_resumen(stock)
+        alertas = [self._stock_alerta(item) for item in list(stock.get("alertas") or [])[:10]]
+        existencias = [self._stock_existencia(item) for item in list(stock.get("existencias") or [])[:10]]
+        estado_dto = "OK"
+        mensaje = self._stock_mensaje_resumen(resumen)
+
+        if consulta == "alertas":
+            existencias = []
+            mensaje = f"Hay {len(alertas)} alertas de Stock." if alertas else "No hay alertas de Stock registradas."
+        elif consulta == "articulo":
+            alertas = []
+            existencias, estado_dto, mensaje = self._buscar_stock_articulo(termino)
+
+        return HostAIToolResult(
+            estado="OK",
+            mensaje=mensaje,
+            datos={
+                "estado": estado_dto,
+                "consulta": consulta,
+                "termino": termino,
+                "resumen": resumen,
+                "existencias": existencias[:10],
+                "alertas": alertas[:10],
+                "fuente": "stock_canonico",
+                "solo_lectura": True,
+                "datos_reales_modificados": False,
+            },
+        )
+
+    @staticmethod
+    def _stock_resumen(stock: dict[str, Any]) -> dict[str, Any]:
+        source = dict(stock.get("resumen") or {})
+        return {
+            "estado_operativo": str(stock.get("estado_operativo") or ""),
+            "existencias": int(stock.get("total_existencias") or 0),
+            "alertas": int(stock.get("total_alertas") or 0),
+            "lotes_visibles": int(stock.get("total_lotes") or 0),
+            "bajo_minimo": int(source.get("bajo_minimo") or 0),
+            "caducados": int(source.get("caducados") or 0),
+            "caducan_pronto": int(source.get("caducan_pronto") or 0),
+        }
+
+    @staticmethod
+    def _stock_existencia(item: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "article_id": str(item.get("articulo_id") or item.get("article_id") or item.get("codigo") or ""),
+            "nombre": str(item.get("nombre") or ""),
+            "cantidad": item.get("cantidad"),
+            "unidad": item.get("unidad") or None,
+        }
+
+    @staticmethod
+    def _stock_alerta(item: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "tipo": str(item.get("tipo") or ""),
+            "nivel": str(item.get("nivel") or ""),
+            "mensaje": str(item.get("mensaje") or ""),
+        }
+
+    @staticmethod
+    def _stock_mensaje_resumen(resumen: dict[str, Any]) -> str:
+        return f"Stock consultado: {resumen['existencias']} existencias y {resumen['alertas']} alertas registradas."
+
+    def _buscar_stock_articulo(self, termino: str) -> tuple[list[dict[str, Any]], str, str]:
+        if not termino or self.articulos_read_service is None:
+            return [], "NO_ENCONTRADO", "No se ha encontrado el articulo solicitado."
+        result = dict(self.articulos_read_service.listar({"q": termino, "page": 1, "page_size": 10}) or {})
+        catalogo = dict(result.get("catalogo") or {})
+        candidates = [self._stock_catalog_item(item) for item in list(catalogo.get("items") or [])[:10]]
+        exact = [
+            item for item in candidates
+            if self._norm_text(item.get("nombre")) == self._norm_text(termino)
+            or self._norm_text(item.get("article_id")) == self._norm_text(termino)
+        ]
+        if len(exact) == 1:
+            candidates = exact
+        elif len(candidates) > 1:
+            return candidates, "AMBIGUO", f"He encontrado {len(candidates)} articulos posibles para '{termino}'. Indica cual quieres consultar."
+        if not candidates:
+            return [], "NO_ENCONTRADO", f"No se ha encontrado ningun articulo relacionado con '{termino}'."
+        item = candidates[0]
+        if item.get("cantidad") is None:
+            return candidates, "OK", f"{item['nombre']} existe en el catalogo, pero su stock es desconocido."
+        return candidates, "OK", f"{item['nombre']}: {item['cantidad']} {item.get('unidad') or ''} disponibles.".strip()
+
+    @staticmethod
+    def _stock_catalog_item(item: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "article_id": str(item.get("id") or item.get("codigo") or ""),
+            "nombre": str(item.get("nombre") or ""),
+            "cantidad": item.get("stock"),
+            "unidad": item.get("unidad_stock") or item.get("unidad") or None,
+        }
+
+    @staticmethod
+    def _norm_text(value: Any) -> str:
+        import unicodedata
+
+        text = unicodedata.normalize("NFKD", str(value or ""))
+        return "".join(char for char in text if not unicodedata.combining(char)).strip().lower()
 
     def _tool_listar_recetas_pendientes(self, _params: dict[str, Any], _ctx: dict[str, Any]) -> HostAIToolResult:
         items = list((((self._ensure_home().get("modulos") or {}).get("recetas") or {}).get("items") or []))

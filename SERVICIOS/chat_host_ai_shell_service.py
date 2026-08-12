@@ -15,6 +15,7 @@ from SERVICIOS.host_ai_deterministic_intent_router import (
     INTENT_ABRIR_MODULO,
     INTENT_BUSCAR_RECETA,
     INTENT_CONSULTAR_MARGEN_ACTUAL,
+    INTENT_CONSULTAR_ESTADO_STOCK,
     INTENT_DESCONOCIDA,
     INTENT_LISTAR_ESCANDALLOS_DESACTUALIZADOS,
     INTENT_LISTAR_INCIDENCIAS,
@@ -142,6 +143,23 @@ class ServicioChatHostAIShell:
         self._mensajes.append(MensajeChatHostAI(rol="usuario", tipo=TIPO_USUARIO, texto=contenido))
         self._procesando = True
         try:
+            stock_match = self.router.detectar(contenido)
+            if stock_match.intent == INTENT_CONSULTAR_ESTADO_STOCK:
+                respuesta = self._resolver_stock_conversacional(
+                    contenido,
+                    dict(contexto or {}),
+                    stock_match,
+                )
+                salida = MensajeChatHostAI(
+                    rol="host_ai",
+                    tipo=str(respuesta.get("tipo_mensaje") or TIPO_RESULTADO),
+                    texto=str(respuesta.get("mensaje") or ""),
+                    datos=dict(respuesta.get("datos") or {}),
+                )
+                self._mensajes.append(salida)
+                self._registrar_log(contenido, respuesta, inicio)
+                return self._normalizar(salida)
+
             engine = self._consultar_engine_simulado(contenido, contexto)
             if str(engine.get("estado") or "") == "ERROR":
                 # Executive conversacional no depende de proveedor generativo; mantener ruta determinista local.
@@ -342,6 +360,41 @@ class ServicioChatHostAIShell:
             ),
             "mensaje": self._mensaje_engine(engine),
             "datos": {"engine": engine, "intent": match.to_dict()},
+        }
+
+    def _resolver_stock_conversacional(self, texto: str, contexto: dict[str, Any], match: Any) -> dict[str, Any]:
+        terms = dict(match.terms or {})
+        tr = self.tool_executor.execute(
+            "consultar_estado_stock",
+            params={
+                "consulta": str(terms.get("consulta") or "resumen"),
+                "termino": str(terms.get("termino") or ""),
+            },
+            session_context=self._session.to_dict(),
+        )
+        self._session.ultima_intencion = match.intent
+        self._session.registrar_accion("INTENCION", match.intent)
+        tool_context = dict(tr.datos or {})
+        engine = self._consultar_engine(texto, contexto, tool_context=tool_context)
+        provider = str(engine.get("proveedor") or "").upper()
+        mensaje = tr.mensaje
+        if provider == "OPENAI" and str(engine.get("estado") or "") == "OK":
+            mensaje = self._mensaje_engine(engine)
+        tipo = TIPO_RESULTADO if tr.estado == "OK" else TIPO_ERROR
+        return {
+            "tipo_mensaje": tipo,
+            "mensaje": mensaje,
+            "datos": {
+                "engine": engine,
+                "intent": match.to_dict(),
+                "tool": {
+                    "id": "consultar_estado_stock",
+                    "estado": tr.estado,
+                    "duracion_ms": tr.duracion_ms,
+                },
+                "tool_context": tool_context,
+                "datos_reales_modificados": False,
+            },
         }
 
     def _resolver_consulta_modulos(
@@ -767,14 +820,14 @@ class ServicioChatHostAIShell:
         if "evento_activo" in contexto and isinstance(contexto.get("evento_activo"), dict):
             self._session.evento_activo = dict(contexto.get("evento_activo") or {})
 
-    def _consultar_engine(self, contenido: str, contexto: dict[str, Any] | None) -> dict[str, Any]:
+    def _consultar_engine(self, contenido: str, contexto: dict[str, Any] | None, tool_context: dict[str, Any] | None = None) -> dict[str, Any]:
         from CORE.orquestador import SolicitudHostAI
 
         preferred_provider = str(
             getattr(getattr(self.orquestador, "host_ai_engine", None), "default_provider", "SIMULADO")
         )
         deterministic_match = self.router.detectar(contenido)
-        if preferred_provider.upper() == "OPENAI" and (
+        if preferred_provider.upper() == "OPENAI" and not tool_context and (
             deterministic_match.intent != INTENT_DESCONOCIDA
             or detectar_intencion_executive(contenido) is not None
             or self._es_consulta_modulos(contenido)
@@ -790,6 +843,7 @@ class ServicioChatHostAIShell:
                 "datos_enviados": {
                     "pregunta": contenido,
                     "sim_scenario": self._detectar_escenario_simulado(contenido),
+                    **({"tool_context": dict(tool_context)} if tool_context else {}),
                 },
                 "proveedor_preferido": preferred_provider,
                 "formato_entrada": "texto",

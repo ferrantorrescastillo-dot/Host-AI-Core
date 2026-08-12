@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import os
 from typing import Any, Callable
 
@@ -83,7 +84,18 @@ class OpenAIProvider(HostAIProviderBase):
     def _input_text(request: HostAIEngineRequest) -> str:
         data = dict(request.datos_enviados or {})
         question = str(data.get("pregunta") or data.get("mensaje") or "").strip()
-        return question or str(data.get("texto") or "").strip()
+        question = question or str(data.get("texto") or "").strip()
+        tool_context = data.get("tool_context")
+        if not isinstance(tool_context, dict):
+            return question
+        serialized = json.dumps(tool_context, ensure_ascii=False, sort_keys=True)
+        return (
+            f"Pregunta del usuario: {question}\n"
+            "Contexto determinista autorizado (JSON):\n"
+            f"{serialized}\n"
+            "Responde usando exclusivamente este contexto para datos, cantidades y unidades. "
+            "No recalcules cifras, no inventes datos y no afirmes haber modificado Stock."
+        )
 
     def _error(self, message: str) -> HostAIProviderResult:
         return HostAIProviderResult(

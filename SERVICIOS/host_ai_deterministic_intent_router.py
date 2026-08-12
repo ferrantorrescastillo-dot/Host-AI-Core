@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 import re
+import unicodedata
 
 
 INTENT_BUSCAR_RECETA = "BUSCAR_RECETA"
@@ -16,6 +17,7 @@ INTENT_MOSTRAR_ESCANDALLO_ACTUAL = "MOSTRAR_ESCANDALLO_ACTUAL"
 INTENT_MOSTRAR_MENU_ACTUAL = "MOSTRAR_MENU_ACTUAL"
 INTENT_CONSULTAR_MARGEN_ACTUAL = "CONSULTAR_MARGEN_ACTUAL"
 INTENT_MOSTRAR_ESTADO_GENERAL = "MOSTRAR_ESTADO_GENERAL"
+INTENT_CONSULTAR_ESTADO_STOCK = "CONSULTAR_ESTADO_STOCK"
 INTENT_AYUDA = "AYUDA"
 INTENT_DESCONOCIDA = "DESCONOCIDA"
 
@@ -63,6 +65,10 @@ class HostAIDeterministicIntentRouter:
 
         if "estado" in norm and ("sistema" in norm or "general" in norm or "como" in norm):
             return IntentMatch(INTENT_MOSTRAR_ESTADO_GENERAL, 0.95, {})
+
+        stock = self._extract_stock_query(norm)
+        if stock is not None:
+            return IntentMatch(INTENT_CONSULTAR_ESTADO_STOCK, 0.98, stock)
 
         if self._contains_any(norm, ["recetas pendientes", "recetas incompletas", "pendientes de completar"]):
             return IntentMatch(INTENT_LISTAR_RECETAS_PENDIENTES, 0.95, {})
@@ -162,10 +168,41 @@ class HostAIDeterministicIntentRouter:
                 return " ".join(termino.split())
         return ""
 
+    @classmethod
+    def _extract_stock_query(cls, norm: str) -> dict[str, Any] | None:
+        if "stock" in norm and cls._contains_any(
+            norm,
+            ["alerta", "alertas", "bajo de stock", "bajos de stock", "stock bajo"],
+        ):
+            return {"consulta": "alertas", "termino": ""}
+
+        for pattern in [
+            r"(?:cuanto stock tengo de|cuanto stock hay de|tengo stock de|dime el stock de|stock de)\s+(.+)$",
+            r"^tengo\s+(.+)$",
+        ]:
+            match = re.search(pattern, norm)
+            if match:
+                termino = cls._clean_stock_term(match.group(1))
+                if termino and termino not in {"stock", "alertas", "productos"}:
+                    return {"consulta": "articulo", "termino": termino}
+
+        if "stock" in norm and cls._contains_any(
+            norm,
+            ["como esta", "estado del", "estado de", "resumen", "situacion", "que tal"],
+        ):
+            return {"consulta": "resumen", "termino": ""}
+        return None
+
+    @staticmethod
+    def _clean_stock_term(value: str) -> str:
+        value = re.sub(r"\b(ahora|actualmente|por favor)\b", " ", str(value or ""))
+        return " ".join(value.split()).strip()
+
     @staticmethod
     def _norm(texto: str) -> str:
-        t = str(texto or "").lower().strip()
-        t = re.sub(r"[^a-z0-9áéíóúüñ\s]", " ", t)
+        t = unicodedata.normalize("NFKD", str(texto or "").lower().strip())
+        t = "".join(char for char in t if not unicodedata.combining(char))
+        t = re.sub(r"[^a-z0-9\s]", " ", t)
         return " ".join(t.split())
 
 
@@ -183,6 +220,7 @@ __all__ = [
     "INTENT_MOSTRAR_MENU_ACTUAL",
     "INTENT_CONSULTAR_MARGEN_ACTUAL",
     "INTENT_MOSTRAR_ESTADO_GENERAL",
+    "INTENT_CONSULTAR_ESTADO_STOCK",
     "INTENT_AYUDA",
     "INTENT_DESCONOCIDA",
 ]
