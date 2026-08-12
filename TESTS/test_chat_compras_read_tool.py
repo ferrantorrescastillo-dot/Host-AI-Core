@@ -121,6 +121,16 @@ def test_chat_ejecuta_antes_de_openai_y_fallback_sin_modificar_compras():
     context = orchestrator.requests[0].parametros["datos_enviados"]["tool_context"]
     assert response["mensaje"] == "Hay dos pedidos abiertos." and context["fuente"] == "compras_canonico"
     assert context["datos_reales_modificados"] is False and compras.__dict__ == before
+    assert response["datos"]["navigation_request"] == {
+        "target_module": "COMPRAS",
+        "target_view": "MODULO",
+        "filter_data": {},
+        "entity_id": "",
+        "source": "chat_host_ai",
+        "preserve_chat_session": True,
+        "message": "Abrir esta consulta en Compras.",
+        "context_update": {"contexto_activo": "COMPRAS"},
+    }
     prompt = OpenAIProvider._input_text(HostAIEngineRequest(
         origen="CHAT", modulo="chat_host_ai", tipo_peticion="consulta_general",
         datos_enviados={"pregunta": "¿Qué compras tengo pendientes?", "tool_context": context},
@@ -131,6 +141,27 @@ def test_chat_ejecuta_antes_de_openai_y_fallback_sin_modificar_compras():
     failure = {"estado": "ERROR", "proveedor": "OPENAI", "respuesta": {}, "errores": ["fallo"]}
     fallback = ServicioChatHostAIShell(_Orchestrator(failure)); fallback.tool_executor = _executor(compras)
     assert fallback.enviar("¿Qué propuestas de compra tengo?")["ok"] is True
+
+
+def test_cinco_consultas_compras_generan_navegacion_read_sin_modificar_datos():
+    compras = _Compras(); before = deepcopy(compras.__dict__)
+    simulated = {"estado": "OK", "proveedor": "SIMULADO", "respuesta": {}, "errores": []}
+    chat = ServicioChatHostAIShell(_Orchestrator(simulated)); chat.tool_executor = _executor(compras)
+
+    for query in (
+        "¿Qué compras tengo pendientes?",
+        "¿Qué pedidos están preparados?",
+        "¿Qué me falta por recibir?",
+        "¿Qué propuestas de compra tengo?",
+        "¿Qué necesidades de compra hay?",
+        "¿Qué pedidos tengo de PAU GAVALDA?",
+    ):
+        response = chat.enviar(query)
+        assert response["datos"]["navigation_request"]["target_module"] == "COMPRAS"
+        assert response["datos"]["navigation_request"]["filter_data"] == {}
+        assert response["datos"]["datos_reales_modificados"] is False
+
+    assert compras.__dict__ == before
 
 
 def test_post_chat_compras_ruta_http_real_temporal_no_modifica_repositorios(monkeypatch, tmp_path: Path):

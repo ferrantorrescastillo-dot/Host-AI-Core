@@ -56,7 +56,9 @@ describe("Chat como segunda interfaz de la plataforma", () => {
 
     expect(await screen.findByText(/Consulta informativa/)).toBeInTheDocument();
     expect(screen.getByText("Datos reales modificados: no")).toBeInTheDocument();
-    await userEvent.click(screen.getByRole("link", { name: "Abrir Compras" }));
+    const comprasLink = screen.getByRole("link", { name: "Abrir en Compras" });
+    expect(comprasLink).toHaveAttribute("href", "/compras");
+    await userEvent.click(comprasLink);
     expect(await screen.findByRole("heading", { name: "Compras" })).toBeInTheDocument();
   });
 

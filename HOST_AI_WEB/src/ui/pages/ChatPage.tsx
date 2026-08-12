@@ -37,7 +37,7 @@ function getSafeStatus(payload: ApiEnvelopeBase) {
 
 const MODULE_ROUTES: Record<string, NavigationTarget> = {
   CATALOGO: { to: "/articulos", label: "Abrir en Artículos" },
-  COMPRAS: { to: "/compras", label: "Abrir Compras" },
+  COMPRAS: { to: "/compras", label: "Abrir en Compras" },
   EVENTOS: { to: "/eventos", label: "Abrir Eventos" },
   PRODUCCION: { to: "/produccion", label: "Abrir Producción" },
   STOCK: { to: "/stock", label: "Abrir Stock" },

@@ -536,11 +536,17 @@ class ServicioChatHostAIShell:
         tr = self.tool_executor.execute(tool_id, params=dict(match.terms or {}), session_context=self._session.to_dict())
         tool_context = dict(tr.datos or {})
         engine = self._consultar_engine(texto, contexto, tool_context=tool_context)
+        navigation = self._navigation_request(
+            sidebar="4",
+            target_view="MODULO",
+            message="Abrir esta consulta en Compras.",
+            context_update={"contexto_activo": "COMPRAS"},
+        )
         mensaje = tr.mensaje
         if str(engine.get("proveedor") or "").upper() == "OPENAI" and str(engine.get("estado") or "") == "OK":
             mensaje = self._mensaje_engine(engine)
         return {"tipo_mensaje": TIPO_RESULTADO if tr.estado == "OK" else TIPO_ERROR, "mensaje": mensaje,
-                "datos": {"engine": engine, "intent": match.to_dict(), "tool": {"id": tool_id, "estado": tr.estado, "duracion_ms": tr.duracion_ms}, "tool_context": tool_context, "datos_reales_modificados": False}}
+                "datos": {"engine": engine, "intent": match.to_dict(), "tool": {"id": tool_id, "estado": tr.estado, "duracion_ms": tr.duracion_ms}, "tool_context": tool_context, "navigation_request": navigation, "datos_reales_modificados": False}}
 
     def _resolver_consulta_modulos(
         self,
