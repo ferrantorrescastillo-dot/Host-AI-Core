@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import tempfile
 import time
 from datetime import datetime
@@ -20,6 +21,7 @@ from SERVICIOS.host_ai_engine.models import (
     HostAIEngineResponse,
 )
 from SERVICIOS.host_ai_engine.providers import NotConnectedProvider, SimulatedProvider
+from SERVICIOS.host_ai_engine.openai_provider import OpenAIProvider
 
 
 SENSITIVE_KEYS = {
@@ -50,20 +52,23 @@ class HostAIEngine:
         self.log_path = self.logs_dir / "host_ai_engine_calls.jsonl"
         self.audit_path = self.logs_dir / "host_ai_engine_auditoria.jsonl"
 
+        openai_provider = OpenAIProvider()
         self._providers = {
             "SIMULADO": SimulatedProvider(),
-            "OPENAI": NotConnectedProvider("OPENAI"),
+            "OPENAI": openai_provider if openai_provider.connected else NotConnectedProvider("OPENAI", openai_provider.model_name),
             "AZURE_OPENAI": NotConnectedProvider("AZURE_OPENAI"),
             "CLAUDE": NotConnectedProvider("CLAUDE"),
             "GEMINI": NotConnectedProvider("GEMINI"),
             "LOCAL": NotConnectedProvider("LOCAL"),
         }
+        configured_default = str(os.getenv("HOST_AI_AI_PROVIDER") or "SIMULADO").strip().upper()
+        self.default_provider = configured_default if configured_default in self._providers else "SIMULADO"
         self.director = DirectorIAFuncional(self.base_dir)
 
     def providers_disponibles(self) -> list[dict[str, Any]]:
         out: list[dict[str, Any]] = []
         for key, provider in self._providers.items():
-            conectado = key == "SIMULADO"
+            conectado = bool(provider.connected)
             out.append(
                 {
                     "id": key,
@@ -82,7 +87,7 @@ class HostAIEngine:
             "ok": True,
             "servicio": "HOST AI ENGINE",
             "version": self.VERSION,
-            "provider_por_defecto": "SIMULADO",
+            "provider_por_defecto": self.default_provider,
             "providers": self.providers_disponibles(),
             "director_ia": "activo",
         }
@@ -239,7 +244,13 @@ class HostAIEngine:
             out: dict[str, Any] = {}
             for k, v in value.items():
                 key_norm = str(k or "").strip().lower()
-                if key_norm in SENSITIVE_KEYS:
+                if (
+                    key_norm in SENSITIVE_KEYS
+                    or "api_key" in key_norm
+                    or "token" in key_norm
+                    or "secret" in key_norm
+                    or "password" in key_norm
+                ):
                     out[k] = "***REDACTED***"
                 else:
                     out[k] = self._sanear(v)
@@ -247,9 +258,13 @@ class HostAIEngine:
         if isinstance(value, list):
             return [self._sanear(v) for v in value]
         if isinstance(value, str):
-            if len(value) > 500:
-                return value[:500] + "..."
-            return value
+            sanitized = value
+            openai_key = str(os.getenv("OPENAI_API_KEY") or "").strip()
+            if openai_key:
+                sanitized = sanitized.replace(openai_key, "***REDACTED***")
+            if len(sanitized) > 500:
+                return sanitized[:500] + "..."
+            return sanitized
         return value
 
     def _append_jsonl(self, payload: dict[str, Any]) -> None:

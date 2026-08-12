@@ -10,6 +10,10 @@ class HostAIProviderBase(ABC):
     provider_name = "BASE"
     model_name = "N/A"
 
+    @property
+    def connected(self) -> bool:
+        return True
+
     @abstractmethod
     def ejecutar(self, request: HostAIEngineRequest) -> HostAIProviderResult:
         raise NotImplementedError
@@ -94,6 +98,10 @@ class NotConnectedProvider(HostAIProviderBase):
     def __init__(self, provider_name: str, model_name: str = "N/A"):
         self.provider_name = provider_name
         self.model_name = model_name
+
+    @property
+    def connected(self) -> bool:
+        return False
 
     def ejecutar(self, request: HostAIEngineRequest) -> HostAIProviderResult:
         return HostAIProviderResult(

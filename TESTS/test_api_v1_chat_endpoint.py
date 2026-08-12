@@ -126,3 +126,37 @@ def test_post_api_v1_chat_error_homogeneo_sin_traceback(monkeypatch, tmp_path: P
     serialized = json.dumps(payload)
     assert "Traceback" not in serialized
     assert "C:\\\\" not in serialized
+
+
+def test_post_api_v1_chat_devuelve_respuesta_openai_falsa_por_ruta_real(monkeypatch, tmp_path: Path) -> None:
+    from SERVICIOS.host_ai_engine.openai_provider import OpenAIProvider
+
+    class FakeResponses:
+        def create(self, **kwargs):
+            assert kwargs["model"] == "gpt-5-mini"
+            assert kwargs["input"] == "Conversemos sobre organización de cocina"
+            return type("FakeResponse", (), {"output_text": "Respuesta OpenAI controlada"})()
+
+    class FakeClient:
+        responses = FakeResponses()
+
+    monkeypatch.setenv("OPENAI_API_KEY", "credencial-ficticia-de-test")
+    monkeypatch.setenv("HOST_AI_AI_PROVIDER", "OPENAI")
+    monkeypatch.delenv("OPENAI_MODEL", raising=False)
+    monkeypatch.setattr(OpenAIProvider, "_sdk_available", staticmethod(lambda: True))
+    monkeypatch.setattr(OpenAIProvider, "_get_client", lambda self: FakeClient())
+
+    api = HostAIPlatformAPI(base_dir=tmp_path)
+    response = api.handle(
+        ApiRequest(
+            method="POST",
+            path="/api/v1/chat",
+            body={"mensaje": "Conversemos sobre organización de cocina", "contexto": {}},
+        )
+    )
+
+    assert response.status_code == 200
+    assert response.payload["ok"] is True
+    assert response.payload["respuesta"] == "Respuesta OpenAI controlada"
+    assert response.payload["chat"]["datos"]["engine"]["proveedor"] == "OPENAI"
+    assert response.payload["datos_reales_modificados"] is False

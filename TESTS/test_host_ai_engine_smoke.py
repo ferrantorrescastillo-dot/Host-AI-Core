@@ -5,6 +5,8 @@ from pathlib import Path
 
 from CORE.orquestador import OrquestadorHostAI, SolicitudHostAI
 from SERVICIOS.host_ai_engine import HostAIEngine
+from SERVICIOS.host_ai_engine.models import HostAIEngineRequest
+from SERVICIOS.host_ai_engine.openai_provider import OpenAIProvider
 
 
 class _DummyMemoria:
@@ -33,14 +35,19 @@ class _DummyCore:
         self.registro_pipelines = _DummyRegistroPipelines()
 
 
-def test_host_ai_engine_simulado_y_logs_sanitizados(tmp_path: Path) -> None:
+def test_host_ai_engine_simulado_y_logs_sanitizados(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.setenv("OPENAI_API_KEY", "CLAVE_ENTORNO_FICTICIA")
     engine = HostAIEngine(tmp_path)
 
     resultado = engine.consultar(
         origen="Eventos",
         modulo="eventos",
         tipo_peticion="responder_pregunta",
-        datos_enviados={"pregunta": "Que menu recomiendas", "password": "SECRETO"},
+        datos_enviados={
+            "pregunta": "Que menu recomiendas CLAVE_ENTORNO_FICTICIA",
+            "password": "SECRETO",
+            "OPENAI_API_KEY": "OTRO_SECRETO",
+        },
         proveedor_preferido="SIMULADO",
         formato_entrada="texto",
     )
@@ -53,10 +60,14 @@ def test_host_ai_engine_simulado_y_logs_sanitizados(tmp_path: Path) -> None:
     assert log_path.exists()
     contenido = log_path.read_text(encoding="utf-8")
     assert "SECRETO" not in contenido
+    assert "OTRO_SECRETO" not in contenido
+    assert "CLAVE_ENTORNO_FICTICIA" not in contenido
     assert "***REDACTED***" in contenido
 
 
-def test_host_ai_engine_multi_provider_preparado(tmp_path: Path) -> None:
+def test_host_ai_engine_multi_provider_preparado(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    monkeypatch.delenv("HOST_AI_AI_PROVIDER", raising=False)
     engine = HostAIEngine(tmp_path)
     providers = engine.providers_disponibles()
     ids = {str(p.get("id") or "") for p in providers}
@@ -72,6 +83,87 @@ def test_host_ai_engine_multi_provider_preparado(tmp_path: Path) -> None:
     )
     assert str(respuesta_nc.get("estado") or "") == "ERROR"
     assert "no conectado" in " ".join(respuesta_nc.get("errores") or []).lower()
+
+
+class _FakeResponses:
+    def __init__(self, output_text: str = "Respuesta real simulada"):
+        self.output_text = output_text
+        self.calls = []
+
+    def create(self, **kwargs):
+        self.calls.append(kwargs)
+        return type("FakeResponse", (), {"output_text": self.output_text})()
+
+
+class _FakeOpenAIClient:
+    def __init__(self, responses: _FakeResponses):
+        self.responses = responses
+
+
+def _request() -> HostAIEngineRequest:
+    return HostAIEngineRequest(
+        origen="CHAT",
+        modulo="chat_host_ai",
+        tipo_peticion="consulta_general",
+        datos_enviados={"pregunta": "Hola, ¿qué puedes hacer?"},
+        proveedor_preferido="OPENAI",
+    )
+
+
+def test_openai_provider_usa_responses_api_y_modelo_configurable(monkeypatch) -> None:
+    monkeypatch.setenv("OPENAI_API_KEY", "credencial-ficticia-de-test")
+    monkeypatch.setenv("OPENAI_MODEL", "modelo-ficticio-de-test")
+    responses = _FakeResponses()
+    factory_calls = []
+
+    def factory(**kwargs):
+        factory_calls.append({"has_key": bool(kwargs.get("api_key")), "timeout": kwargs.get("timeout")})
+        return _FakeOpenAIClient(responses)
+
+    provider = OpenAIProvider(client_factory=factory)
+    result = provider.ejecutar(_request())
+
+    assert result.ok is True
+    assert result.modelo == "modelo-ficticio-de-test"
+    assert result.salida == {"mensaje": "Respuesta real simulada"}
+    assert factory_calls == [{"has_key": True, "timeout": 30.0}]
+    assert responses.calls[0]["model"] == "modelo-ficticio-de-test"
+    assert responses.calls[0]["input"] == "Hola, ¿qué puedes hacer?"
+    assert "tools" not in responses.calls[0]
+
+
+def test_openai_provider_sin_clave_falla_sin_crear_cliente(monkeypatch) -> None:
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    provider = OpenAIProvider(client_factory=lambda **_kwargs: (_ for _ in ()).throw(AssertionError("no llamar")))
+
+    result = provider.ejecutar(_request())
+
+    assert result.ok is False
+    assert "OPENAI_API_KEY" in " ".join(result.errores)
+
+
+def test_openai_provider_traduce_errores_sin_filtrar_secretos(monkeypatch) -> None:
+    monkeypatch.setenv("OPENAI_API_KEY", "credencial-ficticia-de-test")
+
+    cases = [
+        (type("AuthenticationError", (Exception,), {"status_code": 401}), "credencial"),
+        (type("QuotaError", (Exception,), {"status_code": 429, "code": "insufficient_quota"}), "cuota"),
+        (type("RateLimitError", (Exception,), {"status_code": 429}), "limitado"),
+        (type("APITimeoutError", (Exception,), {}), "tiempo"),
+        (type("APIConnectionError", (Exception,), {}), "conectar"),
+    ]
+    for error_type, expected in cases:
+        class FailingResponses:
+            def create(self, **_kwargs):
+                raise error_type("mensaje potencialmente sensible")
+
+        provider = OpenAIProvider(client_factory=lambda **_kwargs: _FakeOpenAIClient(FailingResponses()))
+        result = provider.ejecutar(_request())
+        serialized = json.dumps(result.to_dict(), ensure_ascii=False)
+        assert result.ok is False
+        assert expected in serialized.lower()
+        assert "mensaje potencialmente sensible" not in serialized
+        assert "credencial-ficticia-de-test" not in serialized
 
 
 def test_orquestador_exponer_host_ai_engine(tmp_path: Path) -> None:

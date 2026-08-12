@@ -91,7 +91,7 @@ class ServicioChatHostAIShell:
     """Servicio de chat para APP shell.
 
     La UI no habla con proveedores directamente. Toda peticion pasa por
-    Orquestador -> Host AI Engine -> proveedor SIMULADO.
+    Orquestador -> Host AI Engine -> proveedor configurado.
     """
 
     def __init__(self, orquestador: Any, home_read_service: Any | None = None):
@@ -335,8 +335,12 @@ class ServicioChatHostAIShell:
             }
 
         return {
-            "tipo_mensaje": TIPO_ADVERTENCIA,
-            "mensaje": "Todavia no puedo interpretar esa peticion. Puedo buscar recetas, mostrar incidencias, consultar eventos proximos o abrir modulos.",
+            "tipo_mensaje": (
+                self._tipo_desde_engine(engine)
+                if str(engine.get("proveedor") or "").upper() == "OPENAI"
+                else TIPO_ADVERTENCIA
+            ),
+            "mensaje": self._mensaje_engine(engine),
             "datos": {"engine": engine, "intent": match.to_dict()},
         }
 
@@ -763,8 +767,19 @@ class ServicioChatHostAIShell:
         if "evento_activo" in contexto and isinstance(contexto.get("evento_activo"), dict):
             self._session.evento_activo = dict(contexto.get("evento_activo") or {})
 
-    def _consultar_engine_simulado(self, contenido: str, contexto: dict[str, Any] | None) -> dict[str, Any]:
+    def _consultar_engine(self, contenido: str, contexto: dict[str, Any] | None) -> dict[str, Any]:
         from CORE.orquestador import SolicitudHostAI
+
+        preferred_provider = str(
+            getattr(getattr(self.orquestador, "host_ai_engine", None), "default_provider", "SIMULADO")
+        )
+        deterministic_match = self.router.detectar(contenido)
+        if preferred_provider.upper() == "OPENAI" and (
+            deterministic_match.intent != INTENT_DESCONOCIDA
+            or detectar_intencion_executive(contenido) is not None
+            or self._es_consulta_modulos(contenido)
+        ):
+            preferred_provider = "SIMULADO"
 
         req = SolicitudHostAI(
             "host_ai_engine_consulta",
@@ -776,7 +791,7 @@ class ServicioChatHostAIShell:
                     "pregunta": contenido,
                     "sim_scenario": self._detectar_escenario_simulado(contenido),
                 },
-                "proveedor_preferido": "SIMULADO",
+                "proveedor_preferido": preferred_provider,
                 "formato_entrada": "texto",
                 "usar_director": False,
                 "contexto": dict(contexto or {}),
@@ -785,6 +800,10 @@ class ServicioChatHostAIShell:
         resultado = self.orquestador.resolver(req)
         data = resultado.to_dict() if hasattr(resultado, "to_dict") else dict(resultado or {})
         return dict((data.get("datos") or {}).get("host_ai_engine") or {})
+
+    # Alias temporal para consumidores y tests históricos; ya no implica proveedor simulado.
+    def _consultar_engine_simulado(self, contenido: str, contexto: dict[str, Any] | None) -> dict[str, Any]:
+        return self._consultar_engine(contenido, contexto)
 
     def _registrar_log(self, texto: str, respuesta: dict[str, Any], inicio: float, error: str = "") -> None:
         duracion_ms = int((time.perf_counter() - inicio) * 1000)
@@ -845,11 +864,11 @@ class ServicioChatHostAIShell:
         estado = str(engine.get("estado") or "")
         if estado == "ERROR":
             errores = ", ".join(engine.get("errores") or [])
-            return f"Error en proveedor simulado: {errores or 'sin detalle'}"
+            return f"No se pudo obtener respuesta del proveedor de IA: {errores or 'sin detalle'}"
         respuesta = dict(engine.get("respuesta") or {})
         if respuesta.get("mensaje"):
             return str(respuesta.get("mensaje"))
-        return "Respuesta simulada recibida."
+        return "El proveedor de IA no devolvió texto utilizable."
 
     @staticmethod
     def _tipo_desde_engine(engine: dict[str, Any]) -> str:
