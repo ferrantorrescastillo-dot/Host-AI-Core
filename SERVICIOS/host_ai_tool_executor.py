@@ -9,6 +9,7 @@ import time
 from SERVICIOS.host_ai_tool_registry import HostAIToolRegistry, TOOL_STATUS_ACTIVADA
 from SERVICIOS.articulos_catalog_read_service import ArticulosCatalogReadService
 from SERVICIOS.host_ai_compras_read_service import HostAIComprasReadService
+from SERVICIOS.host_ai_produccion_read_service import HostAIProduccionReadService
 
 
 LOGGER = logging.getLogger("host_ai.platform.tools")
@@ -32,12 +33,13 @@ class HostAIToolResult:
 
 
 class HostAIToolExecutor:
-    def __init__(self, registry: HostAIToolRegistry, home_read_service: Any | None = None, articulos_read_service: Any | None = None, compras_read_service: Any | None = None):
+    def __init__(self, registry: HostAIToolRegistry, home_read_service: Any | None = None, articulos_read_service: Any | None = None, compras_read_service: Any | None = None, produccion_read_service: Any | None = None):
         self.registry = registry
         self.home_read_service = home_read_service
         self.articulos_read_service = articulos_read_service or self._build_articulos_read_service()
         core = getattr(home_read_service, "core", None)
         self.compras_read_service = compras_read_service or (HostAIComprasReadService(core) if core is not None else None)
+        self.produccion_read_service = produccion_read_service or (HostAIProduccionReadService(core) if core is not None else None)
 
     def _build_articulos_read_service(self) -> Any | None:
         core = getattr(self.home_read_service, "core", None)
@@ -380,6 +382,25 @@ class HostAIToolExecutor:
 
     def _tool_buscar_pedidos_por_proveedor(self, params: dict[str, Any], _ctx: dict[str, Any]) -> HostAIToolResult:
         return self._compras_result(self._compras_service().buscar_por_proveedor(str(params.get("proveedor") or "")))
+
+    def _tool_consultar_produccion(self, params: dict[str, Any], _ctx: dict[str, Any]) -> HostAIToolResult:
+        if self.produccion_read_service is None:
+            raise RuntimeError("Servicio de lectura de Produccion no disponible")
+        data = self.produccion_read_service.consultar(
+            str(params.get("consulta") or "pendientes"),
+            termino=str(params.get("termino") or ""),
+            fecha=params.get("fecha"),
+            limite=params.get("limite", 10),
+        )
+        state = str(data.get("estado") or "VACIO")
+        results = list(data.get("resultados") or [])
+        if state == "AMBIGUO":
+            message = f"He encontrado {len(results)} tareas de produccion posibles. Indica una tarea concreta."
+        elif state in {"VACIO", "NO_ENCONTRADO"}:
+            message = "No hay resultados para esta consulta de Produccion."
+        else:
+            message = "Produccion encontrada:\n" + "\n".join(f"{item.get('titulo')} — {item.get('estado')}" for item in results)
+        return HostAIToolResult(estado="OK", mensaje=message, datos=data)
 
     def _article_search_result(
         self,

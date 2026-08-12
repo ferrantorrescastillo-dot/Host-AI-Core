@@ -102,6 +102,13 @@ class OpenAIProvider(HostAIProviderBase):
                 "ofrece otra consulta de lectura relacionada. No sugieras escrituras, exportaciones ni capacidades "
                 "que no estén explícitamente disponibles en el contexto."
             )
+        production_instruction = ""
+        if tool_context.get("fuente") == "produccion_real_canonica":
+            production_instruction = (
+                " Conserva exactamente estados, cantidades, unidades, fechas y porcentajes de Produccion. "
+                "No conviertas valores null en cero, no recalcules en_curso y no sugieras haber iniciado, "
+                "pausado, finalizado o modificado ninguna tarea."
+            )
         return (
             f"Pregunta del usuario: {question}\n"
             "Contexto determinista autorizado (JSON):\n"
@@ -110,6 +117,7 @@ class OpenAIProvider(HostAIProviderBase):
             "No recalcules cifras, no inventes datos y no afirmes haber modificado Stock."
             f"{selection_instruction}"
             f"{read_instruction}"
+            f"{production_instruction}"
         )
 
     def _error(self, message: str) -> HostAIProviderResult:

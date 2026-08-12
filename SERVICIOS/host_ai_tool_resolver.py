@@ -16,6 +16,7 @@ from SERVICIOS.host_ai_deterministic_intent_router import (
     INTENT_CONSULTAR_PROPUESTAS_COMPRA,
     INTENT_CONSULTAR_NECESIDADES_COMPRA,
     INTENT_BUSCAR_PEDIDOS_PROVEEDOR,
+    INTENT_CONSULTAR_PRODUCCION,
     INTENT_MOSTRAR_EVENTOS_PROXIMOS,
 )
 
@@ -35,6 +36,7 @@ class HostAIToolResolver:
         INTENT_CONSULTAR_PROPUESTAS_COMPRA: "consultar_propuestas_compra",
         INTENT_CONSULTAR_NECESIDADES_COMPRA: "consultar_necesidades_compra",
         INTENT_BUSCAR_PEDIDOS_PROVEEDOR: "buscar_pedidos_por_proveedor",
+        INTENT_CONSULTAR_PRODUCCION: "consultar_produccion",
     }
 
     SIDEBAR_TO_TOOL = {

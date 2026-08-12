@@ -24,6 +24,7 @@ INTENT_CONSULTAR_PENDIENTE_RECEPCION = "CONSULTAR_PENDIENTE_RECEPCION"
 INTENT_CONSULTAR_PROPUESTAS_COMPRA = "CONSULTAR_PROPUESTAS_COMPRA"
 INTENT_CONSULTAR_NECESIDADES_COMPRA = "CONSULTAR_NECESIDADES_COMPRA"
 INTENT_BUSCAR_PEDIDOS_PROVEEDOR = "BUSCAR_PEDIDOS_PROVEEDOR"
+INTENT_CONSULTAR_PRODUCCION = "CONSULTAR_PRODUCCION"
 INTENT_AYUDA = "AYUDA"
 INTENT_DESCONOCIDA = "DESCONOCIDA"
 
@@ -75,6 +76,10 @@ class HostAIDeterministicIntentRouter:
         compras = self._extract_purchases_query(norm)
         if compras is not None:
             return compras
+
+        produccion = self._extract_production_query(norm)
+        if produccion is not None:
+            return IntentMatch(INTENT_CONSULTAR_PRODUCCION, 0.98, produccion)
 
         stock = self._extract_stock_query(norm)
         if stock is not None:
@@ -253,6 +258,21 @@ class HostAIDeterministicIntentRouter:
                 return IntentMatch(INTENT_CONSULTAR_COMPRAS_PENDIENTES, 0.98, {"estado": "recibido"})
         return None
 
+    @classmethod
+    def _extract_production_query(cls, norm: str) -> dict[str, Any] | None:
+        implicit = cls._contains_any(norm, ["que esta en curso", "que estoy produciendo", "que tengo bloqueado", "tareas estan bloqueadas", "que tengo terminado"])
+        if not implicit and not cls._contains_any(norm, ["produccion", "producir", "produciendo", "tareas"]):
+            return None
+        match = re.search(r"(?:que produccion tengo de|busca produccion de|buscar produccion de)\s+(.+)$", norm)
+        if match:
+            return {"consulta": "buscar", "termino": match.group(1).strip()}
+        if cls._contains_any(norm, ["en curso", "estoy produciendo"]): return {"consulta": "en_curso"}
+        if "hoy" in norm: return {"consulta": "hoy"}
+        if cls._contains_any(norm, ["bloquead", "bloqueo"]): return {"consulta": "bloqueadas"}
+        if cls._contains_any(norm, ["terminad", "finalizad"]): return {"consulta": "terminadas"}
+        if "pendiente" in norm: return {"consulta": "pendientes"}
+        return None
+
     @staticmethod
     def _clean_article_term(value: str) -> str:
         value = re.sub(r"\b(articulo|articulos|por favor)\b", " ", str(value or ""))
@@ -287,6 +307,7 @@ __all__ = [
     "INTENT_CONSULTAR_PROPUESTAS_COMPRA",
     "INTENT_CONSULTAR_NECESIDADES_COMPRA",
     "INTENT_BUSCAR_PEDIDOS_PROVEEDOR",
+    "INTENT_CONSULTAR_PRODUCCION",
     "INTENT_AYUDA",
     "INTENT_DESCONOCIDA",
 ]

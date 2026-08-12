@@ -20,6 +20,7 @@ from SERVICIOS.host_ai_deterministic_intent_router import (
     INTENT_CONSULTAR_PROPUESTAS_COMPRA,
     INTENT_CONSULTAR_NECESIDADES_COMPRA,
     INTENT_BUSCAR_PEDIDOS_PROVEEDOR,
+    INTENT_CONSULTAR_PRODUCCION,
     INTENT_CONSULTAR_MARGEN_ACTUAL,
     INTENT_CONSULTAR_ESTADO_STOCK,
     INTENT_DESCONOCIDA,
@@ -194,6 +195,13 @@ class ServicioChatHostAIShell:
             }
             if stock_match.intent in compras_intents:
                 respuesta = self._resolver_compras_conversacional(contenido, dict(contexto or {}), stock_match)
+                salida = MensajeChatHostAI(rol="host_ai", tipo=str(respuesta.get("tipo_mensaje") or TIPO_RESULTADO), texto=str(respuesta.get("mensaje") or ""), datos=dict(respuesta.get("datos") or {}))
+                self._mensajes.append(salida)
+                self._registrar_log(contenido, respuesta, inicio)
+                return self._normalizar(salida)
+
+            if stock_match.intent == INTENT_CONSULTAR_PRODUCCION:
+                respuesta = self._resolver_produccion_conversacional(contenido, dict(contexto or {}), stock_match)
                 salida = MensajeChatHostAI(rol="host_ai", tipo=str(respuesta.get("tipo_mensaje") or TIPO_RESULTADO), texto=str(respuesta.get("mensaje") or ""), datos=dict(respuesta.get("datos") or {}))
                 self._mensajes.append(salida)
                 self._registrar_log(contenido, respuesta, inicio)
@@ -547,6 +555,16 @@ class ServicioChatHostAIShell:
             mensaje = self._mensaje_engine(engine)
         return {"tipo_mensaje": TIPO_RESULTADO if tr.estado == "OK" else TIPO_ERROR, "mensaje": mensaje,
                 "datos": {"engine": engine, "intent": match.to_dict(), "tool": {"id": tool_id, "estado": tr.estado, "duracion_ms": tr.duracion_ms}, "tool_context": tool_context, "navigation_request": navigation, "datos_reales_modificados": False}}
+
+    def _resolver_produccion_conversacional(self, texto: str, contexto: dict[str, Any], match: Any) -> dict[str, Any]:
+        tr = self.tool_executor.execute("consultar_produccion", params=dict(match.terms or {}), session_context=self._session.to_dict())
+        tool_context = dict(tr.datos or {})
+        engine = self._consultar_engine(texto, contexto, tool_context=tool_context)
+        mensaje = tr.mensaje
+        if str(engine.get("proveedor") or "").upper() == "OPENAI" and str(engine.get("estado") or "") == "OK":
+            mensaje = self._mensaje_engine(engine)
+        return {"tipo_mensaje": TIPO_RESULTADO if tr.estado == "OK" else TIPO_ERROR, "mensaje": mensaje,
+                "datos": {"engine": engine, "intent": match.to_dict(), "tool": {"id": "consultar_produccion", "estado": tr.estado, "duracion_ms": tr.duracion_ms}, "tool_context": tool_context, "datos_reales_modificados": False}}
 
     def _resolver_consulta_modulos(
         self,
