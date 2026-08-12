@@ -450,6 +450,12 @@ class ServicioChatHostAIShell:
         mensaje = tr.mensaje
         if provider == "OPENAI" and str(engine.get("estado") or "") == "OK":
             mensaje = self._mensaje_engine(engine)
+        navigation = NavigationRequest(
+            target_module="CATALOGO",
+            target_view="articulos",
+            filter_data={"termino": termino},
+            message="Abrir esta búsqueda en Artículos.",
+        ).to_dict()
         return {
             "tipo_mensaje": TIPO_RESULTADO if tr.estado == "OK" else TIPO_ERROR,
             "mensaje": mensaje,
@@ -459,6 +465,7 @@ class ServicioChatHostAIShell:
                 "tool": {"id": "buscar_articulos", "estado": tr.estado, "duracion_ms": tr.duracion_ms},
                 "tool_context": tool_context,
                 "resultados": list(tool_context.get("articulos") or []),
+                "navigation_request": navigation,
                 "datos_reales_modificados": False,
             },
         }

@@ -355,7 +355,7 @@ class HostAIToolExecutor:
                 "termino": termino,
                 "total_encontrados": int(total),
                 "articulos": articulos[:10],
-                "puede_abrir_buscador": False,
+                "puede_abrir_buscador": True,
                 "busqueda_sugerida": termino,
                 "fuente": "catalogo_articulos_canonico",
                 "solo_lectura": True,

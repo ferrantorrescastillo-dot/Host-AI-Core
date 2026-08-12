@@ -12,6 +12,8 @@ type ChatItem = {
   navigation?: { to: string; label: string };
 };
 
+type NavigationTarget = { to: string; label: string };
+
 type ChatUiError = {
   kind: "network" | "http";
   message: string;
@@ -33,7 +35,8 @@ function getSafeStatus(payload: ApiEnvelopeBase) {
   };
 }
 
-const MODULE_ROUTES: Record<string, { to: string; label: string }> = {
+const MODULE_ROUTES: Record<string, NavigationTarget> = {
+  CATALOGO: { to: "/articulos", label: "Abrir en Artículos" },
   COMPRAS: { to: "/compras", label: "Abrir Compras" },
   EVENTOS: { to: "/eventos", label: "Abrir Eventos" },
   PRODUCCION: { to: "/produccion", label: "Abrir Producción" },
@@ -42,13 +45,22 @@ const MODULE_ROUTES: Record<string, { to: string; label: string }> = {
   HOME: { to: "/dashboard", label: "Abrir Dashboard" },
 };
 
-function getNavigation(payload: ChatResponse) {
+function getNavigation(payload: ChatResponse): NavigationTarget | undefined {
   const data = payload.chat?.datos;
   if (!data || typeof data !== "object") return undefined;
   const request = (data as Record<string, unknown>).navigation_request;
   if (!request || typeof request !== "object") return undefined;
-  const target = (request as Record<string, unknown>).target_module;
-  return typeof target === "string" ? MODULE_ROUTES[target.toUpperCase()] : undefined;
+  const navigationRequest = request as Record<string, unknown>;
+  const target = navigationRequest.target_module;
+  if (typeof target !== "string") return undefined;
+  const route = MODULE_ROUTES[target.toUpperCase()];
+  if (!route) return undefined;
+  const filterData = navigationRequest.filter_data;
+  if (target.toUpperCase() !== "CATALOGO" || !filterData || typeof filterData !== "object") return route;
+  const term = (filterData as Record<string, unknown>).termino;
+  if (typeof term !== "string" || !term.trim()) return route;
+  const query = new URLSearchParams({ q: term.trim() });
+  return { ...route, to: `${route.to}?${query.toString()}` };
 }
 
 export function ChatPage() {

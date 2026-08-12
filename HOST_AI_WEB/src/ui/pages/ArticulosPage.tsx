@@ -13,6 +13,11 @@ export function ArticulosPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const page = Number(params.get("page") || 1);
+  const querySearch = params.get("q") || "";
+
+  useEffect(() => {
+    setSearch((current) => current === querySearch ? current : querySearch);
+  }, [querySearch]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {

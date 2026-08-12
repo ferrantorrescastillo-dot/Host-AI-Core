@@ -80,6 +80,7 @@ def test_executor_ambiguo_no_encontrado_vacio_y_limite_diez():
     assert empty.datos["estado"] == "REQUIERE_TERMINO" and empty_service.queries == []
     assert len(limited.datos["articulos"]) == 10
     assert limited.datos["total_encontrados"] == 14
+    assert ambiguous.datos["puede_abrir_buscador"] is True
 
 
 def test_dto_saneado_solo_lectura_y_write_bloqueado():
@@ -87,7 +88,7 @@ def test_dto_saneado_solo_lectura_y_write_bloqueado():
     assert result.datos["fuente"] == "catalogo_articulos_canonico"
     assert result.datos["solo_lectura"] is True
     assert result.datos["datos_reales_modificados"] is False
-    assert result.datos["puede_abrir_buscador"] is False
+    assert result.datos["puede_abrir_buscador"] is True
     assert "precio" not in result.datos["articulos"][0]
     assert "proveedor" not in result.datos["articulos"][1]
     assert _executor(_ArticlesRead([])).execute("crear_receta", {}).estado == "DESHABILITADA"
@@ -114,6 +115,16 @@ def test_chat_openai_falso_recibe_contexto_y_fallback_determinista():
     context = orchestrator.requests[0].parametros["datos_enviados"]["tool_context"]
     assert context["articulos"][0]["codigo"] == "ART000238"
     assert response["mensaje"] == "Articulo explicado"
+    assert response["datos"]["navigation_request"] == {
+        "target_module": "CATALOGO",
+        "target_view": "articulos",
+        "filter_data": {"termino": "patata monalisa"},
+        "entity_id": "",
+        "source": "chat_host_ai",
+        "preserve_chat_session": True,
+        "message": "Abrir esta búsqueda en Artículos.",
+        "context_update": {},
+    }
 
     failure = {"estado": "ERROR", "proveedor": "OPENAI", "respuesta": {}, "errores": ["fallo"]}
     chat = ServicioChatHostAIShell(_Orchestrator(failure))

@@ -82,4 +82,37 @@ describe("Chat como segunda interfaz de la plataforma", () => {
     expect(await screen.findByText("Chat temporalmente no disponible.")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Executive" })).toBeInTheDocument();
   });
+
+  it.each([
+    ["leche", "/articulos?q=leche"],
+    ["Patata Monalisa", "/articulos?q=Patata+Monalisa"],
+  ])("abre en Artículos con la búsqueda segura %s", async (termino, ruta) => {
+    vi.spyOn(global, "fetch").mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        ok: true,
+        version: "1.0",
+        api_version: "1.0",
+        request_id: "REQ-CHAT-CATALOGO",
+        modo_seguro: true,
+        datos_reales_modificados: false,
+        respuesta: "Resultados del catálogo.",
+        chat: {
+          mensaje: "Resultados del catálogo.",
+          datos: {
+            navigation_request: {
+              target_module: "CATALOGO",
+              filter_data: { termino },
+            },
+          },
+        },
+      }),
+    } as Response);
+
+    render(<MemoryRouter initialEntries={["/chat"]}><App /></MemoryRouter>);
+    await userEvent.type(screen.getByLabelText("Mensaje para Host AI"), `Busca artículos de ${termino}`);
+    await userEvent.click(screen.getByRole("button", { name: "Enviar" }));
+    const link = await screen.findByRole("link", { name: "Abrir en Artículos" });
+    expect(link).toHaveAttribute("href", ruta);
+  });
 });

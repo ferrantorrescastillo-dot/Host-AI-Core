@@ -22,6 +22,13 @@ describe("Catálogo de artículos", () => {
     );
   });
 
+  it("precarga y aplica q al entrar desde Chat", async () => {
+    vi.spyOn(global, "fetch").mockResolvedValue({ ok: true, json: async () => ({ ...envelope, catalogo: { items: [item], total: 1, page: 1, page_size: 20, total_pages: 1, filtros: { familias: [], proveedores: [], estados: [] }, capacidades: {} } }) } as Response);
+    render(<MemoryRouter initialEntries={["/articulos?q=Patata%20Monalisa"]}><App /></MemoryRouter>);
+    expect(screen.getByLabelText(/Buscar art/)).toHaveValue("Patata Monalisa");
+    await waitFor(() => expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining("q=Patata+Monalisa"), expect.objectContaining({ method: "GET" })));
+  });
+
   it("abre la ficha contextual y muestra ausencias sin inventar relaciones", async () => {
     vi.spyOn(global, "fetch").mockResolvedValue({ ok: true, json: async () => ({ ...envelope, articulo: { ...item, unidad_base: "kg", precio_incluye_iva: false, alergenos: [], stock_detalle: { cantidad: 8, unidad: "kg", lotes: [] }, proveedores: [], precios: [], documentos: [], ficha_tecnica: null, recetas: [], escandallos: [], historial: [], operatividad: { stock: true, compras: true, escandallos: true }, edicion: { unidades_base: ["kg", "g", "l", "ml", "u"], proveedores: [{ id: "PROV-1", nombre: "Huerta Sur" }] } } }) } as Response);
     render(<MemoryRouter initialEntries={["/articulos/ART-001"]}><App /></MemoryRouter>);
