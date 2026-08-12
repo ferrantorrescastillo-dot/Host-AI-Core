@@ -19,6 +19,11 @@ INTENT_CONSULTAR_MARGEN_ACTUAL = "CONSULTAR_MARGEN_ACTUAL"
 INTENT_MOSTRAR_ESTADO_GENERAL = "MOSTRAR_ESTADO_GENERAL"
 INTENT_CONSULTAR_ESTADO_STOCK = "CONSULTAR_ESTADO_STOCK"
 INTENT_BUSCAR_ARTICULOS = "BUSCAR_ARTICULOS"
+INTENT_CONSULTAR_COMPRAS_PENDIENTES = "CONSULTAR_COMPRAS_PENDIENTES"
+INTENT_CONSULTAR_PENDIENTE_RECEPCION = "CONSULTAR_PENDIENTE_RECEPCION"
+INTENT_CONSULTAR_PROPUESTAS_COMPRA = "CONSULTAR_PROPUESTAS_COMPRA"
+INTENT_CONSULTAR_NECESIDADES_COMPRA = "CONSULTAR_NECESIDADES_COMPRA"
+INTENT_BUSCAR_PEDIDOS_PROVEEDOR = "BUSCAR_PEDIDOS_PROVEEDOR"
 INTENT_AYUDA = "AYUDA"
 INTENT_DESCONOCIDA = "DESCONOCIDA"
 
@@ -66,6 +71,10 @@ class HostAIDeterministicIntentRouter:
 
         if "estado" in norm and ("sistema" in norm or "general" in norm or "como" in norm):
             return IntentMatch(INTENT_MOSTRAR_ESTADO_GENERAL, 0.95, {})
+
+        compras = self._extract_purchases_query(norm)
+        if compras is not None:
+            return compras
 
         stock = self._extract_stock_query(norm)
         if stock is not None:
@@ -224,6 +233,26 @@ class HostAIDeterministicIntentRouter:
                 return {"termino": termino, "tipo_consulta": query_type}
         return None
 
+    @classmethod
+    def _extract_purchases_query(cls, norm: str) -> IntentMatch | None:
+        provider = re.search(r"(?:tengo\s+)?(?:pedidos|compras)(?:\s+abiertas)?(?:\s+tengo)?\s+(?:de|con)\s+(.+)$", norm)
+        if provider:
+            return IntentMatch(INTENT_BUSCAR_PEDIDOS_PROVEEDOR, 0.98, {"proveedor": provider.group(1).strip()})
+        if cls._contains_any(norm, ["propuestas de compra", "propuesta de compra", "propuestas pendientes"]):
+            return IntentMatch(INTENT_CONSULTAR_PROPUESTAS_COMPRA, 0.98, {})
+        if cls._contains_any(norm, ["necesidades de compra", "necesidad de compra", "que necesito comprar"]):
+            return IntentMatch(INTENT_CONSULTAR_NECESIDADES_COMPRA, 0.98, {})
+        if cls._contains_any(norm, ["pendiente de recibir", "pendientes de recibir", "falta por recibir", "parcialmente recibidos"]):
+            return IntentMatch(INTENT_CONSULTAR_PENDIENTE_RECEPCION, 0.98, {})
+        if "pedido" in norm or "pedidos" in norm or "compras" in norm:
+            if "preparad" in norm:
+                return IntentMatch(INTENT_CONSULTAR_COMPRAS_PENDIENTES, 0.98, {"estado": "preparado"})
+            if cls._contains_any(norm, ["pendiente", "pendientes", "abierto", "abiertos"]):
+                return IntentMatch(INTENT_CONSULTAR_COMPRAS_PENDIENTES, 0.98, {})
+            if "recibid" in norm and "recientemente" in norm:
+                return IntentMatch(INTENT_CONSULTAR_COMPRAS_PENDIENTES, 0.98, {"estado": "recibido"})
+        return None
+
     @staticmethod
     def _clean_article_term(value: str) -> str:
         value = re.sub(r"\b(articulo|articulos|por favor)\b", " ", str(value or ""))
@@ -253,6 +282,11 @@ __all__ = [
     "INTENT_MOSTRAR_ESTADO_GENERAL",
     "INTENT_CONSULTAR_ESTADO_STOCK",
     "INTENT_BUSCAR_ARTICULOS",
+    "INTENT_CONSULTAR_COMPRAS_PENDIENTES",
+    "INTENT_CONSULTAR_PENDIENTE_RECEPCION",
+    "INTENT_CONSULTAR_PROPUESTAS_COMPRA",
+    "INTENT_CONSULTAR_NECESIDADES_COMPRA",
+    "INTENT_BUSCAR_PEDIDOS_PROVEEDOR",
     "INTENT_AYUDA",
     "INTENT_DESCONOCIDA",
 ]

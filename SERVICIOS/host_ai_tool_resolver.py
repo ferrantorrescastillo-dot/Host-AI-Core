@@ -11,6 +11,11 @@ from SERVICIOS.host_ai_deterministic_intent_router import (
     INTENT_MOSTRAR_ESTADO_GENERAL,
     INTENT_CONSULTAR_ESTADO_STOCK,
     INTENT_BUSCAR_ARTICULOS,
+    INTENT_CONSULTAR_COMPRAS_PENDIENTES,
+    INTENT_CONSULTAR_PENDIENTE_RECEPCION,
+    INTENT_CONSULTAR_PROPUESTAS_COMPRA,
+    INTENT_CONSULTAR_NECESIDADES_COMPRA,
+    INTENT_BUSCAR_PEDIDOS_PROVEEDOR,
     INTENT_MOSTRAR_EVENTOS_PROXIMOS,
 )
 
@@ -25,6 +30,11 @@ class HostAIToolResolver:
         INTENT_MOSTRAR_ESTADO_GENERAL: "mostrar_estado_general",
         INTENT_CONSULTAR_ESTADO_STOCK: "consultar_estado_stock",
         INTENT_BUSCAR_ARTICULOS: "buscar_articulos",
+        INTENT_CONSULTAR_COMPRAS_PENDIENTES: "consultar_compras_pendientes",
+        INTENT_CONSULTAR_PENDIENTE_RECEPCION: "consultar_pendiente_recepcion",
+        INTENT_CONSULTAR_PROPUESTAS_COMPRA: "consultar_propuestas_compra",
+        INTENT_CONSULTAR_NECESIDADES_COMPRA: "consultar_necesidades_compra",
+        INTENT_BUSCAR_PEDIDOS_PROVEEDOR: "buscar_pedidos_por_proveedor",
     }
 
     SIDEBAR_TO_TOOL = {

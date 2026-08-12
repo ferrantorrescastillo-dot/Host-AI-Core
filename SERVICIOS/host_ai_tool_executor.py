@@ -8,6 +8,7 @@ import time
 
 from SERVICIOS.host_ai_tool_registry import HostAIToolRegistry, TOOL_STATUS_ACTIVADA
 from SERVICIOS.articulos_catalog_read_service import ArticulosCatalogReadService
+from SERVICIOS.host_ai_compras_read_service import HostAIComprasReadService
 
 
 LOGGER = logging.getLogger("host_ai.platform.tools")
@@ -31,10 +32,12 @@ class HostAIToolResult:
 
 
 class HostAIToolExecutor:
-    def __init__(self, registry: HostAIToolRegistry, home_read_service: Any | None = None, articulos_read_service: Any | None = None):
+    def __init__(self, registry: HostAIToolRegistry, home_read_service: Any | None = None, articulos_read_service: Any | None = None, compras_read_service: Any | None = None):
         self.registry = registry
         self.home_read_service = home_read_service
         self.articulos_read_service = articulos_read_service or self._build_articulos_read_service()
+        core = getattr(home_read_service, "core", None)
+        self.compras_read_service = compras_read_service or (HostAIComprasReadService(core) if core is not None else None)
 
     def _build_articulos_read_service(self) -> Any | None:
         core = getattr(self.home_read_service, "core", None)
@@ -337,6 +340,46 @@ class HostAIToolExecutor:
             total=total,
             mensaje=mensaje,
         )
+
+    def _compras_result(self, data: dict[str, Any]) -> HostAIToolResult:
+        state = str(data.get("estado") or "VACIO")
+        if state == "AMBIGUO":
+            names = ", ".join(str(item.get("nombre") or "") for item in list(data.get("proveedores") or []))
+            message = f"Hay varios proveedores coincidentes: {names}. Indica el nombre exacto."
+        elif state in {"VACIO", "NO_ENCONTRADO"}:
+            message = "No hay resultados para esta consulta de Compras."
+        elif data.get("pedidos"):
+            lines = []
+            for order in list(data.get("pedidos") or []):
+                pending = sum(float(line.get("pendiente") or 0) for line in list(order.get("lineas") or []))
+                suffix = f"; pendiente {pending:g}" if order.get("pendiente_recepcion") else ""
+                lines.append(f"{order.get('pedido_id')} — {order.get('proveedor_nombre')} — {order.get('estado')}{suffix}")
+            message = "Pedidos encontrados:\n" + "\n".join(lines)
+        elif data.get("propuestas"):
+            message = f"Hay {len(data['propuestas'])} propuestas de compra existentes."
+        else:
+            message = f"Hay {len(data.get('necesidades') or [])} necesidades de compra existentes."
+        return HostAIToolResult(estado="OK", mensaje=message, datos=data)
+
+    def _compras_service(self) -> Any:
+        if self.compras_read_service is None:
+            raise RuntimeError("Servicio de lectura de Compras no disponible")
+        return self.compras_read_service
+
+    def _tool_consultar_compras_pendientes(self, params: dict[str, Any], _ctx: dict[str, Any]) -> HostAIToolResult:
+        return self._compras_result(self._compras_service().consultar_pedidos(estado=str(params.get("estado") or ""), solo_abiertos=not bool(params.get("estado"))))
+
+    def _tool_consultar_pendiente_recepcion(self, _params: dict[str, Any], _ctx: dict[str, Any]) -> HostAIToolResult:
+        return self._compras_result(self._compras_service().consultar_pedidos(pendientes_recepcion=True))
+
+    def _tool_consultar_propuestas_compra(self, _params: dict[str, Any], _ctx: dict[str, Any]) -> HostAIToolResult:
+        return self._compras_result(self._compras_service().consultar_propuestas())
+
+    def _tool_consultar_necesidades_compra(self, _params: dict[str, Any], _ctx: dict[str, Any]) -> HostAIToolResult:
+        return self._compras_result(self._compras_service().consultar_necesidades())
+
+    def _tool_buscar_pedidos_por_proveedor(self, params: dict[str, Any], _ctx: dict[str, Any]) -> HostAIToolResult:
+        return self._compras_result(self._compras_service().buscar_por_proveedor(str(params.get("proveedor") or "")))
 
     def _article_search_result(
         self,

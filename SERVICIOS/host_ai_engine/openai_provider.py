@@ -95,6 +95,13 @@ class OpenAIProvider(HostAIProviderBase):
                 " La selección conversacional ya fue resuelta de forma determinista. "
                 "No vuelvas a interpretar el ordinal o identificador original; presenta únicamente articulo_seleccionado."
             )
+        read_instruction = ""
+        if tool_context.get("solo_lectura") is True:
+            read_instruction = (
+                " Esta herramienta es exclusivamente de lectura. Responde a la consulta y, como máximo, "
+                "ofrece otra consulta de lectura relacionada. No sugieras escrituras, exportaciones ni capacidades "
+                "que no estén explícitamente disponibles en el contexto."
+            )
         return (
             f"Pregunta del usuario: {question}\n"
             "Contexto determinista autorizado (JSON):\n"
@@ -102,6 +109,7 @@ class OpenAIProvider(HostAIProviderBase):
             "Responde usando exclusivamente este contexto para datos, cantidades y unidades. "
             "No recalcules cifras, no inventes datos y no afirmes haber modificado Stock."
             f"{selection_instruction}"
+            f"{read_instruction}"
         )
 
     def _error(self, message: str) -> HostAIProviderResult:
