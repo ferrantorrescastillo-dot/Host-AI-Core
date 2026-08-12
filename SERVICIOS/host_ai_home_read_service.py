@@ -347,7 +347,10 @@ class HostAIHomeReadService:
                 "existencias": list(actual.get("items") or []),
                 "total_existencias": int(actual.get("total_items") or 0),
                 "lotes": lotes,
-                "total_lotes": int(actual.get("total_lotes") or len(lotes)),
+                "total_lotes": len(lotes),
+                "total_lotes_registrados": int(
+                    actual.get("total_lotes") or len(lotes)
+                ),
                 "movimientos": movimientos,
                 "total_movimientos": len(movimientos),
                 "alertas": items,
@@ -367,7 +370,10 @@ class HostAIHomeReadService:
                 ),
                 "resumen": {
                     "articulos": int(resumen_motor.get("total_articulos") or 0),
-                    "lotes": int(resumen_motor.get("total_lotes") or 0),
+                    "lotes": len(lotes),
+                    "lotes_registrados": int(
+                        resumen_motor.get("total_lotes") or len(lotes)
+                    ),
                     "movimientos": len(movimientos),
                     "alertas": int(resumen_motor.get("total_avisos") or 0),
                     "bajo_minimo": int(

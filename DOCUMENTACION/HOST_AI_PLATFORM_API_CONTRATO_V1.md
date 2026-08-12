@@ -136,7 +136,10 @@ las operaciones de lectura existentes de `MotorStock`.
 - `estado`, `total` e `items`: contrato compatible de alertas de Stock.
 - `existencias` y `total_existencias`: articulos agrupados y cantidades
   actuales devueltos por `stock_actual()`.
-- `lotes` y `total_lotes`: lotes positivos ordenados por el motor.
+- `lotes` y `total_lotes`: lotes positivos ordenados por el motor; el total
+  coincide siempre con la longitud de la coleccion.
+- `total_lotes_registrados`: total historico de lotes, incluidos los
+  agotados; mantiene disponible el contador previo sin alterar `lotes`.
 - `movimientos` y `total_movimientos`: historial ordenado por el motor.
 - `alertas` y `total_alertas`: alias explicito de las alertas del contrato
   base.
@@ -145,6 +148,8 @@ las operaciones de lectura existentes de `MotorStock`.
   por el motor.
 - `resumen`: articulos, lotes, movimientos, alertas, stock bajo minimo,
   caducidades y valor total procedentes de `resumen_operativo()`.
+  `resumen.lotes` cuenta lotes positivos y `resumen.lotes_registrados`
+  conserva el total historico.
 
 El agregador no calcula disponibilidad, minimos ni fechas de caducidad. No
 modifica datos reales y no accede directamente al almacenamiento.

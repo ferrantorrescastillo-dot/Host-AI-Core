@@ -31,6 +31,15 @@ def _write_stock(base_dir: Path) -> None:
                     "caducidad": date.today().isoformat(),
                     "coste_unitario": 2.5,
                     "creado_en": "2099-01-01T10:00:00",
+                },
+                {
+                    "id": "LOTE-AGOTADO-1",
+                    "articulo_id": "ART-AGOTADO",
+                    "nombre": "Producto agotado",
+                    "cantidad": 0,
+                    "unidad": "kg",
+                    "fecha_entrada": "2098-01-01",
+                    "creado_en": "2098-01-01T10:00:00",
                 }
             ]
         ),
@@ -66,12 +75,17 @@ def test_home_stock_expone_datos_reales(tmp_path: Path) -> None:
 
     assert modulo["estado"] == "datos_disponibles"
     assert modulo["total"] == 2
-    assert modulo["total_existencias"] == 1
+    assert modulo["total_existencias"] == 2
+    assert modulo["total_existencias"] == len(modulo["existencias"])
     assert modulo["total_lotes"] == 1
+    assert modulo["total_lotes"] == len(modulo["lotes"])
+    assert modulo["total_lotes_registrados"] == 2
     assert modulo["total_movimientos"] == 1
     assert modulo["total_alertas"] == 2
     assert modulo["estado_operativo"] == "revisar"
     assert modulo["total_caducidades"] == 1
+    assert modulo["resumen"]["lotes"] == len(modulo["lotes"])
+    assert modulo["resumen"]["lotes_registrados"] == 2
     assert modulo["existencias"][0]["cantidad"] == 4
     assert modulo["lotes"][0]["id"] == "LOTE-WEB-1"
     assert modulo["movimientos"][0]["id"] == "MOV-WEB-1"
@@ -117,8 +131,11 @@ def test_http_dashboard_expone_contrato_stock(tmp_path: Path) -> None:
 
     assert response.status_code == 200
     modulo = response.json()["dashboard"]["modulos"]["stock"]
-    assert modulo["total_existencias"] == 1
+    assert modulo["total_existencias"] == 2
+    assert modulo["total_existencias"] == len(modulo["existencias"])
     assert modulo["total_lotes"] == 1
+    assert modulo["total_lotes"] == len(modulo["lotes"])
+    assert modulo["total_lotes_registrados"] == 2
     assert modulo["total_movimientos"] == 1
     assert modulo["total_caducidades"] == 1
     assert modulo["existencias"][0]["nombre"] == "Tomate"
