@@ -15,7 +15,13 @@ from SERVICIOS.import_ambiguity_resolver import ImportAmbiguityResolver, resolve
 
 
 def _norm(value: Any) -> str:
-    text = unicodedata.normalize("NFKD", str(value or "").lower())
+    text = str(value or "").lower()
+    if any(marker in text for marker in ("Ã", "Â", "â")):
+        try:
+            text = text.encode("latin-1").decode("utf-8")
+        except (UnicodeEncodeError, UnicodeDecodeError):
+            pass
+    text = unicodedata.normalize("NFKD", text)
     return " ".join(re.sub(r"[^a-z0-9]+", " ", "".join(
         char for char in text if not unicodedata.combining(char)
     )).split())
@@ -99,6 +105,7 @@ class RestaurantDataImportAnalyzer:
             })
 
         recipes = self._recipes(tables)
+        menus = self._menus(tables)
         articles = self._named_rows(tables, "ARTICULOS")
         suppliers = self._named_rows(tables, "PROVEEDORES")
         normalized_articles = {_norm(item["nombre"]) for item in articles if item.get("nombre")}
@@ -173,6 +180,7 @@ class RestaurantDataImportAnalyzer:
                 "hojas_analizadas": len({(t.source, t.sheet) for t in tables}),
                 "filas_analizadas": sum(len(t.rows) for t in tables),
                 "posibles_articulos": len(articles), "posibles_recetas": len(recipes),
+                "posibles_menus": len(menus),
                 "posibles_subelaboraciones": len({x["depende_de"] for x in subdependencies}),
                 "posibles_productos_vendibles": sum(
                     1 for t in tables for row in t.rows if self._value(row, t.mapping, "pvp") not in {None, ""}
@@ -186,6 +194,7 @@ class RestaurantDataImportAnalyzer:
             },
             "mapping": mapped,
             "recetas": recipes,
+            "menus": menus,
             "articulos": articles,
             "proveedores": suppliers,
             "relaciones": subdependencies,
@@ -303,13 +312,27 @@ class RestaurantDataImportAnalyzer:
                 vertical.merged_cells = merged_cells
                 return [vertical]
             unknown = self._matrix(source, sheet, values)
-            unknown.kind = "DESCONOCIDO"
+            menu_titles = [
+                str(value).strip()
+                for row in values[:5] for value in row
+                if self._valid_entity_name(value) and _norm(value).startswith("menu ")
+            ]
+            menu_sections = sum(
+                _norm(value) in {"aperitivo", "primero", "pescado", "carne", "postre", "bodega"}
+                for row in values for value in row if value not in {None, ""}
+            )
+            complex_menu_document = len(menu_titles) >= 2 and menu_sections >= 3
+            unknown.kind = "DOCUMENTACION" if complex_menu_document else "DESCONOCIDO"
             unknown.header_row = None
             unknown.dimensions = dimensions
             unknown.nonempty_cells = nonempty_cells
             unknown.merged_cells = merged_cells
             unknown.confidence = 0.2
             unknown.reason = "No se encontró un encabezado con evidencia estructural suficiente."
+            if complex_menu_document:
+                unknown.reason = (
+                    "Documento multicolumna con varias identidades de menu; requiere desglose explicito."
+                )
             return [unknown]
         regions: list[ParsedTable] = []
         for offset, header_index in enumerate(candidates):
@@ -336,15 +359,62 @@ class RestaurantDataImportAnalyzer:
             table.header_row = header_index + 1
             table.context_title = self._context_title(values, header_index)
             destinations = {item["destino"] for item in table.mapping}
-            if table.context_title and {"nombre", "cantidad"}.issubset(destinations):
+            structural_kind, structural_reason = self._structural_kind(
+                sheet, values, header_index, table
+            )
+            if structural_kind:
+                table.kind = structural_kind
+            elif table.context_title and table.kind != "MENUS" and {"nombre", "cantidad"}.issubset(destinations):
                 table.kind = "RECETAS"
             table.dimensions = dimensions
             table.nonempty_cells = nonempty_cells
             table.merged_cells = merged_cells
             table.confidence = min(0.98, 0.55 + self._header_score(values[header_index]) * 0.1)
             table.reason = "Encabezado desplazado detectado por aliases y patrón de columnas."
+            if structural_reason:
+                table.reason = structural_reason
             regions.append(table)
         return regions
+
+    @classmethod
+    def _structural_kind(
+        cls, sheet: str, values: list[list[Any]], header_index: int, table: ParsedTable,
+    ) -> tuple[str | None, str]:
+        """Distingue fichas de receta, menus operativos y plantillas por estructura."""
+        sheet_text = _norm(sheet)
+        nearby = " ".join(
+            _norm(value)
+            for row in values[max(0, header_index - 8):header_index + 1]
+            for value in row if value not in {None, ""}
+        )
+        header_text = " ".join(
+            _norm(value) for value in values[header_index] if value not in {None, ""}
+        )
+        context = _norm(table.context_title)
+        if "plantilla" in sheet_text:
+            return "DOCUMENTACION", "Plantilla documental; no representa una entidad operativa."
+        destinations = {item["destino"] for item in table.mapping}
+        if "nombre" in destinations and destinations.intersection(
+            {"codigo", "familia", "proveedor", "formato"}
+        ):
+            return "ARTICULOS", "Catalogo estructurado por identidad y atributos de articulo."
+        recipe_markers = (
+            "ficha tecnica plato" in nearby
+            or sum(marker in header_text for marker in ("articulo", "bruto", "neto", "desp", "sucio")) >= 3
+        )
+        if recipe_markers:
+            return "RECETAS", "Ficha tecnica con identidad de elaboracion y matriz de ingredientes."
+        menu_title = context.startswith("menu ") or any(
+            _norm(value).startswith("menu ")
+            for row in values[:min(header_index, 5)]
+            for value in row if cls._valid_entity_name(value)
+        )
+        menu_matrix = sum(
+            marker in nearby for marker in ("p v p", "food cost", "euros racion", "precio kg")
+        ) >= 2
+        if menu_title and menu_matrix:
+            return "MENUS", "Menu operativo con identidad en cabecera y matriz de componentes/coste."
+        return None, ""
 
     def _vertical_region(self, source: str, sheet: str, values: list[list[Any]]) -> ParsedTable | None:
         ingredient_rows = []
@@ -367,10 +437,17 @@ class RestaurantDataImportAnalyzer:
         table.kind = "RECETAS"
         table.header_row = None
         table.context_title = title
+        structural_kind, structural_reason = self._structural_kind(
+            sheet, values, first_data_index, table
+        )
+        if structural_kind:
+            table.kind = structural_kind
         table.start_row = ingredient_rows[0]["_fila"]
         table.end_row = ingredient_rows[-1]["_fila"]
         table.confidence = min(0.9, 0.55 + len(ingredient_rows) * 0.03)
         table.reason = "Ficha vertical: título contextual seguido de nombres y cantidades."
+        if structural_reason:
+            table.reason = structural_reason
         return table
 
     @staticmethod
@@ -437,7 +514,8 @@ class RestaurantDataImportAnalyzer:
         sheet_signal = _norm(sheet)
         signal = _norm(sheet + " " + " ".join(headers))
         kind = "DATOS"
-        for candidate, words in (("PROVEEDORES", ("proveedor", "supplier")),
+        for candidate, words in (("MENUS", ("menu",)),
+                                 ("PROVEEDORES", ("proveedor", "supplier")),
                                  ("ARTICULOS", ("articulo", "producto")),
                                  ("RECETAS", ("receta", "elaboracion", "escandallo")),
                                  ("PRECIOS", ("precio", "pvp", "coste"))):
@@ -460,7 +538,10 @@ class RestaurantDataImportAnalyzer:
         grouped: dict[str, dict[str, Any]] = {}
         seen_physical_origins: set[tuple[str, str, int, str]] = set()
         for table in tables:
-            if table.kind != "RECETAS":
+            if table.kind != "RECETAS" and not (
+                table.kind == "MENUS"
+                and any(item["destino"] == "receta" for item in table.mapping)
+            ):
                 continue
             for row in table.rows:
                 recipe_name = (
@@ -515,6 +596,40 @@ class RestaurantDataImportAnalyzer:
             recipe for recipe in grouped.values()
             if recipe["ingredientes_estructurados"] or recipe["pasos"]
         ]
+
+    def _menus(self, tables: list[ParsedTable]) -> list[dict[str, Any]]:
+        """Proyecta la hoja MENU como contenedor, conservando sus recetas separadas."""
+        grouped: dict[tuple[str, str], dict[str, Any]] = {}
+        for table in tables:
+            if table.kind != "MENUS":
+                continue
+            key = (table.source, table.sheet)
+            menu = grouped.setdefault(key, {
+                "nombre": table.sheet.strip(), "tipo": "MENU", "componentes": [],
+                "origen": {"source_filename": table.source, "sheet": table.sheet},
+            })
+            seen = {_norm(item.get("nombre")) for item in menu["componentes"]}
+            for row in table.rows:
+                recipe_name = (
+                    self._value(row, table.mapping, "receta")
+                    or self._value(row, table.mapping, "ingrediente")
+                    or self._value(row, table.mapping, "nombre")
+                )
+                normalized = _norm(recipe_name)
+                if (
+                    not self._valid_entity_name(recipe_name)
+                    or normalized in {_norm(table.sheet), _norm(menu["nombre"])}
+                    or normalized in seen
+                ):
+                    continue
+                seen.add(normalized)
+                menu["componentes"].append({
+                    "nombre": str(recipe_name).strip(), "seccion": "Otros",
+                    "cantidad_origen": 1,
+                    "origen": {"archivo": table.source, "hoja": table.sheet,
+                               "region": table.region_id, "fila": row.get("_fila")},
+                })
+        return [item for item in grouped.values() if item["componentes"]]
 
     def _named_rows(self, tables: list[ParsedTable], kind: str) -> list[dict[str, Any]]:
         unique: dict[str, dict[str, Any]] = {}

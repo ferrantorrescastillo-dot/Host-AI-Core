@@ -664,7 +664,9 @@ describe("Importador Inteligente de Biblioteca", () => {
     await screen.findByText("Confirmación final");
     const button = screen.getByRole("button", { name: "Confirmar importación" });
     expect(button).toBeDisabled();
-    fireEvent.click(screen.getByRole("checkbox"));
+    fireEvent.click(screen.getByRole("checkbox", {
+      name: "He revisado el resumen y autorizo aplicar estos cambios.",
+    }));
     fireEvent.click(button);
     expect(await screen.findByText("Importación completada")).toBeInTheDocument();
     expect(global.fetch).toHaveBeenLastCalledWith(

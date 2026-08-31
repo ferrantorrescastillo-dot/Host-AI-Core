@@ -3,7 +3,7 @@
 Fecha: 31 de agosto de 2026
 Versión base: `af3642d2690b6e3a4243788bab0de244b30c602e`
 Rama: `feature/compras-web`
-Resultado: CERTIFICADA TÉCNICAMENTE; VALIDACIÓN MANUAL/CULINARIA PENDIENTE
+Resultado: CERTIFICADA TÉCNICAMENTE; VALIDACIÓN MANUAL EN CURSO
 
 ## Alcance
 
@@ -42,6 +42,22 @@ Escenario sintético con 40 regiones ambiguas de layout equivalente: 40 aparicio
 - El diagnóstico histórico Boronat no se ejecutó porque copia `DATOS/db`; esta certificación exige aislamiento de los datos privados actuales.
 - Proveedor, modelo, tokens y coste solo pueden informar valores reales cuando el proveedor los entregue.
 
+## Evidencia final de cierre tecnico (1 de septiembre de 2026)
+
+Estado actualizado: `FASE 1 - LISTA PARA CIERRE FORMAL`; el cierre sigue pendiente de confirmacion del usuario.
+
+Se repitio `Escandallos Boronat (1).xlsx` mediante los servicios reales, en repositorio temporal limpio, con IA desactivada, exclusion A.P solo para la sesion y sin `CONFIRM`. La clasificacion estructural separa fichas tecnicas `M.P` de menus operativos, deja `PLANTILLA COSTE MENU` como documentacion y `MENU FIN DE AÑO` como documento multicolumna pendiente de desglose explicito. No proyecta titulos contenedores como recetas.
+
+Evidencia ejecutada: 122 pruebas backend de Fase 1 y 31 pruebas web superadas; typecheck correcto. El Excel produjo 21 hojas, 352 articulos documentales, 36 exclusiones A.P, 46 recetas independientes y 10 menus operativos; 129 lineas de menu resueltas y 14 pendientes legitimas. Proveedores y relaciones proveedor: cero. IA externa y escrituras operativas: cero.
+
+Siguiente paso unico: revision final y commit de cierre por el usuario; no iniciar Fase 1.5 antes de ese hito.
+
 ## Siguiente paso
 
-VALIDACIÓN MANUAL/CULINARIA DE FASE 1 POR EL USUARIO.
+Repetir el análisis del mismo Excel de validación y comparar resultados antes/después.
+
+## Correcciones derivadas de la primera validación real
+
+El 31 de agosto de 2026 la validación manual detectó clasificación ausente de menús, relaciones artificiales sin proveedor, propuestas visibles desalineadas con el matching y necesidad de excluir A.P antiguos solo en esa sesión. Se corrigieron los componentes existentes sin crear autoridades paralelas.
+
+Evidencia posterior: 121 pruebas backend de Fase 1 y 31 pruebas web superadas; typecheck correcto. La validación manual no se considera completada hasta repetir el mismo Excel.

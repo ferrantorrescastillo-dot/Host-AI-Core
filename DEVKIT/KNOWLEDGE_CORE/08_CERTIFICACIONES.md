@@ -1342,7 +1342,7 @@ Debe mantenerse alineado con:
 - Nivel: C7 dentro del alcance automático.
 - Evidencia: `DEVKIT/CERTIFICACION_TECNICA_FASE1_IMPORTACION.md` y tests focales de Fase 1.
 - Datos: sintéticos y temporales; sin uso de `DATOS/` como repositorio de prueba.
-- Estado: vigente, pendiente de validación manual/culinaria.
+- Estado: vigente; validación manual en curso tras aplicar correcciones derivadas del primer Excel real.
 
 ---
 

@@ -352,7 +352,7 @@ export type BibliotecaImportSession = {
     hojas: Array<{ archivo: string; nombre: string; region?: string; tipo_propuesto: string; filas: number; mapping: Array<{ columna: string; destino: string; confianza: number; requiere_revision: boolean }>; fila_inicial?: number; fila_final?: number; fila_encabezado?: number | null; titulo_contexto?: string; dimensiones?: string; celdas_no_vacias?: number; merged_cells?: string[]; confianza?: number; motivo?: string }>;
     resumen: {
       archivos_analizados: number; hojas_analizadas: number; filas_analizadas: number;
-      posibles_articulos: number; posibles_recetas: number; posibles_subelaboraciones: number;
+      posibles_articulos: number; posibles_recetas: number; posibles_menus?: number; posibles_subelaboraciones: number;
       posibles_productos_vendibles: number; proveedores: number; relaciones_detectadas: number;
       duplicados_posibles: number; ambiguedades: number; articulos_sin_coste: number;
       warnings_tecnicos?: number; decisiones_usuario?: number;
@@ -362,6 +362,8 @@ export type BibliotecaImportSession = {
     propuestas_ia?: Array<Record<string, unknown>>;
     warnings_tecnicos?: Array<Record<string, unknown>>;
     decisiones_usuario?: Array<Record<string, unknown>>;
+    exclusiones_sesion?: Array<{ nombre?: string; tipo_origen: string; accion: "IGNORAR"; motivo: string; origen?: unknown }>;
+    opciones_sesion?: { excluir_ap_antiguos?: boolean };
     perfiles_importacion?: Array<Record<string, unknown>>;
     resultado_hibrido?: Record<string, unknown>;
     coste_ia: { usada: boolean; ambiguedades_enviadas: number; layouts_reutilizados?: number; total: number };

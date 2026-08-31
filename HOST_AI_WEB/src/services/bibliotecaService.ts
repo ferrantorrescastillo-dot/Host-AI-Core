@@ -56,7 +56,7 @@ export const bibliotecaService = {
         : undefined,
     });
   },
-  importRestaurantData: async (files: File[], pastedText = "", resolveAmbiguitiesWithAi = false, analyzeDocumentWithAi = false) => {
+  importRestaurantData: async (files: File[], pastedText = "", resolveAmbiguitiesWithAi = false, analyzeDocumentWithAi = false, excludeLegacyAp = false) => {
     const encode = async (file: File) => {
       const buffer = new Uint8Array(await file.arrayBuffer());
       let binary = "";
@@ -77,6 +77,7 @@ export const bibliotecaService = {
       texto_pegado: pastedText.trim() || undefined,
       resolver_ambiguedades_ia: resolveAmbiguitiesWithAi || undefined,
       analizar_documento_con_ia: analyzeDocumentWithAi || undefined,
+      excluir_ap_antiguos: excludeLegacyAp || undefined,
     });
   },
   importPreparedData: async (file: File) => {

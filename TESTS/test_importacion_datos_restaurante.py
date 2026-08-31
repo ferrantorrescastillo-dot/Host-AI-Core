@@ -10,6 +10,7 @@ from openpyxl import Workbook
 
 from SERVICIOS.analizador_importacion_restaurante import ParsedTable, RestaurantDataImportAnalyzer
 from SERVICIOS.importador_inteligente_biblioteca import ImportDocumentService
+from SERVICIOS.borrador_importacion_biblioteca import normalize_text
 from SERVICIOS.repositorio_productos_maestro_601 import RepositorioProductosMaestro601
 from SERVICIOS.biblioteca_recetas_601 import RepositorioBibliotecaRecetas601
 from SERVICIOS.motor_escritura_segura_i1342 import MotorEscrituraSeguraI1342
@@ -125,6 +126,45 @@ def _incomplete_recipe_xlsx() -> bytes:
     sheet.append(["Receta", "Ingrediente", "Cantidad", "Unidad"])
     for index in range(8):
         sheet.append(["Ensaladilla", f"Ingrediente {index + 1}", index + 1, "g"])
+    target = io.BytesIO()
+    workbook.save(target)
+    return target.getvalue()
+
+
+def _menu_multisheet_xlsx() -> bytes:
+    workbook = Workbook()
+    raw = workbook.active
+    raw.title = "M.P RECETAS"
+    raw.append(["Receta", "Ingrediente", "Cantidad", "Unidad", "Procedimiento"])
+    raw.append(["Patatas bravas", "Patata", 1, "kg", "Freír"])
+    menu = workbook.create_sheet("MENU BODA 31-1")
+    menu.append(["Receta", "Ingrediente", "Cantidad", "Unidad", "Procedimiento"])
+    menu.append(["Patatas Bravas.", "Patata", 1, "kg", "Freír"])
+    menu.append(["Salsa romesco", "Tomate", 1, "kg", "Triturar"])
+    target = io.BytesIO()
+    workbook.save(target)
+    return target.getvalue()
+
+
+def _articles_with_unregistered_supplier_xlsx() -> bytes:
+    workbook = Workbook()
+    sheet = workbook.active
+    sheet.title = "Artículos"
+    sheet.append(["Producto", "Proveedor", "Formato"])
+    sheet.append(["Patata", "Proveedor no identificado", "kg"])
+    sheet.append(["Tomate", "Proveedor no identificado", "kg"])
+    target = io.BytesIO()
+    workbook.save(target)
+    return target.getvalue()
+
+
+def _ap_mp_xlsx() -> bytes:
+    workbook = Workbook()
+    sheet = workbook.active
+    sheet.title = "Artículos"
+    sheet.append(["Producto", "Formato"])
+    sheet.append(["A.P MINI GOFRE CON SOBRASADA Y MIEL.", "ud"])
+    sheet.append(["M.P HARINA", "kg"])
     target = io.BytesIO()
     workbook.save(target)
     return target.getvalue()
@@ -288,6 +328,77 @@ def test_existing_catalog_is_reused_and_ceviche_collision_is_excluded_from_safe_
     assert collision["importacion"]["preview_global"]["contadores"]["articulos_requieren_revision"] == 1
 
 
+def test_menu_sheet_is_container_and_keeps_component_recipes_separate(tmp_path: Path):
+    service = ImportDocumentService(tmp_path)
+    response = service.import_document({"archivos": [_file("menus.xlsx", _menu_multisheet_xlsx())]})
+
+    assert response["ok"] is True
+    session = response["importacion"]
+    analysis = session["analisis_restaurante"]
+    assert any(item["nombre"] == "MENU BODA 31-1" and item["tipo"] == "MENU" for item in analysis["menus"])
+    assert {normalize_text(item["nombre"]) for item in analysis["recetas"]} >= {"patatas bravas", "salsa romesco"}
+    menu = session["preview_global"]["menus"]["crear"][0]
+    assert menu["nombre"] == "MENU BODA 31-1"
+    assert {line["nombre"] for line in menu["lineas"]} == {"Patatas Bravas.", "Salsa romesco"}
+    assert all(line["tipo_referencia"] == "RECETA" and line["futura"] for line in menu["lineas"])
+    assert session["preview_global"]["contadores"]["menus_recibidos"] == 1
+    assert response["datos_operativos_modificados"] is False
+
+
+def test_session_option_excludes_legacy_ap_but_keeps_mp_without_derived_pending(tmp_path: Path):
+    service = ImportDocumentService(tmp_path)
+    response = service.import_document({
+        "archivos": [_file("catalogo.xlsx", _ap_mp_xlsx())],
+        "excluir_ap_antiguos": True,
+    })
+
+    session = response["importacion"]
+    catalog = session["borrador"]["catalogo"]
+    assert [item["nombre"] for item in catalog["articulos"]] == ["M.P HARINA"]
+    assert catalog["relaciones"] == []
+    assert session["analisis_restaurante"]["exclusiones_sesion"] == [{
+        "nombre": "A.P MINI GOFRE CON SOBRASADA Y MIEL.",
+        "tipo_origen": "ARTICULOS", "accion": "IGNORAR",
+        "motivo": "Exclusión A.P confirmada para esta sesión.",
+        "origen": "catalogo.xlsx:Artículos:REGION-1",
+    }]
+    assert session["analisis_restaurante"]["opciones_sesion"] == {"excluir_ap_antiguos": True}
+    assert response["datos_operativos_modificados"] is False
+
+
+def test_supplier_text_without_detected_supplier_does_not_create_artificial_relations(tmp_path: Path):
+    session = ImportDocumentService(tmp_path).import_document({
+        "archivos": [_file("sin-proveedores.xlsx", _articles_with_unregistered_supplier_xlsx())]
+    })["importacion"]
+
+    assert session["analisis_restaurante"]["proveedores"] == []
+    assert session["borrador"]["catalogo"]["relaciones"] == []
+    counts = session["preview_global"]["contadores"]
+    assert counts["relaciones"] == 0
+    assert counts["relaciones_pendientes"] == 0
+    assert counts["pendientes_desglose"]["relacion"] == 0
+
+
+def test_visible_recipe_proposals_follow_create_reuse_and_pending_actions(tmp_path: Path):
+    _seed_library_recipes(tmp_path)
+    session = ImportDocumentService(tmp_path).import_document({
+        "archivos": [_file("recetas.xlsx", _library_match_xlsx(incompatible_ceviche=True))]
+    })["importacion"]
+
+    actions = {item["title"]: item["proposed_action"] for item in session["borrador"]["recipes"]}
+    visible = {
+        ((item["datos_propuestos"]["entidad"])["name"]): item["titulo"]
+        for item in session["propuestas"]
+        if item["datos_propuestos"]["entidad"]["kind"] == "RECETA"
+    }
+    assert actions["Pico de gallo"] == "REUTILIZAR_EXISTENTE"
+    assert visible["Pico de gallo"].startswith("Reutilizar receta existente:")
+    assert actions["Receta realmente nueva"] == "CREAR_RECETA"
+    assert visible["Receta realmente nueva"].startswith("Crear receta nueva:")
+    assert actions["Ceviche de corvina"] == "REQUIERE_REVISION"
+    assert visible["Ceviche de corvina"].startswith("Pendiente de decisión de identidad:")
+
+
 def test_existing_library_recipes_are_checked_reused_and_not_overwritten(tmp_path: Path):
     existing = _seed_library_recipes(tmp_path)
     service = ImportDocumentService(tmp_path)
@@ -405,7 +516,7 @@ def test_new_recipe_has_one_canonical_creation_proposal(tmp_path: Path):
     ]
     assert len(recipe_proposals) == 1
     assert recipe_proposals[0]["tipo"] == "CREAR_RECETA"
-    assert recipe_proposals[0]["titulo"] == "Crear elaboración/receta canónica: Ensaladilla"
+    assert recipe_proposals[0]["titulo"] == "Crear receta nueva: Ensaladilla"
 
 
 def test_unknown_imported_yield_is_null_publicly_pending_and_not_used_in_calculations(tmp_path: Path):
@@ -511,3 +622,34 @@ def test_realistic_excel_detects_shifted_headers_regions_and_filters_structural_
     assert {"Receta A", "Receta B", "Receta C", "Crema de verduras"}.issubset(recipes)
     assert len(recipes["Crema de verduras"]["ingredientes_estructurados"]) == 10
     assert all(item.get("trazabilidad", {}).get("region") for item in recipes.values())
+
+
+def test_menu_classification_uses_structure_and_excludes_recipe_sheets_and_templates():
+    workbook = Workbook()
+    recipe = workbook.active
+    recipe.title = "M.P MENU EVENTO"
+    recipe.append(["FICHA TÃ‰CNICA PLATO"])
+    recipe.append(["ARTÃCULO", "Salsa romesco"])
+    recipe.append(["ARTICULO", "KG", "BRUTO", "NETO", "%DESP", "SUCIO"])
+    recipe.append(["Tomate", 1, 1, 1, 0, 1])
+    menu = workbook.create_sheet("MENU EVENTO")
+    menu.append(["MENU EVENTO 2026"])
+    menu.append(["APERITIVO", "P.V.P", "NETO", "COSTO", "FOOD COST"])
+    menu.append(["Salsa romesco", 1, 1, 1, 1])
+    menu.append(["Agua", 1, 1, 1, 1])
+    template = workbook.create_sheet("PLANTILLA COSTE MENU")
+    template.append(["MENU MODELO"])
+    template.append(["APERITIVO", "P.V.P", "NETO", "COSTO", "FOOD COST"])
+    template.append(["Linea ejemplo", 1, 1, 1, 1])
+    template.append(["Otra linea", 1, 1, 1, 1])
+    target = io.BytesIO()
+    workbook.save(target)
+
+    result = RestaurantDataImportAnalyzer().analyze({
+        "archivos": [_file("estructuras.xlsx", target.getvalue())]
+    })
+    kinds = {(item["nombre"], item["tipo_propuesto"]) for item in result["hojas"]}
+    assert ("M.P MENU EVENTO", "RECETAS") in kinds
+    assert ("MENU EVENTO", "MENUS") in kinds
+    assert ("PLANTILLA COSTE MENU", "DOCUMENTACION") in kinds
+    assert [item["nombre"] for item in result["menus"]] == ["MENU EVENTO"]

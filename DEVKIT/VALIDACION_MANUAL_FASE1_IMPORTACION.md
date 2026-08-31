@@ -1,6 +1,6 @@
 # VALIDACIÓN MANUAL — FASE 1 IMPORTACIÓN INTELIGENTE
 
-Estado: pendiente de ejecución por el propietario
+Estado: en curso; primera ejecución realizada y repetición comparativa pendiente
 Fecha de preparación: 31 de agosto de 2026
 
 Esta guía valida utilidad y criterio culinario. No sustituye la certificación técnica automática.
@@ -70,3 +70,5 @@ Repite una importación sin marcar la opción de análisis con IA (`analizar_doc
 ## Registro del resultado
 
 Anota por prueba: `APROBADA`, `APROBADA CON OBSERVACIONES` o `NO APROBADA`, con evidencia y correcciones necesarias. El estado final será `VALIDACIÓN MANUAL / CULINARIA`; nunca `certificación automática`.
+
+Antes de repetir el Excel que contiene aperitivos históricos, activa `Excluir los A.P antiguos solo de esta importación`. Comprueba que la opción no afecta a `M.P`, no elimina datos existentes y queda registrada en la sesión.

@@ -1930,10 +1930,14 @@ Cualquier nuevo chat debe pedir una actualización si la fecha o el código disp
 
 La Fase 1 alcanza certificación técnica sobre la rama `feature/compras-web`, base `af3642d2`, con fixtures y repositorios temporales. Quedan diferenciados el pipeline oficial, el fallback sin IA, la deduplicación medida, la revisión humana, la confirmación segura y la procedencia. Evidencia: `DEVKIT/CERTIFICACION_TECNICA_FASE1_IMPORTACION.md`.
 
-Estado preciso: `CERTIFICADA TÉCNICAMENTE + PENDIENTE VALIDACIÓN CULINARIA`.
+Estado preciso: `CERTIFICADA TÉCNICAMENTE + VALIDACIÓN MANUAL EN CURSO`.
 
-Único siguiente paso: validación manual/culinaria por el propietario mediante `DEVKIT/VALIDACION_MANUAL_FASE1_IMPORTACION.md`. No iniciar Fase 1.5 antes de esa validación.
+La primera validación real originó correcciones de menús, exclusión A.P por sesión, relaciones proveedor y claridad de acciones. Único siguiente paso: repetir el mismo Excel y comparar resultados antes/después. No iniciar Fase 1.5.
 
 ---
+
+## Actualizacion - cierre tecnico Fase 1 (1 de septiembre de 2026)
+
+Estado preciso: `FASE 1 - LISTA PARA CIERRE FORMAL`. El Excel real fue reanalizado sin IA y sin escritura sobre un repositorio temporal limpio. La regresion final acredita 122 pruebas backend y 31 frontend, con typecheck correcto. Los contenedores de menu ya no se proyectan como recetas; las fichas `M.P` conservan autoridad de receta; plantillas y documentos multicolumna quedan documentales o pendientes explicitos. El usuario conserva la autoridad para cerrar y realizar el commit. Fase 1.5 no iniciada.
 
 **Fin del documento oficial `09_ESTADO_ACTUAL.md`.**

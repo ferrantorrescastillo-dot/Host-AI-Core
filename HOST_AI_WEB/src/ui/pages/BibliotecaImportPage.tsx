@@ -30,6 +30,7 @@ export function BibliotecaImportPage() {
   const [pastedText, setPastedText] = useState("");
   const [error, setError] = useState<{ message: string; requestId?: string } | null>(null);
   const [sessionNotice, setSessionNotice] = useState("");
+  const [excludeLegacyAp, setExcludeLegacyAp] = useState(false);
 
   useEffect(() => {
     const importId = sessionStorage.getItem(ACTIVE_IMPORT_SESSION_KEY);
@@ -73,7 +74,7 @@ export function BibliotecaImportPage() {
     setError(null);
     setSession(null);
     try {
-      const response = await bibliotecaService.importRestaurantData(selected, pasted, resolveAmbiguitiesWithAi, analyzeDocumentWithAi);
+      const response = await bibliotecaService.importRestaurantData(selected, pasted, resolveAmbiguitiesWithAi, analyzeDocumentWithAi, excludeLegacyAp);
       activateSession(response.importacion);
     } catch (reason) {
       const apiError = reason as HostAiApiError;
@@ -167,6 +168,15 @@ export function BibliotecaImportPage() {
       {files.map((file) => <li key={`${file.name}-${file.size}`}><strong>{file.name}</strong> · {file.type || "tipo por extensión"} · {formatBytes(file.size)} · pendiente de análisis</li>)}
     </ul></section> : null}
     <label>Pegar datos<textarea aria-label="Pegar datos del restaurante" placeholder="Pega una tabla de Excel, CSV, TSV, JSON o Markdown" rows={7} value={pastedText} onChange={(event) => setPastedText(event.target.value)} /></label>
+    <label>
+      <input
+        type="checkbox"
+        checked={excludeLegacyAp}
+        onChange={(event) => setExcludeLegacyAp(event.target.checked)}
+      />
+      Excluir los A.P antiguos solo de esta importación
+    </label>
+    <p className="muted">Esta decisión no borra A.P existentes ni cambia cómo se interpretarán en futuros documentos.</p>
     <p className="muted">“Importar exportación de otro sistema” usa esta misma subida segura. No ejecuta SQL ni conecta con bases externas.</p>
     <button disabled={loading || (!files.length && !pastedText.trim())} type="button" onClick={() => void process()}>{loading ? "Analizando..." : "Analizar datos"}</button>
     </section>
@@ -1174,6 +1184,7 @@ function AnalysisSummary({ analysis }: { analysis: NonNullable<BibliotecaImportS
       <dt>Filas</dt><dd>{summary.filas_analizadas}</dd>
       <dt>Posibles artículos</dt><dd>{summary.posibles_articulos}</dd>
       <dt>Posibles recetas</dt><dd>{summary.posibles_recetas}</dd>
+      <dt>Posibles menús</dt><dd>{summary.posibles_menus ?? 0}</dd>
       <dt>Posibles subelaboraciones</dt><dd>{summary.posibles_subelaboraciones}</dd>
       <dt>Posibles productos vendibles</dt><dd>{summary.posibles_productos_vendibles}</dd>
       <dt>Proveedores</dt><dd>{summary.proveedores}</dd>
@@ -1183,6 +1194,13 @@ function AnalysisSummary({ analysis }: { analysis: NonNullable<BibliotecaImportS
       <dt>Avisos técnicos</dt><dd>{summary.warnings_tecnicos ?? 0}</dd>
       <dt>Artículos sin coste</dt><dd>{summary.articulos_sin_coste}</dd>
     </dl>
+    {analysis.exclusiones_sesion?.length ? <details open>
+      <summary>Excluidos solo de esta importación · {analysis.exclusiones_sesion.length}</summary>
+      <ul>{analysis.exclusiones_sesion.map((item, index) => <li key={`${item.nombre}-${index}`}>
+        <strong>{item.nombre}</strong> · {item.motivo}
+      </li>)}</ul>
+      <p className="muted">No se ha borrado ninguna entidad existente y esta decisión no se reutiliza en futuras importaciones.</p>
+    </details> : null}
     <h4>Fuentes analizadas</h4>
     <ul>{(analysis.archivos ?? []).map((file) => <li key={file.nombre}><strong>{file.nombre}</strong> · {file.hojas} hojas · {file.filas} filas · {file.estado}</li>)}</ul>
     <h4>Detección por hoja</h4>

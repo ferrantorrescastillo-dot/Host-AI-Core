@@ -592,6 +592,28 @@ class ImportDocumentService:
             return self._error("error_interno", f"No se pudo analizar la importación: {type(exc).__name__}.", 500)
 
         import_id = f"IMPWEB-{uuid4().hex[:12].upper()}"
+        exclude_legacy_ap = bool(payload.get("excluir_ap_antiguos"))
+        exclusions: list[dict[str, Any]] = []
+        if exclude_legacy_ap:
+            for collection in ("articulos", "recetas"):
+                kept = []
+                for item in list(analysis.get(collection) or []):
+                    if normalize_text(item.get("nombre")).startswith("a p "):
+                        exclusions.append({
+                            "nombre": item.get("nombre"), "tipo_origen": collection.upper(),
+                            "accion": "IGNORAR", "motivo": "Exclusión A.P confirmada para esta sesión.",
+                            "origen": item.get("origen") or item.get("trazabilidad"),
+                        })
+                    else:
+                        kept.append(item)
+                analysis[collection] = kept
+            for menu in analysis.get("menus") or []:
+                menu["componentes"] = [
+                    item for item in menu.get("componentes") or []
+                    if not normalize_text(item.get("nombre")).startswith("a p ")
+                ]
+            analysis["exclusiones_sesion"] = exclusions
+            analysis["opciones_sesion"] = {"excluir_ap_antiguos": True}
         recipes = list(analysis.get("recetas") or [])
         entities: list[ExtractedEntity] = []
         for index, recipe in enumerate(recipes, 1):
@@ -658,6 +680,7 @@ class ImportDocumentService:
         session["borrador"] = self.drafts.build(
             import_id=import_id, classification="MIXTO", confidence=0.8, recipes=recipes,
         )
+        self._align_recipe_proposals_with_draft(session)
         ingredient_drafts = [
             ingredient
             for recipe in session["borrador"].get("recipes") or []
@@ -746,6 +769,33 @@ class ImportDocumentService:
         self._sessions[import_id] = session
         self.repository.save_all(self._sessions)
         return {"ok": True, "importacion": session, "datos_operativos_modificados": False}
+
+    @staticmethod
+    def _align_recipe_proposals_with_draft(session: dict[str, Any]) -> None:
+        """La propuesta visible refleja el matching canónico ya calculado en el draft."""
+        by_name = {
+            normalize_text(item.get("title")): item
+            for item in session.get("borrador", {}).get("recipes") or []
+        }
+        labels = {
+            "REUTILIZAR_EXISTENTE": ("REUTILIZAR_RECETA", "Reutilizar receta existente"),
+            "REQUIERE_REVISION": ("REVISAR_COINCIDENCIA", "Pendiente de decisión de identidad"),
+            "IGNORAR": ("IGNORAR", "Ignorar en esta importación"),
+            "CREAR_SUBELABORACION": ("CREAR_RECETA", "Crear subelaboración nueva"),
+            "CREAR_RECETA": ("CREAR_RECETA", "Crear receta nueva"),
+        }
+        for proposal in session.get("propuestas") or []:
+            entity = ((proposal.get("datos_propuestos") or {}).get("entidad") or {})
+            if entity.get("kind") != "RECETA":
+                continue
+            draft = by_name.get(normalize_text(entity.get("name")))
+            if not draft:
+                continue
+            action = str(draft.get("proposed_action") or "REQUIERE_REVISION")
+            proposal_type, label = labels.get(action, ("REVISAR_COINCIDENCIA", "Pendiente"))
+            proposal["tipo"] = proposal_type
+            proposal["titulo"] = f"{label}: {draft.get('title')}"
+            proposal["explicacion"] = f"Acción canónica prevista: {action}."
 
     @staticmethod
     def _identity_resolution(
@@ -1010,7 +1060,9 @@ class ImportDocumentService:
             supplier = str(article.get("proveedor") or "")
             if not supplier:
                 continue
-            ready = self._supplier_norm(supplier) in known_suppliers and article["estado"] == "LISTO"
+            if self._supplier_norm(supplier) not in known_suppliers:
+                continue
+            ready = article["estado"] == "LISTO"
             relations.append({
                 "articulo_draft_id": article["id"], "articulo": article["nombre"],
                 "proveedor": supplier, "accion": "CREAR" if ready else "REQUIERE_REVISION",
@@ -1054,7 +1106,9 @@ class ImportDocumentService:
         ingredients = [ingredient for recipe in recipes for ingredient in recipe.get("ingredients") or []]
         related_ingredients = sum(bool(item.get("article_id")) for item in ingredients)
         pending = pending_suppliers + pending_articles + pending_relations + pending_recipes
-        menu_projection = project_menu_imports(self.base_dir, list(menus or []), recipes, menu_decisions)
+        menu_projection = project_menu_imports(
+            self.base_dir, list(menus or []), recipes, menu_decisions, articles
+        )
         pending_menus = len(menu_projection["pendientes"])
         menu_lines = [line for item in sum(menu_projection.values(), []) for line in item.get("lineas") or []]
         pending += pending_menus
@@ -1104,12 +1158,15 @@ class ImportDocumentService:
 
     @staticmethod
     def _norm(value: Any) -> str:
-        text = unicodedata.normalize("NFKD", str(value or "").casefold())
-        return " ".join("".join(char for char in text if not unicodedata.combining(char)).split())
+        return normalize_text(value)
 
     @staticmethod
     def _supplier_norm(value: Any) -> str:
-        return ImportDocumentService._norm(value).strip().rstrip(".,;:").rstrip()
+        text = unicodedata.normalize("NFKD", str(value or "").casefold())
+        folded = " ".join("".join(
+            char for char in text if not unicodedata.combining(char)
+        ).split())
+        return folded.strip().rstrip(".,;:").rstrip()
 
     def get_import(self, import_id: str) -> dict[str, Any]:
         session = self._sessions.get(str(import_id or ""))

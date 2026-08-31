@@ -93,6 +93,7 @@ def project_menu_imports(
     menus: list[dict[str, Any]],
     recipes: list[dict[str, Any]],
     decisions: list[dict[str, Any]] | None = None,
+    article_drafts: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Proyecta candidatos de menú contra el dominio canónico, sin escribir."""
     with non_persistent_repository_initialization():
@@ -106,6 +107,9 @@ def project_menu_imports(
     recipe_by_name: dict[str, list[dict[str, Any]]] = {}
     for recipe in recipes:
         recipe_by_name.setdefault(normalize_text(recipe.get("title")), []).append(recipe)
+    articles_by_name: dict[str, list[dict[str, Any]]] = {}
+    for article in article_drafts or []:
+        articles_by_name.setdefault(normalize_text(article.get("nombre")), []).append(article)
     package_names: dict[str, list[tuple[tuple[str, str], ...]]] = {}
     for menu in menus:
         package_names.setdefault(normalize_text(menu.get("nombre")), []).append(_menu_signature(menu))
@@ -142,9 +146,25 @@ def project_menu_imports(
             elif len(drafts) > 1:
                 reasons.append(f"Línea ambigua por variantes de receta: {line_name}.")
             else:
+                imported_articles = [
+                    item for item in articles_by_name.get(normalize_text(line_name), [])
+                    if item.get("accion") not in {"REQUIERE_REVISION", "IGNORAR", "ES_ELABORACION"}
+                ]
+                if len(imported_articles) == 1:
+                    article = imported_articles[0]
+                    resolved = {
+                        "estado": "RESUELTA", "tipo_referencia": "PRODUCTO",
+                        "referencia": article.get("article_id"),
+                        "articulo_draft_id": article.get("id"),
+                        "futura": not bool(article.get("article_id")),
+                    }
+                elif len(imported_articles) > 1:
+                    reasons.append(f"Linea ambigua por variantes de articulo: {line_name}.")
                 recipe_matches = _exact(elaborations, line_name, "nombre", "codigo", "id")
                 product_matches = _exact(products, line_name, "nombre", "codigo", "id")
-                if len(recipe_matches) == 1:
+                if resolved:
+                    pass
+                elif len(recipe_matches) == 1:
                     found = recipe_matches[0]
                     resolved = {"estado": "RESUELTA", "tipo_referencia": "RECETA", "referencia": found.get("id") or found.get("codigo"), "futura": False}
                 elif len(product_matches) == 1:

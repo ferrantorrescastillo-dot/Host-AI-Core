@@ -411,6 +411,7 @@ export const hostAiApiClient = {
     texto_pegado?: string;
     resolver_ambiguedades_ia?: boolean;
     analizar_documento_con_ia?: boolean;
+    excluir_ap_antiguos?: boolean;
     hostai_import_package?: Record<string, unknown>;
     archivos?: Array<{
       nombre: string;
