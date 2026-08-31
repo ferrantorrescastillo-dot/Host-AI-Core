@@ -51,6 +51,7 @@ class IngredientDraft:
     article_candidates: list[dict[str, Any]] = field(default_factory=list)
     relation_status: str = "SIN_RELACIONAR"
     confidence: float = 0.0
+    source_trace: dict[str, Any] = field(default_factory=dict)
     validation_errors: list[DraftIssue] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
@@ -78,6 +79,8 @@ class RecipeDraft:
     confidence: float
     proposed_action: str
     duplicate_candidates: list[dict[str, Any]]
+    identity_decision: str | None = None
+    selected_canonical_recipe_id: str | None = None
     validation_errors: list[DraftIssue] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
@@ -101,6 +104,7 @@ class ImportDraft:
     version: int
     created_at: str
     updated_at: str
+    variant_decisions: list[dict[str, Any]] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -112,6 +116,7 @@ class ImportDraft:
             "recipes": [item.to_dict() for item in self.recipes],
             "warnings": [item.to_dict() for item in self.warnings],
             "conflicts": [item.to_dict() for item in self.conflicts],
+            "variant_decisions": [dict(item) for item in self.variant_decisions],
             "version": self.version,
             "draft_version": self.version,
             "created_at": self.created_at,

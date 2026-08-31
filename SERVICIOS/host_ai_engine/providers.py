@@ -3,6 +3,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any
 
+from SERVICIOS.host_ai_agent_models import AgentTurnRequest, AgentTurnResult
 from SERVICIOS.host_ai_engine.models import HostAIEngineRequest, HostAIProviderResult
 
 
@@ -13,6 +14,13 @@ class HostAIProviderBase(ABC):
     @property
     def connected(self) -> bool:
         return True
+
+    @property
+    def supports_tool_calling(self) -> bool:
+        return False
+
+    def ejecutar_turn_agente(self, request: AgentTurnRequest) -> AgentTurnResult:
+        return AgentTurnResult(kind="", safe_error="provider_tool_calling_not_supported", provider_metadata={"provider": self.provider_name, "model": self.model_name})
 
     @abstractmethod
     def ejecutar(self, request: HostAIEngineRequest) -> HostAIProviderResult:

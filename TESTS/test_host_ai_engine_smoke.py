@@ -7,6 +7,7 @@ from CORE.orquestador import OrquestadorHostAI, SolicitudHostAI
 from SERVICIOS.host_ai_engine import HostAIEngine
 from SERVICIOS.host_ai_engine.models import HostAIEngineRequest
 from SERVICIOS.host_ai_engine.openai_provider import OpenAIProvider
+from SERVICIOS.host_ai_agent_models import AgentTurnRequest, FINAL_RESPONSE, TOOL_CALL
 
 
 class _DummyMemoria:
@@ -130,6 +131,109 @@ def test_openai_provider_usa_responses_api_y_modelo_configurable(monkeypatch) ->
     assert responses.calls[0]["model"] == "modelo-ficticio-de-test"
     assert responses.calls[0]["input"] == "Hola, ¿qué puedes hacer?"
     assert "tools" not in responses.calls[0]
+
+
+def test_openai_provider_traduce_tool_call_al_contrato_neutral(monkeypatch) -> None:
+    monkeypatch.setenv("OPENAI_API_KEY", "credencial-ficticia-de-test")
+    item = type("Item", (), {"type": "function_call", "name": "consultar_estado_stock", "arguments": '{"consulta":"resumen"}', "call_id": "call-1"})()
+
+    class Responses:
+        def __init__(self): self.calls = []
+        def create(self, **kwargs):
+            self.calls.append(kwargs)
+            return type("Response", (), {"output": [item], "output_text": "", "usage": None})()
+
+    responses = Responses()
+    provider = OpenAIProvider(client_factory=lambda **_kwargs: _FakeOpenAIClient(responses))
+    request = AgentTurnRequest(
+        messages=[{"role": "user", "content": "Revisa stock"}],
+        allowed_tools=[{"tool_id": "consultar_estado_stock", "description": "Consulta stock", "input_schema": {"type": "object", "properties": {}, "additionalProperties": False}}],
+        request_id="REQ-1", system_instructions="INSTRUCCIONES NEUTRALES",
+    )
+    result = provider.ejecutar_turn_agente(request)
+    assert result.kind == TOOL_CALL and result.tool_calls[0].tool_id == "consultar_estado_stock"
+    assert result.tool_calls[0].arguments == {"consulta": "resumen"}
+    assert responses.calls[0]["tools"][0]["name"] == "consultar_estado_stock"
+    assert responses.calls[0]["instructions"] == "INSTRUCCIONES NEUTRALES"
+    assert responses.calls[0]["tool_choice"] == "auto"
+    assert responses.calls[0]["tools"][0]["parameters"]["additionalProperties"] is False
+    assert responses.calls[0]["timeout"] == 30.0
+    assert responses.calls[0]["text"]["format"]["schema"]["required"] == ["grounding_requirement", "answer"]
+    assert responses.calls[0]["text"]["format"]["schema"]["additionalProperties"] is False
+
+
+def test_openai_provider_aplica_tool_choice_required_en_grounding_retry(monkeypatch) -> None:
+    monkeypatch.setenv("OPENAI_API_KEY", "credencial-ficticia-de-test")
+    item = type("Item", (), {"type": "function_call", "name": "consultar_estado_stock", "arguments": '{}', "call_id": "required-1"})()
+
+    class Responses:
+        def __init__(self): self.calls = []
+        def create(self, **kwargs):
+            self.calls.append(kwargs)
+            return type("Response", (), {"output": [item], "output_text": "", "usage": None})()
+
+    responses = Responses()
+    provider = OpenAIProvider(client_factory=lambda **_kwargs: _FakeOpenAIClient(responses))
+    request = AgentTurnRequest(
+        messages=[{"role": "user", "content": "Consulta interna"}],
+        allowed_tools=[{"tool_id": "consultar_estado_stock", "description": "Consulta stock", "input_schema": {"type": "object", "properties": {}, "additionalProperties": False}}],
+        request_id="REQ-REQUIRED", tool_choice_mode="required",
+    )
+    assert provider.ejecutar_turn_agente(request).kind == TOOL_CALL
+    assert responses.calls[0]["tool_choice"] == "required"
+
+
+def test_openai_provider_traduce_respuesta_final_y_tool_data(monkeypatch) -> None:
+    monkeypatch.setenv("OPENAI_API_KEY", "credencial-ficticia-de-test")
+    responses = _FakeResponses('{"grounding_requirement":"NONE","answer":"Respuesta conversacional"}')
+    provider = OpenAIProvider(client_factory=lambda **_kwargs: _FakeOpenAIClient(responses))
+    request = AgentTurnRequest(
+        messages=[
+            {"role": "user", "content": "Revisa"},
+            {"role": "assistant", "type": "tool_call", "tool_id": "consultar_estado_stock", "call_id": "c1", "arguments": {}},
+            {"role": "tool", "type": "TOOL_DATA", "tool_id": "consultar_estado_stock", "call_id": "c1", "content": {"cantidad": None}, "untrusted_data": True},
+        ],
+        allowed_tools=[], request_id="REQ-2",
+    )
+    result = provider.ejecutar_turn_agente(request)
+    assert result.kind == FINAL_RESPONSE and result.text == "Respuesta conversacional"
+    assert responses.calls[0]["input"][-1]["type"] == "function_call_output"
+    assert "UNTRUSTED_DATA" in responses.calls[0]["input"][-1]["output"]
+
+
+def test_openai_provider_payload_contiene_catalogo_read_completo(monkeypatch) -> None:
+    from SERVICIOS.host_ai_tool_catalog import HostAIToolCatalog
+    from SERVICIOS.host_ai_tool_registry import build_default_tool_registry
+    monkeypatch.setenv("OPENAI_API_KEY", "credencial-ficticia-de-test")
+    responses = _FakeResponses('{"grounding_requirement":"NONE","answer":"Hola"}')
+    provider = OpenAIProvider(client_factory=lambda **_kwargs: _FakeOpenAIClient(responses))
+    request = AgentTurnRequest(messages=[{"role": "user", "content": "Hola"}], allowed_tools=HostAIToolCatalog(build_default_tool_registry()).effective_tools(), request_id="REQ-CATALOGO")
+    result = provider.ejecutar_turn_agente(request)
+    assert result.kind == FINAL_RESPONSE
+    payload = responses.calls[0]
+    assert payload["tool_choice"] == "auto"
+    assert {tool["name"] for tool in payload["tools"]} == {"consultar_produccion", "consultar_estado_stock", "consultar_compras_pendientes"}
+    assert all(tool["type"] == "function" and tool["parameters"]["additionalProperties"] is False for tool in payload["tools"])
+    assert "credencial-ficticia-de-test" not in json.dumps(payload)
+
+
+def test_openai_provider_aplica_timeout_efectivo_por_turno(monkeypatch) -> None:
+    monkeypatch.setenv("OPENAI_API_KEY", "credencial-ficticia-de-test")
+    responses = _FakeResponses('{"grounding_requirement":"NONE","answer":"ok"}')
+    provider = OpenAIProvider(client_factory=lambda **_kwargs: _FakeOpenAIClient(responses))
+    request = AgentTurnRequest(messages=[{"role": "user", "content": "hola"}], allowed_tools=[], request_id="REQ-TIMEOUT", provider_timeout_seconds=47.5)
+    assert provider.ejecutar_turn_agente(request).kind == FINAL_RESPONSE
+    assert responses.calls[0]["timeout"] == 47.5
+
+
+def test_openai_provider_clasifica_timeout_sin_exponer_excepcion(monkeypatch) -> None:
+    monkeypatch.setenv("OPENAI_API_KEY", "credencial-ficticia-de-test")
+    class Responses:
+        def create(self, **_kwargs): raise type("APITimeoutError", (Exception,), {})("SECRETO")
+    provider = OpenAIProvider(client_factory=lambda **_kwargs: _FakeOpenAIClient(Responses()))
+    result = provider.ejecutar_turn_agente(AgentTurnRequest(messages=[], allowed_tools=[], request_id="REQ-TIMEOUT"))
+    assert result.safe_error == "api_timeout"
+    assert "SECRETO" not in json.dumps(result.__dict__)
 
 
 def test_openai_provider_sin_clave_falla_sin_crear_cliente(monkeypatch) -> None:

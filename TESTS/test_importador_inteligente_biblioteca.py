@@ -22,6 +22,7 @@ from SERVICIOS.borrador_importacion_biblioteca import (
     ImportDraftService,
     IngredientTextNormalizer,
 )
+from SERVICIOS.menu_importacion_biblioteca import project_menu_imports
 
 
 RECIPE_TEXT = """Receta: Salsa verde
@@ -324,8 +325,7 @@ def test_python_docx_disponible_y_previsualizacion_no_escribe_datos(
     assert {path: before.get(path) for path in domain_files} == {
         path: after.get(path) for path in domain_files
     }
-    store = (tmp_path / "DATOS/db/biblioteca_importaciones_web.json").read_text(encoding="utf-8")
-    assert "UEsDB" not in store
+    assert not (tmp_path / "DATOS/db/biblioteca_importaciones_web.json").exists()
     assert all(not item["persistida"] for item in result["importacion"]["propuestas"])
 
 
@@ -508,11 +508,13 @@ def test_validacion_borrador_expone_bloqueos_con_contexto_y_no_bloquea_articulos
         }],
     )
     codes = {issue["code"] for issue in draft["validation"]["blocking_errors"]}
-    assert codes == {"INGREDIENTES_VACIOS", "PROCEDIMIENTO_VACIO", "RACIONES_INVALIDAS"}
+    assert codes == {"INGREDIENTES_VACIOS"}
+    warning_codes = {issue["code"] for issue in draft["validation"]["warnings"]}
+    assert {"PROCEDIMIENTO_PENDIENTE", "RENDIMIENTO_PENDIENTE"}.issubset(warning_codes)
     assert all(issue["level"] == "BLOQUEANTE" for issue in draft["validation"]["blocking_errors"])
     assert all(issue["recipe_id"] == "REC-SALSA" for issue in draft["validation"]["blocking_errors"])
     assert {issue["field"] for issue in draft["validation"]["blocking_errors"]} == {
-        "ingredients", "procedure", "servings",
+        "ingredients",
     }
 
     corrected = drafts.update(draft, {
@@ -615,3 +617,148 @@ def test_fachada_registra_y_expone_excepcion_real_solo_en_desarrollo(
     assert result["error"]["code"] == "library_import_failed"
     assert result["error"]["message"] == "RuntimeError: fallo reproducible del importador"
     assert "Error al crear una importación de Biblioteca." in caplog.text
+
+
+def test_menu_review_decisions_are_versioned_in_the_canonical_draft(tmp_path: Path) -> None:
+    service = ImportDraftService(tmp_path, initialize_matchers=False)
+    current = {
+        "id": "IMPWEB-MENU-DRAFT", "document_id": "IMPWEB-MENU", "status": "PENDIENTE_REVISION",
+        "classification": "HOSTAI_IMPORT_PACKAGE", "confidence": 1.0, "recipes": [],
+        "warnings": [], "conflicts": [], "variant_decisions": [], "article_decisions": [],
+        "menus": [{"nombre": "Menú pendiente", "componentes": [{"nombre": "Plato dudoso"}]}],
+        "menu_decisions": [], "version": 1, "draft_version": 1,
+        "created_at": "2026-08-30T00:00:00Z", "updated_at": "2026-08-30T00:00:00Z",
+    }
+    updated = service.update(current, {
+        "draft_version": 1, "recipes": [],
+        "menu_decisions": [{
+            "menu_draft_id": "MENU-DRAFT-001", "decision": "CREAR_MENU",
+            "nombre_final": "Menú pendiente final",
+            "line_decisions": [{
+                "line_index": 1, "decision": "USAR_REFERENCIA",
+                "tipo_referencia": "RECETA", "referencia": "REC601-000017",
+            }],
+        }],
+    })
+
+    assert updated["draft_version"] == 2
+    assert updated["menu_decisions"][0]["menu_draft_id"] == "MENU-DRAFT-001"
+    assert updated["menu_decisions"][0]["nombre_final"] == "Menú pendiente final"
+    assert updated["menu_decisions"][0]["line_decisions"][0]["referencia"] == "REC601-000017"
+
+
+def test_context_menu_can_be_excluded_without_domain_write(tmp_path: Path) -> None:
+    service = ImportDraftService(tmp_path, initialize_matchers=False)
+    current = {
+        "id": "IMPWEB-CONTEXT-DRAFT", "document_id": "IMPWEB-CONTEXT", "status": "PENDIENTE_REVISION",
+        "classification": "HOSTAI_IMPORT_PACKAGE", "confidence": 1.0, "recipes": [],
+        "warnings": [], "conflicts": [], "variant_decisions": [], "article_decisions": [],
+        "menus": [{"nombre": "COMUNION ALEJANDRO FERNANDEZ", "tipo": "CONTEXT", "componentes": []}],
+        "menu_decisions": [], "version": 1, "draft_version": 1,
+        "created_at": "2026-08-30T00:00:00Z", "updated_at": "2026-08-30T00:00:00Z",
+    }
+    updated = service.update(current, {
+        "draft_version": 1, "recipes": [],
+        "menu_decisions": [{
+            "menu_draft_id": "MENU-DRAFT-001", "decision": "EXCLUIR_MENU_DOCUMENTAL",
+            "nombre_final": "COMUNION ALEJANDRO FERNANDEZ", "line_decisions": [],
+        }],
+    })
+    assert updated["menu_decisions"] == [{
+        "menu_draft_id": "MENU-DRAFT-001", "decision": "EXCLUIR_MENU_DOCUMENTAL",
+        "nombre_final": "COMUNION ALEJANDRO FERNANDEZ", "menu_id": None, "line_decisions": [],
+    }]
+    assert not (tmp_path / "DATOS" / "db" / "menus.json").exists()
+
+
+def test_excluded_context_menu_is_not_pending_or_creatable(tmp_path: Path) -> None:
+    projection = project_menu_imports(
+        tmp_path,
+        [{"nombre": "MENU FIN DE AÑO", "tipo": "CONTEXT", "componentes": [], "origen": {"sheet": "Contexto"}}],
+        [],
+        [{"menu_draft_id": "MENU-DRAFT-001", "decision": "EXCLUIR_MENU_DOCUMENTAL", "nombre_final": "MENU FIN DE AÑO", "line_decisions": []}],
+    )
+    assert projection["crear"] == []
+    assert projection["pendientes"] == []
+    assert [item["id"] for item in projection["excluidos"]] == ["MENU-DRAFT-001"]
+
+
+def test_bbq_comunion_salad_remains_pending_without_canonical_identity(tmp_path: Path) -> None:
+    projection = project_menu_imports(
+        tmp_path,
+        [{"nombre": "MENU BBQ COMUNION", "tipo": "MENU", "componentes": [{"nombre": "CALÇOTADA EN MESA ENSALADA. LECHUGA UNID."}]}],
+        [],
+    )
+    assert projection["pendientes"][0]["lineas"][0]["estado"] == "PENDIENTE"
+    assert projection["pendientes"][0]["lineas"][0]["referencia"] is None
+
+
+def test_manual_menu_line_decision_removes_only_its_historical_warning(tmp_path: Path) -> None:
+    projection = project_menu_imports(
+        tmp_path,
+        [{"nombre": "MENU BODA", "tipo": "MENU", "componentes": [{"nombre": "Tabla de quesos"}]}],
+        [
+            {"id": "REC-DRAFT-001", "title": "Tabla de quesos", "proposed_action": "CREAR_NUEVA"},
+            {"id": "REC-DRAFT-002", "title": "Tabla de quesos", "proposed_action": "CREAR_NUEVA"},
+        ],
+        [{
+            "menu_draft_id": "MENU-DRAFT-001", "decision": "CREAR_MENU",
+            "nombre_final": "MENU BODA", "line_decisions": [{
+                "line_index": 1, "decision": "USAR_REFERENCIA",
+                "tipo_referencia": "RECETA", "referencia": "REC601-000043",
+            }],
+        }],
+    )
+
+    menu = projection["crear"][0]
+    assert menu["lineas"][0]["estado"] == "RESUELTA"
+    assert menu["lineas"][0]["referencia"] == "REC601-000043"
+    assert menu["motivos"] == []
+
+
+def test_reimport_recognizes_confirmed_menu_by_provenance_after_final_name_change(tmp_path: Path) -> None:
+    source = {
+        "nombre": "MENU CALÇOTADA CARTA. 15-12-25", "tipo": "MENU",
+        "componentes": [{"nombre": "Línea ambigua", "section": "Otros"}],
+        "origen": {"source_filename": "Boronat.xlsx", "sheet": "Menú calçotada niños", "title_row": 2},
+    }
+    (tmp_path / "DATOS/db").mkdir(parents=True)
+    (tmp_path / "DATOS/db/menus.json").write_text(json.dumps([{
+        "menu_id": "MENU601-000013", "modelo_biblioteca": "MENU_601",
+        "nombre": "MENÚ CALÇOTADA NIÑOS", "estado": "BORRADOR",
+        "observaciones": "Importado desde IMPWEB-OLD. Cantidades normalizadas por comensal.",
+        "composicion": {"Otros": [{"tipo_referencia": "RECETA", "referencia": "REC601-000043", "cantidad": 1}]},
+    }], ensure_ascii=False), encoding="utf-8")
+    (tmp_path / "DATOS/db/biblioteca_importaciones_web.json").write_text(json.dumps({
+        "sesiones": {"IMPWEB-OLD": {
+            "estado": "CONFIRMADA", "borrador": {"menus": [source]},
+            "preview_global": {"menus": {"crear": [{"id": "MENU-DRAFT-001"}]}},
+            "resultado_confirmacion": {"entidades": [{"tipo": "MENU", "id": "MENU601-000013"}]},
+        }}
+    }, ensure_ascii=False), encoding="utf-8")
+
+    projection = project_menu_imports(tmp_path, [source], [])
+
+    assert projection["crear"] == []
+    assert projection["pendientes"] == []
+    assert projection["reutilizar"][0]["menu_id"] == "MENU601-000013"
+    assert projection["reutilizar"][0]["nombre"] == "MENÚ CALÇOTADA NIÑOS"
+    assert projection["reutilizar"][0]["lineas"][0]["referencia"] == "REC601-000043"
+
+
+def test_same_menu_name_with_different_structure_is_not_auto_reused(tmp_path: Path) -> None:
+    (tmp_path / "DATOS/db").mkdir(parents=True)
+    (tmp_path / "DATOS/db/menus.json").write_text(json.dumps([{
+        "menu_id": "MENU601-000001", "modelo_biblioteca": "MENU_601",
+        "nombre": "MENU BODA", "estado": "BORRADOR",
+        "composicion": {"Otros": [{"tipo_referencia": "RECETA", "referencia": "REC601-999999", "cantidad": 1}]},
+    }]), encoding="utf-8")
+
+    projection = project_menu_imports(
+        tmp_path,
+        [{"nombre": "MENU BODA", "tipo": "MENU", "componentes": [{"nombre": "Otra estructura"}]}],
+        [],
+    )
+
+    assert projection["reutilizar"] == []
+    assert projection["pendientes"][0]["id"] == "MENU-DRAFT-001"

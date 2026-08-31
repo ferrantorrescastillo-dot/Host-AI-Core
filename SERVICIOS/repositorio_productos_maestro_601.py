@@ -7,6 +7,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+from SERVICIOS.repository_initialization_policy import should_initialize_persistently
+
 
 ESTADO_ACTIVO = "ACTIVO"
 ESTADO_PENDIENTE = "PENDIENTE_DE_COMPLETAR"
@@ -28,22 +30,24 @@ class RepositorioProductosMaestro601:
         self.base_dir = Path(base_dir).resolve()
         self.path_articulos = self.base_dir / "DATOS" / "db" / "articulos.json"
         self.path_proveedores = self.base_dir / "DATOS" / "db" / "proveedores.json"
+        self.path_compras_proveedores = self.base_dir / "DATOS" / "db" / "compras_proveedores.json"
         self.path_producto_proveedor = self.base_dir / "DATOS" / "db" / "compras_producto_proveedor.json"
         self.path_historico_precios = self.base_dir / "DATOS" / "facturas" / "historico_precios.json"
 
-        self.path_articulos.parent.mkdir(parents=True, exist_ok=True)
-        self.path_proveedores.parent.mkdir(parents=True, exist_ok=True)
-        self.path_producto_proveedor.parent.mkdir(parents=True, exist_ok=True)
-        self.path_historico_precios.parent.mkdir(parents=True, exist_ok=True)
+        if should_initialize_persistently():
+            self.path_articulos.parent.mkdir(parents=True, exist_ok=True)
+            self.path_proveedores.parent.mkdir(parents=True, exist_ok=True)
+            self.path_producto_proveedor.parent.mkdir(parents=True, exist_ok=True)
+            self.path_historico_precios.parent.mkdir(parents=True, exist_ok=True)
 
-        if not self.path_articulos.exists():
-            self._guardar_lista(self.path_articulos, [])
-        if not self.path_proveedores.exists():
-            self._guardar_lista(self.path_proveedores, [])
-        if not self.path_producto_proveedor.exists():
-            self._guardar_lista(self.path_producto_proveedor, [])
-        if not self.path_historico_precios.exists():
-            self._guardar_json(self.path_historico_precios, {"version": "3.0.3.5.3", "registros": []})
+            if not self.path_articulos.exists():
+                self._guardar_lista(self.path_articulos, [])
+            if not self.path_proveedores.exists():
+                self._guardar_lista(self.path_proveedores, [])
+            if not self.path_producto_proveedor.exists():
+                self._guardar_lista(self.path_producto_proveedor, [])
+            if not self.path_historico_precios.exists():
+                self._guardar_json(self.path_historico_precios, {"version": "3.0.3.5.3", "registros": []})
 
     @staticmethod
     def _norm(texto: Any) -> str:
@@ -127,12 +131,13 @@ class RepositorioProductosMaestro601:
         out["referencia_proveedor"] = str(meta.get("referencia_proveedor") or "")
         out["unidad_compra"] = str(meta.get("unidad_compra") or out.get("unidad") or "")
         out["cantidad_formato"] = str(meta.get("cantidad_formato") or "")
+        out["unidad_formato"] = str(meta.get("unidad_formato") or "")
         stored_unit = str(meta.get("unidad_base") or out.get("unidad") or "").strip()
         out["unidad_base"] = stored_unit or "kg"
         out["unidad_base_sugerida"] = bool(meta.get("unidad_base_sugerida", not stored_unit))
         out["estado_unidad_base"] = "SUGERIDA_PENDIENTE_REVISION" if out["unidad_base_sugerida"] else "CONFIRMADA"
         out["unidad_recetas"] = str(meta.get("unidad_recetas") or out.get("unidad") or "")
-        out["conversion_unidades"] = str(meta.get("conversion_unidades") or "")
+        out["conversion_unidades"] = meta.get("conversion_unidades") or []
         out["iva"] = str(meta.get("iva") or "")
         out["precio_incluye_iva"] = bool(meta.get("precio_incluye_iva", False))
         out["fecha_precio"] = str(meta.get("fecha_precio") or "")
@@ -141,6 +146,10 @@ class RepositorioProductosMaestro601:
         out["alergenos"] = list(meta.get("alergenos") or [])
         out["conservacion"] = str(meta.get("conservacion") or "")
         out["stock_minimo"] = meta.get("stock_minimo")
+        out["tipo_entidad"] = str(meta.get("tipo_entidad") or out.get("tipo_entidad") or "")
+        out["elaboracion_id"] = str(meta.get("elaboracion_id") or out.get("elaboracion_id") or "")
+        out["origen_coste"] = str(meta.get("origen_coste") or out.get("origen_coste") or "")
+        out["historial_clasificacion"] = list(meta.get("historial_clasificacion") or out.get("historial_clasificacion") or [])
         out["observaciones_ext"] = str(meta.get("observaciones_ext") or out.get("observaciones") or "")
         out["estado"] = self._estado_producto(out)
         out["fecha_creacion"] = str(out.get("fecha_importacion") or meta.get("fecha_creacion") or "")
@@ -224,10 +233,11 @@ class RepositorioProductosMaestro601:
                 "referencia_proveedor": str(datos.get("referencia_proveedor") or "").strip(),
                 "unidad_compra": str(datos.get("unidad_compra") or "").strip(),
                 "cantidad_formato": str(datos.get("cantidad_formato") or "").strip(),
+                "unidad_formato": str(datos.get("unidad_formato") or "").strip(),
                 "unidad_base": base_unit,
                 "unidad_base_sugerida": not bool(supplied_unit),
                 "unidad_recetas": str(datos.get("unidad_recetas") or "").strip(),
-                "conversion_unidades": str(datos.get("conversion_unidades") or "").strip(),
+                "conversion_unidades": datos.get("conversion_unidades") or [],
                 "iva": str(datos.get("iva") or "").strip(),
                 "precio_incluye_iva": bool(datos.get("precio_incluye_iva", False)),
                 "fecha_precio": str(datos.get("fecha_precio") or "").strip(),
@@ -252,7 +262,11 @@ class RepositorioProductosMaestro601:
                 "codigo": codigo,
                 "nombre": nombre,
                 "precio": registro.get("precio"),
-                "unidad": registro.get("unidad") or "",
+                "unidad": (
+                    registro.get("catalogo_maestro", {}).get("unidad_compra")
+                    if registro.get("catalogo_maestro", {}).get("unidad_formato")
+                    else registro.get("unidad")
+                ) or "",
                 "proveedor": registro.get("proveedor") or "",
                 "precio_incluye_iva": registro.get("catalogo_maestro", {}).get("precio_incluye_iva", False),
                 "iva": registro.get("catalogo_maestro", {}).get("iva", ""),
@@ -293,6 +307,7 @@ class RepositorioProductosMaestro601:
                 "referencia_proveedor": "referencia_proveedor",
                 "unidad_compra": "unidad_compra",
                 "cantidad_formato": "cantidad_formato",
+                "unidad_formato": "unidad_formato",
                 "unidad_base": "unidad_base",
                 "unidad_recetas": "unidad_recetas",
                 "conversion_unidades": "conversion_unidades",
@@ -303,6 +318,12 @@ class RepositorioProductosMaestro601:
                 "merma_habitual": "merma_habitual",
                 "conservacion": "conservacion",
                 "stock_minimo": "stock_minimo",
+                "actor_modificacion": "actor_modificacion",
+                "tenant_modificacion": "tenant_modificacion",
+                "request_id_modificacion": "request_id_modificacion",
+                "tipo_entidad": "tipo_entidad",
+                "elaboracion_id": "elaboracion_id",
+                "origen_coste": "origen_coste",
             }
             for src, dst in mapping.items():
                 if src not in cambios:
@@ -312,6 +333,8 @@ class RepositorioProductosMaestro601:
                     meta[dst] = bool(val)
                 elif dst in {"stock_minimo"}:
                     meta[dst] = self._to_float_or_none(val)
+                elif dst == "conversion_unidades":
+                    meta[dst] = val if isinstance(val, (list, dict)) else str(val or "").strip()
                 else:
                     meta[dst] = str(val or "").strip()
 
@@ -322,6 +345,14 @@ class RepositorioProductosMaestro601:
                 else:
                     txt = str(al or "").strip()
                     meta["alergenos"] = [s.strip() for s in txt.split(",") if s.strip()] if txt else []
+            if "historial_clasificacion" in cambios:
+                history = cambios.get("historial_clasificacion")
+                meta["historial_clasificacion"] = list(history) if isinstance(history, list) else []
+            for classification_field in ("tipo_entidad", "elaboracion_id", "origen_coste"):
+                if classification_field in cambios:
+                    art[classification_field] = str(cambios.get(classification_field) or "")
+            if "historial_clasificacion" in cambios:
+                art["historial_clasificacion"] = list(cambios.get("historial_clasificacion") or [])
 
             meta["observaciones_ext"] = str(cambios.get("observaciones") or art.get("observaciones") or "").strip()
             meta["fecha_modificacion"] = now
@@ -335,7 +366,11 @@ class RepositorioProductosMaestro601:
                     "codigo": art.get("codigo"),
                     "nombre": art.get("nombre"),
                     "precio": art.get("precio"),
-                    "unidad": art.get("unidad") or "",
+                    "unidad": (
+                        art.get("catalogo_maestro", {}).get("unidad_compra")
+                        if art.get("catalogo_maestro", {}).get("unidad_formato")
+                        else art.get("unidad")
+                    ) or "",
                     "proveedor": art.get("proveedor") or "",
                     "precio_incluye_iva": art.get("catalogo_maestro", {}).get("precio_incluye_iva", False),
                     "iva": art.get("catalogo_maestro", {}).get("iva", ""),
@@ -380,6 +415,25 @@ class RepositorioProductosMaestro601:
 
     def listar_proveedores(self) -> list[dict[str, Any]]:
         return self._leer_lista(self.path_proveedores)
+
+    def listar_proveedores_canonicos(self) -> list[dict[str, Any]]:
+        """Une fuentes canónicas READ sin cambiar la autoridad de escritura."""
+        result: dict[str, dict[str, Any]] = {}
+        for provider in self.listar_proveedores():
+            key = self._norm(provider.get("nombre"))
+            if key:
+                result[key] = dict(provider)
+        for provider in self._leer_lista(self.path_compras_proveedores):
+            if self._norm(provider.get("estado")) in {"inactivo", "archivado"}:
+                continue
+            key = self._norm(provider.get("nombre"))
+            if not key or key in result:
+                continue
+            candidate = dict(provider)
+            candidate.setdefault("codigo", candidate.get("id"))
+            candidate["fuente_canonica"] = "COMPRAS"
+            result[key] = candidate
+        return list(result.values())
 
     def obtener_proveedores_y_precios(self, codigo_producto: str = "") -> dict[str, Any]:
         asociaciones = self._leer_lista(self.path_producto_proveedor)

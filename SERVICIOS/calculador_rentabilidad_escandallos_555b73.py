@@ -29,8 +29,8 @@ def _first_number(sources: Iterable[Dict[str, Any]], keys: Iterable[str]) -> flo
 @dataclass(slots=True)
 class ResumenEconomicoEscandallo555B73:
     coste_total: float
-    rendimiento: float
-    coste_unitario: float
+    rendimiento: float | None
+    coste_unitario: float | None
     precio_venta_unitario: float | None
     iva_pct: float | None
     beneficio_bruto_unitario: float | None
@@ -62,8 +62,9 @@ def calcular_resumen_economico_555b73(
 
     coste_base_raw = _first_number(sources, ("coste_total", "coste_receta", "coste"))
     coste_total = round(coste_calculado if coste_calculado > 0 else (coste_base_raw or 0.0), 6)
-    rendimiento = max(_float(rendimiento_calculo, 1.0), 1e-9)
-    coste_unitario = round(coste_total / rendimiento, 6)
+    rendimiento_raw = _float(rendimiento_calculo, default=0.0)
+    rendimiento = round(rendimiento_raw, 6) if rendimiento_raw > 0 else None
+    coste_unitario = round(coste_total / rendimiento_raw, 6) if rendimiento_raw > 0 else None
 
     precio_venta = _first_number(
         sources,
@@ -90,13 +91,15 @@ def calcular_resumen_economico_555b73(
             sin_precio += 1
 
     beneficio = margen = rentabilidad_coste = food_cost = None
-    if precio_venta is not None:
+    if precio_venta is not None and coste_unitario is not None:
         beneficio = round(precio_venta - coste_unitario, 6)
         margen = round((beneficio / precio_venta) * 100, 4) if precio_venta else None
         rentabilidad_coste = round((beneficio / coste_unitario) * 100, 4) if coste_unitario > 0 else None
         food_cost = round((coste_unitario / precio_venta) * 100, 4) if precio_venta else None
 
-    if coste_total <= 0:
+    if rendimiento is None:
+        estado = "RENDIMIENTO_INVALIDO"
+    elif coste_total <= 0:
         estado = "COSTE_INCOMPLETO"
     elif sin_precio:
         estado = "COSTE_PARCIAL"
@@ -109,7 +112,7 @@ def calcular_resumen_economico_555b73(
 
     return ResumenEconomicoEscandallo555B73(
         coste_total=coste_total,
-        rendimiento=round(rendimiento, 6),
+        rendimiento=rendimiento,
         coste_unitario=coste_unitario,
         precio_venta_unitario=round(precio_venta, 6) if precio_venta is not None else None,
         iva_pct=round(iva_pct, 4) if iva_pct is not None else None,

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { HostAiApiError } from "../../api/client";
 import {
   comprasService,
@@ -14,7 +15,9 @@ import { ErrorState } from "../components/ErrorState";
 import { LoadingState } from "../components/LoadingState";
 import type { CompraDraft, CompraDraftLine, CompraDraftRevision, PurchaseReception, ReceptionExtractionLine, ReceptionLine } from "../../types/compras";
 import { articulosService } from "../../services/articulosService";
+import { stockService } from "../../services/stockService";
 import type { ArticuloResumen } from "../../types/articulos";
+import { SearchField } from "../components/SearchField";
 
 export function ComprasPage() {
   const [loading, setLoading] = useState(true);
@@ -22,6 +25,8 @@ export function ComprasPage() {
   const [errorRequestId, setErrorRequestId] = useState<string | null>(null);
   const [data, setData] = useState<ComprasResult | null>(null);
   const [refreshTick, setRefreshTick] = useState(0);
+  const [searchParams] = useSearchParams();
+  const selectedOrderId = searchParams.get("pedido_id") || "";
 
   useEffect(() => {
     let active = true;
@@ -60,7 +65,7 @@ export function ComprasPage() {
 
   return (
     <section
-      className="panel"
+      className="panel purchases-page"
       role="region"
       aria-labelledby="compras-title"
     >
@@ -91,18 +96,25 @@ export function ComprasPage() {
           </p>
         </>
       ) : (
-        <ComprasContent data={data} onSaved={() => setRefreshTick((value) => value + 1)} />
+        <ComprasContent data={data} selectedOrderId={selectedOrderId} onSaved={() => setRefreshTick((value) => value + 1)} />
       )}
     </section>
   );
 }
 
-function ComprasContent({ data, onSaved }: { data: ComprasResult | null; onSaved: () => void }) {
+function ComprasContent({ data, selectedOrderId, onSaved }: { data: ComprasResult | null; selectedOrderId: string; onSaved: () => void }) {
+  const [query, setQuery] = useState("");
+  const matches = (value: unknown) => !query.trim() || JSON.stringify(value).toLocaleLowerCase("es").includes(query.trim().toLocaleLowerCase("es"));
   const compras = data?.compras ?? [];
   const propuestas = data?.propuestas ?? [];
   const proveedores = data?.proveedores ?? [];
   const historial = data?.historial ?? [];
   const pedidos = data?.pedidos ?? [];
+  const visibleCompras = compras.filter(matches);
+  const visiblePropuestas = propuestas.filter(matches);
+  const visibleProveedores = proveedores.filter(matches);
+  const visibleHistorial = historial.filter(matches);
+  const visiblePedidos = pedidos.filter(matches);
 
   return (
     <>
@@ -119,6 +131,8 @@ function ComprasContent({ data, onSaved }: { data: ComprasResult | null; onSaved
           Request ID: {data?.request_id || "No disponible"}
         </p>
       </section>
+
+      <div className="module-toolbar"><SearchField value={query} onChange={setQuery} placeholder="Buscar pedidos, proveedores o artículos..." ariaLabel="Buscar compras" /></div>
 
       {data?.datos_reales_modificados ? (
         <div className="panel-state panel-error" role="alert">
@@ -141,9 +155,9 @@ function ComprasContent({ data, onSaved }: { data: ComprasResult | null; onSaved
 
       <section className="feature-block" aria-label="Compras pendientes">
         <h3>Compras pendientes</h3>
-        {compras.length ? (
+        {visibleCompras.length ? (
           <ul className="clean-list compras-list">
-            {compras.map((compra, index) => (
+            {visibleCompras.map((compra, index) => (
               <CompraItem
                 key={compra.id || `${compra.nombre || "compra"}-${index}`}
                 compra={compra}
@@ -152,7 +166,7 @@ function ComprasContent({ data, onSaved }: { data: ComprasResult | null; onSaved
           </ul>
         ) : (
           <div className="panel-state">
-            <p>No hay necesidades de compra pendientes.</p>
+            <p>{query ? `No hay compras que coincidan con “${query}”.` : "No hay necesidades de compra pendientes."}</p>
             {data?.mensaje ? (
               <p className="meta-line">{data.mensaje}</p>
             ) : null}
@@ -160,12 +174,12 @@ function ComprasContent({ data, onSaved }: { data: ComprasResult | null; onSaved
         )}
       </section>
 
-      <PropuestasSection items={propuestas} />
+      <PropuestasSection items={visiblePropuestas} />
       <ManualOrderSection providers={proveedores} onSaved={onSaved} />
-      <DraftsSection items={pedidos} onSaved={onSaved} />
-      <RecepcionesSection items={pedidos} onSaved={onSaved} />
-      <ProveedoresSection items={proveedores} />
-      <HistorialSection items={historial} />
+      <DraftsSection items={visiblePedidos} selectedOrderId={selectedOrderId} onSaved={onSaved} />
+      <RecepcionesSection items={visiblePedidos} onSaved={onSaved} />
+      <ProveedoresSection items={visibleProveedores} />
+      <HistorialSection items={visibleHistorial} />
     </>
   );
 }
@@ -191,19 +205,34 @@ function ManualOrderSection({ providers, onSaved }: { providers: ProveedorCompra
   return <section className="feature-block" aria-label="Nuevo pedido manual"><button type="button" onClick={() => setOpen((value) => !value)}>Nuevo pedido</button>{message ? <p role="status">{message}</p> : null}{open ? <div className="menu-editor"><h3>Nuevo pedido</h3><label>Buscar proveedor<input value={providerQuery} onChange={(event) => setProviderQuery(event.target.value)} /></label><ul>{matchingProviders.map((item) => <li key={item.id || item.nombre}><button type="button" onClick={() => setProvider(item)}>{item.nombre}</button></li>)}</ul><p>Proveedor seleccionado: <strong>{provider?.nombre || "Ninguno"}</strong></p><label>Fecha<input type="date" value={fecha} onChange={(event) => setFecha(event.target.value)} /></label><label>Referencia<input value={referencia} onChange={(event) => setReferencia(event.target.value)} /></label><label>Observaciones<input value={observaciones} onChange={(event) => setObservaciones(event.target.value)} /></label><h4>Artículos</h4><label>Buscar artículo<input value={articleQuery} onChange={(event) => setArticleQuery(event.target.value)} /></label><button type="button" disabled={busy || !provider || !articleQuery.trim()} onClick={() => void searchArticles()}>Añadir artículo</button><ul>{articles.map((item) => <li key={item.id}><button type="button" onClick={() => void addArticle(item)}>{item.nombre} · {item.codigo}</button></li>)}</ul>{lines.map((line, index) => <fieldset key={`${line.articulo_id}-${index}`}><legend>{line.nombre}</legend><p>article_id: {line.articulo_id}</p><label>Cantidad<input aria-label={`Cantidad manual ${index + 1}`} type="number" min="0.001" step="any" value={line.cantidad} onChange={(event) => changeLine(index, "cantidad", event.target.value)} /></label><label>Unidad<input aria-label={`Unidad manual ${index + 1}`} value={line.unidad} onChange={(event) => changeLine(index, "unidad", event.target.value)} /></label><label>Precio unitario<input aria-label={`Precio manual ${index + 1}`} type="number" min="0" step="any" value={line.precio_unitario} onChange={(event) => changeLine(index, "precio_unitario", event.target.value)} /></label><label>Observaciones de línea<input value={line.observaciones || ""} onChange={(event) => changeLine(index, "observaciones", event.target.value)} /></label><p>Subtotal: {money(line.cantidad * line.precio_unitario)}</p><button type="button" onClick={() => setLines((current) => current.filter((_, position) => position !== index))}>Eliminar línea</button></fieldset>)}<p><strong>Total pedido: {money(total)}</strong></p><button type="button" disabled={busy || !provider || !lines.length} onClick={() => void save()}>Guardar borrador</button><p className="meta-line">Guardar el borrador no modifica Stock.</p></div> : null}</section>;
 }
 
-function DraftsSection({ items, onSaved }: { items: ComprasResult["pedidos"]; onSaved: () => void }) {
+function DraftsSection({ items, selectedOrderId, onSaved }: { items: ComprasResult["pedidos"]; selectedOrderId: string; onSaved: () => void }) {
   const [draft, setDraft] = useState<CompraDraft | null>(null);
   const [revision, setRevision] = useState<CompraDraftRevision | null>(null);
   const [busy, setBusy] = useState(false);
   const [dirty, setDirty] = useState(false);
   const [message, setMessage] = useState("");
   const confirming = useRef(false);
-  const open = async (id: string) => {
+  const open = async (id: string, requestedFromUrl = false) => {
     setBusy(true); setMessage("");
     try { const response = await comprasService.getDraft(id); setDraft(response.borrador); setRevision(response.revision || null); setDirty(false); }
-    catch (error) { setMessage(error instanceof Error ? error.message : "No se pudo abrir el borrador."); }
+    catch (error) { setMessage(requestedFromUrl ? "No se ha encontrado el pedido solicitado" : error instanceof Error ? error.message : "No se pudo abrir el borrador."); }
     finally { setBusy(false); }
   };
+  const openedFromUrl = useRef("");
+  useEffect(() => {
+    if (!selectedOrderId || openedFromUrl.current === selectedOrderId) return;
+    openedFromUrl.current = selectedOrderId;
+    if (!/^PED-[A-Za-z0-9]+(?:[-_.][A-Za-z0-9]+)*$/.test(selectedOrderId)) {
+      setMessage("No se ha encontrado el pedido solicitado");
+      return;
+    }
+    void open(selectedOrderId, true);
+  }, [selectedOrderId]);
+  useEffect(() => {
+    if (!draft || draft.id !== selectedOrderId) return;
+    const detail = document.getElementById(`pedido-${draft.id}`);
+    if (typeof detail?.scrollIntoView === "function") detail.scrollIntoView({ block: "start" });
+  }, [draft, selectedOrderId]);
   const updateDraft = (next: CompraDraft) => { setDraft(next); setDirty(true); };
   const changeLine = (index: number, field: keyof CompraDraftLine, value: string) => {
     if (!draft) return;
@@ -237,9 +266,10 @@ function DraftsSection({ items, onSaved }: { items: ComprasResult["pedidos"]; on
 
 function RecepcionesSection({ items, onSaved }: { items: ComprasResult["pedidos"]; onSaved: () => void }) {
   const [reception, setReception] = useState<PurchaseReception | null>(null);
+  const [stockLocations, setStockLocations] = useState<Array<{ id: string; nombre: string }>>([]);
   const [extractionLines, setExtractionLines] = useState<ReceptionExtractionLine[]>([]); const [ocrText, setOcrText] = useState("");
   const [busy, setBusy] = useState(false); const [message, setMessage] = useState(""); const confirming = useRef(false);
-  const start = async (orderId: string) => { setBusy(true); setMessage(""); try { const next = (await comprasService.createReception(orderId)).recepcion; setReception(next); setExtractionLines(next.extraccion_documental?.lines || []); setMessage("Borrador de recepción preparado. Stock sin cambios."); } catch (error) { setMessage(error instanceof Error ? error.message : "No se pudo iniciar la recepción."); } finally { setBusy(false); } };
+  const start = async (orderId: string) => { setBusy(true); setMessage(""); try { const next = (await comprasService.createReception(orderId)).recepcion; setReception(next); setExtractionLines(next.extraccion_documental?.lines || []); try { setStockLocations((await stockService.locations()).ubicaciones); } catch { setStockLocations([]); } setMessage("Borrador de recepción preparado. Stock sin cambios."); } catch (error) { setMessage(error instanceof Error ? error.message : "No se pudo iniciar la recepción."); } finally { setBusy(false); } };
   const change = (index: number, field: keyof ReceptionLine, value: string) => { if (!reception) return; setReception({ ...reception, lineas: reception.lineas.map((line, position) => position === index ? { ...line, [field]: field === "received_quantity" ? Number(value || 0) : field === "received_price" ? (value === "" ? null : Number(value)) : value } as ReceptionLine : line) }); };
   const save = async () => { if (!reception) return; setBusy(true); setMessage(""); try { setReception((await comprasService.saveReception(reception.id, reception.lineas, { fecha: reception.fecha, referencia: reception.referencia, observaciones: reception.observaciones })).recepcion); setMessage("Borrador guardado. Stock sin cambios."); } catch (error) { setMessage(error instanceof Error ? error.message : "No se pudo guardar la recepción."); } finally { setBusy(false); } };
   const confirm = async () => { if (!reception || confirming.current || reception.estado === "CONFIRMADA") return; if (!window.confirm("Se confirmará esta revisión y se registrará en Stock exactamente lo visible.")) return; confirming.current = true; setBusy(true); setMessage(""); try { const response = await comprasService.confirmReception(reception); setReception(response.recepcion); setMessage(response.idempotente ? "La recepción ya estaba confirmada; Stock no se duplicó." : "Recepción confirmada con los valores visibles y Stock actualizado."); onSaved(); } catch (error) { setMessage(error instanceof Error ? error.message : "No se pudo confirmar la recepción."); } finally { confirming.current = false; setBusy(false); } };
@@ -252,7 +282,7 @@ function RecepcionesSection({ items, onSaved }: { items: ComprasResult["pedidos"
   const applyExtraction = async () => { if (!reception?.extraccion_documental) return; setBusy(true); try { const response = await comprasService.applyReceptionExtraction(reception.id, reception.extraccion_documental.extraction_id, extractionLines); setReception({ ...response.recepcion, extraccion_documental: response.extraccion }); setMessage("Propuesta aplicada al borrador. Revisa y confirma manualmente; Stock sin cambios."); } catch (error) { setMessage(error instanceof Error ? error.message : "No se pudo aplicar la propuesta."); } finally { setBusy(false); } };
   const extractionPanel = reception?.documento && reception.estado !== "CONFIRMADA" ? <section aria-label="Análisis del albarán"><h5>Extracción inteligente</h5><label>Texto OCR o transcripción opcional<textarea aria-label="Texto OCR del albarán" value={ocrText} onChange={(event) => setOcrText(event.target.value)} placeholder="Para fotos o PDF escaneados cuando no hay OCR real conectado" /></label><button type="button" disabled={busy} onClick={() => void analyzeDocument()}>{reception.extraccion_documental ? "Volver a analizar" : "Analizar albarán"}</button>{reception.extraccion_documental ? <section aria-label="Propuesta de recepción"><h6>Albarán analizado</h6><p>Proveedor: {reception.extraccion_documental.supplier_name || "No detectado"} · Confianza: {Math.round(reception.extraccion_documental.confidence)} %</p><p>Estado proveedor: {reception.extraccion_documental.provider_match.status}</p>{reception.extraccion_documental.provider_match.issues.length ? <ul>{reception.extraccion_documental.provider_match.issues.map((issue) => <li key={issue.code}>{issue.blocking ? "Bloqueante: " : "Aviso: "}{issue.message}</li>)}</ul> : null}<p>Número: {reception.extraccion_documental.delivery_note_number || "No detectado"} · Fecha: {reception.extraccion_documental.delivery_date || "No detectada"}</p><p>Líneas detectadas: {reception.extraccion_documental.summary.detected_lines} · Coincidencias exactas: {reception.extraccion_documental.summary.exact_matches} · Revisión: {reception.extraccion_documental.summary.requires_review} · Bloqueantes: {reception.extraccion_documental.summary.blocking_issues}</p>{extractionLines.map((line, index) => <fieldset key={`${line.source_text}-${index}`}><legend>{line.article_name || line.source_text}</legend><p>Documento: {line.quantity} {line.unit} · {money(line.unit_price)}/{line.unit}</p><p>Pedido: {line.pending_quantity} {line.order_unit} · {money(line.order_price)}/{line.order_unit}</p>{line.price_variation_pct !== null ? <p>Variación de precio: {line.price_variation_pct > 0 ? "+" : ""}{line.price_variation_pct} %</p> : null}<p>Artículo: {line.matched_article_id || "Sin relacionar"} · Estado: {line.comparison_status}</p><label>Cantidad propuesta<input aria-label={`Cantidad propuesta ${index + 1}`} type="number" step="any" value={line.quantity} onChange={(event) => updateExtraction(index, { quantity: Number(event.target.value) })} /></label><label>Unidad propuesta<input aria-label={`Unidad propuesta ${index + 1}`} value={line.unit} onChange={(event) => updateExtraction(index, { unit: event.target.value })} /></label><label>Precio propuesto<input aria-label={`Precio propuesto ${index + 1}`} type="number" step="any" value={line.unit_price} onChange={(event) => updateExtraction(index, { unit_price: Number(event.target.value) })} /></label>{line.candidates.length > 1 || !line.matched_article_id ? <label>Artículo relacionado<select aria-label={`Artículo relacionado ${index + 1}`} value={line.matched_article_id} onChange={(event) => chooseCandidate(index, event.target.value)}><option value="">Selecciona</option>{line.candidates.map((candidate) => <option key={candidate.article_id} value={candidate.article_id}>{candidate.name} · {candidate.article_id} · {Math.round(candidate.score)} %</option>)}</select></label> : null}{line.issues.length ? <ul>{line.issues.map((issue) => <li key={issue.code}>{issue.blocking ? "Bloqueante: " : "Aviso: "}{issue.message}</li>)}</ul> : null}</fieldset>)}<button type="button" disabled={busy || extractionLines.some((line) => line.issues.some((issue) => issue.blocking)) || reception.extraccion_documental.provider_match.issues.some((issue) => issue.blocking)} onClick={() => void applyExtraction()}>Aplicar al borrador de recepción</button></section> : null}</section> : null;
   const receivable = items.filter((item) => ["preparado", "enviado", "parcialmente_recibido"].includes(item.estado));
-  return <section className="feature-block" aria-label="Recepciones de mercancía"><h3>Recepciones de mercancía</h3>{receivable.map((order) => <button key={order.id} disabled={busy} onClick={() => void start(order.id)}>Registrar recepción de {order.id}</button>)}{!receivable.length ? <p>No hay pedidos preparados pendientes de recepción.</p> : null}{message ? <p role="status">{message}</p> : null}{reception ? <section className="menu-editor" aria-label="Revisar recepción"><h4>Recepción {reception.reception_id}</h4><p>Proveedor: {reception.proveedor} · Pedido: {reception.order_id}</p><strong>Estado: {reception.estado}</strong><label>Fecha de recepción<input type="date" disabled={reception.estado === "CONFIRMADA"} value={reception.fecha || ""} onChange={(event) => setReception({ ...reception, fecha: event.target.value })} /></label><label>Referencia del albarán<input disabled={reception.estado === "CONFIRMADA"} value={reception.referencia || ""} onChange={(event) => setReception({ ...reception, referencia: event.target.value })} /></label><section aria-label="Documento adjunto"><h5>Documento adjunto</h5>{reception.documento ? <><p><strong>Nombre:</strong> {reception.documento.nombre}</p><p>Proveedor: {reception.documento.proveedor} · Pedido: {reception.documento.order_id}</p><p>Estado: {reception.documento.estado === "PENDIENTE_REVISION" ? "Pendiente de revisión" : reception.documento.estado}</p><button type="button" disabled={busy} onClick={() => void viewDocument()}>Ver documento</button>{reception.estado !== "CONFIRMADA" ? <button type="button" disabled={busy} onClick={() => void removeDocument()}>Quitar documento</button> : null}<a href="#lineas-recepcion">Continuar recepción</a></> : <label>Adjuntar albarán<input aria-label="Adjuntar albarán" type="file" disabled={busy || reception.estado === "CONFIRMADA"} accept=".pdf,.docx,.xlsx,.jpg,.jpeg,.png,.txt" onChange={(event) => void attachDocument(event.target.files?.[0])} /></label>}</section>{extractionPanel}<div id="lineas-recepcion">{reception.lineas.map((line, index) => <fieldset disabled={reception.estado === "CONFIRMADA"} key={line.order_line_id}><legend>{line.article_name}</legend><p>Pedido: {line.ordered_quantity} {line.unit} · Ya recibido: {line.previously_received} {line.unit} · Pendiente: {line.pending_quantity} {line.unit}</p><label>Cantidad recibida ahora<input aria-label={`Cantidad recibida ${index + 1}`} type="number" min="0" step="any" value={line.received_quantity} onChange={(event) => change(index, "received_quantity", event.target.value)} /></label><label>Unidad<input aria-label={`Unidad recibida ${index + 1}`} value={line.unit} onChange={(event) => change(index, "unit", event.target.value)} /></label>{line.canonical_unit && line.canonical_unit !== line.unit ? <p className="meta-line">Stock: {line.stock_quantity} {line.canonical_unit}</p> : null}<p>Precio pedido: {money(line.order_price)}</p><label>Precio recibido<input aria-label={`Precio recibido ${index + 1}`} type="number" min="0" step="any" value={line.received_price ?? ""} onChange={(event) => change(index, "received_price", event.target.value)} /></label><label>Lote<input aria-label={`Lote ${index + 1}`} value={line.lot} onChange={(event) => change(index, "lot", event.target.value)} /></label><label>Caducidad<input aria-label={`Caducidad ${index + 1}`} type="date" value={line.expiry} onChange={(event) => change(index, "expiry", event.target.value)} /></label><label>Ubicación<input aria-label={`Ubicación ${index + 1}`} value={line.location} onChange={(event) => change(index, "location", event.target.value)} /></label><label>Observaciones<input aria-label={`Observaciones recepción ${index + 1}`} value={line.observations} onChange={(event) => change(index, "observations", event.target.value)} /></label>{line.incidences.length ? <ul>{line.incidences.map((issue) => <li key={issue.code}>{issue.message}</li>)}</ul> : null}</fieldset>)}</div>{reception.incidencias.some((issue) => issue.bloqueante) ? <p role="alert">Hay incidencias que impiden confirmar la recepción.</p> : null}{reception.estado === "CONFIRMADA" ? <p role="status">Recepción CONFIRMADA. Los movimientos de Stock son inmutables.</p> : <div><button disabled={busy} onClick={() => void save()}>Guardar borrador de recepción</button><button disabled={busy || !reception.confirmable} onClick={() => void confirm()}>Confirmar recepción</button></div>}</section> : null}</section>;
+  return <section className="feature-block" aria-label="Recepciones de mercancía"><h3>Recepciones de mercancía</h3>{receivable.map((order) => <button key={order.id} disabled={busy} onClick={() => void start(order.id)}>Registrar recepción de {order.id}</button>)}{!receivable.length ? <p>No hay pedidos preparados pendientes de recepción.</p> : null}{message ? <p role="status">{message}</p> : null}{reception ? <section className="menu-editor" aria-label="Revisar recepción"><h4>Recepción {reception.reception_id}</h4><p>Proveedor: {reception.proveedor} · Pedido: {reception.order_id}</p><strong>Estado: {reception.estado}</strong><label>Fecha de recepción<input type="date" disabled={reception.estado === "CONFIRMADA"} value={reception.fecha || ""} onChange={(event) => setReception({ ...reception, fecha: event.target.value })} /></label><label>Referencia del albarán<input disabled={reception.estado === "CONFIRMADA"} value={reception.referencia || ""} onChange={(event) => setReception({ ...reception, referencia: event.target.value })} /></label><section aria-label="Documento adjunto"><h5>Documento adjunto</h5>{reception.documento ? <><p><strong>Nombre:</strong> {reception.documento.nombre}</p><p>Proveedor: {reception.documento.proveedor} · Pedido: {reception.documento.order_id}</p><p>Estado: {reception.documento.estado === "PENDIENTE_REVISION" ? "Pendiente de revisión" : reception.documento.estado}</p><button type="button" disabled={busy} onClick={() => void viewDocument()}>Ver documento</button>{reception.estado !== "CONFIRMADA" ? <button type="button" disabled={busy} onClick={() => void removeDocument()}>Quitar documento</button> : null}<a href="#lineas-recepcion">Continuar recepción</a></> : <label>Adjuntar albarán<input aria-label="Adjuntar albarán" type="file" disabled={busy || reception.estado === "CONFIRMADA"} accept=".pdf,.docx,.xlsx,.jpg,.jpeg,.png,.txt" onChange={(event) => void attachDocument(event.target.files?.[0])} /></label>}</section>{extractionPanel}<div id="lineas-recepcion">{reception.lineas.map((line, index) => <fieldset disabled={reception.estado === "CONFIRMADA"} key={line.order_line_id}><legend>{line.article_name}</legend><p>Pedido: {line.ordered_quantity} {line.unit} · Ya recibido: {line.previously_received} {line.unit} · Pendiente: {line.pending_quantity} {line.unit}</p><label>Cantidad recibida ahora<input aria-label={`Cantidad recibida ${index + 1}`} type="number" min="0" step="any" value={line.received_quantity} onChange={(event) => change(index, "received_quantity", event.target.value)} /></label><label>Unidad<input aria-label={`Unidad recibida ${index + 1}`} value={line.unit} onChange={(event) => change(index, "unit", event.target.value)} /></label>{line.canonical_unit && line.canonical_unit !== line.unit ? <p className="meta-line">Stock: {line.stock_quantity} {line.canonical_unit}</p> : null}<p>Precio pedido: {money(line.order_price)}</p><label>Precio recibido<input aria-label={`Precio recibido ${index + 1}`} type="number" min="0" step="any" value={line.received_price ?? ""} onChange={(event) => change(index, "received_price", event.target.value)} /></label><label>Lote<input aria-label={`Lote ${index + 1}`} value={line.lot} onChange={(event) => change(index, "lot", event.target.value)} /></label><label>Caducidad<input aria-label={`Caducidad ${index + 1}`} type="date" value={line.expiry} onChange={(event) => change(index, "expiry", event.target.value)} /></label><label>Ubicación<select aria-label={`Ubicación ${index + 1}`} value={line.location} onChange={(event) => change(index, "location", event.target.value)}><option value="">Sin asignar</option>{stockLocations.map((location) => <option key={location.id} value={location.id}>{location.nombre}</option>)}</select></label><label>Observaciones<input aria-label={`Observaciones recepción ${index + 1}`} value={line.observations} onChange={(event) => change(index, "observations", event.target.value)} /></label>{line.incidences.length ? <ul>{line.incidences.map((issue) => <li key={issue.code}>{issue.message}</li>)}</ul> : null}</fieldset>)}</div>{reception.incidencias.some((issue) => issue.bloqueante) ? <p role="alert">Hay incidencias que impiden confirmar la recepción.</p> : null}{reception.estado === "CONFIRMADA" ? <p role="status">Recepción CONFIRMADA. Los movimientos de Stock son inmutables.</p> : <div><button disabled={busy} onClick={() => void save()}>Guardar borrador de recepción</button><button disabled={busy || !reception.confirmable} onClick={() => void confirm()}>Confirmar recepción</button></div>}</section> : null}</section>;
 }
 
 function money(value: number): string { return value.toLocaleString("es-ES", { style: "currency", currency: "EUR" }); }

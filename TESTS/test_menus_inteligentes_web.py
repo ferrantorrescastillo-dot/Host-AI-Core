@@ -219,6 +219,43 @@ def test_motor_distingue_sin_escandallo_incompleto_y_cero_real() -> None:
     assert result["lineas_sin_coste"] == 2
 
 
+def test_motor_no_trata_cero_tecnico_de_rendimiento_pendiente_como_coste_real() -> None:
+    receta = {
+        "id": "REC-PENDIENTE", "codigo": "REC-PENDIENTE",
+        "nombre": "Histórica pendiente", "estado": "PENDIENTE_DE_COMPLETAR",
+        "numero_raciones": 0, "campos_pendientes_importacion": ["rendimiento"],
+    }
+    escandallo = {
+        "id": "ESC-PENDIENTE", "codigo": "ESC-PENDIENTE",
+        "nombre": "Histórica pendiente", "estado": "OPERATIVO",
+        "coste_por_racion": 0,
+        "receta_asociada": {"id": receta["id"], "codigo": receta["codigo"]},
+    }
+
+    class Repo:
+        def obtener(self, ref: str):
+            if ref in {receta["id"], receta["codigo"]}: return receta
+            if ref in {escandallo["id"], escandallo["codigo"]}: return escandallo
+            return None
+        def listar(self, **_kwargs): return [escandallo]
+        def obtener_producto(self, _ref: str): return None
+        def buscar_productos(self, _query: dict): return []
+
+    repo = Repo()
+    result = MotorCalculoMenus601(repo, repo, repo).calcular(
+        nombre_menu="Rendimiento pendiente", comensales=10,
+        composicion={"Principal": [{
+            "tipo_referencia": "RECETA", "referencia": receta["id"], "cantidad": 1,
+        }]},
+    )
+
+    linea = result["lineas"][0]
+    assert linea["estado_coste"] == "INCOMPLETO"
+    assert linea["coste_por_racion"] is None
+    assert linea["coste_linea_total"] is None
+    assert linea["motivo_coste_no_disponible"] == "Pendiente de rendimiento."
+
+
 def test_selector_y_menu_reutilizan_elaboracion_canonica_antigua(tmp_path: Path) -> None:
     _seed_canonical(tmp_path)
     client = TestClient(create_app(HostAIPlatformAPI(base_dir=tmp_path)))

@@ -6,7 +6,12 @@ from pathlib import Path
 from typing import Iterable
 
 from CORE.entidades.ingrediente import Ingrediente
-from CORE.entidades.receta import Receta
+from CORE.entidades.receta import (
+    EstadoRendimiento,
+    OrigenRendimiento,
+    Receta,
+    RendimientoNeto,
+)
 from CORE.entidades.escandallo import Escandallo
 from SERVICIOS.validador_escandallos_555a import validar_escandallo
 from SERVICIOS.schema_escandallos_555a import SCHEMA_VERSION
@@ -93,5 +98,11 @@ class RepositorioEscandallos:
             rendimiento=float(receta_datos.get("rendimiento", 0)),
             unidad_rendimiento=receta_datos.get("unidad_rendimiento", ""),
             ingredientes=ingredientes,
+            estado_rendimiento=(
+                EstadoRendimiento.desde_valor(receta_datos["estado_rendimiento"])
+                if receta_datos.get("estado_rendimiento") else None
+            ),
+            origen_rendimiento=OrigenRendimiento.desde_dict(receta_datos.get("origen_rendimiento")),
+            rendimiento_neto=RendimientoNeto.desde_dict(receta_datos.get("rendimiento_neto")),
         )
         return Escandallo(receta=receta, coste_total=float(datos.get("coste_total", 0)))

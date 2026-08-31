@@ -39,28 +39,30 @@ describe("Catálogo de artículos", () => {
 
   it("edita la ficha maestra, conserva el id y refresca su estado operativo", async () => {
     const detail = { ...item, unidad_base: null, unidad_compra: null, cantidad_formato: null, proveedor: null, precio: 2.5, precio_incluye_iva: false, alergenos: [], stock_detalle: { cantidad: null, unidad: null, lotes: [] }, proveedores: [], precios: [], documentos: [], ficha_tecnica: null, recetas: [], escandallos: [], historial: [], operatividad: { stock: false, compras: false, escandallos: false }, edicion: { unidades_base: ["kg", "g", "l", "ml", "u"], proveedores: [{ id: "PROV-1", nombre: "Huerta Sur" }] } };
-    const fetchMock = vi.spyOn(global, "fetch").mockImplementation(async (_input, init) => ({ ok: true, json: async () => init?.method === "PATCH" ? ({ ...envelope, datos_reales_modificados: true, mensaje: "Artículo actualizado correctamente.", articulo: { ...detail, unidad_base: "kg", unidad_compra: "saco", cantidad_formato: 10, proveedor: "Huerta Sur", operatividad: { stock: true, compras: true, escandallos: true } } }) : ({ ...envelope, articulo: detail }) }) as Response);
+    const updated = { ...detail, unidad_base: "kg", unidad_compra: "saco", cantidad_formato: 10, proveedor: "Huerta Sur", operatividad: { stock: true, compras: true, escandallos: true } };
+    let confirmed = false;
+    const fetchMock = vi.spyOn(global, "fetch").mockImplementation(async (input, init) => { const url = String(input); if (url.endsWith("/catalogo/preview")) return { ok: true, json: async () => ({ ...envelope, preview_token: "TOKEN", propuesto: updated, requiere_confirmacion: true }) } as Response; if (url.endsWith("/catalogo/confirmar")) { confirmed = true; return { ok: true, json: async () => ({ ...envelope, datos_reales_modificados: true, registro: updated, idempotente: false }) } as Response; } return { ok: true, json: async () => ({ ...envelope, articulo: confirmed ? updated : detail }) } as Response; });
     render(<MemoryRouter initialEntries={["/articulos/ART-001"]}><App /></MemoryRouter>);
     await userEvent.click(await screen.findByRole("button", { name: "Editar artículo" }));
-    await userEvent.selectOptions(screen.getByLabelText("Unidad base"), "kg");
+    await userEvent.type(screen.getByLabelText("Unidad base"), "kg");
     await userEvent.type(screen.getByLabelText("Unidad de compra"), "saco");
     await userEvent.type(screen.getByLabelText("Cantidad por formato"), "10");
-    await userEvent.selectOptions(screen.getByLabelText("Proveedor preferente"), "Huerta Sur");
-    await userEvent.click(screen.getByRole("button", { name: "Guardar artículo" }));
+    await userEvent.type(screen.getByLabelText("Proveedor preferente"), "Huerta Sur");
+    await userEvent.click(screen.getByRole("button", { name: "Revisar y guardar" }));
+    await userEvent.click(await screen.findByRole("button", { name: "Confirmar" }));
     await screen.findByText("10 kg");
     expect(screen.getAllByText("Sí").length).toBe(3);
-    const patchCall = fetchMock.mock.calls.find(([, init]) => init?.method === "PATCH");
-    expect(String(patchCall?.[0])).toContain("/articulos/ART-001");
-    expect(JSON.parse(String(patchCall?.[1]?.body)).unidad_base).toBe("kg");
+    const previewCall = fetchMock.mock.calls.find(([input]) => String(input).endsWith("/catalogo/preview"));
+    expect(JSON.parse(String(previewCall?.[1]?.body)).payload.unidad_base).toBe("kg");
   });
 
   it("muestra el error de validación devuelto al guardar", async () => {
     const detail = { ...item, unidad_base: null, precio_incluye_iva: false, alergenos: [], stock_detalle: { cantidad: null, unidad: null, lotes: [] }, proveedores: [], precios: [], documentos: [], ficha_tecnica: null, recetas: [], escandallos: [], historial: [], operatividad: { stock: false, compras: false, escandallos: false }, edicion: { unidades_base: ["kg"], proveedores: [] } };
-    vi.spyOn(global, "fetch").mockImplementation(async (_input, init) => init?.method === "PATCH" ? ({ ok: false, status: 400, json: async () => ({ ...envelope, ok: false, error: { message: "El precio debe ser mayor que cero." } }) } as Response) : ({ ok: true, json: async () => ({ ...envelope, articulo: detail }) } as Response));
+    vi.spyOn(global, "fetch").mockImplementation(async (input) => String(input).endsWith("/catalogo/preview") ? ({ ok: false, status: 422, json: async () => ({ ...envelope, ok: false, error: { message: "El precio debe ser mayor que cero." } }) } as Response) : ({ ok: true, json: async () => ({ ...envelope, articulo: detail }) } as Response));
     render(<MemoryRouter initialEntries={["/articulos/ART-001"]}><App /></MemoryRouter>);
     await userEvent.click(await screen.findByRole("button", { name: "Editar artículo" }));
-    await userEvent.selectOptions(screen.getByLabelText("Unidad base"), "kg");
-    await userEvent.click(screen.getByRole("button", { name: "Guardar artículo" }));
+    await userEvent.type(screen.getByLabelText("Unidad base"), "kg");
+    await userEvent.click(screen.getByRole("button", { name: "Revisar y guardar" }));
     expect(await screen.findByRole("alert")).toHaveTextContent("El precio debe ser mayor que cero.");
   });
 

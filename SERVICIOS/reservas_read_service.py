@@ -47,6 +47,8 @@ class ReservasReadService:
         termino = self._normalizar(nombre)
         items = []
         for reserva in self.repo.listar():
+            if reserva.eliminada:
+                continue
             if fecha and reserva.fecha != fecha:
                 continue
             if desde and reserva.fecha < desde:
@@ -69,16 +71,16 @@ class ReservasReadService:
 
     def buscar_por_id(self, reserva_id: str) -> dict | None:
         reserva = self.repo.obtener(reserva_id)
-        return self._dto_listado(reserva) if reserva else None
+        return self._dto_listado(reserva) if reserva and not reserva.eliminada else None
 
     def buscar_por_nombre(self, nombre: str, *, limite: int = 50) -> list[dict]:
         return self.listar(nombre=nombre, limite=limite)
 
     def detalle(self, reserva_id: str) -> dict | None:
         reserva = self.repo.obtener(reserva_id)
-        if reserva is None:
+        if reserva is None or reserva.eliminada:
             return None
-        return {**self._dto_listado(reserva), "observaciones": reserva.observaciones}
+        return {**self._dto_listado(reserva), "observaciones": reserva.observaciones, "origen": reserva.origen, "creado_en": reserva.creado_en, "actualizado_en": reserva.actualizado_en}
 
     def _evento_existe_en_fuente_actual(self, evento_id: str) -> bool:
         path = self.base_dir / "DATOS" / "db" / "eventos.json"

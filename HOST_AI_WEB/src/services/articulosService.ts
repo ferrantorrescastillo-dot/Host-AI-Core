@@ -25,4 +25,18 @@ export const articulosService = {
     return hostAiApiClient.getArticulo(id);
   },
   update: hostAiApiClient.updateArticulo,
+  proposeDocumentation: hostAiApiClient.proposeArticleDocumentation,
+  previewDocumentation: hostAiApiClient.previewArticleDocumentation,
+  confirmDocumentation: hostAiApiClient.confirmArticleDocumentation,
+  previewManualPrice: hostAiApiClient.previewManualPrice,
+  confirmManualPrice: hostAiApiClient.confirmManualPrice,
+  withoutPrice: hostAiApiClient.getArticlesWithoutPrice,
+  reclassificationCandidates: hostAiApiClient.getReclassificationCandidates,
+  previewReclassification: hostAiApiClient.previewReclassification,
+  confirmReclassification: hostAiApiClient.confirmReclassification,
+  exportWithoutPrice: hostAiApiClient.exportArticlesWithoutPrice,
+  previewImportedReferences: hostAiApiClient.previewImportedReferences,
+  confirmImportedReferences: hostAiApiClient.confirmImportedReferences,
+  previewWebPrice: hostAiApiClient.previewWebPrice,
+  confirmWebPrice: hostAiApiClient.confirmWebPrice,
 };

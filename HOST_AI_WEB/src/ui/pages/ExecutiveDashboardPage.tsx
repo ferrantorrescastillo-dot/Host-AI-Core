@@ -6,6 +6,7 @@ import {
 } from "../../services/executiveDashboardService";
 import { ErrorState } from "../components/ErrorState";
 import { LoadingState } from "../components/LoadingState";
+import { SearchField } from "../components/SearchField";
 
 export function ExecutiveDashboardPage() {
   const [data, setData] = useState<ExecutiveDashboardResult | null>(null);
@@ -13,6 +14,8 @@ export function ExecutiveDashboardPage() {
   const [errorRequestId, setErrorRequestId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshTick, setRefreshTick] = useState(0);
+  const [query, setQuery] = useState("");
+  const matches = (value: unknown) => !query.trim() || JSON.stringify(value).toLocaleLowerCase("es").includes(query.trim().toLocaleLowerCase("es"));
 
   useEffect(() => {
     let active = true;
@@ -70,6 +73,8 @@ export function ExecutiveDashboardPage() {
             <p className="meta-line">Request ID: {data?.request_id || "No disponible"}</p>
           </section>
 
+          <div className="module-toolbar"><SearchField value={query} onChange={setQuery} placeholder="Buscar en el resumen ejecutivo..." ariaLabel="Buscar en Executive" /></div>
+
           <section className="dashboard-grid" aria-label="KPIs principales">
             <Kpi title="Producción en curso" value={data?.kpis.produccionEnCurso ?? 0} />
             <Kpi title="Compras pendientes" value={data?.kpis.comprasPendientes ?? 0} />
@@ -79,7 +84,7 @@ export function ExecutiveDashboardPage() {
           </section>
 
           <ModuleSection title="Producción en curso" empty="No hay producción en curso.">
-            {data?.produccion.map((plan, index) => (
+            {data?.produccion.filter(matches).map((plan, index) => (
               <li key={plan.id || `${plan.nombre}-${index}`}>
                 <strong>{plan.nombre || "Plan de producción"}</strong>
                 <span className="meta-line">Estado: {readable(plan.estado)}</span>
@@ -88,7 +93,7 @@ export function ExecutiveDashboardPage() {
           </ModuleSection>
 
           <ModuleSection title="Compras pendientes" empty="No hay compras pendientes.">
-            {data?.compras.map((item, index) => (
+            {data?.compras.filter(matches).map((item, index) => (
               <li key={item.id || `${item.nombre}-${index}`}>
                 <strong>{item.nombre || "Necesidad de compra"}</strong>
                 <span className="meta-line">Necesaria: {item.fecha_necesaria || "Sin fecha"}</span>
@@ -97,7 +102,7 @@ export function ExecutiveDashboardPage() {
           </ModuleSection>
 
           <ModuleSection title="Próximos eventos" empty="No hay próximos eventos.">
-            {data?.eventos.map((evento, index) => (
+            {data?.eventos.filter(matches).map((evento, index) => (
               <li key={evento.id || `${evento.nombre}-${index}`}>
                 <strong>{evento.nombre || "Evento"}</strong>
                 <span className="meta-line">
@@ -107,10 +112,10 @@ export function ExecutiveDashboardPage() {
             ))}
           </ModuleSection>
 
-          <TextSection title="Alertas de stock" items={data?.alertasStock.map((item) => item.mensaje || item.tipo || "Alerta") ?? []} />
-          <TextSection title="Riesgos" items={data?.riesgos ?? []} />
-          <TextSection title="Incidencias relevantes" items={data?.incidencias ?? []} />
-          <TextSection title="Recomendaciones" items={data?.recomendaciones ?? []} />
+          <TextSection title="Alertas de stock" items={data?.alertasStock.filter(matches).map((item) => item.mensaje || item.tipo || "Alerta") ?? []} />
+          <TextSection title="Riesgos" items={(data?.riesgos ?? []).filter(matches)} />
+          <TextSection title="Incidencias relevantes" items={(data?.incidencias ?? []).filter(matches)} />
+          <TextSection title="Recomendaciones" items={(data?.recomendaciones ?? []).filter(matches)} />
         </>
       )}
     </section>

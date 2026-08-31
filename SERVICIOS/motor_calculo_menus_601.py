@@ -23,6 +23,28 @@ INC_DUPLICADO = "DUPLICADO"
 
 
 class MotorCalculoMenus601:
+    @staticmethod
+    def _rendimiento_pendiente(receta: dict[str, Any] | None) -> bool:
+        if not receta:
+            return False
+        pendientes = {
+            str(campo or "").strip().casefold()
+            for campo in receta.get("campos_pendientes_importacion") or []
+        }
+        return (
+            str(receta.get("estado") or "").upper() == "PENDIENTE_DE_COMPLETAR"
+            and "rendimiento" in pendientes
+        )
+
+    def _receta_asociada(self, escandallo: dict[str, Any]) -> dict[str, Any] | None:
+        referencia = escandallo.get("receta_asociada") or {}
+        for clave in (referencia.get("id"), referencia.get("codigo")):
+            if clave:
+                receta = self._buscar_receta(str(clave))
+                if receta:
+                    return receta
+        return None
+
     def __init__(
         self,
         repo_esc: RepositorioBibliotecaEscandallos601,
@@ -139,9 +161,15 @@ class MotorCalculoMenus601:
                             inc_linea.append({"tipo": INC_PLATO_ARCHIVADO, "detalle": f"Escandallo archivado: {esc.get('nombre')}"})
                         if estado_esc == ESTADO_DESACTUALIZADO:
                             inc_linea.append({"tipo": INC_ESCANDALLO_DESACTUALIZADO, "detalle": f"Escandallo desactualizado: {esc.get('nombre')}"})
-                        coste_por_racion = self._to_float(esc.get("coste_por_racion"))
-                        coste_por_comensal = coste_por_racion * cantidad
-                        estado_coste = "DISPONIBLE"
+                        receta_asociada = self._receta_asociada(esc)
+                        if self._rendimiento_pendiente(receta_asociada):
+                            estado_coste = "INCOMPLETO"
+                            motivo_coste_no_disponible = "Pendiente de rendimiento."
+                            inc_linea.append({"tipo": INC_PRODUCTO_SIN_PRECIO, "detalle": motivo_coste_no_disponible})
+                        else:
+                            coste_por_racion = self._to_float(esc.get("coste_por_racion"))
+                            coste_por_comensal = coste_por_racion * cantidad
+                            estado_coste = "DISPONIBLE"
                         snapshot_ref = {
                             "tipo": "ESCANDALLO",
                             "id": esc.get("id"),
@@ -208,9 +236,14 @@ class MotorCalculoMenus601:
                         else:
                             if str(esc.get("estado") or "") == ESTADO_DESACTUALIZADO:
                                 inc_linea.append({"tipo": INC_ESCANDALLO_DESACTUALIZADO, "detalle": f"Escandallo desactualizado para receta: {receta.get('nombre')}"})
-                            coste_por_racion = self._to_float(esc.get("coste_por_racion"))
-                            coste_por_comensal = coste_por_racion * cantidad
-                            estado_coste = "DISPONIBLE"
+                            if self._rendimiento_pendiente(receta):
+                                estado_coste = "INCOMPLETO"
+                                motivo_coste_no_disponible = "Pendiente de rendimiento."
+                                inc_linea.append({"tipo": INC_PRODUCTO_SIN_PRECIO, "detalle": motivo_coste_no_disponible})
+                            else:
+                                coste_por_racion = self._to_float(esc.get("coste_por_racion"))
+                                coste_por_comensal = coste_por_racion * cantidad
+                                estado_coste = "DISPONIBLE"
                             snapshot_ref = {
                                 "tipo": "ESCANDALLO",
                                 "id": esc.get("id"),

@@ -30,6 +30,8 @@ class Reserva:
     origen: str = "MANUAL"
     creado_en: str = ""
     actualizado_en: str = ""
+    eliminada: bool = False
+    eliminado_en: str = ""
 
     def __post_init__(self) -> None:
         now = datetime.now().isoformat(timespec="seconds")
@@ -44,6 +46,8 @@ class Reserva:
         object.__setattr__(self, "origen", str(self.origen or "MANUAL").strip().upper())
         object.__setattr__(self, "creado_en", str(self.creado_en or now))
         object.__setattr__(self, "actualizado_en", str(self.actualizado_en or self.creado_en or now))
+        object.__setattr__(self, "eliminada", bool(self.eliminada))
+        object.__setattr__(self, "eliminado_en", str(self.eliminado_en or ""))
         try:
             pax = int(self.pax)
         except (TypeError, ValueError) as exc:

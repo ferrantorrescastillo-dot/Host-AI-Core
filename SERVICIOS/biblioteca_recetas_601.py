@@ -8,6 +8,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Optional
 
+from SERVICIOS.repository_initialization_policy import should_initialize_persistently
+
 
 ESTADO_OPERATIVA = "OPERATIVA"
 ESTADO_PENDIENTE = "PENDIENTE_DE_COMPLETAR"
@@ -22,6 +24,7 @@ _CAMPOS_COMPLETITUD: list[tuple[str, str, bool]] = [
     ("descripcion", "Descripción", False),
     ("ingredientes", "Ingredientes", True),
     ("cantidades", "Cantidades", True),
+    ("numero_raciones", "Rendimiento", True),
     ("elaboracion", "Elaboración paso a paso", True),
     ("tecnicas_culinarias", "Técnicas culinarias", False),
     ("coste_por_racion", "Coste por ración", False),
@@ -73,8 +76,9 @@ class RepositorioBibliotecaRecetas601:
     def __init__(self, base_dir: Path):
         self.base_dir = Path(base_dir).resolve()
         self.path = self.base_dir / "DATOS" / "db" / "biblioteca_recetas_601.json"
-        self.path.parent.mkdir(parents=True, exist_ok=True)
-        self._asegurar_archivo()
+        if should_initialize_persistently():
+            self.path.parent.mkdir(parents=True, exist_ok=True)
+            self._asegurar_archivo()
 
     def _asegurar_archivo(self) -> None:
         if self.path.exists():
@@ -168,6 +172,26 @@ class RepositorioBibliotecaRecetas601:
 
     def _construir_ficha_tecnica(self, receta_base: dict[str, Any], receta_fuente: dict[str, Any], receta_existente: Optional[dict[str, Any]] = None) -> dict[str, Any]:
         ficha = dict(receta_base)
+        pending_import = list(
+            receta_fuente.get("campos_pendientes_importacion")
+            if "campos_pendientes_importacion" in receta_fuente
+            else (receta_existente or {}).get("campos_pendientes_importacion") or []
+        )
+        try:
+            informed_yield = float(receta_base.get("numero_raciones") or 0) > 0
+        except (TypeError, ValueError):
+            informed_yield = False
+        if informed_yield:
+            pending_import = [field for field in pending_import if field != "rendimiento"]
+        if self._normalizar_texto(receta_base.get("elaboracion")):
+            pending_import = [field for field in pending_import if field != "procedimiento"]
+        ficha["campos_pendientes_importacion"] = list(dict.fromkeys(pending_import))
+        structured_source = receta_fuente.get("ingredientes_estructurados")
+        if structured_source is None and receta_existente:
+            structured_source = receta_existente.get("ingredientes_estructurados")
+        ficha["ingredientes_estructurados"] = [
+            dict(item) for item in (structured_source or []) if isinstance(item, dict)
+        ]
         ficha["categoria"] = self._valor_extendido(receta_fuente, receta_existente, "categoria")
         ficha["descripcion"] = self._valor_extendido(receta_fuente, receta_existente, "descripcion")
         ficha["tecnicas_culinarias"] = self._lista_extendida(receta_fuente, receta_existente, "tecnicas_culinarias")
@@ -213,6 +237,8 @@ class RepositorioBibliotecaRecetas601:
         ficha["documentos_fotografias"] = self._lista_extendida(receta_fuente, receta_existente, "documentos_fotografias")
         ficha["notas_documentacion"] = self._valor_extendido(receta_fuente, receta_existente, "notas_documentacion")
         ficha["propuestas_ia_pendientes"] = self._lista_extendida(receta_fuente, receta_existente, "propuestas_ia_pendientes")
+        ficha["procedencia_campos"] = dict(receta_fuente.get("procedencia_campos") if "procedencia_campos" in receta_fuente else (receta_existente or {}).get("procedencia_campos") or {})
+        ficha["historial_procedencia"] = list(receta_fuente.get("historial_procedencia") if "historial_procedencia" in receta_fuente else (receta_existente or {}).get("historial_procedencia") or [])
         ficha["documentos_adjuntos"] = (
             list(ficha.get("documentos_word") or [])
             + list(ficha.get("documentos_pdf") or [])
@@ -337,6 +363,8 @@ class RepositorioBibliotecaRecetas601:
         receta.setdefault("documentos_fotografias", [])
         receta.setdefault("notas_documentacion", "")
         receta.setdefault("propuestas_ia_pendientes", [])
+        receta.setdefault("procedencia_campos", {})
+        receta.setdefault("historial_procedencia", [])
         return self._construir_ficha_tecnica(receta, receta, receta)
 
     def _siguiente_id(self, recetas: list[dict[str, Any]]) -> str:
@@ -461,6 +489,20 @@ class RepositorioBibliotecaRecetas601:
             errores.append("El número de raciones debe ser mayor que cero.")
         return errores
 
+    def validar_borrador_incompleto(self, receta: dict[str, Any]) -> list[str]:
+        errores: list[str] = []
+        if not self._normalizar_texto(receta.get("nombre")):
+            errores.append("El nombre es obligatorio.")
+        ingredientes = self._normalizar_lista(receta.get("ingredientes"))
+        cantidades = self._normalizar_lista(receta.get("cantidades"))
+        if not ingredientes:
+            errores.append("Debes indicar al menos un ingrediente.")
+        if not cantidades:
+            errores.append("Debes indicar al menos una cantidad.")
+        if ingredientes and cantidades and len(ingredientes) != len(cantidades):
+            errores.append("Ingredientes y cantidades deben tener el mismo número de elementos.")
+        return errores
+
     def listar(self, incluir_archivadas: bool = False) -> list[dict[str, Any]]:
         payload = self._leer_payload()
         recetas = list(payload["recetas"])
@@ -513,6 +555,58 @@ class RepositorioBibliotecaRecetas601:
         payload["recetas"] = recetas
         self._guardar_payload(payload)
         return {"ok": True, "receta": recetas[-1]}
+
+    def crear_incompleta_desde_importacion(self, receta: dict[str, Any]) -> dict[str, Any]:
+        """Persiste un borrador histórico sin inventar procedimiento ni rendimiento."""
+        errores = self.validar_borrador_incompleto(receta)
+        if errores:
+            return {"ok": False, "errores": errores}
+
+        payload = self._leer_payload()
+        recetas = list(payload["recetas"])
+        receta_norm = self._normalizar_receta({
+            **receta,
+            "elaboracion": self._normalizar_texto(receta.get("elaboracion")),
+            "numero_raciones": receta.get("numero_raciones") or 0,
+            "estado": ESTADO_PENDIENTE,
+        }, recetas)
+        codigo_nuevo = str(receta_norm.codigo).lower()
+        if any(str(item.get("codigo") or "").lower() == codigo_nuevo for item in recetas):
+            return {"ok": False, "errores": ["Ya existe una receta con ese código."]}
+        stored = self._construir_ficha_tecnica(asdict(receta_norm), receta)
+        stored["estado"] = ESTADO_PENDIENTE
+        stored["campos_pendientes_importacion"] = [
+            field for field, value in (
+                ("procedimiento", receta.get("elaboracion")),
+                ("rendimiento", receta.get("numero_raciones")),
+            ) if not value
+        ]
+        recetas.append(stored)
+        payload["recetas"] = recetas
+        self._guardar_payload(payload)
+        return {"ok": True, "receta": stored}
+
+    def editar_borrador_incompleto(self, id_o_codigo: str, cambios: dict[str, Any]) -> dict[str, Any]:
+        payload = self._leer_payload()
+        recetas = list(payload["recetas"])
+        objetivo = self.obtener(id_o_codigo)
+        if not objetivo:
+            return {"ok": False, "errores": ["No se encontró la receta."]}
+        if str(objetivo.get("estado") or "") != ESTADO_PENDIENTE:
+            return {"ok": False, "errores": ["La receta no es un borrador incompleto."]}
+        actualizada = {**objetivo, **cambios}
+        errores = self.validar_borrador_incompleto(actualizada)
+        if errores:
+            return {"ok": False, "errores": errores}
+        receta_norm = self._normalizar_receta(actualizada, recetas, receta_existente=objetivo)
+        stored = self._construir_ficha_tecnica(asdict(receta_norm), actualizada, objetivo)
+        for index, recipe in enumerate(recetas):
+            if recipe.get("id") == objetivo.get("id"):
+                recetas[index] = stored
+                break
+        payload["recetas"] = recetas
+        self._guardar_payload(payload)
+        return {"ok": True, "receta": stored}
 
     def editar(self, id_o_codigo: str, cambios: dict[str, Any]) -> dict[str, Any]:
         payload = self._leer_payload()

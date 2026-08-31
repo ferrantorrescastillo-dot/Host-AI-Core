@@ -10,6 +10,7 @@ import type { IntelligentMenu, MenuInput, MenuNeedLine, MenuNeedsResponse, MenuO
 import { BibliotecaNav } from "../components/BibliotecaNav";
 import { ErrorState } from "../components/ErrorState";
 import { LoadingState } from "../components/LoadingState";
+import { SearchField } from "../components/SearchField";
 
 const DEFAULT_SECTIONS = ["Entrante", "Principal", "Postre"];
 
@@ -55,20 +56,32 @@ export function MenusPage() {
   const [providerNames, setProviderNames] = useState<string[]>([]);
   const [productionLoading, setProductionLoading] = useState(false);
   const [productionPlanId, setProductionPlanId] = useState("");
+  const [menuQuery, setMenuQuery] = useState("");
 
   useEffect(() => {
     void menusService.list().then(async (response) => {
       setMenus(response.menus);
-      const menuId = searchParams.get("menu_id"); const proposalId = searchParams.get("proposal_id");
-      if (!deepLinkLoaded.current && menuId && proposalId) {
+      const menuId = searchParams.get("menu_id"); const proposalId = searchParams.get("proposal_id"); const purchaseView = searchParams.get("view") === "compra";
+      if (!deepLinkLoaded.current && menuId) {
         deepLinkLoaded.current = true;
         const menu = response.menus.find((item) => item.id === menuId);
-        if (!menu) throw new Error("No se encontr\u00f3 el men\u00fa asociado a la propuesta.");
+        if (!menu) throw new Error("No se encontr\u00f3 el men\u00fa solicitado.");
         edit(menu);
-        const loaded = await menusService.getPurchaseProposal(menuId, proposalId);
-        const normalized = normalizeProposal(loaded.propuesta);
-        setProposal(normalized.proposal); setProposalDirty(normalized.changed);
-        setMessage("Propuesta de Producci\u00f3n cargada para revisi\u00f3n.");
+        if (proposalId) {
+          const loaded = await menusService.getPurchaseProposal(menuId, proposalId);
+          const normalized = normalizeProposal(loaded.propuesta);
+          setProposal(normalized.proposal); setProposalDirty(normalized.changed);
+          setMessage("Propuesta de Producci\u00f3n cargada para revisi\u00f3n.");
+        } else if (purchaseView) {
+          const [needsResponse, proposalResponse] = await Promise.all([
+            menusService.needs(menuId), menusService.createPurchaseProposal(menuId),
+          ]);
+          const normalized = normalizeProposal(proposalResponse.propuesta);
+          setNeeds(needsResponse.necesidades);
+          setNeedsFilter("compra");
+          setProposal(normalized.proposal); setProposalDirty(normalized.changed);
+          setMessage("Propuesta de compra preparada para revisión. No se ha creado ningún pedido.");
+        }
       }
     }).catch((reason) => setError(reason as HostAiApiError)).finally(() => setLoading(false));
   }, []);
@@ -100,6 +113,7 @@ export function MenusPage() {
   }, [Boolean(proposal)]);
 
   const addedIds = useMemo(() => new Set(draft.secciones.flatMap((section) => section.elaboraciones.map((item) => item.elaboracion_id))), [draft.secciones]);
+  const visibleMenus = useMemo(() => menus.filter((menu) => `${menu.nombre} ${menu.id} ${menu.estado}`.toLocaleLowerCase("es").includes(menuQuery.trim().toLocaleLowerCase("es"))), [menus, menuQuery]);
 
   function edit(menu: IntelligentMenu) {
     setSelected(menu);
@@ -283,7 +297,7 @@ export function MenusPage() {
     <header className="page-header"><div><p className="eyebrow">Biblioteca Culinaria</p><h2>Menús inteligentes</h2></div><button type="button" onClick={() => { setSelected(null); setDraft(emptyDraft()); }}>Nuevo menú</button></header>
     <p>Los menús referencian elaboraciones existentes. Recetas, escandallos y costes permanecen en la Biblioteca.</p>
     <div className="menu-workspace">
-      <aside aria-label="Listado de menús"><h3>Menús</h3>{!menus.length ? <p>No hay menús creados.</p> : menus.map((menu) => <button className={selected?.id === menu.id ? "active" : ""} key={menu.id} onClick={() => edit(menu)} type="button"><strong>{menu.nombre}</strong><span>{menu.estado} · v{menu.version}</span><span>{countElaborations(menu)} elaboraciones</span><span>{formatMoney(menu.coste_por_comensal)}/comensal · {formatMoney(menu.coste_total)} total</span><span>{menu.coste_completo ? "Coste completo" : `Coste parcial · ${menu.lineas_sin_coste} sin coste`}</span></button>)}</aside>
+      <aside aria-label="Listado de menús"><h3>Menús</h3><SearchField value={menuQuery} onChange={setMenuQuery} placeholder="Buscar menús..." ariaLabel="Buscar menús" />{!menus.length ? <p>No hay menús creados.</p> : !visibleMenus.length ? <p className="module-empty-search">No hay menús que coincidan con “{menuQuery}”.</p> : visibleMenus.map((menu) => <button className={selected?.id === menu.id ? "active" : ""} key={menu.id} onClick={() => edit(menu)} type="button"><strong>{menu.nombre}</strong><span>{menu.estado} · v{menu.version}</span><span>{countElaborations(menu)} elaboraciones</span><span>{formatMoney(menu.coste_por_comensal)}/comensal · {formatMoney(menu.coste_total)} total</span><span>{menu.coste_completo ? "Coste completo" : `Coste parcial · ${menu.lineas_sin_coste} sin coste`}</span></button>)}</aside>
       <div className="menu-editor">
         <h3>{selected ? "Editar menú" : "Crear menú"}</h3>
         <label>Nombre<input aria-label="Nombre del menú" value={draft.nombre} onChange={(event) => setDraft({ ...draft, nombre: event.target.value })} /></label>

@@ -65,17 +65,29 @@ export type StockMovimiento = {
   lote_id?: string;
   articulo_id?: string;
   creado_en?: string;
+  origen?: string;
+  destino?: string;
+  usuario?: string;
+  observaciones?: string;
+  referencia?: string;
+  trazabilidad?: Record<string, unknown>;
 };
 
 export type StockAlerta = {
   tipo?: string;
   nivel?: string;
   mensaje?: string;
+  articulo_id?: string;
+  lote_id?: string;
+  ubicacion?: string;
+  cantidad?: number;
+  unidad?: string;
 };
 
 export type StockResumen = {
   articulos?: number;
   lotes?: number;
+  lotes_registrados?: number;
   movimientos?: number;
   alertas?: number;
   bajo_minimo?: number;
@@ -92,6 +104,7 @@ export type StockModule = {
   total_existencias?: number;
   lotes?: StockLote[];
   total_lotes?: number;
+  total_lotes_registrados?: number;
   movimientos?: StockMovimiento[];
   total_movimientos?: number;
   alertas?: StockAlerta[];
@@ -219,9 +232,75 @@ export type DashboardResponse = ApiEnvelopeBase & {
   error?: ApiError;
 };
 
+export type ChatUiAction = {
+  type?: string;
+  target?: string;
+  view?: string;
+  id?: string;
+  label?: string;
+  url?: string;
+};
+
+export type ChatNavigationRequest = {
+  target_module?: string;
+  filter_data?: { termino?: string; [key: string]: unknown };
+};
+
+export type ChatData = {
+  ui_action?: ChatUiAction;
+  ui_action_mode?: string;
+  navigation_request?: ChatNavigationRequest;
+  confirmation_actions?: unknown[];
+  reservation_actions?: unknown[];
+  economic_actions?: unknown[];
+  preview?: unknown;
+  purchase_groups?: ChatPurchaseGroup[];
+  operational_incidents?: ChatOperationalIncident[];
+  [key: string]: unknown;
+};
+
+export type ChatPurchaseItem = { articulo_id: string; nombre: string; cantidad: number; unidad: string; formato?: string | null; precio_unitario?: number | null; unidad_precio?: string | null; coste_neto?: number | null };
+export type ChatPurchaseAction = { type: "OPEN_ORDER" | "PREPARE_ORDER"; label: string; pedido_id?: string; menu_id?: string };
+export type ChatPurchaseRelatedLine = { articulo_id: string; nombre: string; cantidad_prevista: number | null; unidad: string; cubriria_necesidad: boolean };
+export type ChatPurchaseGroup = { proveedor: string; articulos: ChatPurchaseItem[]; estado_pedido: string; pedido_relacionado?: { pedido_id: string; estado: string; lineas_relevantes: ChatPurchaseRelatedLine[] } | null; action?: ChatPurchaseAction | null };
+export type ChatOperationalIncident = { articulo_id?: string; reason: string; unidad?: string };
+
+export type ChatPayload = {
+  mensaje?: string;
+  datos?: ChatData;
+  [key: string]: unknown;
+};
+
 export type ChatResponse = ApiEnvelopeBase & {
   respuesta?: string;
-  chat?: Record<string, unknown>;
+  chat?: ChatPayload;
   contexto?: Record<string, unknown>;
+  session_id?: string;
   error?: ApiError;
+};
+
+export type ChatConfirmationActionId =
+  | "APPLY_PENDING_RESERVATION" | "DISCARD_PENDING_RESERVATION"
+  | "CONFIRM_RESERVATION" | "EDIT_RESERVATION" | "CANCEL_RESERVATION"
+  | "MARK_RESERVATION_NO_SHOW" | "COMPLETE_RESERVATION" | "OPEN_RESERVATION"
+  | "RESOLVE_MISSING_PRICE" | "RESOLVE_MISSING_CONVERSION"
+  | "CHECK_ESCANDALLO_COST"
+  | "APPLY_PENDING_ARTICLE_CHANGE" | "DISCARD_PENDING_ARTICLE_CHANGE"
+  | "APPLY_PENDING_LOT_LOCATION" | "DISCARD_PENDING_LOT_LOCATION"
+  | "APPLY_PENDING_CATALOG_CREATE" | "DISCARD_PENDING_CATALOG_CREATE";
+export type ChatConfirmationAction = { action_id: ChatConfirmationActionId; action_context_id?: string; label: string; style: "primary" | "secondary" };
+
+export type ArticleChangePreviewChange = { field: string; label: string; before: string; after: string };
+export type ArticleChangePreviewDetail = { label: string; value: string; formula?: string; status?: string };
+export type ArticleChangePreview = {
+  schema: "ARTICLE_CHANGE_PREVIEW_V1";
+  entity_type: "ARTICULO";
+  entity_id: string;
+  title: string;
+  operation: "UPDATE_PRICE" | "UPDATE_CONVERSION" | "UPDATE_FORMAT";
+  changes: ArticleChangePreviewChange[];
+  derived: ArticleChangePreviewDetail[];
+  unchanged: ArticleChangePreviewDetail[];
+  notice: string;
+  datos_reales_modificados: false;
 };

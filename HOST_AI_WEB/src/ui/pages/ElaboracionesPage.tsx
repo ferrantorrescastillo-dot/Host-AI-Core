@@ -5,12 +5,15 @@ import type { ElaboracionesResponse } from "../../types/biblioteca";
 import { BibliotecaNav } from "../components/BibliotecaNav";
 import { ErrorState } from "../components/ErrorState";
 import { LoadingState } from "../components/LoadingState";
+import { SearchField } from "../components/SearchField";
+import { SafeCatalogWritePanel } from "../components/SafeCatalogWritePanel";
 
 export function ElaboracionesPage({ preset }: { preset?: "receta" | "escandallo" | "ficha" }) {
   const [params, setParams] = useSearchParams();
   const [search, setSearch] = useState(params.get("q") || "");
   const [data, setData] = useState<ElaboracionesResponse | null>(null);
   const [error, setError] = useState("");
+  const [creating, setCreating] = useState(false);
   const page = Number(params.get("page") || 1);
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -35,9 +38,10 @@ export function ElaboracionesPage({ preset }: { preset?: "receta" | "escandallo"
   const detailTab = preset === "receta" ? "?tab=receta" : preset === "escandallo" ? "?tab=escandallo" : preset === "ficha" ? "?tab=ficha-tecnica" : "";
   const update = (key: string, value: string) => { const next = new URLSearchParams(params); value ? next.set(key, value) : next.delete(key); next.set("page", "1"); setParams(next); };
   return <section className="panel" aria-labelledby="elaborations-title">
-    <p className="eyebrow">Biblioteca Culinaria</p><h2 id="elaborations-title">{title}</h2><BibliotecaNav />
+    <header className="dashboard-header"><div><p className="eyebrow">Biblioteca Culinaria</p><h2 id="elaborations-title">{title}</h2></div>{preset === "receta" || !preset ? <button type="button" onClick={() => setCreating(true)}>+ Nueva receta</button> : null}</header><BibliotecaNav />
+    {creating ? <SafeCatalogWritePanel domain="RECETA" operation="CREAR" onCancel={() => setCreating(false)} onConfirmed={(record) => { setCreating(false); const id = String(record.id || record.codigo || ""); if (id) window.location.assign(`/biblioteca/elaboraciones/${encodeURIComponent(id)}?tab=receta`); }} /> : null}
     <div className="catalog-filters">
-      <label>Buscar<input aria-label="Buscar elaboraciones" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Nombre, código, categoría o ingrediente" /></label>
+      <SearchField value={search} onChange={setSearch} placeholder="Nombre, código, categoría o ingrediente" ariaLabel="Buscar elaboraciones" />
       <label>Estado<select value={params.get("estado") || ""} onChange={(e) => update("estado", e.target.value)}><option value="">Todos</option>{data?.elaboraciones.filters.estados.map((x) => <option key={x} value={x}>{statusLabel(x)}</option>)}</select></label>
       <label>Categoría<select value={params.get("categoria") || ""} onChange={(e) => update("categoria", e.target.value)}><option value="">Todas</option>{data?.elaboraciones.filters.categorias.map((x) => <option key={x}>{x}</option>)}</select></label>
     </div>

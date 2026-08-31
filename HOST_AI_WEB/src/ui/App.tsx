@@ -19,6 +19,10 @@ import { ElaboracionDetailPage } from "./pages/ElaboracionDetailPage";
 import { BibliotecaPendingPage } from "./pages/BibliotecaPendingPage";
 import { BibliotecaImportPage } from "./pages/BibliotecaImportPage";
 import { MenusPage } from "./pages/MenusPage";
+import { BibliotecaMenusPage } from "./pages/BibliotecaMenusPage";
+import { BibliotecaMenuDetailPage } from "./pages/BibliotecaMenuDetailPage";
+import { ReservasPage } from "./pages/ReservasPage";
+import { ReservaDetailPage } from "./pages/ReservaDetailPage";
 
 export function App() {
   return (
@@ -29,6 +33,8 @@ export function App() {
         <Route path="/executive" element={<ExecutiveDashboardPage />} />
         <Route path="/chat" element={<ChatPage />} />
         <Route path="/eventos" element={<EventosPage />} />
+        <Route path="/reservas" element={<ReservasPage />} />
+        <Route path="/reservas/:reservaId" element={<ReservaDetailPage />} />
         <Route path="/produccion" element={<ProduccionPage />} />
         <Route path="/produccion/:planId/stock" element={<ProductionStockReviewPage />} />
         <Route path="/compras" element={<ComprasPage />} />
@@ -42,7 +48,8 @@ export function App() {
         <Route path="/biblioteca/recetas" element={<ElaboracionesPage preset="receta" />} />
         <Route path="/biblioteca/escandallos" element={<ElaboracionesPage preset="escandallo" />} />
         <Route path="/biblioteca/fichas-tecnicas" element={<ElaboracionesPage preset="ficha" />} />
-        <Route path="/biblioteca/menus" element={<MenusPage />} />
+        <Route path="/biblioteca/menus" element={<BibliotecaMenusPage />} />
+        <Route path="/biblioteca/menus/:menuId" element={<BibliotecaMenuDetailPage />} />
         <Route path="/biblioteca/documentacion" element={<BibliotecaPendingPage title="Documentación" detail="No hay documentos clasificados públicamente fuera de sus elaboraciones." />} />
         <Route path="/biblioteca/importaciones" element={<BibliotecaImportPage />} />
         <Route path="/configuracion" element={<PlaceholderPage modulo="Configuracion" />} />

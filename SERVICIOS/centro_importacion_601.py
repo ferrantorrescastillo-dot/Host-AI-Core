@@ -8,9 +8,12 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Optional
 
+from SERVICIOS.repository_initialization_policy import should_initialize_persistently
+
 from SERVICIOS.asistente_resolucion_incidencias_601 import AsistenteResolucionIncidencias601
 from SERVICIOS.biblioteca_recetas_601 import RepositorioBibliotecaRecetas601
 from SERVICIOS.repositorio_productos_maestro_601 import RepositorioProductosMaestro601
+from SERVICIOS.clasificacion_entidad_catalogo import ClasificadorImportacionEntidades
 
 
 ESTADO_INCIDENCIA_PENDIENTE = "PENDIENTE"
@@ -57,8 +60,9 @@ class RepositorioCentroImportacion601:
         self.base_dir = Path(base_dir).resolve()
         self.path = self.base_dir / "DATOS" / "db" / "centro_importacion_601.json"
         self.repo_catalogo = RepositorioProductosMaestro601(self.base_dir)
-        self.path.parent.mkdir(parents=True, exist_ok=True)
-        self._asegurar_archivo()
+        if should_initialize_persistently():
+            self.path.parent.mkdir(parents=True, exist_ok=True)
+            self._asegurar_archivo()
 
     def _asegurar_archivo(self) -> None:
         if self.path.exists():
@@ -173,7 +177,9 @@ class RepositorioCentroImportacion601:
             data["cantidad_formato"] = data.get("cantidad_por_envase")
         if "unidad_receta" in data and "unidad_recetas" not in data:
             data["unidad_recetas"] = data.get("unidad_receta")
-        if "unidad_compra" in data and "unidad_base" not in data:
+        if "unidad_formato" in data and "unidad_base" not in data:
+            data["unidad_base"] = data.get("unidad_formato")
+        elif "unidad_compra" in data and "unidad_base" not in data:
             data["unidad_base"] = data.get("unidad_compra")
         creado = self.repo_catalogo.crear_producto(data)
         creado = dict(creado)
@@ -186,7 +192,9 @@ class RepositorioCentroImportacion601:
             data["cantidad_formato"] = data.get("cantidad_por_envase")
         if "unidad_receta" in data and "unidad_recetas" not in data:
             data["unidad_recetas"] = data.get("unidad_receta")
-        if "unidad_compra" in data and "unidad_base" not in data:
+        if "unidad_formato" in data and "unidad_base" not in data:
+            data["unidad_base"] = data.get("unidad_formato")
+        elif "unidad_compra" in data and "unidad_base" not in data:
             data["unidad_base"] = data.get("unidad_compra")
         codigo = str(producto_id or "").strip()
         try:
@@ -405,6 +413,7 @@ class FlujoImportacionUnificado601:
             nuevos=nuevos,
             incidencias=incidencias,
         )
+        clasificacion_entidades = ClasificadorImportacionEntidades().analizar(recetas_detectadas)
         return {
             "documento": documento,
             "analisis": analisis,
@@ -414,6 +423,7 @@ class FlujoImportacionUnificado601:
             "productos_nuevos": nuevos,
             "incidencias": incidencias,
             "resumen": resumen,
+            "clasificacion_entidades": clasificacion_entidades,
         }
 
     @staticmethod

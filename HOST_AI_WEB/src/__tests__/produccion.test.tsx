@@ -35,6 +35,10 @@ function renderPage() {
   return render(<MemoryRouter initialEntries={["/produccion"]}><App /></MemoryRouter>);
 }
 
+function renderPageAt(route: string) {
+  return render(<MemoryRouter initialEntries={[route]}><App /></MemoryRouter>);
+}
+
 function last<T>(items: T[]): T { return items[items.length - 1]; }
 
 function plan(overrides = {}) {
@@ -107,6 +111,38 @@ describe("Producción", () => {
     renderPage();
     expect(await screen.findByText("Producción no disponible temporalmente.")).toBeInTheDocument();
     expect(screen.getByText("Request ID: REQ-PROD-ERROR")).toBeInTheDocument();
+  });
+
+  it("focaliza el plan indicado por query param plan_id", async () => {
+    vi.spyOn(global, "fetch").mockImplementation(async (input) => {
+      if (String(input).includes("/api/v1/produccion/planes/")) {
+        const url = String(input);
+        const planId = decodeURIComponent(url.split("/api/v1/produccion/planes/")[1].split("?")[0]);
+        const isPlan2 = planId === "PLAN-2";
+        return {
+          ok: true,
+          json: async () => ({
+            ...response([]),
+            plan: plan({
+              id: planId,
+              plan_id: planId,
+              nombre: isPlan2 ? "Producción brunch" : "Producción boda",
+            }),
+          }),
+        } as Response;
+      }
+      return { ok: true, json: async () => response([
+        { id: "PLAN-1", nombre: "Producción boda", estado: "activo", tareas: [{ id: "TASK-1", titulo: "Ensaladilla", estado: "pendiente", cantidad: 10, unidad: "raciones" }] },
+        { id: "PLAN-2", nombre: "Producción brunch", estado: "activo", tareas: [{ id: "TASK-2", titulo: "Salsa", estado: "pendiente", cantidad: 5, unidad: "kg" }] },
+      ]) } as Response;
+    });
+
+    renderPageAt("/produccion?plan_id=PLAN-1");
+
+    const listado = await screen.findByLabelText("Planes de producción");
+    expect(within(listado).getByText("Producción boda")).toBeInTheDocument();
+    expect(within(listado).queryByText("Producción brunch")).not.toBeInTheDocument();
+    expect(within(listado).getAllByRole("heading", { level: 3 })).toHaveLength(1);
   });
 
   it("muestra resumen, ingredientes, dependencias y navegación a Compras sin consumir Stock", async () => {

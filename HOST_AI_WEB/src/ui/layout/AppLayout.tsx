@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import type { PropsWithChildren } from "react";
 
 const LINKS = [
@@ -6,6 +6,7 @@ const LINKS = [
   { to: "/dashboard", label: "Dashboard" },
   { to: "/chat", label: "Chat" },
   { to: "/eventos", label: "Eventos" },
+  { to: "/reservas", label: "Reservas" },
   { to: "/produccion", label: "Produccion" },
   { to: "/compras", label: "Compras" },
   { to: "/stock", label: "Stock" },
@@ -17,18 +18,24 @@ const LINKS = [
 ];
 
 export function AppLayout({ children }: PropsWithChildren) {
+  const location = useLocation();
+  const immersiveChat = location.pathname === "/chat";
   return (
     <div className="app-shell" data-testid="app-shell">
-      <header className="topbar">
-        <div>
-          <p className="eyebrow">Host AI Web</p>
-          <h1>Operacion diaria</h1>
+      {!immersiveChat ? <header className="topbar">
+        <div className="topbar-context">
+          <p className="eyebrow">Espacio operativo</p>
+          <h1>Host AI</h1>
         </div>
-        <span className="badge-safe">Modo seguro activo</span>
-      </header>
+        <span className="badge-safe"><span aria-hidden="true">●</span> Modo seguro</span>
+      </header> : null}
 
       <div className="workspace">
         <aside className="sidebar" aria-label="Navegacion lateral">
+          <div className="sidebar-brand" aria-label="Host AI">
+            <span className="sidebar-brand-mark" aria-hidden="true">H</span>
+            <span><strong>Host AI</strong><small>Operaciones</small></span>
+          </div>
           <nav>
             {LINKS.map((item) => (
               <NavLink

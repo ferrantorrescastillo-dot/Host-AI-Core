@@ -1,8 +1,18 @@
 from __future__ import annotations
 
+import hashlib
+import json
+import time
 from typing import Any
 
+from SERVICIOS.host_ai_authorized_execution_context import AuthorizedExecutionContext
 from SERVICIOS.repositorio_productos_maestro_601 import RepositorioProductosMaestro601
+
+
+class StockAjusteError(ValueError):
+    def __init__(self, code: str, message: str):
+        self.code = code
+        super().__init__(message)
 
 
 class StockAjustesService:
@@ -10,10 +20,122 @@ class StockAjustesService:
 
     TIPOS = {"INVENTARIO_INICIAL", "AJUSTE_POSITIVO", "AJUSTE_NEGATIVO"}
     CONFIRMACION = "REGISTRAR_MOVIMIENTO_STOCK"
+    TTL_SECONDS = 900
 
     def __init__(self, core: Any) -> None:
         self.stock = core.stock
         self.productos = RepositorioProductosMaestro601(core.base_dir)
+        self._pending: dict[str, dict[str, Any]] = {}
+        self._consumed: dict[str, dict[str, Any]] = {}
+
+    def preview(self, body: dict[str, Any], context: AuthorizedExecutionContext) -> dict[str, Any]:
+        self._authorize(context, "stock:preview")
+        normalized = self._normalize_adjustment(body)
+        before = self._current(normalized)
+        target = normalized["cantidad_objetivo"]
+        difference = target - before
+        token = self._token(normalized, before, context)
+        self._pending[token] = {
+            "payload": normalized,
+            "stock_anterior": before,
+            "expires_at": time.monotonic() + self.TTL_SECONDS,
+            "actor": context.user_id,
+            "tenant": context.tenant_id,
+        }
+        return {
+            "ok": True,
+            "operacion": "AJUSTAR_STOCK",
+            "preview_token": token,
+            "stock_anterior": before,
+            "stock_resultante": target,
+            "diferencia": difference,
+            "unidad": normalized["unidad"],
+            "motivo": normalized["motivo"],
+            "requiere_confirmacion": abs(difference) > 1e-9,
+            "datos_reales_modificados": False,
+        }
+
+    def confirm(self, body: dict[str, Any], context: AuthorizedExecutionContext) -> dict[str, Any]:
+        self._authorize(context, "stock:write")
+        token = str(body.get("preview_token") or "")
+        if token in self._consumed:
+            return {**self._consumed[token], "idempotente": True}
+        pending = self._pending.get(token)
+        if not pending or pending["actor"] != context.user_id or pending["tenant"] != context.tenant_id:
+            raise StockAjusteError("stale_or_invalid_preview", "La vista previa ya no está disponible.")
+        if float(pending["expires_at"]) < time.monotonic():
+            self._pending.pop(token, None)
+            raise StockAjusteError("expired_preview", "La vista previa ha caducado.")
+        payload = dict(pending["payload"])
+        current = self._current(payload)
+        if abs(current - float(pending["stock_anterior"])) > 1e-9 or self._token(payload, current, context) != token:
+            self._pending.pop(token, None)
+            raise StockAjusteError("stale_or_invalid_preview", "El stock ha cambiado desde la vista previa.")
+        difference = float(payload["cantidad_objetivo"]) - current
+        if abs(difference) <= 1e-9:
+            result = {"ok": True, "estado": "SIN_CAMBIOS", "stock_anterior": current, "stock_actual": current, "movimiento": None, "datos_reales_modificados": False, "idempotente": True}
+        else:
+            movement = {
+                "article_id": payload["article_id"],
+                "tipo": "AJUSTE_POSITIVO" if difference > 0 else "AJUSTE_NEGATIVO",
+                "cantidad": abs(difference),
+                "unidad": payload["unidad"],
+                "observaciones": payload["motivo"],
+                "usuario": context.user_id,
+                "confirmacion": self.CONFIRMACION,
+            }
+            result = self.registrar(movement)
+            if not result.get("ok"):
+                raise StockAjusteError(str((result.get("error") or {}).get("code") or "write_failed"), str((result.get("error") or {}).get("message") or "No se pudo registrar el ajuste."))
+            result = {**result, "estado": "CONFIRMADO", "idempotente": False}
+        self._pending.pop(token, None)
+        self._consumed[token] = dict(result)
+        return result
+
+    def discard(self, body: dict[str, Any], context: AuthorizedExecutionContext) -> dict[str, Any]:
+        self._authorize(context, "stock:preview")
+        token = str(body.get("preview_token") or "")
+        pending = self._pending.get(token)
+        if not pending or pending["actor"] != context.user_id or pending["tenant"] != context.tenant_id:
+            raise StockAjusteError("stale_or_invalid_preview", "La vista previa ya no está disponible.")
+        self._pending.pop(token, None)
+        return {"ok": True, "estado": "DESCARTADO", "datos_reales_modificados": False}
+
+    def _normalize_adjustment(self, body: dict[str, Any]) -> dict[str, Any]:
+        article_id = str(body.get("article_id") or "").strip()
+        article = self.productos.obtener_producto(article_id)
+        if not article:
+            raise StockAjusteError("article_not_found", "El artículo seleccionado no existe.")
+        unit = str(body.get("unidad") or "").strip()
+        canonical = str(article.get("unidad_base") or article.get("unidad") or "").strip()
+        if not unit or unit.casefold() != canonical.casefold():
+            raise StockAjusteError("invalid_unit", f"Usa la unidad base del artículo: {canonical or 'no definida'}.")
+        try:
+            target = float(body.get("cantidad_objetivo"))
+        except (TypeError, ValueError):
+            target = -1
+        if target < 0:
+            raise StockAjusteError("invalid_quantity", "La cantidad real no puede ser negativa.")
+        reason = str(body.get("motivo") or "").strip()
+        if not reason:
+            raise StockAjusteError("reason_required", "Indica el motivo obligatorio del ajuste.")
+        return {"article_id": article_id, "nombre": str(article.get("nombre") or article_id), "unidad": canonical, "cantidad_objetivo": target, "motivo": reason}
+
+    def _current(self, payload: dict[str, Any]) -> float:
+        return float(self.stock._cantidad_disponible(payload["nombre"], payload["article_id"], payload["unidad"]))
+
+    @staticmethod
+    def _authorize(context: AuthorizedExecutionContext, scope: str) -> None:
+        if not isinstance(context, AuthorizedExecutionContext):
+            raise StockAjusteError("unauthorized", "Falta contexto autorizado.")
+        valid, _ = context.validate()
+        if not valid or (scope not in context.scopes and not (scope == "stock:preview" and "stock:write" in context.scopes)):
+            raise StockAjusteError("unauthorized", "El actor no está autorizado.")
+
+    @staticmethod
+    def _token(payload: dict[str, Any], current: float, context: AuthorizedExecutionContext) -> str:
+        raw = json.dumps({"payload": payload, "stock_anterior": current, "actor": context.user_id, "tenant": context.tenant_id}, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+        return hashlib.sha256(raw.encode("utf-8")).hexdigest()
 
     def registrar(self, body: dict[str, Any]) -> dict[str, Any]:
         if body.get("confirmacion") != self.CONFIRMACION:
@@ -95,4 +217,4 @@ class StockAjustesService:
         return {"ok": False, "error": {"status": status, "code": code, "message": message}, "resultado": details or {}}
 
 
-__all__ = ["StockAjustesService"]
+__all__ = ["StockAjustesService", "StockAjusteError"]

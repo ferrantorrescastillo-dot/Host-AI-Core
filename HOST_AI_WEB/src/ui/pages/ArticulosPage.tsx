@@ -1,19 +1,25 @@
 import { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { HostAiApiError } from "../../api/client";
 import { articulosService } from "../../services/articulosService";
-import type { CatalogoResponse } from "../../types/articulos";
+import type { ArticuloCosteDerivado, ArticuloSinPrecio, CatalogoResponse, ReclassificationCandidate, ReclassificationPreview, ReferenciasImportPreview } from "../../types/articulos";
 import { ErrorState } from "../components/ErrorState";
 import { LoadingState } from "../components/LoadingState";
+import { SearchField } from "../components/SearchField";
+import { SafeCatalogWritePanel } from "../components/SafeCatalogWritePanel";
 
 export function ArticulosPage() {
   const [params, setParams] = useSearchParams();
+  const location = useLocation();
+  const navigate = useNavigate();
   const [search, setSearch] = useState(params.get("q") || "");
   const [data, setData] = useState<CatalogoResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [creating, setCreating] = useState(false);
   const page = Number(params.get("page") || 1);
   const querySearch = params.get("q") || "";
+  useEffect(() => { const articleId = params.get("article_id"); if (articleId && /^[A-Za-z0-9._-]+$/.test(articleId)) navigate(`/articulos/${encodeURIComponent(articleId)}`, { replace: true }); }, [navigate, params]);
 
   useEffect(() => {
     setSearch((current) => current === querySearch ? current : querySearch);
@@ -58,9 +64,12 @@ export function ArticulosPage() {
 
   return (
     <section className="panel catalog-page" aria-labelledby="catalog-title">
-      <header className="dashboard-header"><div><p className="eyebrow">Catálogo maestro</p><h2 id="catalog-title">Artículos</h2><p className="meta-line">Consulta de artículos, stock y proveedores reales</p></div></header>
+      <header className="dashboard-header"><div><p className="eyebrow">Catálogo maestro</p><h2 id="catalog-title">Artículos</h2><p className="meta-line">Consulta de artículos, stock y proveedores reales</p></div><button type="button" onClick={() => setCreating(true)}>+ Nuevo artículo</button></header>
+      {creating ? <SafeCatalogWritePanel domain="ARTICULO" operation="CREAR" onCancel={() => setCreating(false)} onConfirmed={(record) => { setCreating(false); const id = String(record.codigo || ""); if (id) window.location.assign(`/articulos/${encodeURIComponent(id)}`); }} /> : null}
+      <MissingPriceReferences />
+      <LegacyReclassification />
       <div className="catalog-filters">
-        <label>Buscar<input aria-label="Buscar artículos" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Nombre, código, familia o proveedor" /></label>
+        <SearchField value={search} onChange={setSearch} placeholder="Nombre, código, familia o proveedor" ariaLabel="Buscar artículos" />
         <Select label="Familia" value={params.get("familia") || ""} values={data?.catalogo.filtros.familias || []} onChange={(v) => update("familia", v)} />
         <Select label="Proveedor" value={params.get("proveedor") || ""} values={data?.catalogo.filtros.proveedores || []} onChange={(v) => update("proveedor", v)} />
         <Select label="Estado" value={params.get("estado") || ""} values={data?.catalogo.filtros.estados || []} onChange={(v) => update("estado", v)} />
@@ -76,6 +85,58 @@ export function ArticulosPage() {
       )}
     </section>
   );
+}
+
+function LegacyReclassification() {
+  const [open, setOpen] = useState(false);
+  const [items, setItems] = useState<ReclassificationCandidate[]>([]);
+  const [selected, setSelected] = useState<ReclassificationCandidate | null>(null);
+  const [preview, setPreview] = useState<ReclassificationPreview | null>(null);
+  const [message, setMessage] = useState("");
+  const row = selected ? { article_id: selected.article_id, tipo_entidad: "ELABORACION_INTERNA", elaboracion_id: selected.coincidencias[0]?.elaboracion_id } : null;
+  async function load() { const result = await articulosService.reclassificationCandidates(); setItems(result.candidatos); setOpen(true); }
+  async function review(item: ReclassificationCandidate) { setSelected(item); setPreview(null); }
+  async function prepare() { if (row) setPreview(await articulosService.previewReclassification([row])); }
+  async function confirm() { if (!row || !preview) return; const result = await articulosService.confirmReclassification([row], preview.preview_token); setMessage(result.idempotente ? "Clasificación ya aplicada." : "Clasificación confirmada."); setSelected(null); setPreview(null); await load(); }
+  function inlineReview(item: ReclassificationCandidate) {
+    if (selected?.article_id !== item.article_id) return null;
+    return <section className="final-review" aria-label={`Revisión de ${item.articulo}`}>
+      <h4>REGISTRO ACTUAL</h4><p>{item.articulo} · {item.article_id}</p>
+      <p>Precio: {String(item.registro_actual.precio ?? "—")} · Proveedor: {String(item.registro_actual.proveedor ?? "—")}</p>
+      <p>Origen: {String(item.registro_actual.origen ?? "—")} · Observaciones: {String(item.registro_actual.observaciones ?? "—")}</p>
+      <h4>PROPUESTA</h4><p>Tipo nuevo: ELABORACION_INTERNA</p>
+      <p>Elaboración vinculada: {item.coincidencias[0]?.elaboracion_id}</p><p>Coste: DERIVADO DE ESCANDALLO</p>
+      {preview ? <><p>No modifica precio, stock ni escandallo; conserva el histórico.</p><button type="button" onClick={() => void confirm()}>Confirmar</button></> : <button type="button" onClick={() => void prepare()}>Preparar cambio</button>}
+      <button type="button" className="secondary" onClick={() => { setSelected(null); setPreview(null); }}>Cancelar</button>
+    </section>;
+  }
+  return <section className="recipe-card" aria-label="Candidatos de reclasificación">
+    <div className="menu-actions"><button type="button" onClick={() => void load()}>Candidatos de reclasificación</button></div>
+    {message ? <p role="status">{message}</p> : null}
+    {open ? <><h3>Candidatos de reclasificación</h3><p>{items.length} registros requieren revisión humana.</p>{items.map((item) => <article className="recipe-card" data-candidate-id={item.article_id} key={item.article_id}>
+      <strong>{item.articulo} · {item.article_id}</strong><p>Estado actual: artículo comprado por compatibilidad legado.</p>
+      <p>Posible coincidencia: {item.coincidencias.map((match) => `${match.elaboracion_id} · ${match.nombre}`).join(", ")}</p><p>Señales: {item.senales.join(", ")}</p>
+      <div className="menu-actions"><button type="button" onClick={() => void review(item)}>Revisar</button><button type="button" className="secondary" onClick={() => setMessage(`${item.article_id} se mantiene como artículo comprado.`)}>Mantener como artículo comprado</button></div>
+      {inlineReview(item)}
+    </article>)}</> : null}
+  </section>;
+}
+
+function MissingPriceReferences() {
+  const [open, setOpen] = useState(false); const [items, setItems] = useState<ArticuloSinPrecio[]>([]);
+  const [derived, setDerived] = useState<ArticuloCosteDerivado[]>([]);
+  const [raw, setRaw] = useState(""); const [preview, setPreview] = useState<ReferenciasImportPreview | null>(null); const [message, setMessage] = useState(""); const [busy, setBusy] = useState(false);
+  async function load() { setBusy(true); try { const result = await articulosService.withoutPrice(); setItems(result.articulos); setDerived(result.costes_derivados || []); setOpen(true); } finally { setBusy(false); } }
+  async function copy() { const value = await articulosService.exportWithoutPrice(); await navigator.clipboard.writeText(value.texto); setMessage("Lista copiada."); }
+  async function parse() { setBusy(true); try { setPreview(await articulosService.previewImportedReferences(raw)); } finally { setBusy(false); } }
+  async function confirm() { if (!preview) return; setBusy(true); try { const result = await articulosService.confirmImportedReferences(preview.listas); setMessage(`${result.confirmadas} referencias importadas y verificadas.`); setPreview(null); setRaw(""); setItems((await articulosService.withoutPrice()).articulos); } finally { setBusy(false); } }
+  return <section className="recipe-card" aria-label="Artículos sin precio"><div className="menu-actions"><button type="button" disabled={busy} onClick={() => void load()}>Artículos sin precio</button>{open ? <button type="button" className="secondary" onClick={() => void copy()}>Copiar lista para buscar precios</button> : null}</div>
+    {message ? <p role="status">{message}</p> : null}
+    {open && derived.length ? <section aria-label="Costes derivados"><h4>Costes derivados de elaboraciones</h4>{derived.map((item) => <p key={item.article_id}><strong>{item.articulo}</strong> · {item.estado === "COSTE_DERIVADO_ESCANDALLO" ? "Coste derivado de escandallo" : "Escandallo pendiente"}</p>)}</section> : null}
+    {open ? <><h3>Artículos sin precio</h3><p>{items.length} artículos canónicos pendientes · consolidado por article_id · coste IA $0</p><div className="catalog-table-wrap"><table className="catalog-table"><thead><tr><th>Artículo</th><th>Código</th><th>Unidad base</th><th>Compra / formato</th><th>Recetas</th><th>Referencia</th><th>Estado</th></tr></thead><tbody>{items.map((item) => <tr key={item.article_id}><td>{item.articulo}</td><td>{item.codigo}</td><td>{item.unidad_base || "—"}</td><td>{item.unidad_compra || "—"} {item.cantidad_formato || ""} {item.unidad_formato || ""}</td><td>{item.usado_en_recetas}{item.recetas.length ? ` · ${item.recetas.join(", ")}` : ""}</td><td>{item.referencia ? `${item.referencia.precio_normalizado.toFixed(2)} €/${item.referencia.unidad_normalizada}` : "Sin referencia"}</td><td>{item.estado}</td></tr>)}</tbody></table></div>
+      <label>Importar referencias<textarea rows={10} placeholder="Pega JSON, CSV, TSV o una tabla Markdown" value={raw} onChange={(event) => { setRaw(event.target.value); setPreview(null); }} /></label><button type="button" disabled={busy || !raw.trim()} onClick={() => void parse()}>Preparar importación</button>
+      {preview ? <section className="final-review" aria-label="Referencias a importar"><h4>REFERENCIAS A IMPORTAR</h4><p>{preview.resumen.listas} listas · {preview.resumen.ambiguas} necesitan revisión · {preview.resumen.invalidas} inválidas · parser {preview.formato_detectado} · coste IA $0</p>{preview.listas.map((row) => <article key={`${row.article_id}-${row.fila}`} className="recipe-card"><label><input type="checkbox" checked={row.incluir} onChange={(event) => setPreview({ ...preview, listas: preview.listas.map((item) => item.fila === row.fila ? { ...item, incluir: event.target.checked } : item) })} /> Incluir</label><strong>{row.articulo} · {row.article_id}</strong><p>{row.referencia.producto} · {row.referencia.tienda_referencia}</p><p>{row.referencia.precio_comercial.toFixed(2)} € · {row.referencia.cantidad_formato} {row.referencia.unidad_formato} · {row.referencia.precio_normalizado.toFixed(2)} €/{row.referencia.unidad_normalizada}</p><p>Fuente: {row.referencia.url}</p></article>)}<button type="button" disabled={busy || !preview.listas.some((row) => row.incluir)} onClick={() => void confirm()}>Confirmar importación</button><button type="button" className="secondary" onClick={() => setPreview(null)}>Cancelar</button></section> : null}</> : null}
+  </section>;
 }
 
 function Select({ label, value, values, onChange }: { label: string; value: string; values: string[]; onChange: (v: string) => void }) {

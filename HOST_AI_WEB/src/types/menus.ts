@@ -16,6 +16,8 @@ export type MenuElaboration = {
   orden?: number;
   observaciones?: string;
   version_elaboracion?: number | null;
+  tipo_referencia?: "RECETA" | "PRODUCTO" | string;
+  referencia_canonica?: string;
 };
 
 export type MenuSection = {
@@ -43,6 +45,8 @@ export type IntelligentMenu = {
   incidencias: Array<{ tipo?: string; detalle?: string }>;
   creado_en?: string | null;
   actualizado_en?: string | null;
+  origen?: string | null;
+  modelo_biblioteca?: string;
 };
 
 export type MenuInput = {

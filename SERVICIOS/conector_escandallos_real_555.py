@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import re
 import unicodedata
+from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -15,6 +16,21 @@ def _norm(value: Any) -> str:
     text = str(value or "").strip().lower()
     text = "".join(c for c in unicodedata.normalize("NFD", text) if unicodedata.category(c) != "Mn")
     return re.sub(r"\s+", " ", text).strip()
+
+
+def _decimal(value: Any) -> Decimal | None:
+    if value in (None, ""):
+        return None
+    text = str(value).strip().replace(" ", "")
+    if "," in text and "." in text:
+        text = text.replace(".", "").replace(",", ".")
+    else:
+        text = text.replace(",", ".")
+    try:
+        parsed = Decimal(text)
+    except (InvalidOperation, ValueError):
+        return None
+    return parsed if parsed.is_finite() else None
 
 
 def es_consulta_escandallo_real_555(texto: str) -> bool:
@@ -55,6 +71,7 @@ class ConectorEscandallosReal555:
     """
 
     VERSION = "5.5.5B.7.3.2"
+    UNIDADES_DERIVACION = frozenset({"u", "unidad", "unidades", "racion", "raciones", "pax"})
 
     def __init__(self, base_dir: Path):
         self.base_dir = Path(base_dir).resolve()
@@ -82,47 +99,83 @@ class ConectorEscandallosReal555:
             if not (coincide_nombre or coincide_ingrediente):
                 continue
 
-            raciones_base = esc.get("rendimiento") or esc.get("raciones_base") or 1
-            try:
-                raciones_base_num = max(float(raciones_base), 1.0)
-            except (TypeError, ValueError):
-                raciones_base_num = 1.0
-            factor = (float(personas) / raciones_base_num) if personas else 1.0
+            incidencias: List[Dict[str, Any]] = []
+            unidad_rendimiento = str(esc.get("unidad_rendimiento") or "u")
+            raciones_base_dec = _decimal(esc.get("rendimiento") or esc.get("raciones_base"))
+            if raciones_base_dec is None or raciones_base_dec <= 0:
+                raciones_base_dec = None
+                incidencias.append({
+                    "tipo": "RENDIMIENTO_INVALIDO",
+                    "detalle": f"Rendimiento no válido en '{nombre}'.",
+                })
+
+            objetivo_dec = _decimal(personas) if personas is not None else None
+            if personas is not None and (objetivo_dec is None or objetivo_dec <= 0):
+                objetivo_dec = None
+                incidencias.append({
+                    "tipo": "OBJETIVO_INVALIDO",
+                    "detalle": "Objetivo de personas inválido para escalado.",
+                })
+
+            factor_dec = Decimal("1")
+            if objetivo_dec is not None:
+                if raciones_base_dec is None:
+                    factor_dec = None
+                else:
+                    factor_dec = objetivo_dec / raciones_base_dec
 
             ingredientes: List[Dict[str, Any]] = []
-            coste_total = 0.0
+            coste_total = Decimal("0")
             for linea in ingredientes_raw:
                 if not isinstance(linea, dict):
                     continue
                 nombre_linea = str(
                     linea.get("nombre") or linea.get("ingrediente") or linea.get("articulo") or "Ingrediente"
                 ).strip()
-                try:
-                    cantidad_base = float(linea.get("cantidad") or 0)
-                except (TypeError, ValueError):
-                    cantidad_base = 0.0
-                cantidad = cantidad_base * factor
-                try:
-                    coste_unitario = float(linea.get("coste_unitario") or linea.get("precio") or 0)
-                except (TypeError, ValueError):
-                    coste_unitario = 0.0
-                coste = cantidad * coste_unitario
-                coste_total += coste
+                cantidad_base_dec = _decimal(linea.get("cantidad"))
+                cantidad_dec = (
+                    (cantidad_base_dec * factor_dec)
+                    if cantidad_base_dec is not None and factor_dec is not None
+                    else None
+                )
+                coste_unitario_dec = _decimal(linea.get("coste_unitario") or linea.get("precio")) or Decimal("0")
+                coste_dec = (
+                    cantidad_dec * coste_unitario_dec
+                    if cantidad_dec is not None and coste_unitario_dec > 0
+                    else None
+                )
+                if coste_dec is not None:
+                    coste_total += coste_dec
+
+                unidad_linea = str(linea.get("unidad") or "u")
+                unidad_r_norm = _norm(unidad_rendimiento)
+                derivable = (
+                    cantidad_base_dec is not None
+                    and raciones_base_dec is not None
+                    and unidad_r_norm in self.UNIDADES_DERIVACION
+                    and raciones_base_dec > 0
+                )
+                cantidad_por_unidad = (cantidad_base_dec / raciones_base_dec) if derivable else None
                 ingredientes.append({
                     "nombre": nombre_linea,
                     "articulo_id": linea.get("articulo_id") or linea.get("codigo"),
-                    "cantidad_base": cantidad_base,
-                    "cantidad": cantidad,
-                    "unidad": linea.get("unidad") or "u",
-                    "coste_unitario": coste_unitario,
-                    "coste": coste,
+                    "cantidad_base": float(cantidad_base_dec) if cantidad_base_dec is not None else None,
+                    "cantidad": float(cantidad_dec) if cantidad_dec is not None else None,
+                    "unidad": unidad_linea,
+                    "ambito_cantidad": "LOTE_COMPLETO",
+                    "cantidad_por_unidad_rendimiento": float(cantidad_por_unidad) if cantidad_por_unidad is not None else None,
+                    "unidad_cantidad_por_rendimiento": (
+                        f"{unidad_linea}/{unidad_rendimiento}" if cantidad_por_unidad is not None else None
+                    ),
+                    "coste_unitario": float(coste_unitario_dec),
+                    "coste": float(coste_dec) if coste_dec is not None else None,
                     "proveedor": linea.get("proveedor_preferente") or linea.get("proveedor"),
                 })
 
             enriquecimiento = self.enriquecedor_precios.enriquecer(ingredientes)
             ingredientes = enriquecimiento["lineas"]
             coste_total = enriquecimiento["coste_total"]
-            rendimiento_calculo = float(personas) if personas else raciones_base_num
+            rendimiento_calculo = float(objetivo_dec) if objetivo_dec is not None else (float(raciones_base_dec) if raciones_base_dec is not None else None)
             resumen_economico = calcular_resumen_economico_555b73(
                 esc,
                 coste_calculado=coste_total,
@@ -137,14 +190,16 @@ class ConectorEscandallosReal555:
             resultados.append({
                 "receta_id": esc.get("codigo") or esc.get("receta_id") or esc.get("id"),
                 "nombre": nombre,
-                "raciones_base": raciones_base_num,
-                "unidad_rendimiento": esc.get("unidad_rendimiento") or "u",
+                "raciones_base": float(raciones_base_dec) if raciones_base_dec is not None else None,
+                "unidad_rendimiento": unidad_rendimiento,
                 "personas_calculo": personas,
-                "factor": factor,
+                "factor": float(factor_dec) if factor_dec is not None else None,
                 "ingredientes": ingredientes,
                 "coste_total": resumen_economico["coste_total"],
                 "economia": resumen_economico,
                 "coincide_por": "nombre" if coincide_nombre else "ingrediente",
+                "estado_escalado": "CALCULABLE" if factor_dec is not None else "NO_CALCULABLE",
+                "incidencias": incidencias,
             })
 
         return {
@@ -182,17 +237,26 @@ def formatear_escandallos_real_555(resultado: Dict[str, Any]) -> str:
     for esc in resultado.get("coincidencias", []):
         lines.append(str(esc.get("nombre")))
         lines.append(f"- Coincidencia por: {esc.get('coincide_por')}")
-        lines.append(f"- Rendimiento base: {esc.get('raciones_base'):g} {esc.get('unidad_rendimiento', 'u')}")
+        rbase = esc.get("raciones_base")
+        if rbase is None:
+            lines.append(f"- Rendimiento base: NO DISPONIBLE ({esc.get('unidad_rendimiento', 'u')})")
+        else:
+            lines.append(f"- Rendimiento base: {float(rbase):g} {esc.get('unidad_rendimiento', 'u')}")
         if esc.get("personas_calculo"):
             lines.append(f"- Cálculo escalado para: {esc.get('personas_calculo')} personas")
         lines.append(f"- Ingredientes: {len(esc.get('ingredientes', []))}")
         for ing in esc.get("ingredientes", [])[:20]:
-            lines.append(f"  · {ing.get('nombre')}: {ing.get('cantidad'):g} {ing.get('unidad')}")
+            cantidad = ing.get("cantidad")
+            cantidad_txt = f"{float(cantidad):g}" if isinstance(cantidad, (int, float)) else "NO CALCULABLE"
+            lines.append(f"  · {ing.get('nombre')}: {cantidad_txt} {ing.get('unidad')}")
         economia = esc.get("economia") if isinstance(esc.get("economia"), dict) else {}
         lines.append("")
         lines.append("RESUMEN ECONÓMICO")
         lines.append(f"- Coste total de la receta: {float(economia.get('coste_total') or 0):.2f} €")
-        lines.append(f"- Coste por {esc.get('unidad_rendimiento', 'u')}: {float(economia.get('coste_unitario') or 0):.2f} €")
+        if economia.get("coste_unitario") is None:
+            lines.append(f"- Coste por {esc.get('unidad_rendimiento', 'u')}: NO DISPONIBLE")
+        else:
+            lines.append(f"- Coste por {esc.get('unidad_rendimiento', 'u')}: {float(economia.get('coste_unitario') or 0):.2f} €")
         pvp = economia.get("precio_venta_unitario")
         if pvp is None:
             lines.append("- Precio de venta: NO DEFINIDO (opcional)")
@@ -218,6 +282,8 @@ def formatear_escandallos_real_555(resultado: Dict[str, Any]) -> str:
         if int(economia.get("ingredientes_ambiguos") or 0):
             lines.append(f"- Aviso: {int(economia.get('ingredientes_ambiguos') or 0)} enlaces ambiguos requieren revisión.")
         lines.append(f"- Estado económico: {economia.get('estado', 'SIN_CALCULAR')}")
+        for inc in esc.get("incidencias", [])[:5]:
+            lines.append(f"- Incidencia de escalado: {inc.get('tipo')} ({inc.get('detalle')})")
         lines.append("")
     lines.extend([
         "FUENTE DE DATOS",

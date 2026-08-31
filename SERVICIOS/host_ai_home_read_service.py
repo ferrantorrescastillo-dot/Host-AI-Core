@@ -215,10 +215,15 @@ class HostAIHomeReadService:
         items = [
             {
                 "id": str(r.get("id") or ""),
+                "receta_id": str(r.get("id") or ""),
+                "tipo_entidad": "RECETA",
                 "codigo": str(r.get("codigo") or ""),
                 "nombre": str(r.get("nombre") or ""),
                 "familia": str(r.get("familia") or ""),
                 "estado": str(r.get("estado") or ""),
+                "campos_faltantes": list(((r.get("completitud") or {}).get("campos_obligatorios_pendientes") or [])),
+                "incidencias": list(r.get("incidencias") or []),
+                "completitud": dict(r.get("completitud") or {}),
             }
             for r in self.repo_recetas.pendientes()
         ]
@@ -333,14 +338,21 @@ class HostAIHomeReadService:
         diag = dict(getattr(motor, "diagnosticar_stock")() or {})
         resumen_motor = dict(getattr(motor, "resumen_operativo")() or {})
         avisos = list(diag.get("avisos") or [])
-        items = [
-            {
+        items = []
+        for a in avisos:
+            lote = a.get("lote") if isinstance(a.get("lote"), dict) else {}
+            lote_id = str(a.get("lote_id") or lote.get("id") or "")
+            item = {
                 "tipo": str(a.get("tipo") or ""),
                 "nivel": str(a.get("nivel") or ""),
                 "mensaje": str(a.get("mensaje") or ""),
+                **({"articulo_id": str(a.get("articulo_id") or lote.get("articulo_id"))} if a.get("articulo_id") or lote.get("articulo_id") else {}),
+                **({"lote_id": lote_id, "tipo_entidad": "LOTE"} if lote_id else {}),
+                **({"ubicacion": str(a.get("ubicacion") or lote.get("ubicacion"))} if a.get("ubicacion") or lote.get("ubicacion") else {}),
+                **({"cantidad": a.get("cantidad", lote.get("cantidad"))} if a.get("cantidad", lote.get("cantidad")) is not None else {}),
+                **({"unidad": str(a.get("unidad") or lote.get("unidad"))} if a.get("unidad") or lote.get("unidad") else {}),
             }
-            for a in avisos
-        ]
+            items.append(item)
         modulo = self._pack_items(items)
         modulo.update(
             {
@@ -616,6 +628,10 @@ class HostAIHomeReadService:
         produccion_items = list((modulos.get("produccion") or {}).get("items") or [])
         bloqueadas = sum(int(x.get("bloqueadas") or 0) for x in produccion_items)
         if bloqueadas > 0:
+            plan_bloqueado = next(
+                (item for item in produccion_items if int(item.get("bloqueadas") or 0) > 0),
+                {},
+            )
             tarea_txt = self._plural(bloqueadas, "tarea", "tareas")
             bloqueada_txt = self._plural(bloqueadas, "bloqueada", "bloqueadas")
             cards.append(
@@ -627,6 +643,7 @@ class HostAIHomeReadService:
                     cantidad=bloqueadas,
                     modulo_origen="produccion",
                     accion_navegacion="3",
+                    contexto_id=str(plan_bloqueado.get("id") or ""),
                 )
             )
 

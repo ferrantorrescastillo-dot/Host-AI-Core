@@ -8,7 +8,7 @@ function walk(dir: string, found: string[] = []): string[] {
   for (const item of fs.readdirSync(dir)) {
     const full = path.join(dir, item);
     const stat = fs.statSync(full);
-    if (stat.isDirectory()) {
+    if (stat.isDirectory() && item !== "__tests__" && item !== "test") {
       walk(full, found);
     } else if (full.endsWith(".ts") || full.endsWith(".tsx")) {
       found.push(full);

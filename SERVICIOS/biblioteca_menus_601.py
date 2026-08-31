@@ -6,6 +6,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+from SERVICIOS.repository_initialization_policy import should_initialize_persistently
+
 from SERVICIOS.biblioteca_escandallos_601 import RepositorioBibliotecaEscandallos601
 from SERVICIOS.biblioteca_culinaria_read_service import BibliotecaCulinariaReadService
 from SERVICIOS.biblioteca_recetas_601 import RepositorioBibliotecaRecetas601
@@ -27,9 +29,10 @@ class RepositorioBibliotecaMenus601:
     def __init__(self, base_dir: Path):
         self.base_dir = Path(base_dir).resolve()
         self.path = self.base_dir / self.RUTA
-        self.path.parent.mkdir(parents=True, exist_ok=True)
-        if not self.path.exists():
-            self._guardar([])
+        if should_initialize_persistently():
+            self.path.parent.mkdir(parents=True, exist_ok=True)
+            if not self.path.exists():
+                self._guardar([])
 
     def _leer(self) -> list[dict[str, Any]]:
         try:

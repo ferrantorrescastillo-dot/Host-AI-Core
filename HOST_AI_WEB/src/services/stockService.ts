@@ -23,6 +23,13 @@ export type StockResult = ApiEnvelopeBase & {
 export const stockService = {
   createMovement: hostAiApiClient.createStockMovement,
   createProductionMovement: hostAiApiClient.createProductionStockMovement,
+  locations: hostAiApiClient.getStockLocations,
+  lot: hostAiApiClient.getStockLot,
+  previewLocation: hostAiApiClient.previewStockLotLocation,
+  confirmLocation: hostAiApiClient.confirmStockLotLocation,
+  previewAdjustment: hostAiApiClient.previewStockAdjustment,
+  confirmAdjustment: hostAiApiClient.confirmStockAdjustment,
+  discardAdjustment: hostAiApiClient.discardStockAdjustment,
   async load(): Promise<StockResult> {
     const response = await hostAiApiClient.getDashboard();
     const modulo = response.dashboard?.modulos?.stock;

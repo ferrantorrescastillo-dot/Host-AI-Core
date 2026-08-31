@@ -183,6 +183,96 @@ def test_home_eventos_error_controlado_no_bloquea_dashboard(
     assert {"modulo": "eventos", "error": "error eventos"} in data["errores"]
 
 
+def test_home_compras_expone_fuentes_reales_existentes(tmp_path: Path):
+    core = HostAICore(tmp_path)
+    core.compras.necesidades["NEC-1"] = type(
+        "NecesidadFake",
+        (),
+        {
+            "prioridad": 90,
+            "fecha_necesaria": "2026-08-01",
+            "nombre": "Tomate",
+            "estado": "pendiente",
+            "to_dict": lambda self: {
+                "id": "NEC-1",
+                "nombre": "Tomate",
+                "prioridad": 90,
+                "estado": "pendiente",
+                "fecha_necesaria": "2026-08-01",
+            },
+        },
+    )()
+    core.compras.propuestas_compra["PROP-1"] = type(
+        "PropuestaFake",
+        (),
+        {
+            "estado": "pendiente",
+            "creado_en": "2026-07-29T10:00:00",
+            "id": "PROP-1",
+            "to_dict": lambda self: {
+                "id": "PROP-1",
+                "producto": "Tomate",
+                "comprar": 5,
+                "unidad": "kg",
+                "prioridad": "Alta",
+                "estado": "pendiente",
+                "creado_en": "2026-07-29T10:00:00",
+            },
+        },
+    )()
+    core.compras.listar_propuestas_compra = lambda solo_pendientes=True: [
+        core.compras.propuestas_compra["PROP-1"].to_dict()
+    ]
+    core.compras.listar_proveedores = lambda incluir_inactivos=False: [
+        {"id": "PROV-1", "nombre": "Proveedor Uno", "estado": "activo"}
+    ]
+    core.compras.listar_historial_compras = lambda: [
+        {
+            "id": "COMPRA-1",
+            "producto": "Tomate",
+            "cantidad": 5,
+            "unidad": "kg",
+            "proveedor": "Proveedor Uno",
+            "estado": "registrada",
+            "creado_en": "2026-07-28T10:00:00",
+        }
+    ]
+
+    modulo = HostAIHomeReadService(core)._leer_compras_abiertas()
+
+    assert modulo["total"] == 1
+    assert modulo["necesidades_pendientes"] == 1
+    assert modulo["propuestas_pendientes"] == 1
+    assert modulo["total_propuestas"] == 1
+    assert modulo["total_proveedores"] == 1
+    assert modulo["total_historial"] == 1
+    assert modulo["propuestas"][0]["producto"] == "Tomate"
+    assert modulo["proveedores"][0]["nombre"] == "Proveedor Uno"
+    assert modulo["historial"][0]["id"] == "COMPRA-1"
+
+
+def test_home_compras_sin_datos_conserva_colecciones_vacias(tmp_path: Path):
+    modulo = HostAIHomeReadService(
+        HostAICore(tmp_path)
+    )._leer_compras_abiertas()
+
+    assert modulo == {
+        "estado": "sin_datos",
+        "total": 0,
+        "items": [],
+        "necesidades_pendientes": 0,
+        "propuestas_pendientes": 0,
+        "propuestas": [],
+        "proveedores": [],
+        "historial": [],
+        "total_propuestas": 0,
+        "total_proveedores": 0,
+        "total_historial": 0,
+        "pedidos": [],
+        "total_pedidos": 0,
+    }
+
+
 def test_bandeja_determinista_y_prioridad_reproducible(tmp_path: Path):
     core = HostAICore(tmp_path)
     _seed_datos(core)

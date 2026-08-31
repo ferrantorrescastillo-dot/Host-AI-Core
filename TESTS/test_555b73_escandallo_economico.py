@@ -41,7 +41,7 @@ def main() -> None:
 
         r = procesar_consulta_escandallos_real_555("Muéstrame el escandallo de ensaladilla de gamba", base)
         assert r["gestionado"] is True
-        assert r["version"] == "5.5.5B.7.3"
+        assert r["version"] == "5.5.5B.7.3.2"
         economia = r["datos"]["coincidencias"][0]["economia"]
         assert round(economia["coste_total"], 2) == 2.80
         assert round(economia["coste_unitario"], 2) == 0.70

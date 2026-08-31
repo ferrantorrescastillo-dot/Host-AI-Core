@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 from typing import Iterable
 
 from CORE.entidades.ingrediente import Ingrediente
-from CORE.entidades.receta import Receta
+from CORE.entidades.receta import EstadoRendimiento, Receta
 from CORE.entidades.escandallo import Escandallo
 from CORE.entidades.menu import Menu
 from SERVICIOS.schema_escandallos_555a import normalizar_unidad
@@ -49,6 +49,26 @@ def validar_receta(receta: Receta) -> ResultadoValidacion:
     if receta.rendimiento <= 0:
         errores.append("receta.rendimiento: debe ser mayor que 0.")
     _texto_obligatorio(receta.unidad_rendimiento, "receta.unidad_rendimiento", errores)
+    if receta.estado_rendimiento is not None:
+        try:
+            EstadoRendimiento.desde_valor(receta.estado_rendimiento)
+        except ValueError:
+            errores.append("receta.estado_rendimiento: estado no admitido.")
+        if receta.origen_rendimiento is None:
+            errores.append("receta.origen_rendimiento: obligatorio cuando existe estado.")
+    if receta.rendimiento_neto is not None:
+        neto = receta.rendimiento_neto
+        if neto.cantidad <= 0:
+            errores.append("receta.rendimiento_neto.cantidad: debe ser mayor que 0.")
+        _texto_obligatorio(neto.unidad, "receta.rendimiento_neto.unidad", errores)
+        if normalizar_unidad(neto.unidad) not in {"kg", "g", "l", "ml"}:
+            errores.append("receta.rendimiento_neto.unidad: debe ser una unidad fisica canonica.")
+        try:
+            EstadoRendimiento.desde_valor(neto.estado)
+        except ValueError:
+            errores.append("receta.rendimiento_neto.estado: estado no admitido.")
+        if neto.origen is None:
+            errores.append("receta.rendimiento_neto.origen: obligatorio.")
     if not receta.ingredientes:
         avisos.append(f"{receta.nombre}: receta sin ingredientes.")
     codigos: set[str] = set()

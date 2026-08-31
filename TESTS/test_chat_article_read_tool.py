@@ -83,6 +83,37 @@ def test_executor_ambiguo_no_encontrado_vacio_y_limite_diez():
     assert ambiguous.datos["puede_abrir_buscador"] is True
 
 
+def test_buscar_articulos_batch_conserva_estados_y_article_id_sin_detenerse_por_ambiguedad():
+    service = _ArticlesRead(_items())
+    result = _executor(service).execute_agent_read("buscar_articulos", {
+        "terminos": ["Patata Monalisa", "Patata", "Merluza"],
+    })
+
+    assert result.estado == "OK"
+    assert [item["estado"] for item in result.datos["resultados"]] == ["OK", "AMBIGUO", "NO_ENCONTRADO"]
+    assert result.datos["resultados"][0]["article_id"] == "ART000238"
+    assert len(result.datos["resultados"][1]["candidatos"]) == 2
+    assert result.datos["resultados"][2]["articulos"] == []
+    assert result.datos["batch_size"] == 3
+    assert result.datos["resultados_parciales"] is True
+    assert len(service.queries) == 3
+    assert result.datos["datos_reales_modificados"] is False
+
+
+def test_buscar_articulos_batch_admite_diez_y_rechaza_mas_de_diez():
+    executor = _executor(_ArticlesRead(_items(14)))
+    accepted = executor.execute_agent_read("buscar_articulos", {
+        "terminos": [f"Leche {index}" for index in range(10)],
+    })
+    rejected = executor.execute_agent_read("buscar_articulos", {
+        "terminos": [f"Leche {index}" for index in range(11)],
+    })
+
+    assert accepted.estado == "OK" and accepted.datos["batch_size"] == 10
+    assert all(item.get("article_id") for item in accepted.datos["resultados"])
+    assert rejected.estado == "ERROR" and rejected.errores == ["invalid_article_search_batch"]
+
+
 def test_dto_saneado_solo_lectura_y_write_bloqueado():
     result = _executor(_ArticlesRead(_items())).execute("buscar_articulos", {"termino": "Patata"})
     assert result.datos["fuente"] == "catalogo_articulos_canonico"

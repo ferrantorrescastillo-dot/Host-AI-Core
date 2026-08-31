@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 from types import SimpleNamespace
+import pytest
 
 from API.app import HostAIPlatformAPI
 from API.contracts.http_models import ApiRequest
@@ -14,6 +15,8 @@ from SERVICIOS.host_ai_deterministic_intent_router import (
 from SERVICIOS.host_ai_engine.models import HostAIEngineRequest
 from SERVICIOS.host_ai_engine.openai_provider import OpenAIProvider
 from SERVICIOS.host_ai_tool_executor import HostAIToolExecutor
+from SERVICIOS.host_ai_tool_catalog import HostAIToolCatalog
+from SERVICIOS.host_ai_agent_policy import HostAIAgentPolicy
 from SERVICIOS.host_ai_tool_registry import TOOL_STATUS_ACTIVADA, build_default_tool_registry
 from SERVICIOS.host_ai_tool_resolver import HostAIToolResolver
 from TESTS.test_stock_dashboard_integration import _write_stock
@@ -49,7 +52,7 @@ class _ArticlesRead:
 
     def listar(self, query):
         term = str(query.get("q") or "").lower()
-        found = [item for item in self.items if term in str(item.get("nombre") or "").lower()]
+        found = [item for item in self.items if term in str(item.get("nombre") or "").lower() or term in str(item.get("id") or item.get("codigo") or "").lower()]
         return {"ok": True, "catalogo": {"items": found[:10], "total": len(found)}}
 
 
@@ -118,6 +121,41 @@ def test_executor_articulo_existente_inexistente_y_ambiguo():
     assert missing.datos["existencias"] == []
     assert ambiguous.datos["estado"] == "AMBIGUO"
     assert len(ambiguous.datos["existencias"]) == 2
+
+
+@pytest.mark.parametrize("size", [1, 4, 8, 10])
+def test_executor_stock_batch_acotado_devuelve_un_resultado_por_articulo(size):
+    items = [
+        {"id": f"ART-{index}", "nombre": f"Ingrediente {index}", "stock": index + 0.5, "unidad_stock": "kg"}
+        for index in range(size)
+    ]
+    result = _executor(items).execute_agent_read(
+        "consultar_estado_stock", {"terminos": [item["id"] for item in items]},
+    )
+    assert result.estado == "OK"
+    assert result.datos["batch_size"] == size
+    assert result.datos["comprobados"] == size
+    assert [row["existencias"][0]["article_id"] for row in result.datos["items"]] == [item["id"] for item in items]
+    assert result.datos["datos_reales_modificados"] is False
+
+
+def test_stock_batch_inexistente_y_mezcla_informan_parcial_real():
+    result = _executor([
+        {"id": "ART-CANELA", "nombre": "Canela", "stock": 1, "unidad_stock": "kg"},
+        {"id": "ART-MAIZENA", "nombre": "Maizena", "stock": None, "unidad_stock": "kg"},
+    ]).execute_agent_read("consultar_estado_stock", {"terminos": ["ART-CANELA", "ART-NO-EXISTE", "ART-MAIZENA"]})
+    assert result.estado == "OK"
+    assert [row["estado"] for row in result.datos["items"]] == ["OK", "NO_ENCONTRADO", "OK"]
+    assert result.datos["estado"] == "PARCIAL" and result.datos["resultados_parciales"] is True
+    assert result.datos["comprobados"] == 2
+
+
+def test_stock_batch_schema_rechaza_vacio_mas_de_diez_y_elemento_invalido():
+    tools = HostAIToolCatalog.for_general_agent(build_default_tool_registry()).effective_tools()
+    policy = HostAIAgentPolicy()
+    assert policy.authorize("consultar_estado_stock", {"terminos": []}, tools) == (False, "out_of_range:terminos")
+    assert policy.authorize("consultar_estado_stock", {"terminos": [f"ART-{i}" for i in range(11)]}, tools) == (False, "out_of_range:terminos")
+    assert policy.authorize("consultar_estado_stock", {"terminos": [""]}, tools) == (False, "invalid_type:terminos")
 
 
 def test_executor_no_permite_write_por_ruta_read():

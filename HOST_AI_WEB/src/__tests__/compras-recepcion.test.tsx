@@ -14,6 +14,7 @@ it("guarda la cantidad visible antes de confirmar una recepción parcial y evita
   const fetchMock = vi.spyOn(global, "fetch").mockImplementation(async (input, init) => {
     const url = String(input);
     if (url.endsWith("/api/v1/dashboard")) return { ok: true, json: async () => dashboard } as Response;
+    if (url.endsWith("/api/v1/stock/ubicaciones")) return { ok: true, json: async () => ({ ...envelope, ubicaciones: ["Congelador", "Cámara", "Seco", "Bodega", "Limpieza"].map((nombre) => ({ id: nombre, nombre })) }) } as Response;
     if (url.includes("/pedidos/PED-3/recepciones")) return { ok: true, json: async () => ({ ...envelope, recepcion: draft, stock_modificado: false }) } as Response;
     if (url.endsWith("/recepciones/REC-1") && init?.method === "PATCH") { const body = JSON.parse(String(init.body)); const issue = { code: "DIFERENCIA_CANTIDAD", message: "Pendiente 10 y recibido ahora 6.", bloqueante: false }; saved = { ...draft, lineas: body.lineas.map((line: Record<string, unknown>) => ({ ...line, incidences: [issue] })), incidencias: [issue] }; return { ok: true, json: async () => ({ ...envelope, recepcion: saved, stock_modificado: false }) } as Response; }
     if (url.endsWith("/recepciones/REC-1/confirmar")) { const body = JSON.parse(String(init?.body)); saved = { ...draft, referencia: body.referencia, observaciones: body.observaciones, lineas: body.lineas }; await gate; return { ok: true, json: async () => ({ ...envelope, recepcion: { ...saved, estado: "CONFIRMADA", confirmable: false }, idempotente: false, stock_modificado: true }) } as Response; }
@@ -27,13 +28,13 @@ it("guarda la cantidad visible antes de confirmar una recepción parcial y evita
   await userEvent.type(screen.getByLabelText("Precio recibido 1"), "2.25");
   await userEvent.type(screen.getByLabelText("Lote 1"), "LOTE-VISIBLE");
   await userEvent.type(screen.getByLabelText("Caducidad 1"), "2026-12-31");
-  await userEvent.type(screen.getByLabelText("Ubicación 1"), "Cámara 1");
+  await userEvent.selectOptions(screen.getByLabelText("Ubicación 1"), "Cámara");
   await userEvent.type(screen.getByLabelText("Observaciones recepción 1"), "Caja revisada");
   const confirm = screen.getByRole("button", { name: /Confirmar/ }); await userEvent.click(confirm); await userEvent.click(confirm);
   const confirmCall = fetchMock.mock.calls.find(([url]) => String(url).endsWith("/recepciones/REC-1/confirmar"));
   const body = JSON.parse(String(confirmCall?.[1]?.body));
   expect(body.actualizado_en).toBe(draft.actualizado_en);
-  expect(body.lineas[0]).toMatchObject({ received_quantity: 6, received_price: 2.25, lot: "LOTE-VISIBLE", expiry: "2026-12-31", location: "Cámara 1", observations: "Caja revisada" });
+  expect(body.lineas[0]).toMatchObject({ received_quantity: 6, received_price: 2.25, lot: "LOTE-VISIBLE", expiry: "2026-12-31", location: "Cámara", observations: "Caja revisada" });
   expect(fetchMock.mock.calls.some(([, options]) => options?.method === "PATCH")).toBe(false);
   expect(fetchMock.mock.calls.filter(([url]) => String(url).endsWith("/recepciones/REC-1/confirmar"))).toHaveLength(1);
   release();
@@ -50,6 +51,7 @@ it("tras confirmar un pedido lo muestra y permite abrir su recepción sin modifi
   const fetchMock = vi.spyOn(global, "fetch").mockImplementation(async (input, init) => {
     const url = String(input);
     if (url.endsWith("/api/v1/dashboard")) return { ok: true, json: async () => module([{ ...order, estado: prepared ? "preparado" : "borrador" }]) } as Response;
+    if (url.endsWith("/api/v1/stock/ubicaciones")) return { ok: true, json: async () => ({ ...envelope, ubicaciones: ["Congelador", "Cámara", "Seco", "Bodega", "Limpieza"].map((nombre) => ({ id: nombre, nombre })) }) } as Response;
     if (url.endsWith(`/borradores/${order.id}/confirmar`)) { prepared = true; return { ok: true, json: async () => ({ ...envelope, pedido: { ...order, estado: "preparado" }, borrador: { ...order, estado: "preparado" }, idempotente: false, advertencias: [], stock_modificado: false, inventario_modificado: false, recepciones_creadas: 0 }) } as Response; }
     if (url.endsWith(`/borradores/${order.id}`)) return { ok: true, json: async () => ({ ...envelope, borrador: order, revision: { valido: true, errores_bloqueantes: [], advertencias: [] } }) } as Response;
     if (url.endsWith(`/pedidos/${order.id}/recepciones`)) return { ok: true, json: async () => ({ ...envelope, recepcion: reception, stock_modificado: false }) } as Response;
@@ -63,7 +65,7 @@ it("tras confirmar un pedido lo muestra y permite abrir su recepción sin modifi
   await userEvent.click(receive);
   expect(await screen.findByRole("heading", { name: `Recepción ${reception.id}` })).toBeInTheDocument();
   expect(screen.getByText(/Pedido: 0.25 kg.*Ya recibido: 0 kg.*Pendiente: 0.25 kg/)).toBeInTheDocument();
-  expect(fetchMock.mock.calls.some(([url]) => String(url).includes("stock"))).toBe(false);
+  expect(fetchMock.mock.calls.some(([url, init]) => String(url).includes("stock") && init?.method !== "GET")).toBe(false);
 });
 
 it("mantiene Registrar recepción para pedidos parciales y la retira al completarlos", async () => {

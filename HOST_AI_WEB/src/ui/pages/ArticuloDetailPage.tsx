@@ -5,13 +5,14 @@ import { articulosService } from "../../services/articulosService";
 import type { ArticuloDetalle, ArticuloUpdateInput } from "../../types/articulos";
 import { ErrorState } from "../components/ErrorState";
 import { LoadingState } from "../components/LoadingState";
+import { SafeCatalogWritePanel } from "../components/SafeCatalogWritePanel";
 
 export function ArticuloDetailPage() {
   const { articuloId = "" } = useParams();
   const location = useLocation();
   const [item, setItem] = useState<ArticuloDetalle | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [editing, setEditing] = useState(false);
+  const [editing, setEditing] = useState(() => new URLSearchParams(location.search).get("edit") === "1");
   useEffect(() => {
     let active = true;
     setError(null);
@@ -25,7 +26,7 @@ export function ArticuloDetailPage() {
     <Link to={back}>← Volver al catálogo</Link>
     <header><p className="eyebrow">{item.codigo}</p><h2 id="article-title">{item.nombre}</h2><p className="meta-line">{item.familia || "Sin familia"} · {item.estado}</p><button type="button" onClick={() => setEditing((value) => !value)}>{editing ? "Cancelar edición" : "Editar artículo"}</button></header>
     {item.unidad_base_sugerida ? <p className="draft-warning"><strong>Unidad base: {item.unidad_base}</strong> · sugerida / pendiente de revisión. Puedes cambiarla al editar el artículo.</p> : null}
-    {editing ? <ArticleEditForm item={item} onSaved={(updated) => { setItem(updated); setEditing(false); }} /> : null}
+    {editing ? <SafeCatalogWritePanel domain="ARTICULO" operation="MODIFICAR" entityId={item.id} initial={{ ...item, proveedor: item.proveedor || "" }} onCancel={() => setEditing(false)} onConfirmed={() => { articulosService.get(item.id).then((response) => setItem(response.articulo)); setEditing(false); }} /> : null}
     <div className="dashboard-grid"><Card title="Precio" value={item.precio == null ? "No disponible" : `${item.precio.toFixed(2)} € · ${item.unidad_base || "unidad pendiente"}`} /><Card title="Unidad base" value={item.unidad_base || "Pendiente"} /><Card title="Stock" value={item.stock_detalle.cantidad == null ? "No disponible" : `${item.stock_detalle.cantidad} ${item.stock_detalle.unidad || ""}`} /><Card title="Proveedor" value={item.proveedor || "Pendiente"} /></div>
     <Section title="Estado operativo"><dl className="detail-grid"><dt>Operativo para Stock</dt><dd>{item.operatividad.stock ? "Sí" : "No"}</dd><dt>Operativo para Compras</dt><dd>{item.operatividad.compras ? "Sí" : "No"}</dd><dt>Operativo para Escandallos</dt><dd>{item.operatividad.escandallos ? "Sí" : "No"}</dd></dl></Section>
     <Section title="Datos generales"><dl className="detail-grid"><dt>Marca</dt><dd>{item.marca || "No disponible"}</dd><dt>Referencia proveedor</dt><dd>{item.referencia_proveedor || "No disponible"}</dd><dt>Conservación</dt><dd>{item.conservacion || "No disponible"}</dd><dt>Alérgenos</dt><dd>{item.alergenos.length ? item.alergenos.join(", ") : "No disponibles"}</dd><dt>Observaciones</dt><dd>{item.observaciones || "No disponibles"}</dd></dl></Section>

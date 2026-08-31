@@ -53,6 +53,11 @@ def test_confirmacion_persiste_receta_estado_e_historial_y_sobrevive_reinicio(tm
         (tmp_path / "DATOS/db/biblioteca_recetas_601.json").read_text(encoding="utf-8")
     )["recetas"]
     assert recipes[0]["nombre"] == "Crema de calabaza"
+    assert not (tmp_path / "DATOS/db/articulos.json").exists()
+    assert not (tmp_path / "DATOS/db/biblioteca_escandallos_601.json").exists()
+    assert not (tmp_path / "DATOS/db/proveedores.json").exists()
+    assert not (tmp_path / "DATOS/db/compras_producto_proveedor.json").exists()
+    assert not (tmp_path / "DATOS/facturas/historico_precios.json").exists()
 
 
 def test_confirmacion_bloquea_version_antigua_y_datos_incompletos_sin_escribir_dominio(

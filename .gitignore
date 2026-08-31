@@ -43,3 +43,56 @@ HOST_AI_WEB/dist/
 
 # Documentación personal
 Documentos/AI.docx
+
+# ============================================================
+# Codex / validaciones / tests locales
+# ============================================================
+.codex-*/
+.local-pytest-*/
+.validation-*/
+.test-runs/
+.test-tmp*/
+.tmp-*/
+tmp/
+tmp-*/
+tmp-match/
+testtemp-recipes/
+
+# Archivos locales de validacion
+out.json
+output_validation.json
+listado
+
+# Configuracion local
+.vscode/
+mcp-inspector-host-ai.json
+
+# Temporales frontend
+HOST_AI_WEB/.tmp-*.json
+
+# ============================================================
+# Backups locales
+# ============================================================
+BACKUP_DATOS_*/
+BACKUP_GIT/
+DATOS/backups/
+
+# ============================================================
+# Datos generados en ejecucion
+# ============================================================
+DATOS/logs/
+DATOS/telemetry/
+DATOS/piloto/recepciones/
+
+# Auditorias locales nuevas
+DATOS/auditoria/*.jsonl
+
+# ============================================================
+# Documentos reales / privados
+# ============================================================
+Documentos/Importaciones/
+Documentos/*.pdf
+Documentos/*.jpeg
+Documentos/*.jpg
+Documentos/*.png
+DATOS/documentos/

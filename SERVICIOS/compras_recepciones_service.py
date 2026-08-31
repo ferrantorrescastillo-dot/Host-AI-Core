@@ -12,6 +12,7 @@ from MODELOS.compras import RecepcionCompra
 from SERVICIOS.cruce_stock_produccion_556c import _canon_unidad, _convertir
 from SERVICIOS.importador_inteligente_biblioteca import ImportDocumentService
 from SERVICIOS.repositorio_productos_maestro_601 import RepositorioProductosMaestro601
+from SERVICIOS.stock_locations import canonical_location_id
 
 
 class ComprasRecepcionesService:
@@ -319,6 +320,13 @@ class ComprasRecepcionesService:
                 line_issues.append({"code": "DIFERENCIA_CANTIDAD", "message": f"Pendiente {line.get('pending_quantity')} y recibido ahora {quantity}.", "bloqueante": False})
             if line.get("received_price") not in (None, "") and float(line["received_price"]) != float(line.get("order_price") or 0):
                 line_issues.append({"code": "DIFERENCIA_PRECIO", "message": "El precio recibido difiere del precio del pedido.", "bloqueante": False})
+            raw_location = str(line.get("location") or "").strip()
+            if raw_location:
+                canonical_location = canonical_location_id(raw_location)
+                if not canonical_location:
+                    line_issues.append({"code": "UBICACION_INVALIDA", "message": "La ubicación seleccionada no es canónica.", "bloqueante": True})
+                else:
+                    line["location"] = canonical_location
             line["incidences"] = line_issues
             issues.extend([{**issue, "order_line_id": line.get("order_line_id")} for issue in line_issues])
         reception.incidencias = issues

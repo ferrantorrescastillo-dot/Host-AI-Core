@@ -360,10 +360,12 @@ class MenuNecesidadesService:
             "estado": "Stock no disponible", "estado_stock": item.get("estado"),
             "conversion": item.get("metodo_enlace_stock"),
             "proveedor_preferente": product.get("proveedor_preferente") or product.get("proveedor") or item.get("proveedor") or None,
-            "formato_compra": product.get("unidad_compra") or None,
+            "formato_compra": self._commercial_format(product.get("unidad_compra")),
             "cantidad_formato": self._number(product.get("cantidad_formato")),
             "cantidad_propuesta_compra": None, "coste_estimado": None,
-            "precio_estimado": self._number(product.get("precio")), "fecha_precio": product.get("fecha_precio") or None,
+            "precio_estimado": self._number(product.get("precio")),
+            "unidad_precio": product.get("unidad_base") or product.get("unidad") or None,
+            "fecha_precio": product.get("fecha_precio") or None,
             "motivo_no_resuelto": None, "_stock_known": stock_known,
             "_conversion_pending": conversion_pending,
             "inventario_incompatible": list(item.get("inventario_incompatible") or []),
@@ -392,6 +394,13 @@ class MenuNecesidadesService:
         price = line.get("precio_estimado")
         if price is not None and line.get("cantidad_propuesta_compra") is not None:
             line["coste_estimado"] = round(float(price) * float(line["cantidad_propuesta_compra"]), 4)
+
+    @staticmethod
+    def _commercial_format(value: Any) -> str | None:
+        text = str(value or "").strip()
+        if text.lower() in {"kg", "g", "mg", "l", "ml", "cl", "u", "ud", "uds", "unidad", "unidades"}:
+            return None
+        return text or None
 
     @staticmethod
     def _unresolved(item: dict[str, Any], origin: dict[str, Any]) -> dict[str, Any]:

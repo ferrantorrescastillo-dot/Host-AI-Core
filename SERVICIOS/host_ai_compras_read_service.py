@@ -12,18 +12,39 @@ class HostAIComprasReadService:
     def __init__(self, core: Any) -> None:
         self.compras = core.compras
 
-    def consultar_pedidos(self, estado: str = "", proveedor: str = "", pendientes_recepcion: bool = False, solo_abiertos: bool = False) -> dict[str, Any]:
+    def consultar_pedidos(self, estado: str = "", proveedor: str = "", pendientes_recepcion: bool = False, solo_abiertos: bool = False, pedido_id: str = "", article_id: str = "", consulta: str = "listado", limite: int | None = None) -> dict[str, Any]:
         pedidos = list(self.compras.listar_pedidos() or [])
         projected = [self._pedido(item) for item in pedidos]
+        normalized_order_id = self._norm(pedido_id)
+        normalized_provider = self._norm(proveedor)
+        mode = self._norm(consulta) or "listado"
+
+        if normalized_order_id:
+            exact = [item for item in projected if self._norm(item["pedido_id"]) == normalized_order_id]
+            return self._dto("pedidos", estado="OK" if exact else "NO_ENCONTRADO", pedidos=exact, limite=limite)
+
         if estado:
             projected = [item for item in projected if self._norm(item["estado"]) == self._norm(estado)]
         elif solo_abiertos:
             projected = [item for item in projected if self._norm(item["estado"]) not in {"recibido", "cancelado"}]
-        if proveedor:
-            projected = [item for item in projected if self._norm(proveedor) in self._norm(item["proveedor_nombre"])]
+
+        if normalized_provider:
+            projected = [item for item in projected if normalized_provider in self._norm(item["proveedor_nombre"])]
+            if mode == "pedido" and len(projected) > 1:
+                return self._dto("pedidos", estado="AMBIGUO", pedidos=projected, limite=limite)
+
+        normalized_article = self._norm(article_id)
+        if normalized_article:
+            filtered = []
+            for order in projected:
+                lines = [line for line in list(order.get("lineas") or []) if self._norm(line.get("articulo_id")) == normalized_article]
+                if lines:
+                    filtered.append({**order, "lineas": lines, "numero_lineas": len(lines)})
+            projected = filtered
+
         if pendientes_recepcion:
             projected = [item for item in projected if item["pendiente_recepcion"]]
-        return self._dto("pedidos", pedidos=projected)
+        return self._dto("pedidos", pedidos=projected, limite=limite)
 
     def consultar_propuestas(self) -> dict[str, Any]:
         items = list(self.compras.listar_propuestas_compra(solo_pendientes=True) or [])
@@ -44,6 +65,13 @@ class HostAIComprasReadService:
             "prioridad": int(item.get("prioridad") or 0), "fecha_necesaria": str(item.get("fecha_necesaria") or ""),
         } for item in items]
         return self._dto("necesidades", necesidades=necesidades)
+
+    def consultar_cobertura_articulos(self) -> list[dict[str, Any]]:
+        """Proyecta todas las líneas abiertas para cálculos internos de cobertura READ."""
+        return [
+            self._pedido(item) for item in list(self.compras.listar_pedidos() or [])
+            if self._norm(item.get("estado")) not in {"recibido", "cancelado"}
+        ]
 
     def buscar_por_proveedor(self, termino: str) -> dict[str, Any]:
         termino = str(termino or "").strip()
@@ -81,9 +109,10 @@ class HostAIComprasReadService:
         total = sum(float(line.get("cantidad") or 0) * float(line.get("precio_unitario") or 0) for line in list(item.get("lineas") or []))
         return {"pedido_id": order_id, "proveedor_nombre": str(item.get("proveedor") or ""), "estado": str(item.get("estado") or ""), "fecha": str(item.get("fecha") or item.get("creado_en") or ""), "total": round(total, 2), "numero_lineas": len(lines), "pendiente_recepcion": pending_any and self._norm(item.get("estado")) not in {"borrador", "cancelado", "recibido"}, "lineas": lines}
 
-    def _dto(self, consulta: str, *, estado: str | None = None, pedidos: list | None = None, propuestas: list | None = None, necesidades: list | None = None, proveedores: list | None = None) -> dict[str, Any]:
-        pedidos = list(pedidos or [])[: self.LIMIT]; propuestas = list(propuestas or [])[: self.LIMIT]
-        necesidades = list(necesidades or [])[: self.LIMIT]; proveedores = list(proveedores or [])[: self.LIMIT]
+    def _dto(self, consulta: str, *, estado: str | None = None, pedidos: list | None = None, propuestas: list | None = None, necesidades: list | None = None, proveedores: list | None = None, limite: int | None = None) -> dict[str, Any]:
+        effective_limit = self.LIMIT if limite is None else max(1, min(int(limite), self.LIMIT))
+        pedidos = list(pedidos or [])[: effective_limit]; propuestas = list(propuestas or [])[: effective_limit]
+        necesidades = list(necesidades or [])[: effective_limit]; proveedores = list(proveedores or [])[: effective_limit]
         total = len(pedidos) + len(propuestas) + len(necesidades) + len(proveedores)
         return {"estado": estado or ("OK" if total else "VACIO"), "consulta": consulta,
                 "resumen": {"total": total, "preparados": sum(self._norm(x.get("estado")) == "preparado" for x in pedidos), "parcialmente_recibidos": sum(self._norm(x.get("estado")) == "parcialmente_recibido" for x in pedidos), "recibidos": sum(self._norm(x.get("estado")) == "recibido" for x in pedidos), "pendientes_recepcion": sum(bool(x.get("pendiente_recepcion")) for x in pedidos)},

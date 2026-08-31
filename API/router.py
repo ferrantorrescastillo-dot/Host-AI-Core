@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from typing import Callable
 
 from API.contracts.http_models import ApiRequest, ApiResponse
-from API.endpoints import articulos, biblioteca, chat, compras, dashboard, eventos, executive, health, menus, plan, produccion, stock, version, workflow
+from API.endpoints import ai_costs, articulos, biblioteca, catalog_crud, chat, compras, dashboard, eventos, executive, health, menus, plan, produccion, reservas, stock, version, workflow
 from API.facade.core_public_facade import CorePublicFacade
 from API.infra.response_envelope import build_error_payload, normalize_success_payload
 
@@ -26,17 +26,34 @@ ROUTES: tuple[Route, ...] = (
     Route("GET", "/api/v1/version", version.handle),
     Route("GET", "/api/v1/executive", executive.handle),
     Route("GET", "/api/v1/dashboard", dashboard.handle),
+    Route("GET", "/api/v1/ai-costs/summary", ai_costs.summary_handle),
     Route("POST", "/api/v1/stock/movimientos", stock.movement_handle),
+    Route("POST", "/api/v1/stock/ajustes/preview", stock.adjustment_handle),
+    Route("POST", "/api/v1/stock/ajustes/confirmar", stock.adjustment_handle),
+    Route("POST", "/api/v1/stock/ajustes/descartar", stock.adjustment_handle),
+    Route("GET", "/api/v1/stock/ubicaciones", stock.locations_handle),
     Route("GET", "/api/v1/articulos", articulos.list_handle),
+    Route("GET", "/api/v1/articulos/sin-precio", articulos.missing_prices_handle),
+    Route("GET", "/api/v1/articulos/sin-precio/exportar", articulos.export_prices_handle),
+    Route("GET", "/api/v1/articulos/reclasificacion/candidatos", articulos.reclassification_handle),
+    Route("POST", "/api/v1/articulos/reclasificacion/preview", articulos.reclassification_handle),
+    Route("POST", "/api/v1/articulos/reclasificacion/confirmar", articulos.reclassification_handle),
+    Route("POST", "/api/v1/articulos/referencias-importadas/preview", articulos.import_prices_handle),
+    Route("POST", "/api/v1/articulos/referencias-importadas/confirmar", articulos.import_prices_handle),
     Route("GET", "/api/v1/biblioteca", biblioteca.summary_handle),
     Route("GET", "/api/v1/biblioteca/elaboraciones", biblioteca.list_handle),
     Route("POST", "/api/v1/biblioteca/importaciones", biblioteca.import_create_handle),
     Route("GET", "/api/v1/menus", menus.collection_handle),
     Route("POST", "/api/v1/menus", menus.collection_handle),
     Route("GET", "/api/v1/menus/elaboraciones", menus.elaborations_handle),
+    Route("GET", "/api/v1/reservas", reservas.collection_handle),
+    Route("POST", "/api/v1/reservas/preview", reservas.preview_handle),
+    Route("POST", "/api/v1/reservas/confirmar", reservas.confirm_handle),
     Route("GET", "/executive", executive.handle),
     Route("GET", "/dashboard", dashboard.handle),
     Route("GET", "/eventos", eventos.handle),
+    Route("POST", "/api/v1/catalogo/preview", catalog_crud.preview_handle),
+    Route("POST", "/api/v1/catalogo/confirmar", catalog_crud.confirm_handle),
     Route("GET", "/workflow", workflow.handle),
     Route("GET", "/plan", plan.handle),
     Route("POST", "/api/v1/chat", chat.handle),
@@ -53,12 +70,42 @@ class ApiRouter:
         request_id = str(request.request_id or "")
         key = (str(request.method or "").upper(), str(request.path or ""))
         handler = self._table.get(key)
+        if handler is None and key[1].startswith("/api/v1/biblioteca/recetas/completado-ia/") and key[0] in {"GET", "POST"}:
+            handler = biblioteca.batch_documentation_handle
+        if handler is None and key[0] == "POST" and key[1].startswith("/api/v1/articulos/"):
+            if key[1] == "/api/v1/articulos/documentacion/propuesta-borrador":
+                handler = articulos.draft_documentation_handle
+            elif "/documentacion/" in key[1]:
+                handler = articulos.documentation_handle
+            elif "/precio-referencia-web/" in key[1]:
+                handler = articulos.web_price_handle
+            elif "/precio-referencia-manual/" in key[1]:
+                handler = articulos.manual_price_handle
+            elif key[1].endswith("/formato/preview"):
+                handler = articulos.format_preview_handle
+            elif key[1].endswith("/formato/confirmar"):
+                handler = articulos.format_confirm_handle
         if handler is None and key[0] in {"GET", "PATCH"} and key[1].startswith("/api/v1/articulos/"):
             handler = articulos.detail_handle if key[0] == "GET" else articulos.update_handle
+        if handler is None and key[0] == "GET" and key[1].startswith("/api/v1/eventos/"):
+            handler = eventos.detail_handle
+        if handler is None and key[0] == "POST" and key[1].startswith("/api/v1/biblioteca/elaboraciones/"):
+            if key[1].endswith("/rendimiento/preview"):
+                handler = biblioteca.yield_preview_handle
+            elif key[1].endswith("/rendimiento/confirmar"):
+                handler = biblioteca.yield_confirm_handle
+            elif "/escandallo/" in key[1]:
+                handler = biblioteca.costing_handle
+            elif "/documentacion/" in key[1]:
+                handler = biblioteca.documentation_handle
+        if handler is None and key[1].startswith("/api/v1/stock/lotes/") and key[0] in {"GET", "POST"}:
+            handler = stock.lot_handle
         if handler is None and key[0] == "GET" and key[1].startswith("/api/v1/biblioteca/elaboraciones/"):
             handler = biblioteca.detail_handle
         if handler is None and key[0] in {"GET", "POST", "PATCH"} and key[1].startswith("/api/v1/biblioteca/importaciones/"):
-            if key[0] == "POST" and key[1].endswith("/confirmar"):
+            if key[0] == "POST" and "/canonicalizacion-existentes/" in key[1]:
+                handler = biblioteca.import_legacy_canonicalization_handle
+            elif key[0] == "POST" and key[1].endswith("/confirmar"):
                 handler = biblioteca.import_confirm_handle
             elif key[0] == "GET" and key[1].endswith("/estado"):
                 handler = biblioteca.import_status_handle
@@ -77,6 +124,8 @@ class ApiRouter:
                 handler = menus.proposal_handle
             else:
                 handler = menus.detail_handle
+        if handler is None and key[0] == "GET" and key[1].startswith("/api/v1/reservas/"):
+            handler = reservas.detail_handle
         if handler is None and key[0] == "POST" and key[1].startswith("/api/v1/menus/") and key[1].endswith("/propuesta-compra"):
             handler = menus.proposal_handle
         if handler is None and key[0] == "POST" and "/propuesta-compra/" in key[1] and key[1].endswith("/crear-pedidos"):

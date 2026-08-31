@@ -26,7 +26,11 @@ describe("navegacion", () => {
     );
 
     await userEvent.click(screen.getByRole("link", { name: "Dashboard" }));
-    expect(await screen.findByText("Dashboard operativo")).toBeInTheDocument();
+    expect(
+      await screen.findByRole("heading", {
+        name: "Estado operativo del restaurante",
+      }),
+    ).toBeInTheDocument();
   });
 
   it("muestra 404", () => {

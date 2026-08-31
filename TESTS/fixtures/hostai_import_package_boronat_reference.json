@@ -1,0 +1,32 @@
+{
+  "schema": "hostai.import.package",
+  "version": "0.1",
+  "metadata": {
+    "source": "Escandallos Boronat.xlsx",
+    "purpose": "fixture representativo de solo lectura; no es una exportación completa ni confirmable"
+  },
+  "recipes": [
+    {
+      "source_id": "BORONAT-SALSA-NARANJA",
+      "name": "Salsa de naranja",
+      "ingredients": [{"name": "Naranja", "quantity": 1, "unit": "kg"}],
+      "occurrences": [{"sheet": "referencia", "region": "salsa-naranja"}],
+      "confidence": 0.9
+    }
+  ],
+  "articles": [{"source_code": "BORONAT-NARANJA", "name": "Naranja", "unit": "kg"}],
+  "suppliers": [],
+  "menus": [
+    {"name": "TAPA", "kind": "CONTEXT", "items": ["Salsa de naranja"]},
+    {"name": "Menu Calçotada", "kind": "MENU", "items": ["Salsa de naranja"]}
+  ],
+  "relations": [],
+  "ambiguities": [{"type": "REQUIERE_REVISION", "name": "TAPA", "reason": "Contexto documental, no receta."}],
+  "variant_groups": [{
+    "name": "Patatas Bravas",
+    "versions": [
+      {"ingredients": [{"name": "Patata", "quantity": 1, "unit": "kg"}]},
+      {"ingredients": [{"name": "Patata", "quantity": 2, "unit": "kg"}, {"name": "Salsa brava", "quantity": 1, "unit": "kg"}]}
+    ]
+  }]
+}

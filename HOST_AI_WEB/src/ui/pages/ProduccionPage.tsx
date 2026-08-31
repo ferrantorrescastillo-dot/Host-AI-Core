@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { HostAiApiError } from "../../api/client";
 import { produccionService, type ProduccionResult } from "../../services/produccionService";
 import type { ProductionPlan, ProductionTask, ProductionTree } from "../../types/produccion";
 import { ErrorState } from "../components/ErrorState";
 import { LoadingState } from "../components/LoadingState";
+import { SearchField } from "../components/SearchField";
 
 export function ProduccionPage() {
   const [loading, setLoading] = useState(true);
@@ -12,6 +13,10 @@ export function ProduccionPage() {
   const [errorRequestId, setErrorRequestId] = useState<string | null>(null);
   const [data, setData] = useState<ProduccionResult | null>(null);
   const [refreshTick, setRefreshTick] = useState(0);
+  const [searchParams] = useSearchParams();
+  const selectedPlanId = searchParams.get("plan_id") || "";
+  const [query, setQuery] = useState("");
+  const [status, setStatus] = useState("");
 
   useEffect(() => {
     let active = true;
@@ -25,18 +30,29 @@ export function ProduccionPage() {
     return () => { active = false; };
   }, [refreshTick]);
 
+  const plans = data?.detalles ?? [];
+  const planMatches = selectedPlanId
+    ? plans.filter((plan) => plan.id === selectedPlanId || plan.plan_id === selectedPlanId)
+    : [];
+  const directPlans = selectedPlanId
+    ? (planMatches.length ? planMatches : [...plans].sort((left, right) => Number(right.id === selectedPlanId) - Number(left.id === selectedPlanId)))
+    : plans;
+  const statuses = [...new Set(plans.map((plan) => plan.estado).filter(Boolean))];
+  const visiblePlans = directPlans.filter((plan) => (!status || plan.estado === status) && (!query.trim() || normalize([plan.id, plan.plan_id, plan.nombre, plan.menu_id, plan.estado, ...plan.elaboraciones.map((task) => task.titulo)].join(" ")).includes(normalize(query))));
+
   if (loading) return <LoadingState label="Cargando producción..." />;
   return <section className="panel" role="region" aria-labelledby="produccion-title">
     <header className="dashboard-header"><div><p className="eyebrow">Operativa</p><h2 id="produccion-title">Plan de producción</h2><p className="meta-line">Planificación desde Menús, sin movimientos de Stock</p></div><button type="button" onClick={() => setRefreshTick((value) => value + 1)}>{error ? "Reintentar" : "Actualizar"}</button></header>
     {error ? <><ErrorState title="No se pudo cargar la producción." detail={error} /><p className="meta-line">Request ID: {errorRequestId || "No disponible"}</p></> : <>
       <section className="safe-mode" aria-label="Estado de seguridad"><p><strong>Modo seguro:</strong> {data?.modo_seguro ? "Activo" : "Inactivo"}</p><p><strong>Datos reales modificados:</strong> {data?.datos_reales_modificados ? "Sí" : "No"}</p><p className="meta-line">Request ID: {data?.request_id || "No disponible"}</p></section>
       <section className="dashboard-grid" aria-label="Resumen de producción"><SummaryCard title="Elaboraciones" value={sum(data?.detalles, "elaboraciones")} /><SummaryCard title="Subelaboraciones" value={sum(data?.detalles, "subelaboraciones")} /><SummaryCard title="Ingredientes necesarios" value={sum(data?.detalles, "ingredientes")} /><SummaryCard title="Faltantes" value={sum(data?.detalles, "faltantes")} /><SummaryCard title="Coste previsto" value={`${sum(data?.detalles, "coste_previsto").toLocaleString("es-ES", { minimumFractionDigits: 2 })} €`} /></section>
-      {data?.detalles.length ? <div className="produccion-list" aria-label="Planes de producción">{data.detalles.map((plan) => <PlanCard key={plan.id} plan={plan} />)}</div> : <div className="panel-state"><p>No hay planes de producción activos.</p>{data?.mensaje ? <p className="meta-line">{data.mensaje}</p> : null}</div>}
+      <div className="module-toolbar"><SearchField value={query} onChange={setQuery} placeholder="Buscar planes, menús o elaboraciones..." ariaLabel="Buscar producción" />{statuses.length ? <label>Estado<select aria-label="Filtrar producción por estado" value={status} onChange={(event) => setStatus(event.target.value)}><option value="">Todos</option>{statuses.map((value) => <option key={value}>{value}</option>)}</select></label> : null}</div>
+      {visiblePlans.length ? <div className="produccion-list" aria-label="Planes de producción">{visiblePlans.map((plan) => <PlanCard key={plan.id} plan={plan} selected={plan.id === selectedPlanId} />)}</div> : query || status ? <div className="module-empty-search"><p>No hay planes que coincidan con “{query || status}”.</p></div> : <div className="panel-state"><p>No hay planes de producción activos.</p>{data?.mensaje ? <p className="meta-line">{data.mensaje}</p> : null}</div>}
     </>}
   </section>;
 }
 
-function PlanCard({ plan }: { plan: ProductionPlan }) {
+function PlanCard({ plan, selected = false }: { plan: ProductionPlan; selected?: boolean }) {
   const [proposalId, setProposalId] = useState(plan.propuesta_compra_id || "");
   const [proposalLines, setProposalLines] = useState(0);
   const [proposalBusy, setProposalBusy] = useState(false);
@@ -47,7 +63,7 @@ function PlanCard({ plan }: { plan: ProductionPlan }) {
     catch (error) { setProposalError((error as Error).message); }
     finally { setProposalBusy(false); }
   };
-  return <article className="produccion-card"><header><div><h3>{plan.nombre || "Plan sin nombre"}</h3><p className="meta-line">Menú {plan.menu_id || "sin identificar"} · versión {plan.menu_version || "-"}</p></div><span className="evento-status">{plan.estado}</span></header>
+  return <article className={`produccion-card${selected ? " active" : ""}`} id={`plan-${plan.id}`}><header><div><h3>{plan.nombre || "Plan sin nombre"}</h3><p className="meta-line">Menú {plan.menu_id || "sin identificar"} · versión {plan.menu_version || "-"}</p></div><span className="evento-status">{plan.estado}</span></header>
     <dl className="produccion-details"><Detail label="Fecha" value={formatDate(plan.fecha)} /><Detail label="Comensales" value={formatNumber(plan.comensales)} /><Detail label="Elaboraciones" value={formatNumber(plan.resumen.elaboraciones)} /><Detail label="Faltantes" value={formatNumber(plan.resumen.faltantes)} /></dl>
     <section aria-label={`Clasificación de necesidades de ${plan.nombre}`}><p>Faltantes conocidos: <strong>{plan.clasificacion.faltantes_conocidos}</strong></p><p>Stock desconocido: <strong>{plan.clasificacion.stock_desconocido}</strong></p><p>Sin relacionar: <strong>{plan.clasificacion.sin_relacionar}</strong></p></section>
     <ul className="clean-list produccion-tasks" aria-label={`Tareas de ${plan.nombre}`}>{plan.elaboraciones.map((task) => <TaskCard key={task.id} task={task} />)}</ul>
@@ -79,3 +95,4 @@ function formatDate(value: unknown): string { if (typeof value !== "string" || !
 function formatNumber(value: unknown): string { return typeof value === "number" && Number.isFinite(value) ? new Intl.NumberFormat("es-ES").format(value) : "No disponible"; }
 function formatQuantity(value: unknown, unit: unknown): string { if (typeof value !== "number" || !Number.isFinite(value)) return "Cantidad no disponible"; return `${new Intl.NumberFormat("es-ES").format(value)}${typeof unit === "string" && unit.trim() ? ` ${unit}` : ""}`; }
 function sum(plans: ProductionPlan[] | undefined, field: keyof ProductionPlan["resumen"]): number { return (plans ?? []).reduce((total, plan) => total + Number(plan.resumen[field] || 0), 0); }
+function normalize(value: unknown): string { return String(value ?? "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim(); }

@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import asdict, is_dataclass
 from typing import Any
 
-SCHEMA_VERSION = "1.0"
+SCHEMA_VERSION = "1.1"
 UNIDADES_ADMITIDAS = {
     "kg", "g", "l", "ml", "u", "ud", "unidad", "unidades", "racion", "raciones"
 }

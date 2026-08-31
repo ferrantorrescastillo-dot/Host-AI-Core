@@ -32,7 +32,7 @@ class ReservasWriteService:
         "CANCELADA": frozenset(), "NO_SHOW": frozenset(), "COMPLETADA": frozenset(),
     }
     TERMINAL_STATES = frozenset({"CANCELADA", "NO_SHOW", "COMPLETADA"})
-    OPERATIONS = frozenset({"CREAR", "MODIFICAR", "CONFIRMAR", "CANCELAR", "NO_SHOW", "COMPLETAR"})
+    OPERATIONS = frozenset({"CREAR", "MODIFICAR", "CONFIRMAR", "CANCELAR", "NO_SHOW", "COMPLETAR", "ELIMINAR"})
     _lock = RLock()
 
     def __init__(self, base_dir: Path | str, *, now_provider: Callable[[], datetime] = datetime.now, ttl_seconds: int = 900) -> None:
@@ -67,6 +67,11 @@ class ReservasWriteService:
                 self.read.validar_evento(proposed)
             except ValueError as exc:
                 raise ErrorReservasWrite("invalid_reserva", str(exc)) from exc
+            before, expected = current.to_dict(), self._fingerprint(current)
+        elif operation == "ELIMINAR":
+            if data:
+                raise ErrorReservasWrite("unknown_fields", "La eliminación lógica no acepta campos adicionales.")
+            proposed = replace(current, eliminada=True, eliminado_en=self.now_provider().isoformat(timespec="seconds"))
             before, expected = current.to_dict(), self._fingerprint(current)
         else:
             if data:
@@ -172,7 +177,9 @@ class ReservasWriteService:
             raise ErrorReservasWrite("immutable_or_unknown_fields", "Solo pueden modificarse campos editables de la reserva.")
 
     def _ensure_state_allows_operation(self, current: Reserva, operation: str) -> None:
-        if current.estado in self.TERMINAL_STATES:
+        if current.eliminada:
+            raise ErrorReservasWrite("already_deleted", "La reserva ya está eliminada.")
+        if current.estado in self.TERMINAL_STATES and operation not in {"MODIFICAR", "ELIMINAR"}:
             raise ErrorReservasWrite(
                 "terminal_state",
                 f"La reserva esta {current.estado} y no admite modificaciones ni cambios de estado.",
@@ -216,7 +223,7 @@ class ReservasWriteService:
     @staticmethod
     def _safe_preview(value: dict[str, Any] | None) -> dict[str, Any] | None:
         if value is None: return None
-        return {key: value.get(key) for key in ("reserva_id", "nombre_cliente", "fecha", "hora", "pax", "estado", "servicio", "observaciones", "evento_id") if key in value}
+        return {key: value.get(key) for key in ("reserva_id", "nombre_cliente", "fecha", "hora", "pax", "estado", "servicio", "observaciones", "evento_id", "eliminada", "eliminado_en") if key in value}
 
     @staticmethod
     def _fingerprint(item: Reserva | None) -> str:

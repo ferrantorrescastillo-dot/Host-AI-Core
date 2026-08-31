@@ -59,6 +59,16 @@ def test_http_dashboard(tmp_path: Path) -> None:
     assert payload.get("datos_reales_modificados") is False
 
 
+def test_http_ai_cost_summary_is_read_only_and_supports_period(tmp_path: Path) -> None:
+    response = _make_client(tmp_path).get("/api/v1/ai-costs/summary?session_id=SESSION-TEST&period=today")
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["cost_summary"]["total_cost_usd"] == "0E-8"
+    assert payload["cost_summary"]["period"] == "today"
+    assert payload["cost_summary"]["events"] == 0
+    assert payload["datos_reales_modificados"] is False
+
+
 def test_http_dashboard_expone_contrato_compras(tmp_path: Path) -> None:
     db_dir = tmp_path / "DATOS" / "db"
     db_dir.mkdir(parents=True, exist_ok=True)
@@ -182,6 +192,9 @@ def test_http_cors_host_ai_web_en_articulos_y_dashboard(tmp_path: Path) -> None:
     client = _make_client(tmp_path)
     origins = (
         "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost:5174",
+        "http://127.0.0.1:5174",
         "http://localhost:5176",
         "http://127.0.0.1:5176",
     )
@@ -202,6 +215,35 @@ def test_http_cors_host_ai_web_en_articulos_y_dashboard(tmp_path: Path) -> None:
             response = client.get(endpoint, headers={"Origin": origin})
             assert response.status_code == 200
             assert response.headers.get("access-control-allow-origin") == origin
+
+
+def test_http_cors_vite_5173_y_5174_en_biblioteca_y_dashboard(tmp_path: Path) -> None:
+    client = _make_client(tmp_path)
+    origins = (
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost:5174",
+        "http://127.0.0.1:5174",
+    )
+    for origin in origins:
+        for endpoint in ("/api/v1/biblioteca", "/api/v1/dashboard"):
+            preflight = client.options(endpoint, headers={
+                "Origin": origin,
+                "Access-Control-Request-Method": "GET",
+            })
+            assert preflight.status_code in (200, 204)
+            assert preflight.headers.get("access-control-allow-origin") == origin
+            response = client.get(endpoint, headers={"Origin": origin})
+            assert response.status_code == 200
+            assert response.headers.get("access-control-allow-origin") == origin
+
+
+def test_cors_5174_no_se_anade_implicitamente_fuera_de_desarrollo(monkeypatch) -> None:
+    from API.http_server import _parse_allowed_origins
+
+    monkeypatch.setenv("HOST_AI_API_ENV", "production")
+    monkeypatch.setenv("HOST_AI_API_CORS_ALLOWED_ORIGINS", "https://host-ai.example")
+    assert _parse_allowed_origins() == ["https://host-ai.example"]
 
 
 def test_http_cors_biblioteca_desde_vite_5178(tmp_path: Path) -> None:

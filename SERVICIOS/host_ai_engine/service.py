@@ -22,6 +22,8 @@ from SERVICIOS.host_ai_engine.models import (
 )
 from SERVICIOS.host_ai_engine.providers import NotConnectedProvider, SimulatedProvider
 from SERVICIOS.host_ai_engine.openai_provider import OpenAIProvider
+from SERVICIOS.host_ai_agent_models import AgentTurnRequest, AgentTurnResult
+from SERVICIOS.ai_cost_service import AICostLedger
 
 
 SENSITIVE_KEYS = {
@@ -51,6 +53,7 @@ class HostAIEngine:
         self.logs_dir.mkdir(parents=True, exist_ok=True)
         self.log_path = self.logs_dir / "host_ai_engine_calls.jsonl"
         self.audit_path = self.logs_dir / "host_ai_engine_auditoria.jsonl"
+        self.ai_costs = AICostLedger(self.base_dir)
 
         openai_provider = OpenAIProvider()
         self._providers = {
@@ -189,9 +192,24 @@ class HostAIEngine:
             tiempo_ms=elapsed_ms,
             proveedor=provider_result.proveedor,
             modelo=provider_result.modelo,
+            usage=dict(provider_result.usage or {}),
         )
+        if provider_result.usage:
+            operation_id = request.operation_id or request.request_id
+            response.cost_breakdown = self.ai_costs.record(operation_id=operation_id, operation_type=request.tipo_peticion, provider=provider_result.proveedor, model=provider_result.modelo, usage=provider_result.usage, request_id=request.request_id, session_id=request.session_id, capability=request.tipo_peticion, entity_type=request.entity_type, entity_id=request.entity_id, external_response_id=provider_result.response_id, status="completed" if provider_result.ok else "failed")
+            response.respuesta = {**dict(response.respuesta or {}), "cost_breakdown": response.cost_breakdown}
         self._registrar_llamada(request, response)
         return response
+
+    def ejecutar_turn_agente(self, request: AgentTurnRequest) -> AgentTurnResult:
+        provider = self._providers.get(self.default_provider) or self._providers["SIMULADO"]
+        if not provider.connected or not provider.supports_tool_calling:
+            return AgentTurnResult(kind="", safe_error="provider_tool_calling_not_supported", provider_metadata={"provider": provider.provider_name, "model": provider.model_name})
+        result = provider.ejecutar_turn_agente(request)
+        if result.usage:
+            meta = dict(result.provider_metadata or {})
+            result.provider_metadata["cost_breakdown"] = self.ai_costs.record(operation_id=request.request_id, operation_type="AGENT_RUN", provider=str(meta.get("provider") or provider.provider_name), model=str(meta.get("model") or provider.model_name), usage=result.usage, request_id=str(request.conversation_context.get("request_id") or request.request_id), session_id=str(request.conversation_context.get("session_id") or ""), capability=str(request.conversation_context.get("intent") or "GENERAL_AGENT"), external_response_id=str(meta.get("response_id") or ""))
+        return result
 
     def consultar(
         self,

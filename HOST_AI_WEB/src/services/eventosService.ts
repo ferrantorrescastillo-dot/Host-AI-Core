@@ -14,6 +14,7 @@ export type EventosResult = ApiEnvelopeBase & {
 };
 
 export const eventosService = {
+  detail(id: string) { return hostAiApiClient.getEvento(id); },
   async load(): Promise<EventosResult> {
     const response = await hostAiApiClient.getDashboard();
     const modulo = response.dashboard?.modulos?.eventos;

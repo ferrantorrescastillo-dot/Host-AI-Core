@@ -44,6 +44,14 @@ function renderPage() {
   );
 }
 
+function renderPageAt(route: string) {
+  return render(
+    <MemoryRouter initialEntries={[route]}>
+      <App />
+    </MemoryRouter>,
+  );
+}
+
 describe("Compras", () => {
   afterEach(() => {
     cleanup();
@@ -262,7 +270,7 @@ describe("Compras", () => {
     await userEvent.click(await screen.findByRole("button", { name: "Abrir borrador" }));
     await userEvent.click(screen.getByRole("button", { name: "Confirmar y crear pedido" }));
     expect(await screen.findByRole("button", { name: `Registrar recepción de ${draft.id}` })).toBeInTheDocument();
-    expect(fetchMock.mock.calls.some(([url]) => String(url).includes("stock"))).toBe(false);
+    expect(fetchMock.mock.calls.some(([url, init]) => String(url).includes("stock") && init?.method !== "GET")).toBe(false);
   });
 
   it("adjunta, muestra y quita un albarán sin tocar Stock", async () => {
@@ -275,6 +283,7 @@ describe("Compras", () => {
     const fetchMock = vi.spyOn(global, "fetch").mockImplementation(async (input, init) => {
       const url = String(input);
       if (url.endsWith("/api/v1/dashboard")) return { ok: true, json: async () => payload([], { pedidos: [order] }) } as Response;
+      if (url.endsWith("/api/v1/stock/ubicaciones")) return { ok: true, json: async () => ({ ...payload([]), ubicaciones: ["Congelador", "Cámara", "Seco", "Bodega", "Limpieza"].map((nombre) => ({ id: nombre, nombre })) }) } as Response;
       if (url.endsWith(`/pedidos/${order.id}/recepciones`)) return { ok: true, json: async () => ({ ...payload([]), recepcion: baseReception, stock_modificado: false }) } as Response;
       if (url.endsWith(`/recepciones/${baseReception.id}/documento/analizar`)) { const body = JSON.parse(String(init?.body)); if (!body.texto_ocr) return { ok: false, status: 422, json: async () => ({ ...payload([]), ok: false, error: { code: "ocr_required", message: "El documento necesita OCR real o transcripción." } }) } as Response; return { ok: true, json: async () => ({ ...payload([]), recepcion: { ...baseReception, documento: document }, extraccion: extraction, propuesta: extraction, stock_modificado: false }) } as Response; }
       if (url.endsWith(`/recepciones/${baseReception.id}/extraccion/aplicar`)) return { ok: true, json: async () => ({ ...payload([]), recepcion: { ...baseReception, documento: document, lineas: [{ ...baseReception.lineas[0], received_quantity: extractionLine.quantity }] }, extraccion: extraction, stock_modificado: false, confirmada: false }) } as Response;
@@ -284,6 +293,9 @@ describe("Compras", () => {
     });
     renderPage();
     await userEvent.click(await screen.findByRole("button", { name: `Registrar recepción de ${order.id}` }));
+    const location = await screen.findByLabelText("Ubicación 1");
+    for (const label of ["Congelador", "Cámara", "Seco", "Bodega", "Limpieza"]) expect(location).toHaveTextContent(label);
+    await userEvent.selectOptions(location, "Cámara");
     const invalid = new File(["bad"], "malware.exe", { type: "application/octet-stream" });
     Object.defineProperty(invalid, "arrayBuffer", { value: async () => new TextEncoder().encode("bad").buffer });
     await userEvent.upload(screen.getByLabelText("Adjuntar albarán"), invalid, { applyAccept: false });
@@ -309,6 +321,75 @@ describe("Compras", () => {
     await userEvent.click(screen.getByRole("button", { name: "Quitar documento" }));
     expect(await screen.findByLabelText("Adjuntar albarán")).toBeInTheDocument();
     expect(attached).toBe(false);
-    expect(fetchMock.mock.calls.some(([url]) => String(url).includes("stock"))).toBe(false);
+    expect(fetchMock.mock.calls.some(([url, init]) => String(url).includes("stock") && init?.method !== "GET")).toBe(false);
+  });
+
+  it("abre solo el pedido indicado por query param pedido_id", async () => {
+    const dashboard = payload([], {
+      pedidos: [
+        { id: "PED-1", proveedor: "Proveedor A", estado: "preparado", lineas: [{ nombre: "Patata", cantidad: 2, unidad: "kg" }], importe_estimado: 6 },
+        { id: "PED-2", proveedor: "Proveedor B", estado: "borrador", lineas: [{ nombre: "Leche", cantidad: 1, unidad: "l" }], importe_estimado: 2 },
+      ],
+    });
+    const fetchMock = vi.spyOn(global, "fetch").mockImplementation(async (input) => {
+      const url = String(input);
+      if (url.endsWith("/api/v1/dashboard")) return { ok: true, json: async () => dashboard } as Response;
+      if (url.endsWith("/api/v1/compras/borradores/PED-2")) return { ok: true, json: async () => ({
+        ...dashboard,
+        borrador: {
+          id: "PED-2", proveedor: "Proveedor B", estado: "borrador", lineas: [{ id: "LIN-2", nombre: "Leche", cantidad: 1, unidad: "l", precio_unitario: 2 }],
+          importe_estimado: 2, creado_en: "2026-08-10T10:00:00", actualizado_en: "2026-08-10T10:00:00",
+          origen: { tipo: "manual", id: "compras", version: 1, propuesta_id: "" },
+        },
+        revision: { valido: true, errores_bloqueantes: [], advertencias: [] },
+      }) } as Response;
+      if (url.endsWith("/api/v1/compras/borradores/PED-1")) throw new Error("No debe abrir PED-1 por selección accidental");
+      throw new Error(`URL inesperada ${url}`);
+    });
+
+    renderPageAt("/compras?pedido_id=PED-2");
+
+    expect(await screen.findByRole("heading", { name: "Editar borrador PED-2" })).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Editar borrador PED-1" })).not.toBeInTheDocument();
+    expect(fetchMock.mock.calls.some(([url]) => String(url).endsWith("/api/v1/compras/borradores/PED-1"))).toBe(false);
+  });
+
+  it.each([
+    ["borrador", "Editar borrador PED-DIRECT-1"],
+    ["preparado", "Pedido PED-DIRECT-2"],
+  ])("abre por URL un pedido %s aunque no figure en el resumen inicial", async (estado, heading) => {
+    const id = estado === "borrador" ? "PED-DIRECT-1" : "PED-DIRECT-2";
+    const dashboard = payload([], { pedidos: [] });
+    const order = {
+      id, proveedor: "Proveedor directo", estado,
+      lineas: [{ id: "LIN-DIRECT", nombre: "Harina", cantidad: 2, unidad: "kg", precio_unitario: 1.5 }],
+      importe_estimado: 3, creado_en: "2026-08-10T10:00:00", actualizado_en: "2026-08-10T10:00:00",
+      origen: { tipo: "manual", id: "compras", version: 1, propuesta_id: "" },
+    };
+    const fetchMock = vi.spyOn(global, "fetch").mockImplementation(async (input) => {
+      const url = String(input);
+      if (url.endsWith("/api/v1/dashboard")) return { ok: true, json: async () => dashboard } as Response;
+      if (url.endsWith(`/api/v1/compras/borradores/${id}`)) return { ok: true, json: async () => ({ ...dashboard, borrador: order, revision: { valido: true, errores_bloqueantes: [], advertencias: [] } }) } as Response;
+      throw new Error(`URL inesperada ${url}`);
+    });
+
+    renderPageAt(`/compras?pedido_id=${id}`);
+
+    expect(await screen.findByRole("heading", { name: heading })).toBeInTheDocument();
+    expect(fetchMock.mock.calls.some(([url]) => String(url).endsWith(`/api/v1/compras/borradores/${id}`))).toBe(true);
+  });
+
+  it.each(["PED-NO-EXISTE", "https://hostil.test/pedido"])("muestra un aviso seguro para pedido_id no resoluble %s", async (id) => {
+    const dashboard = payload([], { pedidos: [] });
+    vi.spyOn(global, "fetch").mockImplementation(async (input) => {
+      const url = String(input);
+      if (url.endsWith("/api/v1/dashboard")) return { ok: true, json: async () => dashboard } as Response;
+      return { ok: false, status: 404, json: async () => ({ ...dashboard, error: { message: "Detalle interno no visible" } }) } as Response;
+    });
+
+    renderPageAt(`/compras?pedido_id=${encodeURIComponent(id)}`);
+
+    expect(await screen.findByText("No se ha encontrado el pedido solicitado")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Compras" })).toBeInTheDocument();
   });
 });

@@ -8,8 +8,6 @@
 > Proyecto de referencia: Host AI 6.0  
 > Documentos superiores: `01_IDENTIDAD.md`, `03_REGLAS.md`
 
----
-
 # 0. INSTRUCCIÓN DE LECTURA PRIORITARIA
 
 Este es el primer documento que debe leer cualquier:
@@ -1806,6 +1804,99 @@ Próxima actualización obligatoria:
 - al validar completamente PILOTO-1.4;
 - al cerrar DEVKIT-0.1;
 - al abrir PILOTO-1.4.1.
+
+---
+
+# 26.1 ACTUALIZACIÓN RESERVAS R1 — 20 de agosto de 2026
+
+Reservas R1 incorpora modelo canónico, repositorio JSON aislado por `base_dir`, servicio READ y API GET.
+No incluye frontend, Chat, UI_ACTION ni WRITE público. R2, R3 y R4 permanecen pendientes.
+La persistencia real `DATOS/db/reservas.json` no se crea ni se puebla durante la implementación.
+Validación técnica focal: 20 tests R1 y 28 regresiones API/Eventos correctos; sin certificación ni validación manual.
+Reservas R2 añade frontend READ, navegación, filtros y detalle. Chat y WRITE siguen pendientes.
+Validación R2: 15 tests frontend focales/regresión, typecheck y build correctos; validación manual pendiente.
+
+Reservas R3 integra el dominio con el General Agent mediante `consultar_reservas` READ y las UI_ACTION cerradas `abrir_reservas`/`abrir_reserva`. Mantiene contexto `RESERVA`, admite follow-up y candidatos ambiguos, y no publica ninguna capacidad WRITE de Reservas. La navegación de Chat queda limitada a `/reservas` y `/reservas/RES-...` canónico.
+Evidencia R3 del 20 de agosto de 2026: 73 tests backend focales/regresión, 56 tests frontend focales/regresión, typecheck y build correctos; validación manual pendiente. No se escribieron datos reales.
+
+Corrección runtime R3 del 20 de agosto de 2026: la selección inválida de una tool conocida ya no se confunde con una tool desconocida ni provoca fallback terminal inmediato. El agente recibe el motivo de validación y puede reintentar con `consultar_reservas`; `abrir_reserva` exige patrón canónico también en policy. Evidencia local con provider simulado: 39 tests focales correctos. La repetición manual con OpenAI real queda pendiente.
+
+Reservas R4 incorpora WRITE seguro separado del READ para crear, modificar, confirmar, cancelar y marcar no-show. Toda operación sigue preview con token opaco y confirmación humana explícita; aplica control stale, replay idempotente, máquina de estados centralizada y auditoría sin observaciones ni PII. El estado inicial por defecto es `PENDIENTE`; `CONFIRMADA` solo se admite si se solicita explícitamente. Frontend y General Agent reutilizan el mismo servicio y no escriben directamente.
+Evidencia R4 del 20 de agosto de 2026: 72 tests backend focales/regresión, 57 tests frontend focales/regresión, typecheck, build y compilación Python correctos. No se creó `DATOS/db/reservas.json` ni auditoría real. Estado: implementado y probado técnicamente; validación manual y certificación pendientes.
+
+---
+
+Extensión R4 del 20 de agosto de 2026: el General Agent publica `completar_reserva` como PREVIEW para la transición canónica `CONFIRMADA → COMPLETADA`. Chat expone acciones estructuradas cerradas `APPLY_PENDING_RESERVATION` y `DISCARD_PENDING_RESERVATION`; el navegador no recibe ni construye token, reserva u operación, y el backend conserva la autoridad sobre sesión, expiración, stale e idempotencia. La confirmación textual sigue disponible. Evidencia focal: 73 tests backend y 55 frontend correctos, además de typecheck y build; validación manual pendiente.
+
+---
+
+UX contextual R4 del 20 de agosto de 2026: Chat publica acciones estructuradas según el estado real de la reserva activa. `PENDIENTE` ofrece confirmar, modificar, cancelar y abrir; `CONFIRMADA` ofrece modificar, cancelar, no-show, completar y abrir; los estados terminales solo permiten abrir. Cada transición contextual prepara un PREVIEW y mantiene separada la confirmación humana. Los botones llevan un contexto opaco rotatorio ligado al mensaje, mientras el backend resuelve y revalida sesión, reserva y estado; no se exponen IDs operativos, tokens ni payload WRITE. El texto libre continúa soportado como fallback y los previews usan una respuesta natural sin instrucciones tipo consola. Evidencia focal: 86 tests backend y 67 frontend correctos, typecheck y build correctos. Validación manual de esta extensión UX pendiente.
+
+---
+
+Consistencia Receta/Escandallo en Chat del 20 de agosto de 2026: la elaboración/receta continúa siendo la entidad culinaria canónica y el escandallo una asociación opcional. La lectura conversacional ya localiza recetas `SIN_ESCANDALLO`; `OPEN_VIEW ELABORACION/RECETA` puede abrirlas, mientras `ELABORACION/ESCANDALLO` se rechaza si no existe estructura económica. La sesión conserva `tipo=RECETA` al abrir la ficha culinaria. Evidencia local: 45 tests Chat/UI_ACTION y 20 tests de Biblioteca correctos, compilación Python y `git diff --check` correctos. Sin cambios frontend ni datos reales; validación manual con OpenAI real pendiente y sin certificación.
+
+Fix focal de navegación del 20 de agosto de 2026: una petición explícita de vista `ESCANDALLO` ya no admite `RECETA` como fallback. Si la receta existe pero `tiene_escandallo=false`, el resultado estructurado es `ESCANDALLO_NO_ENCONTRADO`, no se emite `OPEN_VIEW`, no cambia la entidad activa y la respuesta final se limita a informar que no hay escandallo. El catálogo actual del General Agent no publica PREVIEW, CONFIRM ni WRITE para crear/preparar escandallos, por lo que tampoco se ofrece esa operación. Evidencia local: 47 tests focales correctos, incluida regresión adversarial; compilación Python y `git diff --check` correctos. Validación manual con OpenAI real pendiente y sin certificación.
+
+Acciones económicas contextuales del 20 de agosto de 2026: el detalle de coste incompleto conserva incidencias estructuradas y Chat ofrece, solo cuando existe un artículo canónico, `RESOLVE_MISSING_PRICE` o `RESOLVE_MISSING_CONVERSION`. Ambas acciones usan contexto opaco ligado a sesión, revalidan el artículo en servidor y abren su ficha canónica mediante `OPEN_VIEW ARTICULO/FICHA`. No aceptan IDs ni rutas aportados por el navegador y no realizan WRITE. La autoridad de precio, unidad y formato continúa en la ficha maestra del artículo; el General Agent no publica hoy PREVIEW/CONFIRM/WRITE para corregirlos desde Chat. Evidencia local: 2 tests backend focales y 17 tests frontend correctos, además de typecheck, build, compilación Python y `git diff --check`. La regresión backend amplia quedó limitada por permisos del directorio temporal de pytest; validación manual y certificación pendientes. No se escribieron datos reales ni se llamó a OpenAI real.
+
+Fix focal posterior del 20 de agosto de 2026: el materializador de acciones económicas normaliza la taxonomía real del motor (`CONVERSION_INEXISTENTE`, `UNIDAD_INCOMPATIBLE` y `UNIDADES_INCOMPATIBLES`) a `CONVERSION_NO_DISPONIBLE`, y `PRODUCTO_SIN_PRECIO` a `SIN_PRECIO`, antes de decidir la acción cerrada. El fixture de APERITIVO CALÇOTADA con `ART000285` genera `RESOLVE_MISSING_CONVERSION` y el click abre exclusivamente `OPEN_VIEW ARTICULO/FICHA ART000285`, sin WRITE. Evidencia focal: 3 tests backend y 17 frontend correctos, typecheck, build y compilación Python correctos. Prueba manual con OpenAI y UI reales pendiente; sin certificación.
+
+Edición segura de artículos desde Chat del 20 de agosto de 2026: `ConfirmacionFormatoArticuloService` amplía su autoridad existente con previews parciales cerrados para precio y relación de formato/conversión, confirmación humana, expiración, fingerprint stale, aislamiento por actor/tenant/sesión, replay idempotente, compensación y auditoría mínima. Chat captura únicamente el importe o factor que falta; conserva artículo y unidades en servidor, no expone el token y ofrece `APPLY_PENDING_ARTICLE_CHANGE`/`DISCARD_PENDING_ARTICLE_CHANGE`. El formato comercial se persiste mediante `unidad_compra`, `cantidad_formato`, `unidad_formato` y `unidad_base`; las relaciones físicas explícitas se conservan estructuradas en `conversion_unidades`. Solo se ofrecen acciones con scope `articulos:preview`; confirmar exige `articulos:write`. No se recalculan escandallos automáticamente ni se afirma que queden completos. Evidencia focal: 60 tests backend y 17 frontend correctos, typecheck, build y compilación Python correctos. Todos los WRITE de prueba usaron fixtures aislados; prueba manual y certificación pendientes.
+
+Fix semántico de formato del 20 de agosto de 2026: la captura distingue `FORMATO_ENVASE` de `CONVERSION_FISICA`. Expresiones como “paquete de 200 unidades” se representan como precio del paquete más `unidad_compra=paquete`, `cantidad_formato=200`, `unidad_formato=u` y `unidad_base=u`; el coste unitario se deriva con Decimal y no se crea ninguna relación `u→kg`. Si falta el tipo de envase se solicita esa única aclaración. Las relaciones físicas explícitas, como “1 unidad pesa 0,005 kg”, conservan su flujo separado. El caso fixture `ART000285`, precio 6,89 €, deriva exactamente 0,03445 €/u y no declara resuelto el escandallo sin recalcular. Evidencia focal acumulada: 62 tests backend correctos; todos los WRITE se ejecutaron sobre fixtures aislados. Prueba manual pendiente y sin certificación.
+
+Preview auditable de cambios de artículo en Chat del 20 de agosto de 2026: el backend publica el contrato cerrado `ARTICLE_CHANGE_PREVIEW_V1` con identidad del artículo, operación, valores antes/después, valores relevantes sin cambios, cálculos derivados y aviso explícito de que aún no se han modificado datos. El token, actor, tenant, scopes y propuesta interna permanecen exclusivamente en servidor. La web valida el esquema y representa el DTO sin recalcular precios, IVA ni conversiones; un preview desconocido o inválido no se muestra. Evidencia focal: 62 tests backend y 18 frontend correctos, typecheck, build, compilación Python y `git diff --check` correctos. Los WRITE de tests usaron fixtures aislados; no se llamó a OpenAI real. Validación manual y certificación pendientes.
+
+Grounding de nombres aislados de elaboración del 21 de agosto de 2026: un mensaje nominal breve de dos a ocho palabras que coincide de forma única con la Biblioteca canónica ya no acepta un `FINAL_RESPONSE` creativo sin datos internos. El runtime ejecuta la resolución READ autorizada, activa la receta y responde con identidad canónica; si hay varias coincidencias pide elección y, si no existe ninguna, conserva el comportamiento general. La selección mantiene candidatos e incidencias económicas inmediatas para el siguiente turno. Evidencia focal: 57 tests de agente/Chat/escandallos/UI_ACTION y 3 tests específicos de Biblioteca correctos, compilación Python y `git diff --check` correctos. La regresión culinaria ampliada conserva dos expectativas históricas incompatibles con las capacidades PREVIEW/CONFIRM de artículos ya publicadas; no pertenecen a este fix. Sin OpenAI ni datos reales; prueba manual y certificación pendientes.
+
+Normalización focal de detalle económico del 21 de agosto de 2026: cuando el mensaje actual pregunta causalmente por un coste incompleto, `consultar_escandallos` con `consulta=detalle` y una receta concreta se transforma antes de policy/executor en `agregacion=DETAIL_COSTE_INCOMPLETO`. El DTO económico materializa `motivos[]` como `economic_incidents`, permitiendo las acciones contextuales de precio o conversión; las peticiones explícitas de ingredientes, receta completa, ficha o procedimiento conservan el detalle culinario general. El caso reconstruido `9bd05421-e89d-4621-a6a7-662bff3fd859` con `REC-EXCEL-6B4B251F8E` y `ART000285` genera `RESOLVE_MISSING_CONVERSION`. Evidencia focal: 68 tests correctos, compilación Python y `git diff --check` correctos. Sin frontend, OpenAI ni datos reales; validación manual y certificación pendientes.
+
+Conflicto entre precio canónico y precio aportado al configurar formato del 21 de agosto de 2026: la captura distingue el número de unidades de un precio explícito asociado a `precio` o `€` y lo compara con Decimal. Si difiere del precio maestro, conserva formato, precio actual y precio aportado en un pending de sesión con caducidad, no prepara preview aplicable y solicita elegir. Mantener genera el preview de formato con precio sin cambios; cambiar genera un único `UPDATE_FORMAT` combinado con precio y formato, cuyo unitario es solo derivado. La confirmación reutiliza la actualización transaccional y compensación existentes. No se calcula IVA ni se extrae precio desde el nombre del artículo. Evidencia: 15 tests focales, 70 tests backend de regresión y 18 frontend correctos; compilación Python y `git diff --check` correctos. Todos los WRITE usaron fixtures aislados. Sin OpenAI ni datos reales; validación manual y certificación pendientes.
+
+---
+
+Autorización interna local de artículos del 21 de agosto de 2026: el fallback de desarrollo, aplicable exclusivamente cuando las cuatro variables `HOST_AI_INTERNAL_*` están completamente ausentes, incorpora `articulos:write` junto a los scopes locales ya existentes. Cualquier configuración presente pero parcial, incluso solo roles o una variable vacía, impide el fallback y conserva el resultado no autorizado. El navegador no aporta scopes y preview, confirmación, aislamiento de sesión, stale y replay mantienen sus validaciones. Evidencia focal y de regresión: 129 tests backend y 18 frontend correctos; todos los WRITE usaron fixtures aislados. Sin OpenAI ni datos reales; validación manual y certificación pendientes.
+
+---
+
+Comprobación económica post-WRITE de artículo del 21 de agosto de 2026: la tool histórica `recalcular_escandallo` continúa deshabilitada porque es una WRITE sobre `biblioteca_escandallos_601.json`, con timestamps, versión e historial, y no corresponde a la proyección canónica consultada por Chat. Tras confirmar una corrección de artículo asociada a una incidencia, Chat ofrece `CHECK_ESCANDALLO_COST` con contexto opaco de sesión. La acción reutiliza `DETAIL_COSTE_INCOMPLETO` y el motor económico canónico en modo READ/PURE_CALC, refresca estado, costes e incidencias de sesión y elimina causas resueltas sin persistir escandallos. El fixture equivalente a la conversión resuelta pasa a `DISPONIBLE`, coste total y por ración `0.24115`, sin modificar el escandallo canónico. Evidencia: 88 tests backend y 19 frontend correctos; replay y payload frontend protegidos. Sin OpenAI ni datos reales; validación manual y certificación pendientes.
+
+---
+
+Corrección de respuesta económica completa del 21 de agosto de 2026: ante `DETAIL_COSTE_INCOMPLETO`, la respuesta grounded prioriza ahora `coste_completo=true` o `estado_coste=DISPONIBLE` antes de evaluar `motivos`. Un resultado completo sin incidencias informa coste disponible y presenta `coste_total` y `coste_por_racion`; `PARCIAL` con causas, `PARCIAL` sin causas y `SIN_ESCANDALLO` conservan sus respuestas anteriores. El DTO real reconstruido para `REC-EXCEL-6B4B251F8E` produce “El coste está completo y disponible” con `5,59435 €` total y por ración. Sin cambios en motor, cálculo, artículo ni datos reales; validación con provider simulado correcta y repetición manual con OpenAI pendiente.
+
+---
+
+Cierre UX del ciclo económico post-artículo del 21 de agosto de 2026: después de un WRITE originado por una incidencia con receta identificada, Chat conserva en servidor receta, artículo, incidencia, sesión y timestamp, y publica únicamente `CHECK_ESCANDALLO_COST`, contexto opaco y etiqueta. El click relee el estado actual y ejecuta cálculo canónico puro; `DISPONIBLE` muestra coste total y por ración sin acciones, `PARCIAL` reemplaza incidencias antiguas por causas actuales y vuelve a materializar reparaciones válidas, y `SIN_ESCANDALLO` usa la respuesta mínima. Una edición genérica no ofrece la acción; sesión ajena, replay y doble click quedan protegidos. Se mantiene el botón explícito y no se implementa auto-check. Evidencia: 91 tests backend y 19 frontend correctos. Sin WRITE de escandallo, OpenAI ni datos reales; prueba manual UI pendiente.
+
+---
+
+## 26.1 Modelo económico canónico de artículo (21 de agosto de 2026)
+
+La autoridad económica queda definida así: `precio` es el precio de una unidad de compra y conserva `precio_incluye_iva`; `unidad_compra` identifica el envase o unidad adquirida; `cantidad_formato` y `unidad_formato` describen exclusivamente el contenido de ese envase; `unidad_base` es la unidad de consumo y coste. El precio unitario de contenido es derivado y no se persiste como segundo precio.
+
+Las relaciones físicas explícitas que no son un formato comercial se conservan en `conversion_unidades` como registros `CONVERSION_FISICA` con cantidad y unidad de origen/destino. `articulo_economico_canonico.py` es la autoridad compartida para alias, aritmética Decimal, conversiones métricas, conversiones físicas bidireccionales y taxonomía pública de incidencias. El motor económico consume esa capa; Chat solo captura y normaliza la expresión y el frontend no calcula.
+
+Compatibilidad: no se migran datos automáticamente. La lectura admite ausencia, JSON estructurado y JSON serializado; los campos comerciales existentes mantienen su semántica. Auditoría de solo lectura: 359 artículos, 5 con datos de formato, ninguno con conversión explícita informada y 2 formatos incompletos que deben revisarse en una migración futura, no corregirse por inferencia. La validación técnica y manual completa se registra en la entrega del bloque; no se han modificado datos reales.
+
+## 26.2 Navegación al escandallo tras comprobación económica (21 de agosto de 2026)
+
+`CHECK_ESCANDALLO_COST` ofrece, para resultados `DISPONIBLE` o `PARCIAL`, la navegación canónica `OPEN_VIEW / ELABORACION / ESCANDALLO` en modo `OFFER`. El identificador procede exclusivamente del contexto económico server-side consumido por la comprobación. React muestra `Ver escandallo` y navega internamente a la ficha existente con la pestaña de escandallo; no ejecuta otro POST ni adquiere permisos WRITE. `SIN_ESCANDALLO` no ofrece destino. Prueba manual pendiente.
+
+## 26.3 Coherencia económica y rendimiento físico (21 de agosto de 2026)
+
+El estado económico y el rendimiento físico son indicadores independientes: un coste puede ser `DISPONIBLE` aunque la proyección física sea `PARCIAL`. El calculador físico reutiliza ahora la autoridad canónica de conversiones explícitas de artículo y no deriva equivalencias desde formatos comerciales. En `REC-EXCEL-CAF1B25D3D`, `ART000230` aporta correctamente `1 u = 0,050 kg`; permanece excluido únicamente `ART000173`, cuyo formato `paquete = 6 u` no demuestra masa física. La ficha distingue expresamente ambos estados. Sin migración ni escritura sobre datos reales; validación manual pendiente.
+
+---
+
+## 26.4 Pipeline híbrido de importaciones con IA opt-in (28 de agosto de 2026)
+
+El importador conserva el parser determinista para perfiles conocidos y ofrece análisis documental IA únicamente por acción explícita cuando la lectura inicial clasifica el documento como complejo. `AIImportDocumentInterpreter` reutiliza `HostAIEngine`, recibe regiones estructurales acotadas y solo acepta `hostai.import.package 0.1`; después se ejecutan el adaptador, matching canónico, revisión, PREVIEW y CONFIRM existentes.
+
+Las sesiones de ANALYZE/PREVIEW del servicio web son ahora efímeras en memoria y ya no crean `DATOS/db/biblioteca_importaciones_web.json`. La política READ del importador evita también la inicialización eager de directorios y repositorios JSON: sobre una base totalmente vacía, ANALYZE básico, ANALYZE con engine fake y PREVIEW producen delta de filesystem vacío. Los repositorios existentes conservan sus bytes. CONFIRM mantiene la inicialización y escritura persistente normal.
+
+Validación local sin OpenAI: 84 pruebas backend y 19 frontend correctas; incluye schema, salidas inseguras, TAPA, MENU, duplicados, variantes, ambigüedad, matching de artículos/recetas/legacy, opt-in, fallback y ausencia de escritura ante confirmación inválida. Prueba productiva manual pendiente.
 
 ---
 

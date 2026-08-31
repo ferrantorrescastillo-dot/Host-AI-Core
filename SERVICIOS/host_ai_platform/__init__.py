@@ -15,6 +15,7 @@ from .tool_executor import ToolExecutor
 from .tool_registry import DuplicateToolError, ToolRegistry, UnknownToolError
 from .economy import ECONOMY_DOMAIN, EconomyDomain, EconomyPort, HostAIEconomyPort, register_economy_domain
 from .reservations import RESERVATIONS_DOMAIN, HostAIReservationsPort, ReservationsDomain, ReservationsPort, register_reservations_domain
+from .runtime_bridge import DOMAIN_NAMES, GeneralAgentPlatformRuntime
 
 __all__ = [
     "ActionContextError", "ActionContextStore", "AgentAction",
@@ -23,4 +24,5 @@ __all__ = [
     "ToolRegistry", "ToolResult", "UIAction", "UnknownToolError",
     "ECONOMY_DOMAIN", "EconomyDomain", "EconomyPort", "HostAIEconomyPort", "register_economy_domain",
     "RESERVATIONS_DOMAIN", "HostAIReservationsPort", "ReservationsDomain", "ReservationsPort", "register_reservations_domain",
+    "DOMAIN_NAMES", "GeneralAgentPlatformRuntime",
 ]

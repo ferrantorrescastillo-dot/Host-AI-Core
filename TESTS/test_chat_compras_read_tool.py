@@ -20,6 +20,10 @@ from SERVICIOS.host_ai_deterministic_intent_router import (
 )
 from SERVICIOS.host_ai_engine.models import HostAIEngineRequest
 from SERVICIOS.host_ai_engine.openai_provider import OpenAIProvider
+from SERVICIOS.host_ai_agent import HostAIAgent
+from SERVICIOS.host_ai_agent_models import AgentTurnResult, FINAL_RESPONSE, TOOL_CALL, ToolCall
+from SERVICIOS.host_ai_tool_catalog import HostAIToolCatalog
+from SERVICIOS.host_ai_agent_policy import HostAIAgentPolicy
 from SERVICIOS.host_ai_tool_executor import HostAIToolExecutor
 from SERVICIOS.host_ai_tool_registry import build_default_tool_registry
 from SERVICIOS.host_ai_tool_resolver import HostAIToolResolver
@@ -63,6 +67,16 @@ class _Orchestrator:
 def _executor(compras):
     service = HostAIComprasReadService(SimpleNamespace(compras=compras))
     return HostAIToolExecutor(build_default_tool_registry(), compras_read_service=service)
+
+
+class _Engine:
+    def __init__(self, turns):
+        self.turns = list(turns)
+        self.requests = []
+
+    def ejecutar_turn_agente(self, request):
+        self.requests.append(request)
+        return self.turns.pop(0)
 
 
 def test_registry_router_y_resolver_reconocen_cinco_herramientas_read():
@@ -121,16 +135,7 @@ def test_chat_ejecuta_antes_de_openai_y_fallback_sin_modificar_compras():
     context = orchestrator.requests[0].parametros["datos_enviados"]["tool_context"]
     assert response["mensaje"] == "Hay dos pedidos abiertos." and context["fuente"] == "compras_canonico"
     assert context["datos_reales_modificados"] is False and compras.__dict__ == before
-    assert response["datos"]["navigation_request"] == {
-        "target_module": "COMPRAS",
-        "target_view": "MODULO",
-        "filter_data": {},
-        "entity_id": "",
-        "source": "chat_host_ai",
-        "preserve_chat_session": True,
-        "message": "Abrir esta consulta en Compras.",
-        "context_update": {"contexto_activo": "COMPRAS"},
-    }
+    assert "navigation_request" not in response["datos"]
     prompt = OpenAIProvider._input_text(HostAIEngineRequest(
         origen="CHAT", modulo="chat_host_ai", tipo_peticion="consulta_general",
         datos_enviados={"pregunta": "¿Qué compras tengo pendientes?", "tool_context": context},
@@ -143,7 +148,7 @@ def test_chat_ejecuta_antes_de_openai_y_fallback_sin_modificar_compras():
     assert fallback.enviar("¿Qué propuestas de compra tengo?")["ok"] is True
 
 
-def test_cinco_consultas_compras_generan_navegacion_read_sin_modificar_datos():
+def test_consultas_compras_informativas_no_obligan_navegacion_y_mantienen_solo_lectura():
     compras = _Compras(); before = deepcopy(compras.__dict__)
     simulated = {"estado": "OK", "proveedor": "SIMULADO", "respuesta": {}, "errores": []}
     chat = ServicioChatHostAIShell(_Orchestrator(simulated)); chat.tool_executor = _executor(compras)
@@ -157,11 +162,117 @@ def test_cinco_consultas_compras_generan_navegacion_read_sin_modificar_datos():
         "¿Qué pedidos tengo de PAU GAVALDA?",
     ):
         response = chat.enviar(query)
-        assert response["datos"]["navigation_request"]["target_module"] == "COMPRAS"
-        assert response["datos"]["navigation_request"]["filter_data"] == {}
+        assert "navigation_request" not in response["datos"]
         assert response["datos"]["datos_reales_modificados"] is False
 
     assert compras.__dict__ == before
+
+
+def test_consulta_visual_compras_en_flujo_legacy_si_incluye_navegacion():
+    compras = _Compras(); simulated = {"estado": "OK", "proveedor": "SIMULADO", "respuesta": {}, "errores": []}
+    chat = ServicioChatHostAIShell(_Orchestrator(simulated)); chat.tool_executor = _executor(compras)
+    response = chat.enviar("Enséñame las compras pendientes.")
+    assert response["datos"]["navigation_request"]["target_module"] == "COMPRAS"
+    assert response["datos"]["datos_reales_modificados"] is False
+
+
+def test_general_agent_visual_listado_compra_ejecuta_read_y_open_view_listado():
+    compras = _Compras(); registry = build_default_tool_registry(); executor = _executor(compras)
+    engine = _Engine([
+        AgentTurnResult(TOOL_CALL, tool_calls=[ToolCall("consultar_compras_pendientes", {"consulta": "listado"}, "c-read")]),
+        AgentTurnResult(TOOL_CALL, tool_calls=[ToolCall("abrir_compra", {"vista": "listado"}, "c-open")]),
+        AgentTurnResult(FINAL_RESPONSE, text="Te he abierto Compras."),
+    ])
+    result = HostAIAgent(engine, executor, HostAIToolCatalog.for_general_agent(registry)).run("Enséñame las compras pendientes.")
+    assert result.ok is True
+    assert result.executed_tools == ["consultar_compras_pendientes", "abrir_compra"]
+    assert result.ui_actions == [{
+        "type": "OPEN_VIEW", "target": "COMPRA", "id": "", "view": "LISTADO", "label": "Compras", "safe": True,
+        "datos_reales_modificados": False,
+    }]
+
+
+def test_general_agent_informativo_compras_no_navega():
+    compras = _Compras(); registry = build_default_tool_registry(); executor = _executor(compras)
+    engine = _Engine([
+        AgentTurnResult(TOOL_CALL, tool_calls=[ToolCall("consultar_compras_pendientes", {}, "c-info")]),
+        AgentTurnResult(FINAL_RESPONSE, text="Tienes compras pendientes."),
+    ])
+    result = HostAIAgent(engine, executor, HostAIToolCatalog.for_general_agent(registry)).run("¿Qué compras hay pendientes?")
+    assert result.ok is True
+    assert result.executed_tools == ["consultar_compras_pendientes"]
+    assert result.ui_actions == []
+
+
+def test_general_agent_pedido_exacto_abre_pedido_canonico():
+    compras = _Compras(); registry = build_default_tool_registry(); executor = _executor(compras)
+    engine = _Engine([
+        AgentTurnResult(TOOL_CALL, tool_calls=[ToolCall("consultar_compras_pendientes", {"consulta": "pedido", "pedido_id": "PED-1"}, "c-pedido-read")]),
+        AgentTurnResult(TOOL_CALL, tool_calls=[ToolCall("abrir_compra", {"vista": "pedido", "pedido_id": "PED-1"}, "c-pedido-open")]),
+        AgentTurnResult(FINAL_RESPONSE, text="Te he abierto el pedido PED-1."),
+    ])
+    result = HostAIAgent(engine, executor, HostAIToolCatalog.for_general_agent(registry)).run("Abre el pedido PED-1.")
+    assert result.ok is True
+    assert result.executed_tools == ["consultar_compras_pendientes", "abrir_compra"]
+    assert result.ui_actions[0]["target"] == "COMPRA"
+    assert result.ui_actions[0]["view"] == "PEDIDO"
+    assert result.ui_actions[0]["id"] == "PED-1"
+
+
+def test_general_agent_pedido_ambiguo_devuelve_candidatos_sin_navegacion():
+    compras = _Compras(); registry = build_default_tool_registry(); executor = _executor(compras)
+    engine = _Engine([
+        AgentTurnResult(TOOL_CALL, tool_calls=[ToolCall("consultar_compras_pendientes", {"consulta": "pedido", "proveedor": "makro"}, "c-amb")]),
+        AgentTurnResult(FINAL_RESPONSE, text="Tengo varios pedidos de Makro; dime el id exacto."),
+    ])
+    result = HostAIAgent(engine, executor, HostAIToolCatalog.for_general_agent(registry)).run("Abre el pedido de Makro.")
+    assert result.ok is True
+    assert result.executed_tools == ["consultar_compras_pendientes"]
+    assert result.ui_actions == []
+    tool_data = next(item for item in engine.requests[1].messages if item.get("type") == "TOOL_DATA")
+    assert tool_data["content"]["estado"] == "AMBIGUO"
+    assert len(tool_data["content"]["pedidos"]) == 2
+
+
+def test_general_agent_follow_up_compra_reutiliza_pedido_activo_sin_navegar():
+    compras = _Compras(); registry = build_default_tool_registry(); executor = _executor(compras)
+    engine = _Engine([
+        AgentTurnResult(TOOL_CALL, tool_calls=[ToolCall("consultar_compras_pendientes", {"consulta": "pedido"}, "c-follow")]),
+        AgentTurnResult(FINAL_RESPONSE, text="A ese pedido le queda por recibir 0,6 l de leche."),
+    ])
+    result = HostAIAgent(engine, executor, HostAIToolCatalog.for_general_agent(registry)).run(
+        "¿Qué falta por recibir?",
+        {"active_entity": {"id": "PED-2", "tipo": "COMPRA", "nombre": "MAKRO"}},
+    )
+    assert result.ok is True
+    assert result.executed_tools == ["consultar_compras_pendientes"]
+    assert result.ui_actions == []
+    tool_data = next(item for item in engine.requests[1].messages if item.get("type") == "TOOL_DATA")
+    assert tool_data["content"]["estado"] == "OK"
+    assert {item["pedido_id"] for item in tool_data["content"]["pedidos"]} == {"PED-2"}
+
+
+def test_general_agent_pedido_inexistente_no_navega_ni_inventa():
+    compras = _Compras(); registry = build_default_tool_registry(); executor = _executor(compras)
+    engine = _Engine([
+        AgentTurnResult(TOOL_CALL, tool_calls=[ToolCall("consultar_compras_pendientes", {"consulta": "pedido", "pedido_id": "PED-NO"}, "c-missing")]),
+        AgentTurnResult(FINAL_RESPONSE, text="No encuentro ese pedido."),
+    ])
+    result = HostAIAgent(engine, executor, HostAIToolCatalog.for_general_agent(registry)).run("Abre el pedido PED-NO.")
+    assert result.ok is True
+    assert result.executed_tools == ["consultar_compras_pendientes"]
+    assert result.ui_actions == []
+    tool_data = next(item for item in engine.requests[1].messages if item.get("type") == "TOOL_DATA")
+    assert tool_data["content"]["estado"] == "NO_ENCONTRADO"
+
+
+def test_capability_awareness_compras_no_habilita_write_en_general_agent():
+    registry = build_default_tool_registry()
+    tools = HostAIToolCatalog.for_general_agent(registry).effective_tools()
+    policy = HostAIAgentPolicy()
+    assert not any(item.get("tool_id") in {"aprobar_compra", "crear_pedido", "modificar_compra"} for item in tools)
+    authorized, reason = policy.authorize("aprobar_compra", {"pedido_id": "PED-1"}, tools)
+    assert authorized is False and reason == "tool_not_allowed"
 
 
 def test_post_chat_compras_ruta_http_real_temporal_no_modifica_repositorios(monkeypatch, tmp_path: Path):

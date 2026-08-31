@@ -12,7 +12,9 @@ describe("layout", () => {
     );
 
     expect(screen.getByTestId("app-shell")).toBeInTheDocument();
-    expect(screen.getByText("Host AI Web")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Host AI" })).toBeInTheDocument();
+    expect(screen.getByLabelText("Host AI")).toBeInTheDocument();
+    expect(screen.getByText("Modo seguro")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Dashboard" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Chat" })).toBeInTheDocument();
   });

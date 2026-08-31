@@ -3,16 +3,24 @@ from __future__ import annotations
 import math
 import re
 import unicodedata
+from copy import deepcopy
+from decimal import Decimal
 from hashlib import sha256
 from pathlib import Path
 from typing import Any
 
+from SERVICIOS.articulo_economico_canonico import normalize_incident_type
+
+from CORE.entidades.receta import Receta, RendimientoNeto
+from SERVICIOS.calculador_coste_subelaboraciones import CalculadorCosteSubelaboraciones
+from SERVICIOS.calculador_rendimiento_fisico_teorico import CalculadorRendimientoFisicoTeorico
 from SERVICIOS.articulos_catalog_read_service import ArticulosCatalogReadService
 from SERVICIOS.biblioteca_escandallos_601 import RepositorioBibliotecaEscandallos601
 from SERVICIOS.biblioteca_recetas_601 import RepositorioBibliotecaRecetas601
 from SERVICIOS.lector_modelo_canonico_555b72 import LectorModeloCanonico555B72
 from SERVICIOS.motor_calculo_escandallos_601 import MotorCalculoEscandallos601
 from SERVICIOS.repositorio_productos_maestro_601 import RepositorioProductosMaestro601
+from SERVICIOS.escalador_explosion_recetas_556ab import MotorEscaladoExplosion556AB
 
 
 class BibliotecaCulinariaReadService:
@@ -24,6 +32,19 @@ class BibliotecaCulinariaReadService:
         "orden", "direccion",
     }
     ORDERS = {"nombre", "actualizacion", "coste", "categoria", "estado"}
+    COST_AGGREGATIONS = {
+        "MAX_COSTE_POR_RACION": ("coste_por_racion", "MAX"),
+        "MIN_COSTE_POR_RACION": ("coste_por_racion", "MIN"),
+        "MAX_COSTE_TOTAL": ("coste_total", "MAX"),
+        "MIN_COSTE_TOTAL": ("coste_total", "MIN"),
+        "RANK_COSTE_POR_RACION": ("coste_por_racion", "RANK"),
+        "COUNT_COSTE_DISPONIBLE": ("", "COUNT_AVAILABLE"),
+        "COUNT_COSTE_INCOMPLETO": ("", "COUNT_INCOMPLETE"),
+    }
+    COST_STATES = {
+        "PARCIAL", "SIN_ESCANDALLO", "SIN_COSTE", "SIN_PRECIO",
+        "SIN_CONVERSION", "NO_CALCULABLE",
+    }
 
     def __init__(self, base_dir: Path) -> None:
         self.recetas = RepositorioBibliotecaRecetas601(base_dir)
@@ -31,6 +52,9 @@ class BibliotecaCulinariaReadService:
         self.articulos = RepositorioProductosMaestro601(base_dir)
         self.catalogo_articulos = ArticulosCatalogReadService(base_dir)
         self.motor_escandallos = MotorCalculoEscandallos601(self.articulos)
+        self.motor_explosion = MotorEscaladoExplosion556AB(base_dir)
+        self.calculador_subelaboraciones = CalculadorCosteSubelaboraciones()
+        self.calculador_rendimiento_teorico = CalculadorRendimientoFisicoTeorico()
         self.modelo_canonico = LectorModeloCanonico555B72(base_dir)
 
     @staticmethod
@@ -64,6 +88,25 @@ class BibliotecaCulinariaReadService:
         return next((value for value in values if value not in ("", None)), None)
 
     @staticmethod
+    def _yield_pending(receta: dict[str, Any]) -> bool:
+        pending = {
+            str(field or "").strip().casefold()
+            for field in receta.get("campos_pendientes_importacion") or []
+        }
+        return (
+            str(receta.get("estado") or "").upper() == "PENDIENTE_DE_COMPLETAR"
+            and "rendimiento" in pending
+        )
+
+    @staticmethod
+    def _list_or_none(value: Any) -> list[Any] | None:
+        if value in (None, ""):
+            return None
+        if isinstance(value, list):
+            return list(value)
+        return [value]
+
+    @staticmethod
     def _bool_query(value: Any) -> bool | None:
         text = str(value or "").lower()
         if not text:
@@ -95,11 +138,30 @@ class BibliotecaCulinariaReadService:
         code = str(escandallo.get("codigo") or escandallo.get("receta_id") or "").strip()
         name = str(escandallo.get("nombre") or escandallo.get("receta") or "").strip()
         raw = escandallo.get("raw") if isinstance(escandallo.get("raw"), dict) else {}
+        recipe_payload = escandallo.get("receta") if isinstance(escandallo.get("receta"), dict) else {}
+        if not recipe_payload and isinstance(escandallo.get("receta_payload"), dict):
+            recipe_payload = dict(escandallo.get("receta_payload") or {})
+
+        def _source_value(*keys: str) -> Any:
+            for container in (escandallo, recipe_payload, raw):
+                if not isinstance(container, dict):
+                    continue
+                for key in keys:
+                    if key in container:
+                        return container.get(key)
+            return None
+
         ingredients = [
             dict(item)
             for item in list(escandallo.get("ingredientes") or escandallo.get("lineas") or [])
             if isinstance(item, dict)
         ]
+        if not ingredients:
+            ingredients = [
+                dict(item)
+                for item in list(recipe_payload.get("ingredientes") or [])
+                if isinstance(item, dict)
+            ]
         if not code:
             seed = "|".join(
                 (
@@ -133,6 +195,9 @@ class BibliotecaCulinariaReadService:
             "numero_raciones": escandallo.get("raciones_base"),
             "rendimiento": self._first_present(escandallo.get("rendimiento"), escandallo.get("raciones_base")),
             "unidad_rendimiento": escandallo.get("unidad_rendimiento") or "",
+            "estado_rendimiento": escandallo.get("estado_rendimiento"),
+            "origen_rendimiento": self._public_value(escandallo.get("origen_rendimiento")),
+            "rendimiento_neto": self._public_value(escandallo.get("rendimiento_neto")),
             "ingredientes": [str(item.get("nombre") or item.get("ingrediente") or "").strip() for item in ingredients],
             "cantidades": amounts,
             "elaboracion": escandallo.get("elaboracion") or escandallo.get("procedimiento") or "",
@@ -147,6 +212,28 @@ class BibliotecaCulinariaReadService:
             "_origen_modelo": escandallo.get("origen_modelo") or "legacy",
             "_ingredientes_estructurados": ingredients,
             "_escandallo_canonico": escandallo,
+            "alergenos": _source_value("alergenos"),
+            "propuesta_procedimiento_ia": _source_value(
+                "propuesta_procedimiento_ia", "procedimiento_propuesto", "procedimiento_sugerido_ia",
+            ),
+            "ingredientes_propuestos_ia": _source_value(
+                "ingredientes_propuestos_ia", "ingredientes_propuestos", "ingredientes_sugeridos_ia",
+            ),
+            "alergenos_posibles": _source_value(
+                "alergenos_posibles", "posibles_alergenos", "alergenos_inferidos",
+            ),
+            "conservacion_propuesta_ia": _source_value(
+                "conservacion_propuesta_ia", "propuesta_conservacion_ia",
+            ),
+            "temperaturas_sugeridas_ia": _source_value(
+                "temperaturas_sugeridas_ia", "temperaturas_propuestas",
+            ),
+            "tiempos_estimados_ia": _source_value(
+                "tiempos_estimados_ia", "tiempos_propuestos",
+            ),
+            "observaciones_propuestas_ia": _source_value(
+                "observaciones_propuestas_ia", "observaciones_sugeridas_ia",
+            ),
         }
 
     @staticmethod
@@ -211,9 +298,18 @@ class BibliotecaCulinariaReadService:
                 output.append({"tipo": kind, "nombre": Path(str(path)).name, "referencia": str(path)})
         return output
 
-    def _summary(self, receta: dict[str, Any]) -> dict[str, Any]:
+    def _summary(
+        self,
+        receta: dict[str, Any],
+        cost_context: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
         esc = self._escandallo_for(receta)
-        public_costing = self._costing(receta, esc, self._ingredients(receta, esc)) if esc else None
+        public_costing = (
+            self._costing(
+                receta, esc, self._ingredients(receta, esc), context=cost_context,
+            )
+            if esc else None
+        )
         documents = self._documents(receta)
         technical = self._public_value(dict(receta.get("ficha_tecnica") or {}))
         completeness = dict(receta.get("completitud") or {})
@@ -230,10 +326,13 @@ class BibliotecaCulinariaReadService:
             self._number(public_costing.get("coste_total"))
             if public_costing else self._number(receta.get("coste_total"))
         )
+        yield_pending = self._yield_pending(receta)
         unit_cost = (
             self._number(public_costing.get("coste_por_racion"))
             if public_costing else self._number(receta.get("coste_por_racion"))
         )
+        if yield_pending:
+            unit_cost = None
         return {
             "id": str(receta.get("id") or ""),
             "codigo": str(receta.get("codigo") or ""),
@@ -242,9 +341,12 @@ class BibliotecaCulinariaReadService:
             "categoria": self._public_text(receta.get("categoria") or receta.get("familia")) or None,
             "tipo": self._public_text(receta.get("tipo")) or "Elaboración",
             "estado": str(receta.get("estado") or "PENDIENTE_DE_COMPLETAR"),
-            "rendimiento": self._number(receta.get("rendimiento") or receta.get("numero_raciones")),
-            "unidad_rendimiento": receta.get("unidad_rendimiento") or ("raciones" if receta.get("numero_raciones") else None),
-            "raciones": self._number(receta.get("numero_raciones")),
+            "rendimiento": None if yield_pending else self._number(receta.get("rendimiento") or receta.get("numero_raciones")),
+            "unidad_rendimiento": None if yield_pending else receta.get("unidad_rendimiento") or ("raciones" if receta.get("numero_raciones") else None),
+            "estado_rendimiento": receta.get("estado_rendimiento") or None,
+            "origen_rendimiento": self._public_value(receta.get("origen_rendimiento")),
+            "rendimiento_neto": self._public_value(receta.get("rendimiento_neto")),
+            "raciones": None if yield_pending else self._number(receta.get("numero_raciones")),
             "coste_total": total_cost,
             "coste_por_racion": unit_cost,
             "estado_coste": (
@@ -253,7 +355,10 @@ class BibliotecaCulinariaReadService:
             "coste_completo": bool(
                 public_costing and public_costing.get("estado_coste") == "DISPONIBLE"
             ),
-            "motivo_coste_no_disponible": self._cost_unavailable_reason(public_costing),
+            "motivo_coste_no_disponible": (
+                "Pendiente de rendimiento." if yield_pending
+                else self._cost_unavailable_reason(public_costing)
+            ),
             "fecha_calculo": public_costing.get("fecha_calculo") if public_costing else None,
             "tiene_receta": self._has_recipe(receta),
             "tiene_escandallo": esc is not None,
@@ -280,7 +385,9 @@ class BibliotecaCulinariaReadService:
         )
 
     def resumen(self) -> dict[str, Any]:
-        items = [self._summary(x) for x in self._all_recipes(incluir_archivadas=False)]
+        recipes = self._all_recipes(incluir_archivadas=False)
+        context = self._cost_context(recipes)
+        items = [self._summary(x, context) for x in recipes]
         return {
             "ok": True,
             "biblioteca": {
@@ -293,6 +400,237 @@ class BibliotecaCulinariaReadService:
                 "capacidades": self._capabilities(),
             },
         }
+
+    def agregar_costes(
+        self, agregacion: str, *, orden: str = "", posicion: int = 1,
+    ) -> dict[str, Any]:
+        operation = str(agregacion or "").strip().upper()
+        contract = self.COST_AGGREGATIONS.get(operation)
+        if contract is None:
+            return self._error("invalid_aggregation", "Agregación económica no admitida.", 400)
+        field, direction = contract
+        recipes = self._all_recipes(incluir_archivadas=True)
+        context = self._cost_context(recipes)
+        summaries = [self._summary(recipe, context) for recipe in recipes]
+        if direction.startswith("COUNT_"):
+            available = [item for item in summaries if item.get("coste_completo") is True]
+            incomplete = [item for item in summaries if item.get("coste_completo") is not True]
+            selected = available if direction == "COUNT_AVAILABLE" else incomplete
+            breakdown: dict[str, int] = {}
+            for item in selected:
+                state = str(item.get("estado_coste") or "SIN_ESTADO")
+                breakdown[state] = breakdown.get(state, 0) + 1
+            response = {
+                "ok": True, "agregacion": operation, "estado": "OK",
+                "total_evaluadas": len(summaries),
+                "total_disponibles": len(available),
+                "total_incompletas": len(incomplete),
+                "conteo": len(selected),
+                "desglose": dict(sorted(breakdown.items())),
+                "datos_reales_modificados": False,
+            }
+            if direction == "COUNT_INCOMPLETE":
+                response["candidatos_economicos"] = [{
+                    "receta_id": str(item.get("id") or item.get("codigo") or ""),
+                    "nombre": item.get("nombre"), "estado_coste": item.get("estado_coste"),
+                } for item in incomplete[:10]]
+            return response
+        order = str(orden or "").strip().upper()
+        rank = int(posicion or 0)
+        if direction == "RANK" and order not in {"ASC", "DESC"}:
+            return self._error("invalid_order", "Orden economico no admitido.", 400)
+        if direction == "RANK" and not 1 <= rank <= 10:
+            return self._error("invalid_position", "La posicion debe estar entre 1 y 10.", 400)
+        valid: list[tuple[Decimal, dict[str, Any]]] = []
+        for item in summaries:
+            if item.get("estado_coste") != "DISPONIBLE" or item.get("coste_completo") is not True:
+                continue
+            if field == "coste_por_racion":
+                yield_value = self._decimal(item.get("rendimiento") or item.get("raciones"))
+                if yield_value is None or yield_value <= 0:
+                    continue
+            value = self._decimal(item.get(field))
+            if value is None:
+                continue
+            valid.append((value, item))
+        if not valid:
+            return {
+                "ok": True, "agregacion": operation, "estado": "SIN_RESULTADOS",
+                "total_evaluadas": len(summaries), "total_validas": 0,
+                "total_excluidas": len(summaries), "resultado": [],
+                "datos_reales_modificados": False,
+            }
+        if direction == "RANK":
+            values = sorted({value for value, _item in valid}, reverse=order == "DESC")
+            if rank > len(values):
+                return {
+                    "ok": True, "agregacion": operation, "estado": "POSICION_NO_DISPONIBLE",
+                    "orden": order, "posicion": rank,
+                    "total_evaluadas": len(summaries), "total_validas": len(valid),
+                    "total_excluidas": len(summaries) - len(valid), "numero_empates": 0,
+                    "resultado": [], "datos_reales_modificados": False,
+                }
+            target = values[rank - 1]
+        else:
+            target = (max if direction == "MAX" else min)(value for value, _item in valid)
+        winners = sorted(
+            (item for value, item in valid if value == target),
+            key=lambda item: str(item.get("id") or item.get("codigo") or ""),
+        )
+        response = {
+            "ok": True, "agregacion": operation, "estado": "OK",
+            "total_evaluadas": len(summaries), "total_validas": len(valid),
+            "total_excluidas": len(summaries) - len(valid),
+            "numero_empates": len(winners),
+            "resultado": [{
+                "receta_id": str(item.get("id") or item.get("codigo") or ""),
+                "nombre": item.get("nombre"), field: float(target),
+            } for item in winners],
+            "datos_reales_modificados": False,
+        }
+        if direction == "RANK":
+            response.update({"orden": order, "posicion": rank})
+        return response
+
+    def listar_costes_incompletos(
+        self, *, estado_coste: str = "", pagina: int = 1, limite: int = 10,
+    ) -> dict[str, Any]:
+        state_filter = str(estado_coste or "").strip().upper()
+        if state_filter and state_filter not in self.COST_STATES:
+            return self._error("invalid_cost_state", "Estado economico no admitido.", 400)
+        page = max(1, int(pagina or 1))
+        size = max(1, min(int(limite or 10), 10))
+        recipes = self._all_recipes(incluir_archivadas=True)
+        context = self._cost_context(recipes)
+        summaries = [self._summary(recipe, context) for recipe in recipes]
+        matches = [
+            item for item in summaries
+            if item.get("coste_completo") is not True
+            and (not state_filter or str(item.get("estado_coste") or "").upper() == state_filter)
+        ]
+        matches.sort(key=lambda item: str(item.get("id") or item.get("codigo") or ""))
+        start = (page - 1) * size
+        selected = matches[start:start + size]
+        return {
+            "ok": True, "consulta_economica": "LIST_COSTE_INCOMPLETO", "estado": "OK",
+            "grounding_scope": "COSTE_INCOMPLETO_LIST",
+            "filtro_estado_coste": state_filter or None,
+            "total_evaluadas": len(summaries), "total_coincidencias": len(matches),
+            "items_devueltos": len(selected), "pagina": page, "limite": size,
+            "truncado": start + len(selected) < len(matches),
+            "resultado": [{
+                "receta_id": str(item.get("id") or item.get("codigo") or ""),
+                "nombre": item.get("nombre"),
+                "estado_coste": item.get("estado_coste"),
+                "coste_completo": False,
+                "resumen_causa": item.get("motivo_coste_no_disponible"),
+            } for item in selected],
+            "datos_reales_modificados": False,
+        }
+
+    def resolver_receta_economica(self, termino: str) -> dict[str, Any]:
+        wanted = self._norm(termino)
+        if not wanted:
+            return {"ok": False, "estado": "REQUIERE_TERMINO", "candidatos": []}
+        recipes = self._all_recipes(incluir_archivadas=True)
+        context = self._cost_context(recipes)
+        summaries = [self._summary(recipe, context) for recipe in recipes]
+        exact = [
+            item for item in summaries
+            if wanted in {
+                self._norm(item.get("id")), self._norm(item.get("codigo")),
+                self._norm(item.get("nombre")),
+            }
+        ]
+        matches = exact or [
+            item for item in summaries if wanted in self._norm(item.get("nombre"))
+        ]
+        candidates = [{
+            "receta_id": str(item.get("id") or item.get("codigo") or ""),
+            "nombre": item.get("nombre"), "estado_coste": item.get("estado_coste"),
+        } for item in matches[:10]]
+        if len(matches) != 1:
+            return {
+                "ok": True, "estado": "AMBIGUO" if matches else "NO_ENCONTRADO",
+                "total_coincidencias": len(matches), "candidatos": candidates,
+                "datos_reales_modificados": False,
+            }
+        return {
+            "ok": True, "estado": "RESUELTO", "receta_id": candidates[0]["receta_id"],
+            "nombre": candidates[0]["nombre"], "estado_coste": candidates[0]["estado_coste"],
+            "candidatos": candidates, "datos_reales_modificados": False,
+        }
+
+    def detalle_coste_incompleto(self, receta_id: str) -> dict[str, Any]:
+        response = dict(self.detalle(receta_id) or {})
+        detail = response.get("elaboracion")
+        if response.get("ok") is False or not isinstance(detail, dict):
+            return response
+        costing = detail.get("escandallo") if isinstance(detail.get("escandallo"), dict) else None
+        state = str(detail.get("estado_coste") or "SIN_ESCANDALLO")
+        complete = detail.get("coste_completo") is True
+        if state == "SIN_ESCANDALLO":
+            return {
+                "ok": True, "consulta_economica": "DETAIL_COSTE_INCOMPLETO", "estado": "OK",
+                "grounding_scope": "COSTE_INCOMPLETO",
+                "receta_id": str(detail.get("id") or detail.get("codigo") or receta_id),
+                "nombre": detail.get("nombre"), "estado_coste": "SIN_ESCANDALLO",
+                "coste_completo": False,
+                "causa": {
+                    "tipo": "SIN_ESCANDALLO",
+                    "mensaje": "No existe un escandallo registrado.",
+                },
+                "datos_reales_modificados": False,
+            }
+        reasons: list[dict[str, Any]] = []
+        if costing:
+            for line in list(costing.get("lineas") or []):
+                if not isinstance(line, dict) or line.get("coste_linea") is not None:
+                    continue
+                reason = {
+                    "tipo": normalize_incident_type(line.get("estado_coste")),
+                    "articulo_id": line.get("articulo_id"),
+                    "escandallo_hijo_id": line.get("escandallo_hijo_id"),
+                    "nombre": line.get("nombre_articulo") or line.get("nombre_original"),
+                    "detalle": line.get("motivo_sin_coste"),
+                }
+                source_unit = line.get("unidad") or line.get("unidad_receta")
+                target_unit = line.get("unidad_base") or line.get("unidad_precio")
+                if source_unit not in (None, ""):
+                    reason["unidad_origen"] = source_unit
+                if target_unit not in (None, ""):
+                    reason["unidad_destino"] = target_unit
+                if any(value not in (None, "") for value in reason.values()):
+                    reasons.append(reason)
+        reasons = reasons[:10]
+        if complete:
+            explanation = "El coste esta completo y disponible."
+        elif reasons:
+            explanation = "El detalle economico expone motivos estructurados."
+        else:
+            explanation = "El dominio marca el coste como incompleto, pero no expone una causa concreta."
+        return {
+            "ok": True, "consulta_economica": "DETAIL_COSTE_INCOMPLETO", "estado": "OK",
+            "grounding_scope": "COSTE_INCOMPLETO",
+            "receta_id": str(detail.get("id") or detail.get("codigo") or receta_id),
+            "nombre": detail.get("nombre"), "estado_coste": state,
+            "coste_completo": complete, "explicacion": explanation,
+            "coste_total": costing.get("coste_total") if costing else None,
+            "coste_total_parcial": costing.get("coste_total_parcial") if costing else None,
+            "coste_por_racion": costing.get("coste_por_racion") if costing else None,
+            "motivos": reasons, "numero_motivos": len(reasons),
+            "datos_reales_modificados": False,
+        }
+
+    @staticmethod
+    def _decimal(value: Any) -> Decimal | None:
+        if value in (None, "") or isinstance(value, bool):
+            return None
+        try:
+            parsed = Decimal(str(value))
+        except Exception:
+            return None
+        return parsed if parsed.is_finite() else None
 
     def listar(self, query: dict[str, Any]) -> dict[str, Any]:
         unknown = sorted(set(query) - self.ALLOWED)
@@ -315,14 +653,25 @@ class BibliotecaCulinariaReadService:
             return self._error("invalid_sort", "Ordenación no válida.", 400)
 
         all_recipes = self._all_recipes(incluir_archivadas=True)
-        all_items = [self._summary(x) for x in all_recipes]
+        context = self._cost_context(all_recipes)
+        all_items = [self._summary(x, context) for x in all_recipes]
         items = list(all_items)
         q = self._norm(query.get("q"))
         if q:
             raw_by_id = {str(x.get("id")): x for x in all_recipes}
             items = [
                 x for x in items
-                if any(q in self._norm(x.get(k)) for k in ("nombre", "codigo", "categoria"))
+                if any(q in self._norm(x.get(k)) for k in ("id", "nombre", "codigo", "categoria"))
+                or any(
+                    q in self._norm(alias)
+                    for field in ("alias", "aliases", "variantes", "nombres_alternativos")
+                    for alias in (
+                        raw_by_id.get(x["id"], {}).get(field)
+                        if isinstance(raw_by_id.get(x["id"], {}).get(field), list)
+                        else [raw_by_id.get(x["id"], {}).get(field)]
+                    )
+                    if alias
+                )
                 or any(q in self._norm(v) for v in list(raw_by_id.get(x["id"], {}).get("ingredientes") or []))
             ]
         for key in ("estado", "categoria"):
@@ -360,10 +709,11 @@ class BibliotecaCulinariaReadService:
 
     def detalle(self, elaboracion_id: str) -> dict[str, Any]:
         identity = self._norm(elaboracion_id)
+        all_recipes = self._all_recipes(incluir_archivadas=True)
         receta = next(
             (
                 item
-                for item in self._all_recipes(incluir_archivadas=True)
+                for item in all_recipes
                 if identity in {self._norm(item.get("id")), self._norm(item.get("codigo"))}
             ),
             None,
@@ -372,19 +722,50 @@ class BibliotecaCulinariaReadService:
             return self._error("elaboration_not_found", "Elaboración no encontrada.", 404)
         esc = self._escandallo_for(receta)
         ingredients = self._ingredients(receta, esc)
-        public_escandallo = self._costing(receta, esc, ingredients)
+        context = self._cost_context(all_recipes)
+        public_escandallo = self._costing(receta, esc, ingredients, context=context)
         documents = self._documents(receta)
         production = self._production(receta)
-        menus = list(receta.get("menus_utilizacion") or [])
+        menus = self._menus_for_recipe(receta)
         events = list(receta.get("eventos_utilizacion") or [])
         pending = self._pending_fields(receta, public_escandallo)
         technical = self._technical_sheet(
             receta, ingredients, public_escandallo, documents, production, pending,
         )
-        summary = self._summary(receta)
+        theoretical_yield = self.calculador_rendimiento_teorico.calcular(
+            ingredients,
+            rendimiento=(None if self._yield_pending(receta) else self._first_present(
+                receta.get("rendimiento"), receta.get("numero_raciones"),
+            )),
+            unidad_rendimiento=str(receta.get("unidad_rendimiento") or ""),
+        )
+        technical["rendimiento_fisico_teorico"] = theoretical_yield
+        summary = self._summary(receta, context)
         if public_escandallo:
             summary["coste_total"] = public_escandallo.get("coste_total")
             summary["coste_por_racion"] = public_escandallo.get("coste_por_racion")
+        canonical_ingredient_names = {
+            self._norm(item.get("nombre_original"))
+            for item in ingredients
+            if isinstance(item, dict) and item.get("nombre_original")
+        }
+        proposed_ingredients_raw = self._first_present(
+            receta.get("ingredientes_propuestos_ia"),
+            receta.get("ingredientes_propuestos"),
+            receta.get("ingredientes_sugeridos_ia"),
+        )
+        proposed_ingredients = self._list_or_none(proposed_ingredients_raw) or []
+        ingredientes_propuestos_no_registrados = []
+        for item in proposed_ingredients:
+            if isinstance(item, dict):
+                nombre = str(item.get("nombre") or item.get("ingrediente") or "").strip()
+            else:
+                nombre = str(item or "").strip()
+            if not nombre:
+                continue
+            if self._norm(nombre) in canonical_ingredient_names:
+                continue
+            ingredientes_propuestos_no_registrados.append(nombre)
         detail = {
             **summary,
             "receta": {
@@ -399,13 +780,50 @@ class BibliotecaCulinariaReadService:
                 "tecnicas": list(receta.get("tecnicas_culinarias") or []),
                 "rendimiento": summary.get("rendimiento"),
                 "unidad_rendimiento": summary.get("unidad_rendimiento"),
+                "estado_rendimiento": summary.get("estado_rendimiento"),
+                "origen_rendimiento": summary.get("origen_rendimiento"),
+                "rendimiento_neto": summary.get("rendimiento_neto"),
+                "rendimiento_fisico_teorico": theoretical_yield,
                 "raciones": summary.get("raciones"),
             },
             "escandallo": public_escandallo,
             "ficha_tecnica": technical,
-            "alergenos": list(receta.get("alergenos") or []),
+            "alergenos": self._list_or_none(receta.get("alergenos")),
             "conservacion": receta.get("conservacion") or None,
             "regeneracion": receta.get("regeneracion") or None,
+            "procedencia_campos": self._public_value(dict(receta.get("procedencia_campos") or {})),
+            "historial_procedencia": self._public_value(list(receta.get("historial_procedencia") or [])),
+            "propuestas_ia": {
+                "procedimiento": self._public_text(self._first_present(
+                    receta.get("propuesta_procedimiento_ia"),
+                    receta.get("procedimiento_propuesto"),
+                    receta.get("procedimiento_sugerido_ia"),
+                )) or None,
+                "ingredientes": self._public_value(proposed_ingredients) if proposed_ingredients else None,
+                "ingredientes_no_registrados": self._public_value(ingredientes_propuestos_no_registrados) or None,
+                "alergenos_posibles": self._public_value(self._list_or_none(self._first_present(
+                    receta.get("alergenos_posibles"),
+                    receta.get("posibles_alergenos"),
+                    receta.get("alergenos_inferidos"),
+                ))),
+                "conservacion": self._public_text(self._first_present(
+                    receta.get("conservacion_propuesta_ia"),
+                    receta.get("propuesta_conservacion_ia"),
+                )) or None,
+                "temperaturas": self._public_value(self._list_or_none(self._first_present(
+                    receta.get("temperaturas_sugeridas_ia"),
+                    receta.get("temperaturas_propuestas"),
+                ))),
+                "tiempos": self._public_value(self._first_present(
+                    receta.get("tiempos_estimados_ia"),
+                    receta.get("tiempos_propuestos"),
+                )),
+                "observaciones": self._public_text(self._first_present(
+                    receta.get("observaciones_propuestas_ia"),
+                    receta.get("observaciones_sugeridas_ia"),
+                )) or None,
+                "persistida": False,
+            },
             "produccion": production,
             "documentos": documents,
             "imagenes": [x for x in [receta.get("fotografia")] if x] + list(receta.get("documentos_fotografias") or []),
@@ -418,6 +836,30 @@ class BibliotecaCulinariaReadService:
             "avisos": self._warnings(summary, ingredients, public_escandallo),
         }
         return {"ok": True, "elaboracion": detail}
+
+    def _menus_for_recipe(self, recipe: dict[str, Any]) -> list[dict[str, str]]:
+        """Deriva relaciones desde el repositorio MENU601 sin duplicarlas en REC601."""
+        from SERVICIOS.biblioteca_menus_601 import RepositorioBibliotecaMenus601
+
+        identities = {
+            self._norm(recipe.get("id")), self._norm(recipe.get("codigo")),
+        } - {""}
+        output: list[dict[str, str]] = []
+        for menu in RepositorioBibliotecaMenus601(self.recetas.base_dir).listar(incluir_archivados=True):
+            used = any(
+                str(reference.get("tipo_referencia") or "").upper() == "RECETA"
+                and self._norm(reference.get("referencia")) in identities
+                for references in dict(menu.get("composicion") or {}).values()
+                for reference in list(references or [])
+                if isinstance(reference, dict)
+            )
+            if used:
+                output.append({
+                    "menu_id": str(menu.get("menu_id") or ""),
+                    "nombre": str(menu.get("nombre") or ""),
+                    "estado": str(menu.get("estado_publicacion") or menu.get("estado") or ""),
+                })
+        return output
 
     @staticmethod
     def _production(receta: dict[str, Any]) -> dict[str, Any]:
@@ -442,6 +884,8 @@ class BibliotecaCulinariaReadService:
         declared = list(
             (receta.get("completitud") or {}).get("campos_obligatorios_pendientes") or []
         )
+        if self._yield_pending(receta):
+            declared.append("Rendimiento")
         checks = (
             ("Descripción", receta.get("descripcion")),
             ("Procedimiento", receta.get("elaboracion")),
@@ -452,7 +896,7 @@ class BibliotecaCulinariaReadService:
         )
         pending = [self._public_text(item) for item in declared]
         for label, value in checks:
-            if label == "Alérgenos" and "alergenos" in receta:
+            if label == "Alérgenos" and "alergenos" in receta and isinstance(value, list):
                 continue
             if value in (None, "", []):
                 pending.append(label)
@@ -492,11 +936,14 @@ class BibliotecaCulinariaReadService:
                 "total": receta.get("tiempo_total") or receta.get("tiempo_elaboracion") or None,
             },
             "temperaturas": self._public_value(list(receta.get("temperaturas") or [])),
-            "rendimiento": self._number(receta.get("rendimiento") or receta.get("numero_raciones")),
-            "unidad_rendimiento": receta.get("unidad_rendimiento") or None,
-            "raciones": self._number(receta.get("numero_raciones")),
+            "rendimiento": None if self._yield_pending(receta) else self._number(receta.get("rendimiento") or receta.get("numero_raciones")),
+            "unidad_rendimiento": None if self._yield_pending(receta) else receta.get("unidad_rendimiento") or None,
+            "estado_rendimiento": receta.get("estado_rendimiento") or None,
+            "origen_rendimiento": self._public_value(receta.get("origen_rendimiento")),
+            "rendimiento_neto": self._public_value(receta.get("rendimiento_neto")),
+            "raciones": None if self._yield_pending(receta) else self._number(receta.get("numero_raciones")),
             "escandallo": escandallo,
-            "alergenos": list(receta.get("alergenos") or []),
+            "alergenos": self._list_or_none(receta.get("alergenos")),
             "conservacion": receta.get("conservacion") or None,
             "caducidad": receta.get("caducidad") or receta.get("vida_util_refrigerado") or None,
             "regeneracion": receta.get("regeneracion") or None,
@@ -551,25 +998,68 @@ class BibliotecaCulinariaReadService:
         for index, name in enumerate(names):
             source = structured[index] if index < len(structured) and isinstance(structured[index], dict) else {}
             line = esc_lines[index] if index < len(esc_lines) and isinstance(esc_lines[index], dict) else {}
+            metadata = source.get("metadata") if isinstance(source.get("metadata"), dict) else {}
+            component_type = str(
+                metadata.get("tipo") or source.get("tipo_componente") or source.get("tipo") or "ARTICULO"
+            ).strip().upper()
+            reference = str(
+                metadata.get("referencia_elaboracion")
+                or source.get("referencia_elaboracion")
+                or ""
+            ).strip() or None
+            explicit_child_id = str(
+                source.get("receta_id")
+                or source.get("elaboracion_id")
+                or source.get("receta_referenciada_id")
+                or ""
+            ).strip() or None
+            child = (
+                self.motor_explosion.resolver_receta_referenciada(source)
+                if component_type == "ELABORACION"
+                else None
+            )
             source_code = str(source.get("articulo_id") or source.get("codigo") or "").strip()
             direct = by_code.get(self._norm(source_code)) if source_code else None
             matches = [direct] if direct else by_name.get(self._norm(name), [])
             linked = matches[0] if len(matches) == 1 else None
+            linked_article = linked if component_type == "ARTICULO" else None
             output.append({
-                "articulo_id": str(linked.get("codigo")) if linked else None,
-                "codigo": str(linked.get("codigo")) if linked else (source_code or None),
-                "nombre_articulo": self._public_text(linked.get("nombre")) if linked else None,
-                "unidad_base": linked.get("unidad_base") or linked.get("unidad") or None if linked else None,
+                "tipo_componente": component_type,
+                "articulo_id": (
+                    str(linked_article.get("codigo")) if linked_article else None
+                ),
+                "escandallo_hijo_id": child.get("receta_id") if child else explicit_child_id,
+                "referencia_elaboracion": reference,
+                "codigo": str(linked_article.get("codigo")) if linked_article else None,
+                "nombre_articulo": self._public_text(linked_article.get("nombre")) if linked_article else None,
+                "unidad_base": linked_article.get("unidad_base") or linked_article.get("unidad") or None if linked_article else None,
+                "unidad_compra": linked_article.get("unidad_compra") or None if linked_article else None,
+                "cantidad_formato": linked_article.get("cantidad_formato") or None if linked_article else None,
+                "unidad_formato": linked_article.get("unidad_formato") or None if linked_article else None,
+                "conversion_unidades": linked_article.get("conversion_unidades") or [] if linked_article else [],
                 "nombre_original": self._public_text(name),
                 "cantidad_texto": str(amounts[index]) if index < len(amounts) else None,
                 "cantidad": self._number(line.get("cantidad_neta") or line.get("cantidad")),
+                "ambito_cantidad": "LOTE_COMPLETO",
                 "unidad": line.get("unidad_normalizada") or line.get("unidad") or None,
                 "merma": self._number(line.get("merma_porcentaje") or line.get("merma_pct")),
                 "cantidad_neta": self._number(line.get("cantidad_neta")),
                 "coste_unitario": self._number(line.get("precio_unitario") or line.get("coste_unitario")),
                 "coste_linea": self._number(line.get("coste_linea") or line.get("coste_total")),
                 "observaciones": line.get("observaciones") or None,
-                "estado_relacion": "relacionado" if len(matches) == 1 else ("coincidencia_dudosa" if matches else "sin_relacionar"),
+                "estado_relacion": (
+                    "elaboracion_relacionada"
+                    if component_type == "ELABORACION" and child
+                    else "elaboracion_id_roto"
+                    if component_type == "ELABORACION" and explicit_child_id and not child
+                    else "elaboracion_sin_resolver"
+                    if component_type == "ELABORACION"
+                    else "relacionado"
+                    if len(matches) == 1
+                    else "coincidencia_dudosa"
+                    if matches
+                    else "sin_relacionar"
+                ),
             })
         return output
 
@@ -578,13 +1068,41 @@ class BibliotecaCulinariaReadService:
         receta: dict[str, Any],
         esc: dict[str, Any] | None,
         ingredients: list[dict[str, Any]],
+        *,
+        context: dict[str, Any] | None = None,
+        depth: int = 0,
     ) -> dict[str, Any] | None:
         if not esc:
             return None
+        context = context or self._cost_context(self._all_recipes(incluir_archivadas=True))
+        identity = self._recipe_identity(receta)
+        memo_key = (identity, depth)
+        if memo_key in context["memo"]:
+            return deepcopy(context["memo"][memo_key])
+        if identity in context["stack"]:
+            return self._recursive_cost_error("CICLO_DETECTADO")
+        if depth > context["max_depth"]:
+            return self._recursive_cost_error("PROFUNDIDAD_EXCEDIDA")
+        context["stack"].append(identity)
+        try:
+            result = self._costing_inner(receta, esc, ingredients, context, depth)
+            context["memo"][memo_key] = deepcopy(result)
+            return result
+        finally:
+            context["stack"].pop()
+
+    def _costing_inner(
+        self,
+        receta: dict[str, Any],
+        esc: dict[str, Any],
+        ingredients: list[dict[str, Any]],
+        context: dict[str, Any],
+        depth: int,
+    ) -> dict[str, Any]:
         public_prices = self._article_prices(ingredients)
         calculation = self.motor_escandallos.calcular(
             nombre_escandallo=str(receta.get("nombre") or "Escandallo"),
-            numero_raciones=float(
+            numero_raciones=0.0 if self._yield_pending(receta) else float(
                 receta.get("numero_raciones")
                 or receta.get("rendimiento")
                 or (esc or {}).get("numero_raciones")
@@ -597,10 +1115,14 @@ class BibliotecaCulinariaReadService:
                     # ya es estable; nunca se le permite enlazar por parecido.
                     "producto_codigo": (
                         item.get("articulo_id")
-                        if item.get("estado_relacion") == "relacionado"
+                        if item.get("tipo_componente") == "ARTICULO"
+                        and item.get("estado_relacion") == "relacionado"
                         else f"__SIN_RELACION_{index}"
                     ),
                     "nombre_mostrado": (
+                        f"__SUBELABORACION_{index}"
+                        if item.get("tipo_componente") == "ELABORACION"
+                        else
                         item.get("nombre_original")
                         if item.get("estado_relacion") == "relacionado"
                         else ""
@@ -622,21 +1144,31 @@ class BibliotecaCulinariaReadService:
             precios_fijados=public_prices or None,
         )
         calculated_lines = list(calculation.get("lineas") or [])
-        public_lines = [
-            self._cost_line(item, calculated_lines[index] if index < len(calculated_lines) else {})
-            for index, item in enumerate(ingredients)
-        ]
-        missing_price = sum(line.get("precio_unitario") is None for line in public_lines)
+        public_lines = []
+        for index, item in enumerate(ingredients):
+            calculated = calculated_lines[index] if index < len(calculated_lines) else {}
+            if item.get("tipo_componente") == "ELABORACION":
+                public_lines.append(
+                    self._subelaboration_cost_line(receta, item, context, depth)
+                )
+            else:
+                public_lines.append(self._cost_line(item, calculated))
+        missing_price = sum(line.get("coste_linea") is None for line in public_lines)
         missing_conversion = sum(
-            line.get("estado_coste") == "CONVERSION_NO_DISPONIBLE"
+            line.get("estado_coste") in {
+                "CONVERSION_NO_DISPONIBLE", "UNIDADES_INCOMPATIBLES",
+                "RENDIMIENTO_INSUFICIENTE",
+            }
             for line in public_lines
         )
         complete = bool(public_lines) and not missing_price and not missing_conversion
-        partial_total = round(
-            sum(float(line.get("coste_linea") or 0) for line in public_lines),
-            6,
+        partial_decimal = sum(
+            (Decimal(str(line["coste_linea"])) for line in public_lines
+             if line.get("coste_linea") is not None),
+            Decimal("0"),
         )
-        rendimiento = self._number(
+        partial_total = round(float(partial_decimal), 6)
+        rendimiento = None if self._yield_pending(receta) else self._number(
             receta.get("numero_raciones")
             or receta.get("rendimiento")
             or esc.get("numero_raciones")
@@ -674,8 +1206,167 @@ class BibliotecaCulinariaReadService:
                 incidence
                 for incidence in list(calculation.get("incidencias") or [])
                 if incidence.get("tipo") not in {"PRECIO_VENTA_IGUAL_A_CERO", "RECETA_SIN_RACIONES"}
+                and "__SUBELABORACION_" not in str(incidence.get("detalle") or "")
+            ] + [
+                {
+                    "tipo": line.get("estado_coste"),
+                    "detalle": line.get("motivo_sin_coste"),
+                    "escandallo_hijo_id": line.get("escandallo_hijo_id"),
+                }
+                for line in public_lines
+                if line.get("tipo_componente") == "ELABORACION"
+                and line.get("coste_linea") is None
             ],
         }
+
+    def _cost_context(self, recipes: list[dict[str, Any]]) -> dict[str, Any]:
+        by_identity: dict[str, dict[str, Any]] = {}
+        for recipe in recipes:
+            for value in (recipe.get("id"), recipe.get("codigo"), recipe.get("nombre")):
+                key = self._norm(value)
+                if key:
+                    by_identity[key] = recipe
+        return {
+            "recipes": by_identity,
+            "memo": {},
+            "stack": [],
+            "max_depth": self.motor_explosion.MAX_PROFUNDIDAD,
+        }
+
+    def _recipe_identity(self, recipe: dict[str, Any]) -> str:
+        return self._norm(recipe.get("codigo") or recipe.get("id") or recipe.get("nombre"))
+
+    @staticmethod
+    def _recursive_cost_error(state: str) -> dict[str, Any]:
+        return {
+            "estado_coste": "SIN_COSTE",
+            "coste_total": None,
+            "coste_total_parcial": None,
+            "lineas": [],
+            "ingredientes_sin_coste": 1,
+            "ingredientes_sin_conversion": 0,
+            "incidencias": [{"tipo": state, "detalle": state}],
+            "_resolution_error": state,
+        }
+
+    @staticmethod
+    def _recipe_entity(recipe: dict[str, Any]) -> Receta:
+        return Receta(
+            codigo=str(recipe.get("codigo") or recipe.get("id") or ""),
+            nombre=str(recipe.get("nombre") or ""),
+            rendimiento=float(recipe.get("rendimiento") or recipe.get("numero_raciones") or 0),
+            unidad_rendimiento=str(recipe.get("unidad_rendimiento") or ""),
+            rendimiento_neto=RendimientoNeto.desde_dict(recipe.get("rendimiento_neto")),
+        )
+
+    def _subelaboration_cost_line(
+        self,
+        parent: dict[str, Any],
+        ingredient: dict[str, Any],
+        context: dict[str, Any],
+        depth: int,
+    ) -> dict[str, Any]:
+        output = self._cost_line(ingredient, {})
+        child_id = str(ingredient.get("escandallo_hijo_id") or "").strip()
+        child = context["recipes"].get(self._norm(child_id))
+        cycle_path = list(context.get("stack") or [])
+        if child_id:
+            cycle_path.append(self._norm(child_id))
+        if child is None:
+            result = self.calculador_subelaboraciones.unresolved(
+                "SUBELABORACION_NO_ENCONTRADA",
+                "La subelaboracion referenciada no existe en el modelo canonico.",
+                trace={
+                    "ruta": cycle_path,
+                    "escandallo_hijo_id": child_id or None,
+                },
+            )
+        elif self._recipe_identity(child) in context["stack"]:
+            result = self.calculador_subelaboraciones.unresolved(
+                "CICLO_DETECTADO", "La relacion de subelaboraciones contiene un ciclo.",
+                trace={
+                    "ruta": cycle_path,
+                    "escandallo_hijo_id": child_id,
+                },
+            )
+        elif depth + 1 > context["max_depth"]:
+            result = self.calculador_subelaboraciones.unresolved(
+                "PROFUNDIDAD_EXCEDIDA", "Se alcanzo el limite seguro de profundidad.",
+                trace={
+                    "ruta": cycle_path,
+                    "escandallo_hijo_id": child_id,
+                },
+            )
+        else:
+            child_esc = self._escandallo_for(child)
+            child_cost = self._costing(
+                child,
+                child_esc,
+                self._ingredients(child, child_esc),
+                context=context,
+                depth=depth + 1,
+            )
+            recursive_error = (child_cost or {}).get("_resolution_error")
+            nested_states = {
+                str(item.get("tipo") or "")
+                for item in list((child_cost or {}).get("incidencias") or [])
+                if isinstance(item, dict)
+            }
+            boundary_error = next(
+                (state for state in ("CICLO_DETECTADO", "PROFUNDIDAD_EXCEDIDA")
+                 if state in nested_states),
+                None,
+            )
+            result = (
+                self.calculador_subelaboraciones.unresolved(
+                    recursive_error or boundary_error,
+                    "No se pudo resolver la cadena de subelaboraciones.",
+                    trace={
+                        "ruta": cycle_path,
+                        "escandallo_hijo_id": child_id,
+                    },
+                )
+                if recursive_error or boundary_error
+                else self.calculador_subelaboraciones.calcular(
+                    parent_id=str(parent.get("codigo") or parent.get("id") or ""),
+                    line_id=str(
+                        ingredient.get("id")
+                        or ingredient.get("referencia_elaboracion")
+                        or ingredient.get("nombre_original")
+                        or ""
+                    ),
+                    child_id=child_id,
+                    required_quantity=self._number(
+                        ingredient.get("cantidad_neta") or ingredient.get("cantidad")
+                    ),
+                    required_unit=str(ingredient.get("unidad") or ""),
+                    child_recipe=self._recipe_entity(child),
+                    child_costing=child_cost or {},
+                    depth=depth + 1,
+                )
+            )
+        output.update(result)
+        output.update({
+            "precio_aplicado": (
+                result.get("trazabilidad_coste") or {}
+            ).get("coste_total_hijo"),
+            "precio_unitario": (
+                result.get("trazabilidad_coste") or {}
+            ).get("coste_total_hijo"),
+            "coste_unitario": (
+                result.get("trazabilidad_coste") or {}
+            ).get("coste_total_hijo"),
+            "origen_precio": "escandallo_hijo" if result.get("coste_linea") is not None else "no_disponible",
+            "tipo_conversion": (
+                ((result.get("trazabilidad_coste") or {}).get("conversion") or {}).get("procedencia")
+                or "no_disponible"
+            ),
+            "factor_conversion": (
+                result.get("trazabilidad_coste") or {}
+            ).get("fraccion_lote"),
+            "coste_con_merma": result.get("coste_linea"),
+        })
+        return output
 
     def _article_prices(
         self,
@@ -693,9 +1384,13 @@ class BibliotecaCulinariaReadService:
             if price is None:
                 continue
             product = self.articulos.obtener_producto(code) or {}
-            normalized_price, normalized_unit, _ = (
+            normalized_price, normalized_unit, normalization_issues = (
                 self.motor_escandallos.precio_catalogo_normalizado(product)
             )
+            if normalized_price is None and normalization_issues:
+                # Nunca degradar el precio de un paquete incompleto a precio
+                # unitario: el motor volverá a evaluarlo y expondrá la incidencia.
+                continue
             recipe_unit = ingredient.get("unidad") or ""
             original_unit = (
                 article.get("unidad_compra")
@@ -731,7 +1426,8 @@ class BibliotecaCulinariaReadService:
                     "heredada"
                     if inherited_unit
                     else "envase"
-                    if purchase_unit and format_quantity and normalized_price != price
+                    if (purchase_unit or article.get("unidad_formato"))
+                    and format_quantity and normalized_price != price
                     else "ninguna"
                 ),
             }
@@ -743,6 +1439,31 @@ class BibliotecaCulinariaReadService:
         calculated: dict[str, Any],
     ) -> dict[str, Any]:
         output = dict(ingredient)
+        if ingredient.get("tipo_componente") == "ELABORACION":
+            output.update({
+                "articulo_codigo": None,
+                "articulo_nombre": None,
+                "cantidad_receta": ingredient.get("cantidad"),
+                "unidad_receta": ingredient.get("unidad"),
+                "precio_original": None,
+                "unidad_precio_original": None,
+                "precio_aplicado": None,
+                "unidad_precio_aplicado": None,
+                "precio_unitario": None,
+                "coste_unitario": None,
+                "unidad_precio": None,
+                "origen_precio": "no_disponible",
+                "fecha_precio": None,
+                "tipo_conversion": "no_aplica_subelaboracion",
+                "factor_conversion": None,
+                "cantidad_utilizada": ingredient.get("cantidad"),
+                "cantidad_con_merma": None,
+                "coste_linea": None,
+                "coste_con_merma": None,
+                "estado_coste": "COSTE_SUBELABORACION_NO_RESUELTO",
+                "motivo_sin_coste": "El motor económico actual no calcula subelaboraciones recursivamente",
+            })
+            return output
         if ingredient.get("estado_relacion") != "relacionado":
             output.update({
                 "articulo_codigo": ingredient.get("articulo_id"),
@@ -778,14 +1499,14 @@ class BibliotecaCulinariaReadService:
             return output
 
         incidence_types = {
-            str(item.get("tipo") or "")
+            normalize_incident_type(item.get("tipo"))
             for item in list(calculated.get("incidencias") or [])
         }
         price = self._number(calculated.get("precio_compra_utilizado"))
         factor = self._number(calculated.get("factor_conversion"))
-        if "PRODUCTO_SIN_PRECIO" in incidence_types:
+        if "SIN_PRECIO" in incidence_types:
             state, reason = "SIN_PRECIO", "Sin precio vigente"
-        elif incidence_types & {"CONVERSION_INEXISTENTE", "UNIDAD_INCOMPATIBLE"}:
+        elif "CONVERSION_NO_DISPONIBLE" in incidence_types:
             state, reason = "CONVERSION_NO_DISPONIBLE", "Conversión no disponible"
         elif price is None:
             state, reason = "SIN_PRECIO", "Sin precio vigente"

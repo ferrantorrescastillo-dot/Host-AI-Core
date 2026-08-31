@@ -6,6 +6,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+from SERVICIOS.repository_initialization_policy import should_initialize_persistently
+
 from SERVICIOS.asistente_resolucion_incidencias_601 import AsistenteResolucionIncidencias601
 from SERVICIOS.biblioteca_recetas_601 import RepositorioBibliotecaRecetas601
 from SERVICIOS.motor_calculo_escandallos_601 import (
@@ -49,7 +51,9 @@ class _RepositorioIncidenciasEscandallos601:
             data["cantidad_formato"] = data.get("cantidad_por_envase")
         if "unidad_receta" in data and "unidad_recetas" not in data:
             data["unidad_recetas"] = data.get("unidad_receta")
-        if "unidad_compra" in data and "unidad_base" not in data:
+        if "unidad_formato" in data and "unidad_base" not in data:
+            data["unidad_base"] = data.get("unidad_formato")
+        elif "unidad_compra" in data and "unidad_base" not in data:
             data["unidad_base"] = data.get("unidad_compra")
         creado = self.repo_catalogo.crear_producto(data)
         out = dict(creado)
@@ -62,7 +66,9 @@ class _RepositorioIncidenciasEscandallos601:
             data["cantidad_formato"] = data.get("cantidad_por_envase")
         if "unidad_receta" in data and "unidad_recetas" not in data:
             data["unidad_recetas"] = data.get("unidad_receta")
-        if "unidad_compra" in data and "unidad_base" not in data:
+        if "unidad_formato" in data and "unidad_base" not in data:
+            data["unidad_base"] = data.get("unidad_formato")
+        elif "unidad_compra" in data and "unidad_base" not in data:
             data["unidad_base"] = data.get("unidad_compra")
         codigo = str(producto_id or "").strip()
         try:
@@ -97,8 +103,9 @@ class RepositorioBibliotecaEscandallos601:
     def __init__(self, base_dir: Path):
         self.base_dir = Path(base_dir).resolve()
         self.path = self.base_dir / "DATOS" / "db" / "biblioteca_escandallos_601.json"
-        self.path.parent.mkdir(parents=True, exist_ok=True)
-        self._asegurar_archivo()
+        if should_initialize_persistently():
+            self.path.parent.mkdir(parents=True, exist_ok=True)
+            self._asegurar_archivo()
 
     def _asegurar_archivo(self) -> None:
         if self.path.exists():

@@ -7,6 +7,57 @@ from API.app import HostAIPlatformAPI
 from API.contracts.http_models import ApiRequest
 
 
+def test_post_chat_check_escandallo_cost_atraviesa_contrato_y_conserva_sesion(
+    monkeypatch, tmp_path: Path,
+) -> None:
+    from API.facade.core_public_api02 import CorePublicApi02Facade
+
+    calls: list[dict[str, object]] = []
+
+    class FakeChatService:
+        def __init__(self, session_id: str):
+            self.session_id = session_id
+
+        def ejecutar_accion_reserva(self, action_id: str, action_context_id: str = "", contexto=None):
+            calls.append({
+                "session_id": self.session_id,
+                "action_id": action_id,
+                "action_context_id": action_context_id,
+                "contexto": dict(contexto or {}),
+            })
+            return {
+                "ok": True, "tipo_mensaje": "RESULTADO",
+                "mensaje": "El escandallo ya está completo y disponible.",
+                "datos": {"datos_reales_modificados": False},
+            }
+
+        def estado_sesion(self):
+            return {"session_id": self.session_id}
+
+    monkeypatch.setattr(
+        CorePublicApi02Facade, "_build_chat_service",
+        lambda self, session_id="default": FakeChatService(session_id),
+    )
+    response = HostAIPlatformAPI(base_dir=tmp_path).handle(ApiRequest(
+        method="POST", path="/api/v1/chat", request_id="REQ-CHECK-COST",
+        body={
+            "mensaje": "", "session_id": "kitchen-session",
+            "action_id": "CHECK_ESCANDALLO_COST",
+            "action_context_id": "e" * 32,
+        },
+    ))
+
+    assert response.status_code == 200
+    assert response.payload["respuesta"] == "El escandallo ya está completo y disponible."
+    assert response.payload["session_id"] == "kitchen-session"
+    assert calls == [{
+        "session_id": "kitchen-session",
+        "action_id": "CHECK_ESCANDALLO_COST",
+        "action_context_id": "e" * 32,
+        "contexto": {"_host_ai_request_id": "REQ-CHECK-COST"},
+    }]
+
+
 def test_post_api_v1_chat_devuelve_http_200_y_json_valido(monkeypatch, tmp_path: Path) -> None:
     from API.facade.core_public_api02 import CorePublicApi02Facade
 
@@ -24,7 +75,10 @@ def test_post_api_v1_chat_devuelve_http_200_y_json_valido(monkeypatch, tmp_path:
         def estado_sesion(self):
             return {"contexto_activo": "HOME"}
 
-    monkeypatch.setattr(CorePublicApi02Facade, "_build_chat_service", lambda self: FakeChatService())
+    monkeypatch.setattr(
+        CorePublicApi02Facade, "_build_chat_service",
+        lambda self, session_id="default": FakeChatService(),
+    )
 
     api = HostAIPlatformAPI(base_dir=tmp_path)
     response = api.handle(
@@ -62,7 +116,7 @@ def test_post_api_v1_chat_delega_en_servicio_conversacional_existente(monkeypatc
             self.core = core
 
     class FakeChatService:
-        def __init__(self, orquestador, home_read_service=None):
+        def __init__(self, orquestador, home_read_service=None, session_id="default"):
             called["chat_ctor"] += 1
 
         def enviar(self, texto: str, contexto=None):
@@ -143,6 +197,7 @@ def test_post_api_v1_chat_devuelve_respuesta_openai_falsa_por_ruta_real(monkeypa
     monkeypatch.setenv("OPENAI_API_KEY", "credencial-ficticia-de-test")
     monkeypatch.setenv("HOST_AI_AI_PROVIDER", "OPENAI")
     monkeypatch.delenv("OPENAI_MODEL", raising=False)
+    monkeypatch.delenv("HOST_AI_GENERAL_AGENT_READ", raising=False)
     monkeypatch.setattr(OpenAIProvider, "_sdk_available", staticmethod(lambda: True))
     monkeypatch.setattr(OpenAIProvider, "_get_client", lambda self: FakeClient())
 
@@ -160,3 +215,34 @@ def test_post_api_v1_chat_devuelve_respuesta_openai_falsa_por_ruta_real(monkeypa
     assert response.payload["respuesta"] == "Respuesta OpenAI controlada"
     assert response.payload["chat"]["datos"]["engine"]["proveedor"] == "OPENAI"
     assert response.payload["datos_reales_modificados"] is False
+
+
+def test_post_api_v1_chat_flag_uno_intenta_general_agent_por_ruta_real(monkeypatch, tmp_path: Path) -> None:
+    from SERVICIOS.host_ai_agent import HostAIAgent
+    from SERVICIOS.host_ai_agent_models import AgentRunResult
+
+    monkeypatch.setenv("HOST_AI_GENERAL_AGENT_READ", "1")
+    monkeypatch.setattr(HostAIAgent, "run", lambda self, *_args, **_kwargs: AgentRunResult(True, "Respuesta grounded", "HAA-TEST", "FAKE", "fake-model", 1, ["consultar_estado_stock"], termination_reason="agent_final"))
+    monkeypatch.setattr(HostAIAgent, "__init__", lambda self, engine, executor, catalog, policy=None: self.__dict__.update(engine=engine))
+
+    api = HostAIPlatformAPI(base_dir=tmp_path)
+    response = api.handle(ApiRequest(method="POST", path="/api/v1/chat", body={"mensaje": "consulta interna", "contexto": {}}))
+    agent = response.payload["chat"]["datos"]["general_agent"]
+    assert response.status_code == 200
+    assert response.payload["respuesta"] == "Respuesta grounded"
+    assert agent["enabled"] is True and agent["attempted"] is True
+    assert agent["tools_executed"] == ["consultar_estado_stock"]
+
+
+def test_general_agent_http_no_reformatea_final_del_modelo(monkeypatch, tmp_path: Path) -> None:
+    from SERVICIOS.host_ai_agent import HostAIAgent
+    from SERVICIOS.host_ai_agent_models import AgentRunResult
+
+    free_text = "Yo revisaria primero la tarea bloqueada; despues comprobaria la recepcion pendiente."
+    monkeypatch.setenv("HOST_AI_GENERAL_AGENT_READ", "1")
+    monkeypatch.setattr(HostAIAgent, "run", lambda self, *_args, **_kwargs: AgentRunResult(True, free_text, "HAA-TEXT", "FAKE", "fake-model", 2, ["consultar_produccion"], termination_reason="agent_final"))
+    monkeypatch.setattr(HostAIAgent, "__init__", lambda self, engine, executor, catalog, policy=None: self.__dict__.update(engine=engine))
+    response = HostAIPlatformAPI(base_dir=tmp_path).handle(ApiRequest(method="POST", path="/api/v1/chat", body={"mensaje": "Como voy?", "contexto": {}}))
+    assert response.payload["respuesta"] == free_text
+    assert response.payload["chat"]["mensaje"] == free_text
+    assert "Produccion:" not in response.payload["respuesta"]

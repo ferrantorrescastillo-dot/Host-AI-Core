@@ -70,6 +70,8 @@ describe("Eventos", () => {
     expect(within(card).getByText("En 4 días")).toBeInTheDocument();
     expect(within(card).getByText("2 servicios")).toBeInTheDocument();
     expect(within(card).getByText("Hay servicios sin pases.")).toBeInTheDocument();
+    expect(within(card).getByRole("link", { name: "Abrir" })).toHaveAttribute("href", "/eventos?evento_id=EVT-1");
+    expect(within(card).getByRole("link", { name: "Editar" })).toHaveAttribute("href", "/eventos?evento_id=EVT-1&edit=1");
     expect(screen.getByText("PAX previstos")).toBeInTheDocument();
     expect(screen.getAllByText("Avisos operativos")).toHaveLength(2);
     expect(screen.getByText("Request ID: REQ-EVENTOS-1")).toBeInTheDocument();

@@ -59,10 +59,14 @@ def test_home_produccion_expone_datos_reales(tmp_path: Path) -> None:
     assert modulo["estado"] == "datos_disponibles"
     assert modulo["total"] == 1
     assert modulo["planes_activos"] == 1
+    assert modulo["total"] == len(modulo["items"])
+    assert modulo["planes_activos"] == len(modulo["items"])
     assert modulo["total_tareas"] == 2
     assert modulo["tareas_pendientes"] == 1
     assert modulo["tareas_bloqueadas"] == 1
     assert modulo["resumen"]["alertas"] >= 1
+    assert modulo["resumen"]["tareas"] == modulo["total_tareas"]
+    assert modulo["resumen"]["pendientes"] == modulo["tareas_pendientes"]
     assert modulo["items"][0]["id"] == "PLAN-WEB-1"
     assert modulo["items"][0]["tareas"][0]["bloqueo"] == "Falta marmita"
 

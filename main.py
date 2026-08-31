@@ -1,7 +1,7 @@
 from pathlib import Path
 import sys
 
-"""Punto de entrada oficial de Host AI (piloto).
+"""Punto de entrada oficial de Host AI Core 1.0 (Freeze-A1).
 
 Define y documenta el ciclo de vida de arranque (solo documentación,
 sin cambiar comportamiento):
@@ -13,8 +13,16 @@ sin cambiar comportamiento):
   ocultar fallos (el lanzador gestiona errores en el menú interactivo).
 5) Finalización: la finalización es responsabilidad del lanzador/consola.
 
-Este módulo mantiene `main()` ligero y delegador; la responsabilidad
-operativa recae en `SERVICIOS.lanzador_piloto_01` y `CORE.host_ai_core`.
+Ruta oficial de arranque (única):
+
+main.py
+-> SERVICIOS.lanzador_piloto_01.ejecutar_piloto_01
+-> LanzadorPiloto01.ejecutar
+-> opción 1: abrir_modo_piloto
+-> APP.consola_piloto_01.ConsolaPiloto01
+
+Las demás rutas de entrada quedan clasificadas como desarrollo, QA o
+compatibilidad y no sustituyen esta ruta oficial.
 """
 
 BASE_DIR = Path(__file__).resolve().parent

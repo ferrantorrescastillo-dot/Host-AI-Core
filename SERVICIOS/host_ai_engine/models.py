@@ -71,6 +71,10 @@ class HostAIEngineRequest:
     proveedor_preferido: str = "SIMULADO"
     formato_entrada: str = "texto"
     request_id: str = field(default_factory=lambda: f"HAE-{uuid.uuid4()}")
+    operation_id: str = ""
+    session_id: str = ""
+    entity_type: str = ""
+    entity_id: str = ""
     creado_en: str = field(default_factory=lambda: datetime.now().isoformat(timespec="seconds"))
 
     def to_dict(self) -> dict[str, Any]:
@@ -89,6 +93,8 @@ class HostAIEngineResponse:
     tiempo_ms: int
     proveedor: str
     modelo: str
+    usage: dict[str, Any] = field(default_factory=dict)
+    cost_breakdown: dict[str, Any] = field(default_factory=dict)
     finalizado_en: str = field(default_factory=lambda: datetime.now().isoformat(timespec="seconds"))
 
     def to_dict(self) -> dict[str, Any]:
@@ -102,6 +108,9 @@ class HostAIProviderResult:
     modelo: str
     salida: dict[str, Any]
     errores: list[str] = field(default_factory=list)
+    usage: dict[str, Any] = field(default_factory=dict)
+    response_id: str = ""
+    service_tier: str = ""
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)

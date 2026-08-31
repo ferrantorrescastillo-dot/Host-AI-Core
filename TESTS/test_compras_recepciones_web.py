@@ -38,6 +38,16 @@ def test_borrador_desde_pedido_no_modifica_stock_y_conserva_contrato(tmp_path: P
     assert stock_path.read_bytes() == before
 
 
+def test_recepcion_reconoce_catalogo_canonico_y_bloquea_ubicacion_inventada(tmp_path: Path) -> None:
+    client, order_id = _seed(tmp_path)
+    locations = client.get("/api/v1/stock/ubicaciones").json()["ubicaciones"]
+    assert [item["nombre"] for item in locations] == ["Congelador", "Cámara", "Seco", "Bodega", "Limpieza"]
+    reception = client.post(f"/api/v1/compras/pedidos/{order_id}/recepciones", json={}).json()["recepcion"]
+    invalid = {**reception["lineas"][0], "location": "Habitación inventada"}
+    saved = client.patch(f"/api/v1/compras/recepciones/{reception['id']}", json={"lineas": [invalid]}).json()["recepcion"]
+    assert any(issue["code"] == "UBICACION_INVALIDA" and issue["bloqueante"] for issue in saved["incidencias"])
+
+
 def test_dashboard_expone_pedido_preparado_como_recepcionable(tmp_path: Path) -> None:
     client, order_id = _seed(tmp_path)
     response = client.get("/api/v1/dashboard")
@@ -97,7 +107,7 @@ def test_recepcion_realista_010_mas_015_cierra_solo_al_completar(tmp_path: Path)
     orders_path.write_text(json.dumps(orders), encoding="utf-8")
     # Reabrir la API hace que MotorCompras lea la cantidad contractual actualizada del fixture.
     client = TestClient(create_app(platform_api=HostAIPlatformAPI(base_dir=tmp_path)))
-    first_line.update({"lot": "LOTE-VISIBLE", "expiry": "2026-12-31", "location": "Cámara 1", "received_price": 2.25, "observations": "Caja revisada"})
+    first_line.update({"lot": "LOTE-VISIBLE", "expiry": "2026-12-31", "location": "Cámara", "received_price": 2.25, "observations": "Caja revisada"})
     result1 = client.post(f"/api/v1/compras/recepciones/{first['id']}/confirmar", json={
         "confirmacion": "CONFIRMAR_RECEPCION", "actualizado_en": first["actualizado_en"],
         "fecha": "2026-08-10", "referencia": "ALB-VISIBLE", "observaciones": "Recepción visible",
@@ -106,7 +116,7 @@ def test_recepcion_realista_010_mas_015_cierra_solo_al_completar(tmp_path: Path)
     assert result1["pedido"]["estado"] == "parcialmente_recibido"
     assert result1["movimientos"][0]["cantidad"] == 0.10
     assert result1["movimientos"][0]["trazabilidad"] | {
-        "lot": "LOTE-VISIBLE", "expiry": "2026-12-31", "location": "Cámara 1"
+        "lot": "LOTE-VISIBLE", "expiry": "2026-12-31", "location": "Cámara"
     } == result1["movimientos"][0]["trazabilidad"]
     confirmed_line = result1["recepcion"]["lineas"][0]
     assert confirmed_line["received_price"] == 2.25

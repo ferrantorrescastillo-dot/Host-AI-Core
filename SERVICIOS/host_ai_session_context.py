@@ -35,7 +35,24 @@ class HostAISessionContext:
     escandallo_activo: dict[str, Any] = field(default_factory=dict)
     menu_activo: dict[str, Any] = field(default_factory=dict)
     evento_activo: dict[str, Any] = field(default_factory=dict)
+    reserva_activa: dict[str, Any] = field(default_factory=dict)
+    confirmacion_reserva_pendiente: dict[str, Any] = field(default_factory=dict)
+    acciones_reserva_contextuales: dict[str, Any] = field(default_factory=dict)
     produccion_activa: dict[str, Any] = field(default_factory=dict)
+    articulo_activo: dict[str, Any] = field(default_factory=dict)
+    compra_activa: dict[str, Any] = field(default_factory=dict)
+    economic_recipe_candidates: list[dict[str, Any]] = field(default_factory=list)
+    economic_incidents: list[dict[str, Any]] = field(default_factory=list)
+    acciones_economicas_contextuales: dict[str, Any] = field(default_factory=dict)
+    captura_cambio_articulo: dict[str, Any] = field(default_factory=dict)
+    confirmacion_articulo_pendiente: dict[str, Any] = field(default_factory=dict)
+    confirmacion_catalogo_pendiente: dict[str, Any] = field(default_factory=dict)
+    propuesta_receta_activa: dict[str, Any] = field(default_factory=dict)
+    workflow_activo: dict[str, Any] = field(default_factory=dict)
+    confirmacion_procedimiento_receta_pendiente: dict[str, Any] = field(default_factory=dict)
+    confirmacion_relacion_ingrediente_pendiente: dict[str, Any] = field(default_factory=dict)
+    lote_activo: dict[str, Any] = field(default_factory=dict)
+    confirmacion_ubicacion_lote_pendiente: dict[str, Any] = field(default_factory=dict)
     historial_corto_acciones: list[dict[str, Any]] = field(default_factory=list)
     actualizado_en: str = field(default_factory=_now_iso)
 
@@ -64,7 +81,24 @@ class HostAISessionContext:
         self.escandallo_activo = {}
         self.menu_activo = {}
         self.evento_activo = {}
+        self.reserva_activa = {}
+        self.confirmacion_reserva_pendiente = {}
+        self.acciones_reserva_contextuales = {}
         self.produccion_activa = {}
+        self.articulo_activo = {}
+        self.compra_activa = {}
+        self.economic_recipe_candidates = []
+        self.economic_incidents = []
+        self.acciones_economicas_contextuales = {}
+        self.captura_cambio_articulo = {}
+        self.confirmacion_articulo_pendiente = {}
+        self.confirmacion_catalogo_pendiente = {}
+        self.propuesta_receta_activa = {}
+        self.workflow_activo = {}
+        self.confirmacion_procedimiento_receta_pendiente = {}
+        self.confirmacion_relacion_ingrediente_pendiente = {}
+        self.lote_activo = {}
+        self.confirmacion_ubicacion_lote_pendiente = {}
         self.historial_corto_acciones = []
         self.actualizado_en = _now_iso()
 
@@ -86,6 +120,10 @@ class HostAISessionContext:
             self.ultimo_modulo = str(module).upper()
         self.actualizado_en = _now_iso()
 
+    def actualizar_workflow(self, workflow: dict[str, Any]) -> None:
+        self.workflow_activo = dict(workflow or {})
+        self.actualizado_en = _now_iso()
+
     def actualizar_desde_navegacion(self, nav_request: dict[str, Any]) -> None:
         nav = dict(nav_request or {})
         modulo = str(nav.get("target_module") or "").upper()
@@ -105,8 +143,34 @@ class HostAISessionContext:
             self.menu_activo = dict(ctx.get("menu_activo") or {})
         if "evento_activo" in ctx and isinstance(ctx.get("evento_activo"), dict):
             self.evento_activo = dict(ctx.get("evento_activo") or {})
+        if "reserva_activa" in ctx and isinstance(ctx.get("reserva_activa"), dict):
+            self.reserva_activa = dict(ctx.get("reserva_activa") or {})
+        if "confirmacion_reserva_pendiente" in ctx and isinstance(ctx.get("confirmacion_reserva_pendiente"), dict):
+            self.confirmacion_reserva_pendiente = dict(ctx.get("confirmacion_reserva_pendiente") or {})
+        if "acciones_reserva_contextuales" in ctx and isinstance(ctx.get("acciones_reserva_contextuales"), dict):
+            self.acciones_reserva_contextuales = dict(ctx.get("acciones_reserva_contextuales") or {})
         if "produccion_activa" in ctx and isinstance(ctx.get("produccion_activa"), dict):
             self.produccion_activa = dict(ctx.get("produccion_activa") or {})
+        if "articulo_activo" in ctx and isinstance(ctx.get("articulo_activo"), dict):
+            self.articulo_activo = dict(ctx.get("articulo_activo") or {})
+        if "compra_activa" in ctx and isinstance(ctx.get("compra_activa"), dict):
+            self.compra_activa = dict(ctx.get("compra_activa") or {})
+        if "economic_recipe_candidates" in ctx and isinstance(ctx.get("economic_recipe_candidates"), list):
+            self.economic_recipe_candidates = [
+                dict(item) for item in list(ctx.get("economic_recipe_candidates") or [])[:10]
+                if isinstance(item, dict)
+            ]
+        if "economic_incidents" in ctx and isinstance(ctx.get("economic_incidents"), list):
+            self.economic_incidents = [
+                dict(item) for item in list(ctx.get("economic_incidents") or [])[:10]
+                if isinstance(item, dict)
+            ]
+        if "captura_cambio_articulo" in ctx and isinstance(ctx.get("captura_cambio_articulo"), dict):
+            self.captura_cambio_articulo = dict(ctx.get("captura_cambio_articulo") or {})
+        if "confirmacion_articulo_pendiente" in ctx and isinstance(ctx.get("confirmacion_articulo_pendiente"), dict):
+            self.confirmacion_articulo_pendiente = dict(ctx.get("confirmacion_articulo_pendiente") or {})
+        if "lote_activo" in ctx and isinstance(ctx.get("lote_activo"), dict): self.lote_activo = dict(ctx.get("lote_activo") or {})
+        if "confirmacion_ubicacion_lote_pendiente" in ctx and isinstance(ctx.get("confirmacion_ubicacion_lote_pendiente"), dict): self.confirmacion_ubicacion_lote_pendiente = dict(ctx.get("confirmacion_ubicacion_lote_pendiente") or {})
 
         self.actualizado_en = _now_iso()
 

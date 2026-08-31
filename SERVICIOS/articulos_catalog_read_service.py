@@ -6,6 +6,11 @@ from pathlib import Path
 from typing import Any
 
 from SERVICIOS.catalogo_maestro_productos_601 import CatalogoMaestroProductos601
+from SERVICIOS.clasificacion_entidad_catalogo import (
+    normalizar_tipo,
+    origen_coste,
+    relacion_elaboracion,
+)
 
 
 class ArticulosCatalogReadService:
@@ -17,7 +22,7 @@ class ArticulosCatalogReadService:
     }
     SORT_FIELDS = {"nombre", "codigo", "precio", "stock", "actualizacion"}
     BASE_UNITS = {"kg", "g", "l", "ml", "u"}
-    EDITABLE_FIELDS = {"nombre", "familia", "unidad_base", "unidad_compra", "cantidad_formato", "proveedor_preferente", "precio", "referencia_proveedor", "marca", "conservacion", "alergenos", "observaciones"}
+    EDITABLE_FIELDS = {"nombre", "familia", "unidad_base", "unidad_compra", "cantidad_formato", "unidad_formato", "conversion_unidades", "proveedor_preferente", "precio", "referencia_proveedor", "marca", "conservacion", "alergenos", "observaciones"}
 
     def __init__(self, base_dir: Path, stock: Any | None = None, compras: Any | None = None) -> None:
         self.catalogo = CatalogoMaestroProductos601(base_dir)
@@ -71,6 +76,9 @@ class ArticulosCatalogReadService:
             "id": str(product.get("codigo") or ""),
             "codigo": str(product.get("codigo") or ""),
             "nombre": str(product.get("nombre") or ""),
+            "tipo_entidad": normalizar_tipo(product.get("tipo_entidad")),
+            "elaboracion_id": relacion_elaboracion(product),
+            "origen_coste": origen_coste(product),
             "familia": product.get("familia") or None,
             "subfamilia": product.get("subfamilia") or None,
             "marca": product.get("marca") or None,
@@ -185,6 +193,7 @@ class ArticulosCatalogReadService:
             "referencia_proveedor": product.get("referencia_proveedor") or None,
             "unidad_compra": product.get("unidad_compra") or None,
             "cantidad_formato": self._number(product.get("cantidad_formato")),
+            "unidad_formato": product.get("unidad_formato") or None,
             "unidad_base": product.get("unidad_base") or None,
             "unidad_base_sugerida": bool(product.get("unidad_base_sugerida")),
             "estado_unidad_base": product.get("estado_unidad_base") or "CONFIRMADA",
@@ -196,6 +205,9 @@ class ArticulosCatalogReadService:
             "conservacion": product.get("conservacion") or None,
             "stock_minimo": self._number(product.get("stock_minimo")),
             "observaciones": product.get("observaciones_ext") or product.get("observaciones") or None,
+            "procedencia_campos": dict(product.get("procedencia_campos") or {}),
+            "historial_procedencia": list(product.get("historial_procedencia") or []),
+            "precios_referencia": list(product.get("precios_referencia") or []),
             "stock_detalle": {
                 "cantidad": self._number(stock_item.get("cantidad")) if stock_item else None,
                 "unidad": stock_item.get("unidad") if stock_item else None,
@@ -232,7 +244,9 @@ class ArticulosCatalogReadService:
         }
         return {"ok": True, "articulo": detail}
 
-    def actualizar(self, article_id: str, body: dict[str, Any]) -> dict[str, Any]:
+    def actualizar(
+        self, article_id: str, body: dict[str, Any], *, audit_context: dict[str, str] | None = None,
+    ) -> dict[str, Any]:
         if body.get("confirmacion") != "ACTUALIZAR_ARTICULO_MAESTRO":
             return self._error("confirmation_required", "Confirma explícitamente la actualización.", 400)
         unknown = sorted(set(body) - self.EDITABLE_FIELDS - {"confirmacion"})
@@ -255,6 +269,11 @@ class ArticulosCatalogReadService:
             if value is None or value <= 0:
                 return self._error("invalid_format_quantity", "La cantidad por formato debe ser mayor que cero.", 400)
             changes["cantidad_formato"] = value
+        if "unidad_formato" in changes:
+            format_unit = str(changes["unidad_formato"] or "").strip().lower()
+            if format_unit and format_unit not in self.BASE_UNITS:
+                return self._error("invalid_format_unit", "Selecciona una unidad de contenido válida.", 400)
+            changes["unidad_formato"] = format_unit
         if "precio" in changes and changes["precio"] not in (None, ""):
             value = self._number(changes["precio"])
             if value is None or value <= 0:
@@ -270,6 +289,12 @@ class ArticulosCatalogReadService:
             changes["proveedor"] = str(match.get("nombre"))
         elif "proveedor_preferente" in changes:
             changes["proveedor"] = ""
+        if audit_context:
+            changes.update({
+                "actor_modificacion": str(audit_context.get("user_id") or ""),
+                "tenant_modificacion": str(audit_context.get("tenant_id") or ""),
+                "request_id_modificacion": str(audit_context.get("request_id") or ""),
+            })
         updated = self.catalogo.editar(article_id, changes)
         if not updated.get("ok"):
             return self._error("article_update_failed", str(updated.get("mensaje") or "No se pudo actualizar el artículo."), 400)

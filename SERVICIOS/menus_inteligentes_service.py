@@ -46,10 +46,12 @@ class MenusInteligentesService:
         }
 
     def obtener(self, menu_id: str) -> dict[str, Any]:
-        result = self.menus.ver_detalle(menu_id)
-        if not result.get("ok"):
+        # GET público estrictamente READ: ver_detalle también detecta y persiste
+        # desactualización, algo impropio de una pantalla de consulta.
+        menu = self.menus.repo.obtener(menu_id)
+        if not menu:
             return self._error("menu_not_found", "Menú no encontrado.", 404)
-        return {"ok": True, "menu": self._public(result["menu"])}
+        return {"ok": True, "menu": self._public(menu)}
 
     def elaboraciones(self, query: dict[str, Any] | None = None) -> dict[str, Any]:
         # Alias compatible: la autoridad del selector es el catÃ¡logo pÃºblico completo.
@@ -191,6 +193,8 @@ class MenusInteligentesService:
             "incidencias": list(menu.get("incidencias") or []),
             "creado_en": menu.get("creado_en"),
             "actualizado_en": menu.get("actualizado_en"),
+            "origen": menu.get("hoja_origen") or menu.get("origen_importacion"),
+            "modelo_biblioteca": str(menu.get("modelo_biblioteca") or ""),
         }
 
     def _sections(self, menu: dict[str, Any]) -> list[dict[str, Any]]:
@@ -202,11 +206,25 @@ class MenusInteligentesService:
         for order, (name, references) in enumerate(dict(menu.get("composicion") or {}).items()):
             items = []
             for reference in references or []:
-                recipe = self._elaboration(str(reference.get("referencia") or "")) or {}
+                if not isinstance(reference, dict):
+                    raise ValueError(
+                        f"Menú {menu.get('menu_id') or '(sin id)'}: composicion.{name} contiene una línea que no es un objeto."
+                    )
+                canonical_reference = str(reference.get("referencia") or "")
+                if not canonical_reference:
+                    raise ValueError(
+                        f"Menú {menu.get('menu_id') or '(sin id)'}: composicion.{name}.referencia es obligatoria."
+                    )
+                reference_type = str(reference.get("tipo_referencia") or "RECETA").upper()
+                recipe = self._elaboration(canonical_reference) if reference_type == "RECETA" else None
+                product = self.menus.repo_prod.obtener_producto(canonical_reference) if reference_type == "PRODUCTO" else None
+                related = recipe or product or {}
                 line = line_costs.get((self._norm(name), self._norm(reference.get("referencia"))), {})
                 items.append({
-                    "elaboracion_id": str(recipe.get("id") or reference.get("referencia") or ""),
-                    "elaboracion_nombre": str(recipe.get("nombre") or reference.get("referencia") or ""),
+                    "elaboracion_id": str(related.get("id") or related.get("codigo") or canonical_reference),
+                    "elaboracion_nombre": str(related.get("nombre") or canonical_reference),
+                    "tipo_referencia": reference_type,
+                    "referencia_canonica": canonical_reference,
                     "cantidad": float(reference.get("cantidad") or 1),
                     "coste_por_racion": line.get("coste_por_racion"),
                     "coste_linea_por_comensal": line.get("coste_linea_por_comensal"),
@@ -217,7 +235,7 @@ class MenusInteligentesService:
                     "fecha_coste": line.get("fecha_coste"),
                     "orden": int(reference.get("orden") or len(items)),
                     "observaciones": str(reference.get("observaciones") or ""),
-                    "version_elaboracion": reference.get("version_elaboracion") or recipe.get("version"),
+                    "version_elaboracion": reference.get("version_elaboracion") or related.get("version"),
                 })
             sections.append({"id": f"SEC-{order + 1:03d}", "nombre": name, "orden": order, "elaboraciones": items})
         return sections
