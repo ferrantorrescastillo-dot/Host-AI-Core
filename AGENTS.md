@@ -48,6 +48,8 @@ Consulta siempre la versión existente en el repositorio.
 ## 3. ORDEN OBLIGATORIO DE LECTURA
 
 Antes de modificar código, lee en este orden:
+`DEVKIT/PRODUCTO/HOST_AI_PRODUCTO_V1.md`
+`DEVKIT/PRODUCTO/HOST_AI_MAPA_TECNICO_V1.md`
 
 1. `DEVKIT/KNOWLEDGE_CORE/01_IDENTIDAD.md`
 2. `DEVKIT/KNOWLEDGE_CORE/03_REGLAS.md`
