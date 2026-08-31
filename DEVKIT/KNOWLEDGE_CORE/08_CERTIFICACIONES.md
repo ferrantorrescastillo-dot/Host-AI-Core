@@ -1335,4 +1335,15 @@ Debe mantenerse alineado con:
 
 ---
 
+## Registro — Fase 1 Importación Inteligente
+
+- Versión base: `af3642d2`; cambios técnicos sin commit al emitir este registro.
+- Tipo: certificación técnica de importador e IA.
+- Nivel: C7 dentro del alcance automático.
+- Evidencia: `DEVKIT/CERTIFICACION_TECNICA_FASE1_IMPORTACION.md` y tests focales de Fase 1.
+- Datos: sintéticos y temporales; sin uso de `DATOS/` como repositorio de prueba.
+- Estado: vigente, pendiente de validación manual/culinaria.
+
+---
+
 **Fin del documento oficial `08_CERTIFICACIONES.md`.**

@@ -146,6 +146,19 @@ class RestaurantDataImportAnalyzer:
         ai_calls = 0
         if payload.get("resolver_ambiguedades_ia") and self.ambiguity_resolver:
             ai_proposals, ai_calls = resolve_regions_once(ambiguous_regions, self.ambiguity_resolver)
+        unique_ambiguous_concepts = len({
+            item.get("layout_signature")
+            for item in ai_proposals
+            if item.get("layout_signature")
+        }) if ai_proposals else len({
+            json.dumps({
+                "headers": region.get("headers") or [],
+                "opciones": region.get("opciones_permitidas") or [],
+                "duda": region.get("duda") or "",
+            }, ensure_ascii=False, sort_keys=True)
+            for region in ambiguous_regions
+        })
+        reused_ai_responses = max(0, len(ai_proposals) - ai_calls)
         return {
             "archivos": files,
             "hojas": [{"archivo": t.source, "nombre": t.sheet, "region": t.region_id,
@@ -181,9 +194,23 @@ class RestaurantDataImportAnalyzer:
                        "duplicados": possible_duplicates, "relaciones": relation_doubts},
             "regiones_ambiguas": ambiguous_regions,
             "propuestas_ia": ai_proposals,
-            "coste_ia": {"usada": bool(ai_calls), "ambiguedades_enviadas": ai_calls,
-                         "layouts_reutilizados": max(0, len(ambiguous_regions) - ai_calls),
-                         "total": 0},
+            "coste_ia": {
+                "usada": bool(ai_calls),
+                "apariciones": len(ambiguous_regions),
+                "conceptos_unicos": unique_ambiguous_concepts,
+                "resueltos_sin_ia": max(0, len(tables) - len(ambiguous_regions)),
+                "conceptos_enviados": ai_calls,
+                "ambiguedades_enviadas": ai_calls,
+                "llamadas": ai_calls,
+                "respuestas_reutilizadas": reused_ai_responses,
+                "layouts_reutilizados": reused_ai_responses,
+                "ahorro_llamadas_deduplicacion": reused_ai_responses,
+                "proveedor": None,
+                "modelo": None,
+                "tokens_reportados": None,
+                "coste_reportado": None,
+                "total": 0,
+            },
             "solo_previsualizacion": True,
             "datos_operativos_modificados": False,
         }

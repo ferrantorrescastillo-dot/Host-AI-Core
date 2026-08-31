@@ -1926,4 +1926,14 @@ Cualquier nuevo chat debe pedir una actualización si la fecha o el código disp
 
 ---
 
+## Actualización — Fase 1 Importación Inteligente (31 de agosto de 2026)
+
+La Fase 1 alcanza certificación técnica sobre la rama `feature/compras-web`, base `af3642d2`, con fixtures y repositorios temporales. Quedan diferenciados el pipeline oficial, el fallback sin IA, la deduplicación medida, la revisión humana, la confirmación segura y la procedencia. Evidencia: `DEVKIT/CERTIFICACION_TECNICA_FASE1_IMPORTACION.md`.
+
+Estado preciso: `CERTIFICADA TÉCNICAMENTE + PENDIENTE VALIDACIÓN CULINARIA`.
+
+Único siguiente paso: validación manual/culinaria por el propietario mediante `DEVKIT/VALIDACION_MANUAL_FASE1_IMPORTACION.md`. No iniciar Fase 1.5 antes de esa validación.
+
+---
+
 **Fin del documento oficial `09_ESTADO_ACTUAL.md`.**

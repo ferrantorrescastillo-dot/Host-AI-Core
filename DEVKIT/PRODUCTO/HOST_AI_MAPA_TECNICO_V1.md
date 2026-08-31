@@ -2362,7 +2362,7 @@ Host AI puede absorber de forma eficiente los datos existentes de un restaurante
 
 
 
-\*\*EN CURSO.\*\*
+\*\*CERTIFICADA TÉCNICAMENTE. VALIDACIÓN MANUAL/CULINARIA PENDIENTE.\*\*
 
 
 

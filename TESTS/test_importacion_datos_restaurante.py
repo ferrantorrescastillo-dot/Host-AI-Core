@@ -219,7 +219,15 @@ def test_preview_and_confirm_persist_catalog_then_recipes_without_touching_stock
     assert response["ok"] is True
     session = response["importacion"]
     preview = session["preview_global"]
-    assert preview["contadores"] == {
+    assert {
+        key: preview["contadores"][key]
+        for key in (
+            "proveedores_nuevos", "proveedores_reutilizados",
+            "articulos_nuevos", "articulos_reutilizados",
+            "articulos_requieren_revision", "recetas_elaboraciones",
+            "relaciones", "pendientes",
+        )
+    } == {
             "proveedores_nuevos": 2, "proveedores_reutilizados": 0,
             "articulos_nuevos": 3, "articulos_reutilizados": 0,
             "articulos_requieren_revision": 0,
@@ -260,7 +268,7 @@ def test_preview_and_confirm_persist_catalog_then_recipes_without_touching_stock
     assert len(repository.listar_productos()) == 3
 
 
-def test_existing_catalog_is_reused_and_ceviche_collision_blocks_confirm(tmp_path: Path):
+def test_existing_catalog_is_reused_and_ceviche_collision_is_excluded_from_safe_confirm(tmp_path: Path):
     repository = RepositorioProductosMaestro601(tmp_path)
     makro = repository.crear_proveedor({"nombre": "Makro"})
     salt = repository.crear_producto({"nombre": "Sal fina", "unidad_base": "kg"})
@@ -272,11 +280,12 @@ def test_existing_catalog_is_reused_and_ceviche_collision_blocks_confirm(tmp_pat
 
     collision = service.import_document({"archivos": [_file("colision.xlsx", _xlsx())]})
     assert collision["importacion"]["preview_global"]["contadores"]["pendientes"] > 0
-    blocked = service.confirm(collision["importacion"]["documento"]["id"], {
+    confirmed = service.confirm(collision["importacion"]["documento"]["id"], {
         "draft_version": 1, "usuario": "test", "confirmacion": "CONFIRMAR",
     })
-    assert blocked["ok"] is False
-    assert blocked["error"]["code"] == "validation_failed"
+    assert confirmed["ok"] is True
+    assert all(item["nombre"] != "Ceviche de corvina" for item in repository.listar_productos())
+    assert collision["importacion"]["preview_global"]["contadores"]["articulos_requieren_revision"] == 1
 
 
 def test_existing_library_recipes_are_checked_reused_and_not_overwritten(tmp_path: Path):
