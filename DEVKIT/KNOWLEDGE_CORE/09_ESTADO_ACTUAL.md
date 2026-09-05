@@ -1940,4 +1940,173 @@ La primera validación real originó correcciones de menús, exclusión A.P por 
 
 Estado preciso: `FASE 1 - LISTA PARA CIERRE FORMAL`. El Excel real fue reanalizado sin IA y sin escritura sobre un repositorio temporal limpio. La regresion final acredita 122 pruebas backend y 31 frontend, con typecheck correcto. Los contenedores de menu ya no se proyectan como recetas; las fichas `M.P` conservan autoridad de receta; plantillas y documentos multicolumna quedan documentales o pendientes explicitos. El usuario conserva la autoridad para cerrar y realizar el commit. Fase 1.5 no iniciada.
 
+## Actualizacion - completado masivo de recetas (1 de septiembre de 2026)
+
+Se corrigio el falso HTTP 500 del batch, la frontera de `recipe_ids` y el contador contextual de importacion. Sobre la copia temporal Boronat, 30 de las 46 recetas disponian de identidad canonica utilizable: la UI muestra 30 y el batch recibe exactamente esos 30 IDs, sin recetas ajenas. `start`, `summary` y cancelacion no invocan IA ni escriben datos. Evidencia: 126 pruebas backend, 33 frontend, typecheck y diff check correctos. Estado: `LISTA PARA VALIDACION HUMANA FINAL DE FASE 1`; cierre formal, commit y push pendientes del usuario. Fase 1.5 no iniciada.
+
+## Actualizacion - tolerancia a timeout y propuestas criticas (1 de septiembre de 2026)
+
+El completado masivo conserva los exitos y continua la cola cuando una receta falla por provider. Expone `PENDIENTE`, `CON_PROPUESTAS`, `NECESITA_USUARIO`, `ERROR_PROVIDER` y `YA_COMPLETA`, con contadores de exitosas, fallidas, pendientes y propuestas; admite retry unitario/global con limite y backoff. La seleccion masiva solo admite descripcion, elaboracion y observaciones filtradas. Alergenos, vida util, conservacion, temperaturas de seguridad, HACCP, tiempos y rendimiento quedan en validacion individual; el contenido critico embebido en texto libre se bloquea para revision.
+
+Evidencia: 129 pruebas backend de Fase 1 y 268 frontend correctas, mas typecheck y diff check. IA exclusivamente fake/mock; cero confirmaciones y cero escrituras sobre datos reales. Estado: `LISTA PARA REPETIR VALIDACION HUMANA FINAL DE FASE 1`; Fase 1.5, commit y push no iniciados.
+
+## Actualización - completado externo provider-agnostic (1 de septiembre de 2026)
+
+Biblioteca dispone ahora de dos fuentes compatibles de propuestas: IA integrada de Host AI y XLSX externo `HOSTAI_RECIPE_COMPLETION_PACKAGE 0.1`. El nuevo adaptador exporta únicamente IDs canónicos contextuales incompletos y reimporta como propuesta, con fingerprint, validación por fila/campo, rechazo de fórmulas y límites de seguridad. No escribe: delega la política de campos, preview, autorización, confirmación, idempotencia, procedencia y lectura posterior en los servicios existentes.
+
+La validación real aislada de Boronat reprodujo 21 hojas, 1029 filas, 46 recetas, 30 canónicas aptas, 316 artículos efectivos, 300 reutilizados, 16 en revisión, 10 menús y 36 A.P excluidos solo de la sesión. El batch controlado continuó después de un timeout, resolvió el retry, conservó cancelación y separó 30 campos seguros, 30 críticos individuales y 30 textos críticos bloqueados. El flujo externo exportó 30, reimportó una propuesta sintética y generó preview sin confirmar ni escribir dominio. Evidencia: 142 pruebas backend relevantes, 270 frontend completas y typecheck correctos; cero llamadas IA reales y coste cero.
+
+Estado preciso: `LISTA PARA REPETIR VALIDACION HUMANA FINAL DE FASE 1`. La Fase 1 no se declara cerrada; validación humana final, commit y push siguen pendientes. Fase 1.5 no iniciada.
+
+## Actualización - corrección del round-trip XLSX físico (1 de septiembre de 2026)
+
+La reimportación externa ya no depende de que el editor conserve la dimensión calculada de `RECETAS`. La validación expone simultáneamente filas/campos seguros y filas/campos críticos para revisión, mantiene ambos grupos de una receta mixta en el batch y devuelve traza por campo junto al nombre, tamaño y SHA-256 del archivo procesado. La UI identifica de forma explícita una plantilla sin valores `*_propuesto`.
+
+Sobre copia temporal, el XLSX real completado de 30 recetas produjo 30 filas con propuestas, 30 útiles, 30 con revisión, 0 rechazadas, 83 campos seguros, 257 críticos individuales, 29 descartados y 7 textos bloqueados; el batch alcanzó 30/30 con 340 propuestas. La plantilla física vacía disponible reprodujo exactamente 30 recibidas, cero propuestas y batch 0/0. Evidencia: 153 pruebas backend de Fase 1 y 271 frontend completas, además de typecheck; sin IA real, confirmación ni escritura en `DATOS`.
+
+Estado preciso: `LISTA PARA REPETIR ROUND-TRIP XLSX REAL`. La validación humana debe repetirse usando el archivo completado que la pantalla identificará por nombre y huella. Fase 1.5, commit y push no iniciados.
+
+## Actualización - selección masiva a preview en UI (1 de septiembre de 2026)
+
+`/seleccion` conserva su contrato sin escritura y devuelve `preview=null` porque toda selección invalida el preview anterior. El bloqueo estaba en la orquestación React: guardaba la selección pero no invocaba `/preview`, mantenía los botones originales y solo ofrecía un `Continuar` ambiguo. La UI ejecuta ahora la secuencia explícita selección → preview, informa cuántos campos seguros/críticos están seleccionados y ofrece un CTA de recuperación si la generación del preview falla después de haber guardado la selección.
+
+El preview masivo reutiliza `RecetaDocumentacionWriteService.preview` y añade detalle de valor actual/propuesto, procedencia, clasificación y tipo de cambio. Solo contiene los campos seleccionados; los críticos pendientes quedan fuera. Evidencia: 154 pruebas backend de Fase 1 y 271 frontend completas, además de typecheck; sin IA real, confirmación ni escritura en `DATOS`.
+
+Estado preciso: `LISTA PARA REPETIR SELECCIÓN → PREVIEW EN UI`. Fase 1 no cerrada; Fase 1.5, commit y push no iniciados.
+
+## Actualización - selección segura por receta y regreso a propuestas externas (1 de septiembre de 2026)
+
+La contaminación del preview por receta procedía de una diferencia contractual real: omitir `individual_selections` conserva las selecciones críticas previas, mientras enviarlo como `{}` las reemplaza por ninguna. La UI omitía el miembro al aceptar solo las propuestas seguras, de modo que dos campos seguros podían reunirse con nueve críticos residuales. Las acciones seguras global y por receta reemplazan ahora toda la selección con su conjunto seguro exacto; solo la aceptación individual de un campo crítico acumula sobre ella.
+
+El resumen mantiene además la referencia al batch externo activo y muestra `Revisar propuestas externas · 30 recetas`. El identificador se conserva por importación y se rehidrata desde el endpoint canónico del batch, por lo que volver al resumen y entrar de nuevo no exige reimportar el XLSX. Preview ofrece `Volver a propuestas` y conserva una ruta inequívoca en ambos sentidos.
+
+Evidencia: caso controlado 2 seguras/9 críticas con previews exactos 2 → 3 → 2, dataset 30 recetas con 83 seguras/257 críticas, 37 pruebas backend focales, 156 backend de Fase 1, 38 frontend focales, 271 frontend completas y typecheck correctos. Sin IA real, confirmación ni escritura en `DATOS`.
+
+Estado preciso: `LISTA PARA REPETIR: SELECCIÓN SEGURA DE 1 RECETA → PREVIEW EXACTO → VOLVER A PROPUESTAS`. Fase 1 no cerrada; Fase 1.5, commit y push no iniciados.
+
+## Actualización - persistencia del flujo externo y E2E de reconstrucción (1 de septiembre de 2026)
+
+La sesión de importación usada por la API de producto y el workflow de completado de recetas se conservan ahora en repositorios persistentes seguros. El detalle de la importación incorpora el batch externo activo, por lo que React reconstruye propuestas, selección y preview desde backend tras remount, navegación, F5 o cierre y reapertura del navegador. `sessionStorage` y `localStorage` sólo conservan una pista de identidad; no son autoridad ni contienen las propuestas. El reinicio del backend también recupera la sesión y el batch persistidos.
+
+Estado durable A: sesión normalizada, batch, propuestas, selecciones, preview e idempotencia. Estado reconstruible B: pantalla y contadores React, y preview regenerable por su autoridad cuando una selección lo invalida. Estado temporal C: binario XLSX, que no se conserva tras validar e incorporar sus propuestas normalizadas. Sólo confirmación conserva autoridad WRITE sobre Biblioteca.
+
+El E2E con Chrome y XLSX físico valida 30/30/30/0, 83 seguras, 257 críticas y 340 propuestas; recorre previews 83 → 2 → 3 → 2, resumen, reload y reapertura con el mismo batch, sin reimportación ni duplicado. Evidencia: 157 pruebas backend, 38 frontend focales, 271 frontend completas, 1 E2E real, typecheck y build correctos. `datos_reales_modificados=false`, cero confirmaciones y fixtures fuera de `DATOS`. La creación de artículos nuevos desde ingredientes sigue pendiente de Fase 1. Estado preciso: `LISTA PARA SMOKE TEST HUMANO`; Fase 1 no cerrada, Fase 1.5 no iniciada, sin commit ni push.
+
+## Actualización - smoke POST-FIX durable sin reconstrucción manual (1 de septiembre de 2026)
+
+El primer smoke intentó recuperar el único registro existente en el storage real: `IMPWEB-477EE3DB31E1`, confirmado y sin `schema_version`, `created_at` ni `updated_at`. No existe allí un store de batches. La evidencia lo clasifica como PRE-PERSISTENCE; no demuestra un fallo de la persistencia nueva y no es reconstruible retrospectivamente.
+
+El contrato POST-FIX incorpora `GET /api/v1/biblioteca/importaciones`, ordena sesiones activas por actualización y permite a React descubrir la sesión aunque el navegador no tenga puntero local. Los stores de importaciones y batches usan esquema 2 con timestamps de envelope y registro; el detalle de importación sigue siendo la autoridad que adjunta el batch externo activo. Las rutas productivas efectivas son `DATOS/db/biblioteca_importaciones_web.json` y `DATOS/db/biblioteca_completado_recetas_batches.json`, resueltas respecto de `HOST_AI_BASE_DIR` o de la raíz del proyecto.
+
+El E2E aislado crea mediante las autoridades reales una importación Boronat equivalente de 30 recetas, un XLSX físico y un batch externo de 340 propuestas (83 seguras y 257 críticas). Cierra el primer contexto Chrome, reinicia de verdad frontend y backend, verifica el mismo `import_id`, `batch_id`, selección y preview por GET, y abre un contexto Chrome limpio sin storage. La UI muestra `Revisar propuestas externas · 30 recetas` sin subir ni reimportar ningún fichero; F5 conserva el acceso y el preview exacto.
+
+Evidencia: 3 backend focales, 158 backend de Fase 1, 39 frontend focales, 272 frontend completas, 1 E2E Playwright real, typecheck y build correctos. Runtime y persistencia del smoke: `.test-runs/fase1-e2e`; cero confirmaciones y cero escrituras sobre `DATOS`. Estado preciso: `LISTA PARA SMOKE HUMANO SIN REIMPORTAR`; Fase 1 no cerrada, Fase 1.5 no iniciada, sin commit, push ni staging.
+
+## Actualización - ingredientes nuevos a artículos y referencias externas (1 de septiembre de 2026)
+
+El pendiente final conocido de Fase 1 ya dispone de un recorrido único y automatizado: ingrediente nuevo importado → candidato consolidado → preview/alta autorizada mediante la autoridad de catálogo → enlace versionado en el borrador → artículo incompleto → exportación y reimportación de referencia externa → preview → confirmación aislada. Las apariciones repetidas se consolidan por nombre normalizado y unidad compatible, de modo que un ingrediente presente en dos recetas produce un artículo y enlaza ambas recetas sin duplicados.
+
+La creación no inventa precio ni proveedor y deja el artículo `PENDIENTE_DE_COMPLETAR`. El enriquecimiento externo conserva la separación entre referencia y dato operativo: `proveedor_referencia` se almacena como `tienda_referencia` dentro de `precios_referencia`; nunca reemplaza `precio` ni `proveedor` reales. El frontend expone valor real actual y valor externo propuesto antes de confirmar. La confirmación de referencias y la confirmación de la importación de Biblioteca siguen siendo operaciones distintas.
+
+Evidencia: 37 pruebas backend focales, 183 backend de Fase 1, 54 frontend focales, 274 frontend completas y 2 E2E Playwright en Chrome; typecheck, build y `git diff --check` correctos. Los E2E usaron `.test-runs/fase1-articles-e2e`, confirmaron únicamente contra ese runtime aislado y verificaron por lectura posterior que precio/proveedor reales seguían vacíos. No se escribió ni restauró `DATOS`, no se llamó a IA externa y no hubo commit, push ni staging.
+
+Estado preciso: `FASE 1 ABIERTA; ÚLTIMO FLUJO FUNCIONAL CONOCIDO IMPLEMENTADO, PROBADO Y VALIDADO E2E EN AISLAMIENTO`. El smoke humano previo de persistencia/rehidratación/selección/preview está aprobado. Fase 1.5 no iniciada.
+
+## Actualización - auditoría final y runtime de smoke (1 de septiembre de 2026)
+
+La matriz completa de Fase 1 queda técnicamente cubierta desde fuente hasta post-read y desde receta hasta artículo y referencia externa. El único E2E continuo usa el Excel físico Boronat, reinicia backend y frontend dos veces y demuestra persistencia de importación, batch, selección, preview, candidato, enlace y enriquecimiento. La referencia externa confirmada en el runtime aislado es durable e idempotente tras reinicio; precio y proveedor operativos no se alteran.
+
+La auditoría detectó y corrigió persistencia incompleta del preview de referencias, idempotencia solo en memoria, recuperación insuficiente ante respuesta perdida del alta, cobertura de fronteras XLSX y tres falsos rótulos `TAPA` en `M.P CALÇOTADA`. El diagnóstico físico final devuelve 47 recetas, 32 canónicas aptas, 10 menús, 1 exclusión A.P y cero rótulos genéricos como receta. Evidencia: 189 backend Fase 1, 50 frontend focales, suite frontend completa, 3 E2E Chrome, typecheck y build correctos. IA real y confirmaciones de dominio sobre `DATOS`: cero.
+
+Una regresión adicional de toda la suite histórica, fuera de la suite Fase 1, añadió tres eventos a `DATOS/logs/host_ai_general_agent.jsonl` al instanciar un shell con la raíz real. La huella agregada de `DATOS` dejó de ser idéntica aunque no cambió ningún objeto operativo. El log no se restaura por la prohibición expresa de tocar/restaurar `DATOS`.
+
+Estado preciso: `NO LISTA PARA CERRAR FASE 1` por incumplimiento de la garantía estricta de inmutabilidad de `DATOS`. La Fase 1 sigue abierta; no hay commit, push, staging ni Fase 1.5.
+
+## Actualización - aislamiento y escandallo/ficha antes del smoke (1 de septiembre de 2026)
+
+La causa de la telemetría real está corregida y pytest dispone de una raíz temporal global, bloqueo inmediato de operaciones de escritura hacia `DATOS` real y verificación final del manifiesto completo. La suite histórica adicional terminó con 1.753 pruebas correctas, 1 omitida y 48 fallos legacy no relacionados; no hubo fallos del guard. Antes y después se conservaron exactamente 376 archivos y el hash agregado `B7C5917CC518D331E6D8F0F41E78ADEF2C00CC95DFA9BCD319DC25FB77440E14`.
+
+La derivación existente receta→escandallo→ficha conserva ahora en API/UI la diferencia entre precio real, confirmado y referencia externa provisional, expone completitud e ingredientes pendientes y recalcula desde el catálogo en cada lectura. La ficha reutiliza receta, escandallo y procedencia canónicos y muestra ausencias como pendientes. Evidencia: casos A-E y suite contractual backend 218/218, focales frontend 74/74, suite frontend completa 276/276 y 3/3 E2E Chrome correctos.
+
+Estado preciso: `LISTA PARA SMOKE FINAL DE CIERRE DE FASE 1`. La Fase 1 sigue abierta; no se ejecutó el smoke humano y no hay commit, push, staging ni Fase 1.5.
+
+## Actualización - completado operativo y proyección provisional (2 de septiembre de 2026)
+
+El flujo de completado de recetas cubre ahora la triple completitud documental, propuesta y confirmada. Además de los tres textos seguros para selección masiva, puede proponer con revisión individual rendimiento, unidad, raciones, cantidad por ración, tiempos, conservación, regeneración, capacidad, personal, recursos e ingredientes estructurados. Se conserva la información documental, la procedencia por campo y la precedencia `DOCUMENTO > CALCULADO > CONTEXTO_INTERNO > IA_PROPUESTA > REFERENCIA_EXTERNA > PENDIENTE`; vacío continúa siendo el último recurso.
+
+La autoridad de lectura proyecta ficha y escandallo provisionales sobre copia en memoria y reutiliza el motor económico existente. No persiste propuestas ni costes, no introduce ingredientes nuevos y no convierte referencias externas en precios reales. El paquete XLSX de completado avanza a `0.2`, manteniendo lectura de `0.1`, y transporta los nuevos campos, contexto y metadatos de origen/confianza/motivo. Confirmación e idempotencia continúan en el workflow seguro existente.
+
+Evidencia: backend Fase 1 ampliado 248/248, frontend focal 41/41, frontend completo 276/276, E2E Chrome 3/3, typecheck, compilación Python y build correctos. El recorrido continuo sobre copia Boronat acredita `Agua de jamaica`, persistencia tras reinicios, artículo nuevo, referencia precio/proveedor, ficha y escandallo, sin escribir en `DATOS` real. Su manifiesto sigue en 376 archivos y hash `B7C5917CC518D331E6D8F0F41E78ADEF2C00CC95DFA9BCD319DC25FB77440E14`.
+
+Estado preciso: `LISTA PARA REANUDAR SMOKE FINAL DE FASE 1`. La fase no se cierra, Fase 1.5 no se inicia y no hay commit, push ni staging.
+
+## Actualización - round-trip operativo XLSX 0.3 (5 de septiembre de 2026)
+
+El paquete de completado de recetas exporta versión `0.3`, importa de forma compatible `0.1`/`0.2` y añade instrucciones físicas, identidad de importación por fila y contexto suficiente para que un completador externo proponga con procedencia, confianza y motivo sin adquirir autoridad sobre datos. El fixture GPT permanece determinista y local: no ejecuta IA ni incurre en coste.
+
+Los campos de descongelación, vida útil congelado y regeneración admiten `NO_APLICA` como estado operativo expreso. La UI y el preview lo distinguen de vacío; la confirmación persiste el estado separado del escalar. Selección, preview, confirmación y WRITE continúan siendo fronteras distintas, y todo campo crítico no seleccionado queda fuera.
+
+Evidencia final automática: backend ampliado 250/250, frontend focal 41/41, frontend completo 276/276 y E2E continuo Boronat 1/1 en Chrome; typecheck, compilación Python y build correctos. El E2E cubre el recorrido Host AI → XLSX → fixture GPT → XLSX → Host AI, ficha/escandallo provisional y confirmado en copia aislada, artículo nuevo, referencia de precio/proveedor, persistencia tras reinicios e idempotencia. No hubo IA externa ni escritura sobre `DATOS` real.
+
+Estado preciso: `LISTA PARA SMOKE FINAL DEL ROUND-TRIP HOST AI → GPT → HOST AI`. Fase 1 sigue abierta; no hay commit, push, staging ni Fase 1.5.
+
+Punto de continuación:
+
+- Hecho: contrato XLSX 0.3, `NO_APLICA`, round-trip físico, post-read, artículo/referencia, regresión y runtime aislado durable.
+- Pendiente: únicamente el smoke humano final; no requiere subir, exportar ni reimportar archivos.
+- Último comando funcional: `npm.cmd run test:e2e -- e2e/fase1-closing-audit.spec.ts`.
+- Resultado: `1 passed (2.4m)` en Chrome; runtime final comprobado en `http://127.0.0.1:55478/biblioteca/importaciones`.
+
+## Actualización - rehidratación del batch externo completado (5 de septiembre de 2026)
+
+La validación humana detectó que el batch externo post-confirmación no aparecía en la UI. El store conservaba el batch original, pero `active_external` descartaba los estados terminales y el detalle publicaba `completado_recetas_activo=null`. Se mantiene ahora revisable el último batch externo `COMPLETADO` o `COMPLETADO_PARCIAL`, sin repetir confirmación ni escritura; `CANCELADO` sigue excluido.
+
+Evidencia: mismo `IMPWEB-9CFB9A4EC21E` y `RECIPE-BATCH-CBF31653B5A5`, HTTP 34/392, backend focal 40/40, backend Fase 1 250/250, frontend focal 41/41, frontend completo 276/276, Chrome limpio con storage vacío y F5 1/1, typecheck y build correctos. `DATOS` real permanece intacto.
+
+Estado preciso: `LISTA PARA REANUDAR SMOKE FINAL`. Fase 1 sigue abierta.
+
+## Actualización - completado masivo production-ready provisional (5 de septiembre de 2026)
+
+El completado externo de recetas queda preparado como operación de lote. El contrato XLSX continúa en `HOSTAI_RECIPE_COMPLETION_PACKAGE 0.3`, conserva lectura de `0.1` y `0.2` y transporta los campos estructurales de identidad, rendimiento, ingredientes, tiempos, tanda, personal, recursos y conservación. `RecetaDocumentacionWriteService` calcula por separado completitud documental/con propuestas/confirmada y `production_ready_provisional`/`production_ready_confirmed`; una propuesta suficiente puede habilitar planificación provisional sin convertirse en dato real ni confirmado.
+
+El batch publica estado operativo y un resumen masivo con recetas procesadas, production-ready provisional/confirmada, críticos, artículos/precios pendientes, baja confianza, errores, imposibles con motivo y `NO_APLICA`. La UI permite revisar únicamente excepciones. Una fila stale o un campo inválido quedan aislados en su receta y no eliminan el resto del lote. `NO_APLICA` y `PENDIENTE_IMPOSIBLE_DE_ESTIMAR: motivo` son estados distintos de vacío; el segundo nunca entra en WRITE.
+
+Evidencia automática: backend Fase 1 233/233, frontend focal de importaciones 42/42, frontend completo 277/277, E2E Chrome masivo 1/1 y continuo Boronat 1/1, typecheck, compilación Python y build correctos. El E2E masivo utiliza un único XLSX físico de 52 recetas, una única reimportación, 1.195 propuestas y 49 recetas production-ready provisionales; incluye `Agua de jamaica`, una stale, un booleano inválido, un imposible con motivo, `NO_APLICA`, campo crítico, artículo nuevo y referencia externa. La confirmación E2E ocurre únicamente en `.test-runs`; el runtime de smoke se deja sin confirmar. `DATOS` conserva 376 archivos y la huella agregada `B7C5917CC518D331E6D8F0F41E78ADEF2C00CC95DFA9BCD319DC25FB77440E14` antes y después.
+
+Estado preciso: `LISTA PARA SMOKE FINAL PRODUCTION-READY MASIVO DE FASE 1`. Esto no cierra la Fase 1, no inicia Fase 1.5 y no implica validación de calidad culinaria de los textos del fixture.
+
+## Actualización - descarga directa del paquete XLSX externo (5 de septiembre de 2026)
+
+El smoke humano detectó que `Completar externamente con XLSX` solo cambiaba el paso React. La llamada de exportación y la descarga física estaban ligadas a un segundo botón interno; cuando ya existía un batch externo, esa rama ni siquiera se renderizaba. El clic no emitía request, no generaba descarga y tampoco mostraba progreso o error.
+
+El CTA principal reutiliza ahora la única autoridad `RecipeCompletionExchangeService.export`: muestra `Preparando XLSX…`, impide un segundo clic concurrente, ejecuta `POST /api/v1/biblioteca/recetas/completado-externo/exportar`, inicia la descarga física del navegador y publica nombre y número de recetas. Un error queda visible y permite reintentar. Exportar no crea, sustituye ni confirma batches; si existe uno, conserva exactamente su identificador y el CTA separado de revisión. Si no existe, el batch solo se creará al reimportar propuestas.
+
+Evidencia: reproducción Chrome pre-fix sin POST y con timeout de descarga; 30/30 pruebas backend focales, 233/233 backend Fase 1, 44/44 frontend focales y 279/279 frontend completas. Playwright valida descarga física, parseo del XLSX con hojas `METADATA`, `INSTRUCCIONES` y `RECETAS`, contrato 0.3, 52 recetas, `import_id` y contexto en escenarios con y sin batch; el runtime de smoke conserva F5 y el mismo batch. Typecheck, build y compilación Python correctos. `DATOS` real no se escribió.
+
+Estado preciso: `LISTA PARA SMOKE DE DESCARGA XLSX`. Fase 1 permanece abierta; no hay commit, push, staging ni Fase 1.5.
+
+## Actualización - proyección visual de NO_APLICA (5 de septiembre de 2026)
+
+La ficha técnica provisional distingue ahora un campo operativo realmente ausente de un campo resuelto estructuralmente como `NO_APLICA`. En el segundo caso presenta «No aplica» y conserva procedencia, motivo, confianza y estado de revisión; el escalar canónico continúa vacío y el estado sigue viajando por `estados_campos_operativos`. La corrección se limita al adaptador de presentación de `BibliotecaImportPage`: no altera readiness, selección, preview, confirmación, XLSX, batches ni escandallo.
+
+La garantía focal cubre regeneración y tiempo de descongelación con `NO_APLICA`, además de un campo realmente ausente que sigue mostrando «Sin dato». La comprobación Playwright sobre el runtime aislado valida Agua de jamaica y persistencia tras F5 sin confirmar cambios. Fase 1 permanece abierta por instrucción expresa del usuario.
+
+Estado preciso: `LISTA PARA CIERRE FORMAL DE FASE 1`; no equivale al cierre formal de la fase.
+
+## Actualización - nombres humanos en el runtime masivo (5 de septiembre de 2026)
+
+El último smoke humano no reveló una pérdida productiva de nombres: el generador sintético de 52 recetas asignaba literalmente `Receta N` tanto a la fuente de importación como a la receta canónica. Exportación XLSX, reimportación, persistencia del batch, HTTP y React conservaban fielmente ese valor. El fixture dispone ahora de 52 nombres humanos explícitos y falla durante la preparación si falta alguno o reaparece el patrón numérico silencioso.
+
+La preparación compara por `recipe_id` los nombres canónicos, los escritos físicamente en `RECETAS` y los persistidos en el batch. Chrome valida las 52 tarjetas, F5 y reinicio de backend con el mismo batch. Si una respuesta carece objetivamente de nombre, la UI muestra «Receta sin nombre» junto al identificador técnico, sin fabricar un nombre culinario. La corrección previa de `NO_APLICA` permanece cubierta.
+
+Estado preciso: `LISTA PARA CIERRE FORMAL DE FASE 1`; la fase sigue abierta.
+
+## Cierre formal - Fase 1 Importación Inteligente (5 de septiembre de 2026)
+
+Estado oficial: `CERRADA / CERTIFICADA`. El smoke humano final aprobó descarga XLSX, persistencia tras F5, lote de 52 recetas con nombres humanos, Agua de jamaica production-ready provisional y presentación estructurada de regeneración/descongelación como «No aplica». No se aceptaron ni confirmaron cambios reales.
+
+El alcance cerrado conserva pipeline determinista primero, IA opcional limitada a propuestas, XLSX 0.3, round-trip externo, selección, preview, confirmación humana, persistencia/rehidratación, ficha y escandallo provisionales, y candidatos de artículo con referencias externas separadas de precio/proveedor reales. `1070` cuenta propuestas críticas individuales; `1071` incluye además el único campo imposible de estimar de `REC601-000003` (`unidad_tanda`), que no es propuesta ni entra en WRITE.
+
+`DATOS` permanece en 376 archivos y hash `B7C5917CC518D331E6D8F0F41E78ADEF2C00CC95DFA9BCD319DC25FB77440E14`. Fase 1.5 no iniciada.
+
 **Fin del documento oficial `09_ESTADO_ACTUAL.md`.**

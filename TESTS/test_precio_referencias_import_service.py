@@ -28,6 +28,8 @@ def test_missing_articles_are_consolidated_by_canonical_article_id(tmp_path) -> 
     assert sum(item["usado_en_recetas"] for item in result["articulos"]) == 20
     exported = service.export_text()
     assert exported["total"] == 12 and exported["coste_ia_usd"] == "0.00000000"
+    assert "proveedor_referencia" in exported["texto"]
+    assert "no es el proveedor real" in exported["texto"]
 
 
 @pytest.mark.parametrize("payload, detected", [
@@ -57,3 +59,48 @@ def test_bulk_confirm_preserves_real_price_and_provider_and_is_idempotent(tmp_pa
     assert values[0]["precio"] is None and values[0]["proveedor"] == "Proveedor real"
     assert len(values[0]["precios_referencia"]) == 1
     assert values[0]["precios_referencia"][0]["tienda_referencia"] == "Makro"
+    assert preview["precio_real_modificado"] is False
+    assert preview["proveedor_real_modificado"] is False
+    assert confirmed["precio_real_modificado"] is False
+    assert confirmed["proveedor_real_modificado"] is False
+
+
+def test_proveedor_referencia_alias_never_replaces_real_supplier(tmp_path) -> None:
+    service, db = setup_service(tmp_path, 1)
+    raw = "article_id,artículo,producto,proveedor_referencia,formato,precio,moneda,url\nART-1,Artículo 1,Producto externo,Proveedor externo,500 g,2.50,EUR,https://example.test/producto"
+    preview = service.preview(raw, context())
+    assert preview["listas"][0]["proveedor_real_actual"] == "Proveedor real"
+    assert preview["listas"][0]["referencia"]["tienda_referencia"] == "Proveedor externo"
+
+    service.confirm(preview["listas"], context())
+    stored = json.loads((db / "articulos.json").read_text(encoding="utf-8"))[0]
+    assert stored["precio"] is None
+    assert stored["proveedor"] == "Proveedor real"
+    assert stored["precios_referencia"][0]["tienda_referencia"] == "Proveedor externo"
+
+
+def test_imported_reference_is_idempotent_after_service_restart(tmp_path) -> None:
+    service, db = setup_service(tmp_path, 1)
+    raw = "article_id,artículo,producto,proveedor_referencia,formato,precio,moneda,url\nART-1,Artículo 1,Producto externo,Proveedor externo,500 g,2.50,EUR,https://example.test/producto"
+    first_preview = service.preview(raw, context())
+    first = service.confirm(first_preview["listas"], context())
+    assert first["datos_reales_modificados"] is True
+
+    restarted = PrecioReferenciasImportService(tmp_path, PrecioReferenciaWebService(tmp_path))
+    restored_preview = restarted.active(context())
+    assert restored_preview["workflow"]["estado"] == "CONFIRMADO"
+    assert restored_preview["workflow"]["preview"]["listas"][0]["article_id"] == "ART-1"
+    replay = restarted.confirm(first_preview["listas"], context())
+    assert replay["datos_reales_modificados"] is False
+    assert replay["resultados"][0]["idempotente"] is True
+
+    fresh_preview = restarted.preview(raw, context())
+    rerun = restarted.confirm(fresh_preview["listas"], context())
+    assert rerun["datos_reales_modificados"] is False
+    stored = json.loads((db / "articulos.json").read_text(encoding="utf-8"))[0]
+    assert len(stored["precios_referencia"]) == 1
+    audit = (tmp_path / "DATOS/auditoria/precios_referencia_web.jsonl").read_text(encoding="utf-8").splitlines()
+    assert len(audit) == 1
+
+    restarted.discard(context())
+    assert PrecioReferenciasImportService(tmp_path, PrecioReferenciaWebService(tmp_path)).active(context())["workflow"] is None

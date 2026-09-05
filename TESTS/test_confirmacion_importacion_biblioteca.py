@@ -49,6 +49,11 @@ def test_confirmacion_persiste_receta_estado_e_historial_y_sobrevive_reinicio(tm
     assert sessions["IMP-1"]["estado"] == "CONFIRMADA"
     assert sessions["IMP-1"]["historial"][0]["usuario"] == "chef"
     assert ImportSessionRepository(tmp_path).load_all()["IMP-1"]["estado"] == "CONFIRMADA"
+    persisted_imports = json.loads(
+        (tmp_path / "DATOS/db/biblioteca_importaciones_web.json").read_text(encoding="utf-8")
+    )
+    assert persisted_imports["schema_version"] == 2
+    assert persisted_imports["created_at"] and persisted_imports["updated_at"]
     recipes = json.loads(
         (tmp_path / "DATOS/db/biblioteca_recetas_601.json").read_text(encoding="utf-8")
     )["recetas"]

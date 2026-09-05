@@ -348,6 +348,150 @@ def _write_canonical_fixture(base: Path) -> None:
     (invoices / "historico_precios.json").write_text('{"registros":[]}', encoding="utf-8")
 
 
+def _configure_three_ingredient_cost_fixture(
+    base: Path, *, missing_code: str = "", reference_code: str = "",
+    yield_unit: str = "raciones",
+) -> None:
+    _write_canonical_fixture(base)
+    db = base / "DATOS" / "db"
+    canonical_path = db / "escandallos_canonicos.json"
+    canonical = json.loads(canonical_path.read_text(encoding="utf-8"))
+    recipe = canonical["escandallos"][0]["receta"]
+    recipe["rendimiento"] = 10
+    recipe["unidad_rendimiento"] = yield_unit
+    recipe["ingredientes"] = [
+        {"articulo_id": "ART-A", "nombre": "Ingrediente A", "cantidad": 1, "unidad": "kg"},
+        {"articulo_id": "ART-B", "nombre": "Ingrediente B", "cantidad": 500, "unidad": "g"},
+        {"articulo_id": "ART-C", "nombre": "Ingrediente C", "cantidad": 2, "unidad": "u"},
+    ]
+    canonical_path.write_text(json.dumps(canonical, ensure_ascii=False), encoding="utf-8")
+    articles = [
+        {"codigo": "ART-A", "nombre": "Ingrediente A", "precio": 2, "unidad": "kg", "fecha_precio": "2026-08-20", "proveedor": "Proveedor A"},
+        {"codigo": "ART-B", "nombre": "Ingrediente B", "precio": 4, "unidad": "kg", "fecha_precio": "2026-08-21", "proveedor": "Proveedor B"},
+        {"codigo": "ART-C", "nombre": "Ingrediente C", "precio": 0.5, "unidad": "u", "fecha_precio": "2026-08-22", "proveedor": "Proveedor C"},
+    ]
+    for article in articles:
+        if article["codigo"] == missing_code:
+            article["precio"] = None
+        if article["codigo"] == reference_code:
+            article["precio"] = None
+            article["precios_referencia"] = [{
+                "tipo": "PRECIO_REFERENCIA_IMPORTADA",
+                "origen": "IMPORTADO",
+                "precio_normalizado": 0.75,
+                "unidad_normalizada": "u",
+                "tienda_referencia": "Tienda externa",
+                "consultado_en": "2026-08-27T10:00:00+02:00",
+                "autoridad": "REFERENCIA_NO_REAL",
+            }]
+    (db / "articulos.json").write_text(json.dumps(articles, ensure_ascii=False), encoding="utf-8")
+
+
+def test_fase1_caso_a_deriva_tres_lineas_con_precios_confirmados(tmp_path: Path) -> None:
+    _configure_three_ingredient_cost_fixture(tmp_path)
+
+    detail = BibliotecaCulinariaReadService(tmp_path).detalle("REC-SALSA-ROMESCO")["elaboracion"]
+    costing = detail["escandallo"]
+
+    assert [line["coste_linea"] for line in costing["lineas"]] == [2.0, 2.0, 1.0]
+    assert costing["coste_total"] == 5.0
+    assert costing["coste_por_racion"] == 0.5
+    assert costing["estado_coste"] == "DISPONIBLE"
+    assert costing["coste_provisional"] is False
+    assert costing["precios_confirmados"] == 3
+    assert costing["precios_referencia"] == 0
+    assert costing["completitud_coste_porcentaje"] == 100.0
+    assert all(line["clasificacion_precio"] == "CONFIRMADO" for line in costing["lineas"])
+
+
+def test_fase1_precio_historico_se_publica_como_real_y_no_solo_confirmado(tmp_path: Path) -> None:
+    service = BibliotecaCulinariaReadService(tmp_path)
+
+    line = service._cost_line(
+        {
+            "tipo_componente": "ARTICULO", "estado_relacion": "relacionado",
+            "articulo_id": "ART-HIST", "nombre_original": "Ingrediente histórico",
+            "cantidad": 1, "unidad": "kg",
+        },
+        {
+            "precio_compra_utilizado": 3, "factor_conversion": 1,
+            "cantidad_neta": 1, "cantidad_bruta": 1, "coste_linea": 3,
+            "unidad_precio": "kg", "proveedor_precio": "Proveedor compra",
+            "fecha_precio": "2026-08-20", "precio_provisional": False,
+            "precio_referencia": {"fuente": "historico", "precio_original": 3},
+            "incidencias": [],
+        },
+    )
+
+    assert line["clasificacion_precio"] == "REAL"
+    assert line["origen_precio"] == "historico_compras"
+    assert line["precio_provisional"] is False
+
+
+def test_fase1_caso_b_no_inventa_precio_y_expone_completitud(tmp_path: Path) -> None:
+    _configure_three_ingredient_cost_fixture(tmp_path, missing_code="ART-C")
+
+    costing = BibliotecaCulinariaReadService(tmp_path).detalle(
+        "REC-SALSA-ROMESCO",
+    )["elaboracion"]["escandallo"]
+
+    assert [line["coste_linea"] for line in costing["lineas"]] == [2.0, 2.0, None]
+    assert costing["estado_coste"] == "PARCIAL"
+    assert costing["coste_total"] is None
+    assert costing["coste_total_parcial"] == 4.0
+    assert costing["ingredientes_sin_precio"] == ["Ingrediente C"]
+    assert costing["ingredientes_pendientes_coste"] == ["Ingrediente C"]
+    assert costing["completitud_coste_porcentaje"] == 66.67
+
+
+def test_fase1_caso_c_referencia_externa_solo_produce_escandallo_provisional(tmp_path: Path) -> None:
+    _configure_three_ingredient_cost_fixture(tmp_path, reference_code="ART-C")
+
+    detail = BibliotecaCulinariaReadService(tmp_path).detalle("REC-SALSA-ROMESCO")["elaboracion"]
+    costing = detail["escandallo"]
+    referenced = costing["lineas"][2]
+
+    assert costing["coste_total"] == 5.5
+    assert costing["estado_coste"] == "PROVISIONAL"
+    assert costing["coste_provisional"] is True
+    assert costing["precios_confirmados"] == 2
+    assert costing["precios_referencia"] == 1
+    assert costing["completitud_coste_porcentaje"] == 100.0
+    assert detail["coste_completo"] is False
+    assert detail["coste_provisional"] is True
+    assert referenced["clasificacion_precio"] == "REFERENCIA"
+    assert referenced["precio_provisional"] is True
+    assert referenced["origen_precio"] == "referencia_externa"
+    assert referenced["tienda_referencia"] == "Tienda externa"
+
+
+def test_fase1_caso_d_recalcula_al_cambiar_precio_sin_editar_receta(tmp_path: Path) -> None:
+    _configure_three_ingredient_cost_fixture(tmp_path)
+    service = BibliotecaCulinariaReadService(tmp_path)
+    before = service.detalle("REC-SALSA-ROMESCO")["elaboracion"]["escandallo"]
+    article_path = tmp_path / "DATOS" / "db" / "articulos.json"
+    articles = json.loads(article_path.read_text(encoding="utf-8"))
+    next(article for article in articles if article["codigo"] == "ART-A")["precio"] = 3
+    article_path.write_text(json.dumps(articles, ensure_ascii=False), encoding="utf-8")
+
+    after = service.detalle("REC-SALSA-ROMESCO")["elaboracion"]["escandallo"]
+
+    assert before["coste_total"] == 5.0
+    assert after["coste_total"] == 6.0
+    assert after["coste_por_racion"] == 0.6
+
+
+def test_fase1_caso_a_expone_coste_por_unidad_fisica_cuando_procede(tmp_path: Path) -> None:
+    _configure_three_ingredient_cost_fixture(tmp_path, yield_unit="kg")
+
+    costing = BibliotecaCulinariaReadService(tmp_path).detalle(
+        "REC-SALSA-ROMESCO",
+    )["elaboracion"]["escandallo"]
+
+    assert costing["coste_por_unidad_rendimiento"] == 0.5
+    assert costing["unidad_coste_rendimiento"] == "kg"
+
+
 def test_biblioteca_resumen_listado_busqueda_filtros_y_detalle(tmp_path: Path) -> None:
     _write_fixture(tmp_path)
     service = BibliotecaCulinariaReadService(tmp_path)
@@ -367,6 +511,38 @@ def test_biblioteca_resumen_listado_busqueda_filtros_y_detalle(tmp_path: Path) -
     assert detail["receta"]["ingredientes"][0]["articulo_id"] == "ART-001"
     assert detail["documentos"][0]["tipo"] == "pdf"
     assert "AP" not in json.dumps(detail, ensure_ascii=False)
+
+
+def test_fase1_caso_e_ficha_proyecta_receta_canonica_pendientes_y_procedencia(tmp_path: Path) -> None:
+    _write_fixture(tmp_path)
+    recipe_path = tmp_path / "DATOS" / "db" / "biblioteca_recetas_601.json"
+    payload = json.loads(recipe_path.read_text(encoding="utf-8"))
+    recipe = payload["fichas_tecnicas"][0]
+    recipe["regeneracion"] = "Calentar a 65 C"
+    recipe["procedencia_campos"] = {
+        "elaboracion": {
+            "tipo": "IMPORTADO", "actor_id": "IMPORT-FIXTURE",
+            "estado_revision": "CONFIRMADO",
+        },
+        "alergenos": {
+            "tipo": "IA", "actor_id": "HOST_AI",
+            "estado_revision": "PENDIENTE_REVISION",
+        },
+    }
+    recipe_path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+
+    detail = BibliotecaCulinariaReadService(tmp_path).detalle("REC601-000001")["elaboracion"]
+    sheet = detail["ficha_tecnica"]
+
+    assert sheet["identificacion"]["nombre"] == detail["nombre"]
+    assert sheet["ingredientes"] == detail["receta"]["ingredientes"]
+    assert sheet["proceso"]["procedimiento"] == detail["receta"]["procedimiento"]
+    assert sheet["rendimiento"] == detail["receta"]["rendimiento"]
+    assert sheet["regeneracion"] == "Calentar a 65 C"
+    assert sheet["escandallo"] == detail["escandallo"]
+    assert "Producción máxima por tanda" in sheet["campos_pendientes"]
+    assert sheet["procedencia_campos"]["elaboracion"]["estado_revision"] == "CONFIRMADO"
+    assert sheet["procedencia_campos"]["alergenos"]["estado_revision"] == "PENDIENTE_REVISION"
 
 
 def test_biblioteca_proyecta_escandallos_canonicos_sin_incluir_articulos(tmp_path: Path) -> None:

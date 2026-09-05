@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import re
 import tempfile
+from copy import deepcopy
 from dataclasses import dataclass, asdict
 from datetime import datetime
 from pathlib import Path
@@ -151,6 +152,18 @@ class RepositorioBibliotecaRecetas601:
             return self._normalizar_lista(existente.get(campo))
         return []
 
+    @staticmethod
+    def _valor_estructurado(
+        origen: dict[str, Any], existente: Optional[dict[str, Any]], campo: str,
+        default: Any = None,
+    ) -> Any:
+        """Conserva bool/0/dict/list; `_valor_extendido` se reserva para texto."""
+        if campo in origen:
+            return deepcopy(origen.get(campo))
+        if existente and campo in existente:
+            return deepcopy(existente.get(campo))
+        return deepcopy(default)
+
     def _calcular_completitud(self, ficha: dict[str, Any]) -> dict[str, Any]:
         confirmados = 0
         pendientes: list[str] = []
@@ -193,22 +206,46 @@ class RepositorioBibliotecaRecetas601:
             dict(item) for item in (structured_source or []) if isinstance(item, dict)
         ]
         ficha["categoria"] = self._valor_extendido(receta_fuente, receta_existente, "categoria")
+        ficha["tipo_elaboracion"] = self._valor_extendido(
+            receta_fuente, receta_existente, "tipo_elaboracion", receta_base.get("tipo") or "",
+        )
         ficha["descripcion"] = self._valor_extendido(receta_fuente, receta_existente, "descripcion")
         ficha["tecnicas_culinarias"] = self._lista_extendida(receta_fuente, receta_existente, "tecnicas_culinarias")
         ficha["coste_total"] = self._valor_extendido(receta_fuente, receta_existente, "coste_total")
         ficha["precio"] = self._valor_extendido(receta_fuente, receta_existente, "precio")
         ficha["margen"] = self._valor_extendido(receta_fuente, receta_existente, "margen")
         ficha["rendimiento"] = self._valor_extendido(receta_fuente, receta_existente, "rendimiento", str(receta_base.get("numero_raciones") or ""))
+        ficha["unidad_rendimiento"] = self._valor_extendido(
+            receta_fuente, receta_existente, "unidad_rendimiento",
+            "raciones" if receta_base.get("numero_raciones") else "",
+        )
+        ficha["cantidad_por_racion"] = (
+            receta_fuente.get("cantidad_por_racion")
+            if "cantidad_por_racion" in receta_fuente
+            else deepcopy((receta_existente or {}).get("cantidad_por_racion"))
+        )
+        ficha["rendimiento_neto"] = self._valor_estructurado(receta_fuente, receta_existente, "rendimiento_neto")
+        ficha["merma"] = self._valor_estructurado(receta_fuente, receta_existente, "merma")
         ficha["coste_por_racion"] = self._valor_extendido(receta_fuente, receta_existente, "coste_por_racion")
         ficha["tiempo_activo"] = self._valor_extendido(receta_fuente, receta_existente, "tiempo_activo")
         ficha["tiempo_pasivo"] = self._valor_extendido(receta_fuente, receta_existente, "tiempo_pasivo")
+        ficha["tiempo_preparacion"] = self._valor_extendido(receta_fuente, receta_existente, "tiempo_preparacion")
+        ficha["tiempo_coccion"] = self._valor_extendido(receta_fuente, receta_existente, "tiempo_coccion")
+        ficha["tiempo_reposo"] = self._valor_extendido(receta_fuente, receta_existente, "tiempo_reposo")
+        ficha["tiempo_enfriamiento"] = self._valor_extendido(receta_fuente, receta_existente, "tiempo_enfriamiento")
         ficha["tiempo_total"] = self._valor_extendido(receta_fuente, receta_existente, "tiempo_total", receta_base.get("tiempo_elaboracion") or "")
         ficha["produccion_minima"] = self._valor_extendido(receta_fuente, receta_existente, "produccion_minima")
         ficha["produccion_maxima"] = self._valor_extendido(receta_fuente, receta_existente, "produccion_maxima")
-        ficha["personal_recomendado"] = self._valor_extendido(receta_fuente, receta_existente, "personal_recomendado")
+        ficha["unidad_tanda"] = self._valor_extendido(receta_fuente, receta_existente, "unidad_tanda")
+        ficha["rendimiento_por_tanda"] = self._valor_estructurado(receta_fuente, receta_existente, "rendimiento_por_tanda")
+        ficha["limitacion_tanda"] = self._valor_extendido(receta_fuente, receta_existente, "limitacion_tanda")
+        ficha["personal_recomendado"] = self._valor_estructurado(receta_fuente, receta_existente, "personal_recomendado", "")
+        ficha["intervencion_activa"] = self._valor_extendido(receta_fuente, receta_existente, "intervencion_activa")
         ficha["recursos_necesarios"] = self._lista_extendida(receta_fuente, receta_existente, "recursos_necesarios")
-        ficha["puede_congelarse"] = self._valor_extendido(receta_fuente, receta_existente, "puede_congelarse")
-        ficha["puede_refrigerarse"] = self._valor_extendido(receta_fuente, receta_existente, "puede_refrigerarse")
+        ficha["estacion_zona"] = self._valor_extendido(receta_fuente, receta_existente, "estacion_zona")
+        ficha["cuello_botella"] = self._valor_extendido(receta_fuente, receta_existente, "cuello_botella")
+        ficha["puede_congelarse"] = self._valor_estructurado(receta_fuente, receta_existente, "puede_congelarse", "")
+        ficha["puede_refrigerarse"] = self._valor_estructurado(receta_fuente, receta_existente, "puede_refrigerarse", "")
         ficha["vida_util_refrigerado"] = self._valor_extendido(receta_fuente, receta_existente, "vida_util_refrigerado")
         ficha["vida_util_congelado"] = self._valor_extendido(receta_fuente, receta_existente, "vida_util_congelado")
         ficha["tiempo_descongelacion"] = self._valor_extendido(receta_fuente, receta_existente, "tiempo_descongelacion")
@@ -239,6 +276,11 @@ class RepositorioBibliotecaRecetas601:
         ficha["propuestas_ia_pendientes"] = self._lista_extendida(receta_fuente, receta_existente, "propuestas_ia_pendientes")
         ficha["procedencia_campos"] = dict(receta_fuente.get("procedencia_campos") if "procedencia_campos" in receta_fuente else (receta_existente or {}).get("procedencia_campos") or {})
         ficha["historial_procedencia"] = list(receta_fuente.get("historial_procedencia") if "historial_procedencia" in receta_fuente else (receta_existente or {}).get("historial_procedencia") or [])
+        ficha["estados_campos_operativos"] = deepcopy(
+            receta_fuente.get("estados_campos_operativos")
+            if "estados_campos_operativos" in receta_fuente
+            else (receta_existente or {}).get("estados_campos_operativos") or {}
+        )
         ficha["documentos_adjuntos"] = (
             list(ficha.get("documentos_word") or [])
             + list(ficha.get("documentos_pdf") or [])
@@ -267,17 +309,30 @@ class RepositorioBibliotecaRecetas601:
                 "precio": ficha.get("precio", ""),
                 "margen": ficha.get("margen", ""),
                 "rendimiento": ficha.get("rendimiento", ""),
+                "unidad_rendimiento": ficha.get("unidad_rendimiento", ""),
+                "cantidad_por_racion": deepcopy(ficha.get("cantidad_por_racion")),
                 "coste_por_racion": ficha.get("coste_por_racion", ""),
             },
             "produccion": {
+                "tiempo_preparacion": ficha.get("tiempo_preparacion", ""),
                 "tiempo_activo": ficha.get("tiempo_activo", ""),
                 "tiempo_pasivo": ficha.get("tiempo_pasivo", ""),
+                "tiempo_coccion": ficha.get("tiempo_coccion", ""),
+                "tiempo_reposo": ficha.get("tiempo_reposo", ""),
+                "tiempo_enfriamiento": ficha.get("tiempo_enfriamiento", ""),
                 "tiempo_total": ficha.get("tiempo_total", ""),
                 "produccion_minima": ficha.get("produccion_minima", ""),
                 "produccion_maxima": ficha.get("produccion_maxima", ""),
+                "unidad_tanda": ficha.get("unidad_tanda", ""),
+                "rendimiento_por_tanda": ficha.get("rendimiento_por_tanda"),
+                "limitacion_tanda": ficha.get("limitacion_tanda", ""),
                 "personal_recomendado": ficha.get("personal_recomendado", ""),
+                "intervencion_activa": ficha.get("intervencion_activa", ""),
                 "recursos_necesarios": list(ficha.get("recursos_necesarios") or []),
+                "estacion_zona": ficha.get("estacion_zona", ""),
+                "cuello_botella": ficha.get("cuello_botella", ""),
             },
+            "estados_campos_operativos": deepcopy(ficha.get("estados_campos_operativos") or {}),
             "conservacion": {
                 "puede_congelarse": ficha.get("puede_congelarse", ""),
                 "puede_refrigerarse": ficha.get("puede_refrigerarse", ""),
@@ -329,6 +384,8 @@ class RepositorioBibliotecaRecetas601:
         receta.setdefault("tiempo_activo", "")
         receta.setdefault("tiempo_pasivo", "")
         receta.setdefault("tiempo_total", self._normalizar_texto(receta.get("tiempo_elaboracion") or ""))
+        receta.setdefault("unidad_rendimiento", "raciones" if receta.get("numero_raciones") else "")
+        receta.setdefault("cantidad_por_racion", None)
         receta.setdefault("produccion_minima", "")
         receta.setdefault("produccion_maxima", "")
         receta.setdefault("personal_recomendado", "")

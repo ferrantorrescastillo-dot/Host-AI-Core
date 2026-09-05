@@ -306,6 +306,7 @@ function Costing({ item, canConfirmYield, onConfirmed }: {
       <div><dt>Rendimiento</dt><dd>{yieldText(item)}</dd></div>
       <div><dt>Estado económico</dt><dd>{statusLabel(esc.estado_coste)}</dd></div>
     </dl>
+    {esc.coste_provisional ? <div className="costing-alert" role="note"><strong>Escandallo provisional</strong><p>Incluye {esc.precios_referencia || 0} precio(s) de referencia externa. No es un coste real confirmado.</p></div> : null}
     {esc.estado_coste !== "DISPONIBLE" || esc.ingredientes_sin_coste || esc.ingredientes_sin_conversion
       ? <div className="costing-alert"><strong>Revisión económica pendiente</strong><p>{esc.ingredientes_sin_coste} ingredientes sin coste · {esc.ingredientes_sin_conversion} sin conversión.</p></div>
       : null}
@@ -326,6 +327,8 @@ function Costing({ item, canConfirmYield, onConfirmed }: {
       <dt>Ingredientes sin precio</dt><dd>{esc.ingredientes_sin_coste}</dd>
       <dt>Ingredientes sin conversión</dt><dd>{esc.ingredientes_sin_conversion}</dd>
     </dl>
+    <p><strong>Completitud del coste:</strong> {esc.completitud_coste_porcentaje ?? 0}%.</p>
+    {esc.coste_por_unidad_rendimiento != null ? <p><strong>Coste por {esc.unidad_coste_rendimiento}:</strong> {money(esc.coste_por_unidad_rendimiento, "No disponible")}</p> : null}
     {esc.incidencias.length ? <ul>{esc.incidencias.map((value, index) => <li key={index}>{displayValue(value)}</li>)}</ul> : null}
   </Section>;
 }
@@ -530,6 +533,9 @@ function TechnicalSheet({ item }: { item: ElaboracionDetalle }) {
     </dl>
     <h4>Ingredientes</h4>
     <IngredientsTable ingredients={sheet.ingredientes} costing={false} />
+    {sheet.procedencia_campos && Object.keys(sheet.procedencia_campos).length
+      ? <RelationList title="Procedencia de campos" values={Object.entries(sheet.procedencia_campos).map(([campo, origen]) => ({ campo, ...origen }))} />
+      : null}
     {sheet.campos_pendientes.length ? <><h4>Campos pendientes</h4><ul>{sheet.campos_pendientes.map((value) => <li key={value}>{value}</li>)}</ul></> : null}
   </Section>;
 }
@@ -612,6 +618,9 @@ function PriceCell({ ingredient }: { ingredient: IngredienteReceta }) {
     || ingredient.unidad_precio_original !== appliedUnit
   );
   return <td>{money(applied, "")}{appliedUnit ? ` / ${appliedUnit}` : ""}
+    {ingredient.precio_provisional
+      ? <small>Referencia externa · provisional</small>
+      : <small>{ingredient.clasificacion_precio === "REAL" ? "Precio real" : "Precio confirmado"}</small>}
     {showOriginal ? <small>Original: {money(ingredient.precio_original, "")}{ingredient.unidad_precio_original ? ` / ${ingredient.unidad_precio_original}` : " · unidad no registrada"}</small> : null}
   </td>;
 }
@@ -657,6 +666,7 @@ function priceOrigin(value?: string | null) {
     tarifa_proveedor: "Tarifa de proveedor",
     historico_compras: "Histórico de compras",
     catalogo_articulos: "Catálogo de Artículos",
+    referencia_externa: "Referencia externa (provisional)",
     escandallo_hijo: "Escandallo hijo",
     no_disponible: "Sistema",
   };

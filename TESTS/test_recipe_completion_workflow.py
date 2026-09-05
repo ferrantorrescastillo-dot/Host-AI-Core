@@ -110,8 +110,88 @@ def test_generador_inyectado_recibe_faltantes_reales_y_no_escribe(tmp_path: Path
     result = RecetaDocumentacionWriteService(tmp_path, generator=FakeGenerator()).proposal(recipe_id=recipe_id, proposed={})
 
     assert calls and "Elaboración paso a paso" in calls[0]["missing_fields"]
-    assert result["datos_propuestos_ia"] == {"elaboracion": "Preparar, cocinar y verificar el punto."}
+    assert result["datos_propuestos_ia"] == {
+        "elaboracion": "Preparar, cocinar y verificar el punto.", "rendimiento": 4.0,
+    }
+    assert result["metadatos_propuestas"]["rendimiento"]["origen"] == "CALCULADO"
     assert result["generado_ahora"] is True and result["datos_reales_modificados"] is False
+    assert path.read_bytes() == before
+
+
+def test_production_ready_provisional_distingue_propuestas_de_confirmacion(tmp_path: Path) -> None:
+    recipe_id = _recipe(tmp_path)
+    service = RecetaDocumentacionWriteService(tmp_path)
+    proposed = {
+        "tipo_elaboracion": "salsa",
+        "rendimiento": 4,
+        "unidad_rendimiento": "raciones",
+        "cantidad_por_racion": {"cantidad": 250, "unidad": "ml"},
+        "ingredientes_estructurados": [
+            {"nombre_original": "Nata", "cantidad": 1, "unidad": "l", "cantidad_normalizada": 1, "unidad_normalizada": "l"},
+            {"nombre_original": "Patata Monalisa", "cantidad": 1, "unidad": "kg", "cantidad_normalizada": 1, "unidad_normalizada": "kg"},
+        ],
+        "tiempo_activo": "20 minutos",
+        "tiempo_pasivo": {"estado": "NO_APLICA", "motivo": "No tiene fase pasiva."},
+        "tiempo_total": "20 minutos",
+        "produccion_maxima": 4,
+        "unidad_tanda": "raciones",
+        "rendimiento_por_tanda": 4,
+        "personal_recomendado": {"personas": 1, "rol": "cocinero"},
+        "recursos_necesarios": ["cazo", "batidora"],
+        "puede_refrigerarse": False,
+        "puede_congelarse": False,
+        "conservacion": "Servicio inmediato.",
+        "regeneracion": {"estado": "NO_APLICA", "motivo": "Servicio inmediato."},
+    }
+    before = (tmp_path / "DATOS" / "db" / "biblioteca_recetas_601.json").read_bytes()
+
+    result = service.proposal(recipe_id=recipe_id, proposed=proposed)
+    coverage = result["completitud"]
+
+    assert coverage["production_ready_provisional"] is True
+    assert coverage["production_ready_confirmed"] is False
+    assert coverage["production_ready"]["bloqueos_provisionales"] == []
+    assert coverage["resolucion_campos"]["rendimiento"]["estado"] == "RESUELTO_IA"
+    assert coverage["resolucion_campos"]["regeneracion"]["estado"] == "NO_APLICA"
+    assert (tmp_path / "DATOS" / "db" / "biblioteca_recetas_601.json").read_bytes() == before
+
+    preview = service.preview(
+        recipe_id=recipe_id, selected=result["datos_propuestos_ia"], overwrite_fields=[], context=_context(),
+        proposal_metadata_by_field=result["metadatos_propuestas"],
+    )
+    service.confirm(
+        recipe_id=recipe_id, selected=result["datos_propuestos_ia"], overwrite_fields=[],
+        preview_token=preview["preview_token"], context=_context(),
+        proposal_metadata_by_field=result["metadatos_propuestas"],
+    )
+    confirmed = service._completion_projection(
+        RepositorioBibliotecaRecetas601(tmp_path).obtener(recipe_id), {}, {},
+    )
+    assert confirmed["production_ready_provisional"] is True
+    assert confirmed["production_ready_confirmed"] is True
+
+
+def test_rendimiento_y_otros_datos_criticos_embebidos_se_bloquean_sin_escribir(tmp_path: Path) -> None:
+    recipe_id = _recipe(tmp_path)
+
+    class EmbeddedCriticalGenerator:
+        def generate(self, *, recipe, missing_fields, allowed_fields):
+            return {
+                "descripcion": "Salsa cremosa. Rinde 4 raciones.",
+                "observaciones": "Vida util: conservar durante 48 horas.",
+                "elaboracion": "Cocinar hasta que las piezas alcancen 70 °C en el centro.",
+            }
+
+    path = tmp_path / "DATOS" / "db" / "biblioteca_recetas_601.json"
+    before = path.read_bytes()
+    result = RecetaDocumentacionWriteService(
+        tmp_path, generator=EmbeddedCriticalGenerator(),
+    ).proposal(recipe_id=recipe_id, proposed={})
+
+    assert result["datos_propuestos_ia"] == {"rendimiento": 4.0}
+    assert {item["campo"] for item in result["propuestas_bloqueadas_revision"]} == {"descripcion", "observaciones", "elaboracion"}
+    assert any("RENDIMIENTO_EMBEBIDO" in item["motivos"] for item in result["propuestas_bloqueadas_revision"])
+    assert any("TEMPERATURA_SEGURIDAD_EMBEBIDA" in item["motivos"] for item in result["propuestas_bloqueadas_revision"])
     assert path.read_bytes() == before
 
 
@@ -134,9 +214,9 @@ def test_caso_salsa_con_tiempo_total_opcional_lo_solicita_y_explica_campos_manua
 
     assert "Tiempo total" in calls[0]["missing_fields"]
     assert "Elaboración paso a paso" not in calls[0]["missing_fields"]
-    assert result["datos_propuestos_ia"] == {"tiempo_total": "45 minutos"}
+    assert result["datos_propuestos_ia"] == {"tiempo_total": "45 minutos", "rendimiento": 4.0}
     assert {"key": "elaboracion", "reason": "EXISTING_VALUE"} in result["campos_descartados"]
-    assert set(result["campos_pendientes_no_proponibles"]) == {"Categoría", "Producción máxima por tanda", "Personal recomendado"}
+    assert result["campos_pendientes_no_proponibles"] == []
     assert repository.obtener(recipe_id)["tiempo_total"] == ""
 
 
@@ -175,8 +255,13 @@ def test_factory_http_reutiliza_engine_canonico_y_sustituye_solo_provider_extern
 
     assert response.status_code == 200
     assert calls and calls[0].proveedor_preferido == "OPENAI"
+    prompt = str(calls[0].datos_enviados.get("pregunta") or "")
+    assert "No insertes en descripcion" in prompt
+    assert "No agregues ingredientes que no aparezcan" in prompt
     assert service.generator.engine is canonical_engine
-    assert payload["datos_propuestos_ia"] == {"elaboracion": "Propuesta nueva desde el provider externo."}
+    assert payload["datos_propuestos_ia"] == {
+        "elaboracion": "Propuesta nueva desde el provider externo.", "rendimiento": 4.0,
+    }
     assert payload["datos_reales_modificados"] is False
     preview = client.post(
         f"/api/v1/biblioteca/elaboraciones/{recipe_id}/documentacion/preview",
@@ -222,9 +307,9 @@ def test_endpoint_real_propone_tiempo_total_y_expone_pendientes_manuales(tmp_pat
 
     payload = response.json()
     assert response.status_code == 200 and len(requests) == 1
-    assert payload["datos_propuestos_ia"] == {"tiempo_total": "45 minutos"}
+    assert payload["datos_propuestos_ia"] == {"tiempo_total": "45 minutos", "rendimiento": 4.0}
     assert "Tiempo total" in payload["campos_pendientes_proponibles"]
-    assert set(payload["campos_pendientes_no_proponibles"]) == {"Categoría", "Producción máxima por tanda", "Personal recomendado"}
+    assert payload["campos_pendientes_no_proponibles"] == []
     assert repository.obtener(recipe_id)["tiempo_total"] == ""
 
 

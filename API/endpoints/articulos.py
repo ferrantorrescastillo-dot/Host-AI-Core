@@ -73,6 +73,16 @@ def import_prices_handle(request: ApiRequest, facade: CorePublicFacade) -> ApiRe
     return ApiResponse(status_code=_status(payload), payload=payload)
 
 
+def import_prices_state_handle(request: ApiRequest, facade: CorePublicFacade) -> ApiResponse:
+    payload = facade.estado_referencias_precio(_internal_context(request))
+    return ApiResponse(status_code=_status(payload), payload=payload)
+
+
+def import_prices_discard_handle(request: ApiRequest, facade: CorePublicFacade) -> ApiResponse:
+    payload = facade.descartar_referencias_precio(_internal_context(request))
+    return ApiResponse(status_code=_status(payload), payload=payload)
+
+
 def web_price_handle(request: ApiRequest, facade: CorePublicFacade) -> ApiResponse:
     article_id = _article_id(request.path)
     payload = facade.referencia_web_articulo(article_id, request.body, _internal_context(request), confirm=request.path.endswith("/confirmar"))

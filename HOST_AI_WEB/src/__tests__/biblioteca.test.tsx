@@ -7,7 +7,7 @@ import { App } from "../ui/App";
 const base = { ok: true, version: "1.0", api_version: "1.0", request_id: "LIB-1", modo_seguro: true, datos_reales_modificados: false };
 const item = { id: "REC601-1", codigo: "SALSA", nombre: "Salsa de tomate", categoria: "Salsas", tipo: "Elaboración", estado: "PENDIENTE_DE_COMPLETAR", rendimiento: 10, unidad_rendimiento: "raciones", raciones: 10, coste_total: 8.5, coste_por_racion: 0.85, tiene_receta: true, tiene_escandallo: true, tiene_ficha_tecnica: false, tiene_fotografia: false, tiene_documentos: false, tiene_produccion: false, tiene_relaciones_menu_evento: false, completitud: 80 };
 const list = { ...base, elaboraciones: { items: [item], page: 1, page_size: 20, total: 1, total_pages: 1, filters: { estados: ["OPERATIVA"], categorias: ["Salsas"] }, capabilities: {} } };
-const ingredient = { articulo_id: "ART-001", articulo_codigo: "ART-001", articulo_nombre: "Tomate pera", codigo: "ART-001", nombre_articulo: "Tomate pera", unidad_base: "kg", nombre_original: "Tomate pera", cantidad_texto: "500 g", cantidad: 500, unidad: "g", cantidad_receta: 500, unidad_receta: "g", merma: 5, coste_unitario: 4, precio_unitario: 4, precio_original: 4, unidad_precio_original: "kg", precio_aplicado: 4, unidad_precio_aplicado: "kg", unidad_precio: "kg", origen_precio: "historico_compras", fecha_precio: "2026-07-24", tipo_conversion: "metrica", factor_conversion: 0.001, cantidad_utilizada: 500, cantidad_con_merma: 525, coste_linea: 2, coste_con_merma: 2, estado_coste: "DISPONIBLE", motivo_sin_coste: null, estado_relacion: "relacionado" };
+const ingredient = { articulo_id: "ART-001", articulo_codigo: "ART-001", articulo_nombre: "Tomate pera", codigo: "ART-001", nombre_articulo: "Tomate pera", unidad_base: "kg", nombre_original: "Tomate pera", cantidad_texto: "500 g", cantidad: 500, unidad: "g", cantidad_receta: 500, unidad_receta: "g", merma: 5, coste_unitario: 4, precio_unitario: 4, precio_original: 4, unidad_precio_original: "kg", precio_aplicado: 4, unidad_precio_aplicado: "kg", unidad_precio: "kg", origen_precio: "historico_compras", clasificacion_precio: "REAL", fecha_precio: "2026-07-24", tipo_conversion: "metrica", factor_conversion: 0.001, cantidad_utilizada: 500, cantidad_con_merma: 525, coste_linea: 2, coste_con_merma: 2, estado_coste: "DISPONIBLE", motivo_sin_coste: null, estado_relacion: "relacionado" };
 const ingredientWithoutPrice = { articulo_id: "ART-002", codigo: "ART-002", nombre_articulo: "Sal", unidad_base: null, nombre_original: "Sal", cantidad_texto: "20 g", cantidad: 20, unidad: "g", merma: 0, coste_unitario: null, unidad_precio: null, origen_precio: "no_disponible", fecha_precio: null, factor_conversion: null, cantidad_utilizada: 20, cantidad_con_merma: null, coste_linea: null, coste_con_merma: null, estado_coste: "SIN_PRECIO", motivo_sin_coste: "Sin precio vigente", estado_relacion: "relacionado" };
 const ingredientWithoutConversion = { articulo_id: "ART-003", articulo_codigo: "ART-003", codigo: "ART-003", nombre_articulo: "Gamba paella", unidad_base: null, nombre_original: "Gamba paella", cantidad_texto: "0.19 kg", cantidad: 0.19, unidad: "kg", cantidad_receta: 0.19, unidad_receta: "kg", merma: 0, coste_unitario: 10.5, precio_original: 10.5, unidad_precio_original: "u", precio_aplicado: 10.5, unidad_precio_aplicado: "u", unidad_precio: "u", origen_precio: "catalogo_articulos", fecha_precio: null, tipo_conversion: "no_disponible", factor_conversion: null, cantidad_utilizada: 0.19, cantidad_con_merma: 0.19, coste_linea: null, coste_con_merma: null, estado_coste: "CONVERSION_NO_DISPONIBLE", motivo_sin_coste: "Conversión no disponible", estado_relacion: "relacionado" };
 const detail = {
@@ -618,5 +618,40 @@ describe("Biblioteca Culinaria", () => {
     render(<MemoryRouter initialEntries={["/biblioteca/elaboraciones/REC601-1?tab=receta"]}><App /></MemoryRouter>);
     await screen.findByRole("heading", { name: "Salsa de tomate" });
     expect(screen.queryByRole("button", { name: "Buscar precio online" })).not.toBeInTheDocument();
+  });
+  it("distingue un escandallo provisional y la referencia externa de un precio confirmado", async () => {
+    const referenceIngredient = {
+      ...ingredient,
+      origen_precio: "referencia_externa",
+      clasificacion_precio: "REFERENCIA",
+      precio_provisional: true,
+      tienda_referencia: "Tienda externa",
+    };
+    const provisional = {
+      ...detail,
+      estado_coste: "PROVISIONAL",
+      coste_completo: false,
+      coste_provisional: true,
+      escandallo: {
+        ...detail.escandallo,
+        estado_coste: "PROVISIONAL",
+        coste_provisional: true,
+        precios_confirmados: 0,
+        precios_referencia: 1,
+        completitud_coste_porcentaje: 100,
+        lineas: [referenceIngredient],
+        coste_total: 2,
+        coste_total_parcial: null,
+      },
+    };
+    vi.spyOn(global, "fetch").mockResolvedValue({ ok: true, json: async () => ({ ...base, elaboracion: provisional }) } as Response);
+
+    render(<MemoryRouter initialEntries={["/biblioteca/elaboraciones/REC601-1?tab=escandallo"]}><App /></MemoryRouter>);
+
+    expect(await screen.findByText("Escandallo provisional")).toBeInTheDocument();
+    expect(screen.getByText(/No es un coste real confirmado/)).toBeInTheDocument();
+    expect(screen.getByText("Referencia externa · provisional")).toBeInTheDocument();
+    expect(screen.getByText("Referencia externa (provisional)")).toBeInTheDocument();
+    expect(screen.getByText(/Completitud del coste:/).parentElement).toHaveTextContent("100%");
   });
 });

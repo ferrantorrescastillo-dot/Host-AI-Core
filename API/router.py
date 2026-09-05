@@ -40,9 +40,15 @@ ROUTES: tuple[Route, ...] = (
     Route("POST", "/api/v1/articulos/reclasificacion/confirmar", articulos.reclassification_handle),
     Route("POST", "/api/v1/articulos/referencias-importadas/preview", articulos.import_prices_handle),
     Route("POST", "/api/v1/articulos/referencias-importadas/confirmar", articulos.import_prices_handle),
+    Route("GET", "/api/v1/articulos/referencias-importadas/estado", articulos.import_prices_state_handle),
+    Route("POST", "/api/v1/articulos/referencias-importadas/descartar", articulos.import_prices_discard_handle),
     Route("GET", "/api/v1/biblioteca", biblioteca.summary_handle),
     Route("GET", "/api/v1/biblioteca/elaboraciones", biblioteca.list_handle),
     Route("POST", "/api/v1/biblioteca/importaciones", biblioteca.import_create_handle),
+    Route("GET", "/api/v1/biblioteca/importaciones", biblioteca.import_list_handle),
+    Route("GET", "/api/v1/biblioteca/importaciones/activa", biblioteca.import_active_handle),
+    Route("POST", "/api/v1/biblioteca/recetas/completado-externo/exportar", biblioteca.external_completion_handle),
+    Route("POST", "/api/v1/biblioteca/recetas/completado-externo/importar", biblioteca.external_completion_handle),
     Route("GET", "/api/v1/menus", menus.collection_handle),
     Route("POST", "/api/v1/menus", menus.collection_handle),
     Route("GET", "/api/v1/menus/elaboraciones", menus.elaborations_handle),
@@ -111,6 +117,10 @@ class ApiRouter:
                 handler = biblioteca.import_status_handle
             elif key[0] == "GET" and key[1].endswith("/historial"):
                 handler = biblioteca.import_history_handle
+            elif key[0] == "GET" and key[1].endswith("/completado-recetas-activo"):
+                handler = biblioteca.import_external_completion_active_handle
+            elif key[0] == "POST" and key[1].endswith("/descartar"):
+                handler = biblioteca.import_discard_handle
             elif key[1].endswith("/borrador"):
                 handler = biblioteca.import_draft_handle
             elif key[0] == "GET" and key[1].endswith("/propuestas"):

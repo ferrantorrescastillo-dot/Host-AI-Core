@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
@@ -74,5 +74,43 @@ describe("Catálogo de artículos", () => {
     fetchMock.mockResolvedValueOnce({ ok: false, status: 503, json: async () => ({ ...envelope, ok: false, error: { message: "Catálogo temporalmente no disponible." } }) } as Response);
     render(<MemoryRouter initialEntries={["/articulos"]}><App /></MemoryRouter>);
     expect(await screen.findByText("Catálogo temporalmente no disponible.")).toBeInTheDocument();
+  });
+
+  it("abre el enriquecimiento externo por ruta, previsualiza y confirma solo referencias", async () => {
+    const reference = {
+      tipo: "PRECIO_REFERENCIA_WEB", origen: "IMPORTADO", producto: "Estragón fresco", tienda_referencia: "Proveedor externo",
+      precio_comercial: 2.5, moneda: "EUR", cantidad_formato: 100, unidad_formato: "g",
+      precio_normalizado: 25, unidad_normalizada: "kg", url: "https://example.test/estragon",
+      autoridad: "REFERENCIA_NO_REAL",
+    };
+    let confirmed = false;
+    const fetchMock = vi.spyOn(global, "fetch").mockImplementation(async (input, init) => {
+      const url = String(input);
+      if (url.endsWith("/articulos/sin-precio")) return { ok: true, json: async () => ({ ...envelope, articulos: [{ article_id: "ART-ESTRAGON", codigo: "ART-ESTRAGON", articulo: "Estragón fresco", unidad_base: "g", unidad_compra: "g", recetas: ["REC-A"], usado_en_recetas: 1, precio_real: null, proveedor_real: null, referencia: confirmed ? reference : null, estado: confirmed ? "CON_REFERENCIA" : "SIN_PRECIO" }], total: 1, costes_derivados: [], coste_ia_usd: "0.00000000" }) } as Response;
+      if (url.endsWith("/referencias-importadas/estado")) return { ok: true, json: async () => ({ ...envelope, workflow: confirmed ? { estado: "CONFIRMADO", preview: { ...envelope, formato_detectado: "CSV", listas: [{ fila: 1, article_id: "ART-ESTRAGON", articulo: "Estragón fresco", precio_real_actual: null, proveedor_real_actual: null, referencia: reference, preview_token: "REF-PREVIEW", incluir: true }], ambiguas: [], invalidas: [], resumen: { listas: 1, ambiguas: 0, invalidas: 0 }, requiere_confirmacion: true, coste_ia_usd: "0.00000000" }, updated_at: "2026-09-01T12:00:00Z" } : null }) } as Response;
+      if (url.endsWith("/referencias-importadas/preview")) return { ok: true, json: async () => ({ ...envelope, formato_detectado: "CSV", listas: [{ fila: 1, article_id: "ART-ESTRAGON", articulo: "Estragón fresco", precio_real_actual: null, proveedor_real_actual: null, referencia: reference, preview_token: "REF-PREVIEW", incluir: true }], ambiguas: [], invalidas: [], resumen: { listas: 1, ambiguas: 0, invalidas: 0 }, requiere_confirmacion: true, precio_real_modificado: false, proveedor_real_modificado: false, coste_ia_usd: "0.00000000" }) } as Response;
+      if (url.endsWith("/referencias-importadas/confirmar")) { confirmed = true; return { ok: true, json: async () => ({ ...envelope, datos_reales_modificados: true, confirmadas: 1, lectura_posterior_verificada: true, precio_real_modificado: false, proveedor_real_modificado: false, coste_ia_usd: "0.00000000" }) } as Response; }
+      return { ok: true, json: async () => ({ ...envelope, catalogo: { items: [item], total: 1, page: 1, page_size: 20, total_pages: 1, filtros: { familias: [], proveedores: [], estados: [] }, capacidades: {} } }) } as Response;
+    });
+    render(<MemoryRouter initialEntries={["/articulos?panel=referencias"]}><App /></MemoryRouter>);
+
+    expect(await screen.findByRole("heading", { name: "Artículos incompletos" })).toBeInTheDocument();
+    expect(screen.getByText(/no se convertirá en proveedor real/i)).toBeInTheDocument();
+    fireEvent.change(screen.getByLabelText("Reimportar precio y proveedor/tienda de referencia"), { target: { value: "article_id,proveedor_referencia,precio\nART-ESTRAGON,Proveedor externo,2.50" } });
+    fireEvent.click(screen.getByRole("button", { name: "Preparar vista previa" }));
+    const preview = await screen.findByRole("region", { name: "Referencias a importar" });
+    expect(preview).toHaveTextContent("Actual real: precio sin informar · proveedor sin informar");
+    expect(preview).toHaveTextContent("proveedor/tienda Proveedor externo");
+    expect(confirmed).toBe(false);
+    fireEvent.click(within(preview).getByRole("button", { name: "Confirmar referencias seleccionadas" }));
+    expect(await screen.findByRole("status")).toHaveTextContent("El precio y el proveedor reales siguen sin modificarse");
+    const confirmCall = fetchMock.mock.calls.find(([input]) => String(input).endsWith("/referencias-importadas/confirmar"));
+    expect(JSON.parse(String(confirmCall?.[1]?.body)).rows).toHaveLength(1);
+
+    cleanup();
+    render(<MemoryRouter initialEntries={["/articulos?panel=referencias"]}><App /></MemoryRouter>);
+    expect(await screen.findByText("VISTA PREVIA CONSERVADA · CONFIRMADA")).toBeInTheDocument();
+    expect(screen.getByRole("region", { name: "Referencias a importar" })).toHaveTextContent("Proveedor externo");
+    expect(screen.queryByRole("button", { name: "Confirmar referencias seleccionadas" })).not.toBeInTheDocument();
   });
 });

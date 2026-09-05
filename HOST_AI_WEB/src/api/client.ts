@@ -1,6 +1,6 @@
 import { HOST_AI_API_BASE_URL } from "../config/env";
 import type { ChatResponse, DashboardResponse } from "../types/api";
-import type { ArticleDocumentationResponse, ArticuloCosteDerivado, ArticuloResponse, ArticuloSinPrecio, ArticuloUpdateInput, CatalogoResponse, ManualPriceResponse, PrecioReferencia, ReclassificationCandidate, ReclassificationPreview, ReferenciaImportPreviewRow, ReferenciasImportPreview } from "../types/articulos";
+import type { ArticleDocumentationResponse, ArticuloCosteDerivado, ArticuloResponse, ArticuloSinPrecio, ArticuloUpdateInput, CatalogoResponse, ManualPriceResponse, PrecioReferencia, ReclassificationCandidate, ReclassificationPreview, ReferenciaImportPreviewRow, ReferenciasImportPreview, ReferenciasImportWorkflow } from "../types/articulos";
 import type {
   BibliotecaImportProposalsResponse,
   BibliotecaImportResponse,
@@ -199,8 +199,9 @@ export const hostAiApiClient = {
   recipeBatchSummary(): Promise<Envelope & { recetas_incompletas: number; recipe_ids: string[] }> {
     return request("/api/v1/biblioteca/recetas/completado-ia/resumen", { method: "GET" });
   },
-  startRecipeBatch(): Promise<Envelope & Record<string, any>> {
-    return request("/api/v1/biblioteca/recetas/completado-ia/iniciar", { method: "POST", body: "{}" });
+  startRecipeBatch(recipeIds?: string[]): Promise<Envelope & Record<string, any>> {
+    const body = recipeIds === undefined ? {} : { recipe_ids: recipeIds };
+    return request("/api/v1/biblioteca/recetas/completado-ia/iniciar", { method: "POST", body: JSON.stringify(body) });
   },
   getRecipeBatch(id: string): Promise<Envelope & Record<string, any>> {
     return request(`/api/v1/biblioteca/recetas/completado-ia/${encodeURIComponent(id)}/estado`, { method: "GET" });
@@ -208,8 +209,14 @@ export const hostAiApiClient = {
   advanceRecipeBatch(id: string): Promise<Envelope & Record<string, any>> {
     return request(`/api/v1/biblioteca/recetas/completado-ia/${encodeURIComponent(id)}/siguiente`, { method: "POST", body: JSON.stringify({ session_id: getAiSessionId() }) });
   },
-  recipeBatchAction(id: string, operation: "cancelar" | "seleccion" | "preview" | "confirmar", body: Record<string, unknown> = {}): Promise<Envelope & Record<string, any>> {
+  recipeBatchAction(id: string, operation: "cancelar" | "reintentar" | "reintentar-fallidas" | "seleccion" | "preview" | "confirmar", body: Record<string, unknown> = {}): Promise<Envelope & Record<string, any>> {
     return request(`/api/v1/biblioteca/recetas/completado-ia/${encodeURIComponent(id)}/${operation}`, { method: "POST", body: JSON.stringify(body) });
+  },
+  exportRecipeCompletion(body: { recipe_ids: string[]; scope: string; import_id?: string }): Promise<Envelope & Record<string, any>> {
+    return request("/api/v1/biblioteca/recetas/completado-externo/exportar", { method: "POST", body: JSON.stringify(body) });
+  },
+  importRecipeCompletion(body: { filename: string; contenido_base64: string; recipe_ids: string[]; scope: string; import_id?: string; origen_propuesta: string }): Promise<Envelope & Record<string, any>> {
+    return request("/api/v1/biblioteca/recetas/completado-externo/importar", { method: "POST", body: JSON.stringify(body) });
   },
 
   getCompraDraft(id: string): Promise<CompraDraftResponse> {
@@ -292,6 +299,12 @@ export const hostAiApiClient = {
   },
   previewImportedReferences(raw: string): Promise<ReferenciasImportPreview> {
     return request("/api/v1/articulos/referencias-importadas/preview", { method: "POST", body: JSON.stringify({ raw }) });
+  },
+  getImportedReferencesState(): Promise<Envelope & { workflow: ReferenciasImportWorkflow | null }> {
+    return request("/api/v1/articulos/referencias-importadas/estado", { method: "GET" });
+  },
+  discardImportedReferences(): Promise<Envelope & { estado: "DESCARTADO" }> {
+    return request("/api/v1/articulos/referencias-importadas/descartar", { method: "POST", body: "{}" });
   },
   confirmImportedReferences(rows: ReferenciaImportPreviewRow[]): Promise<Envelope & { confirmadas: number; lectura_posterior_verificada: boolean; coste_ia_usd: string }> {
     return request("/api/v1/articulos/referencias-importadas/confirmar", { method: "POST", body: JSON.stringify({ rows }) });
@@ -431,6 +444,33 @@ export const hostAiApiClient = {
       `/api/v1/biblioteca/importaciones/${encodeURIComponent(id)}`,
       { method: "GET" },
     );
+  },
+
+  listBibliotecaImports(): Promise<Envelope & { importaciones: Array<{
+    importacion_id: string;
+    estado: string;
+    schema_version: number;
+    created_at: string;
+    updated_at: string;
+    post_persistence: boolean;
+  }>; total: number }> {
+    return request("/api/v1/biblioteca/importaciones", { method: "GET" });
+  },
+
+  getActiveBibliotecaImport(): Promise<Envelope & { importacion: BibliotecaImportResponse["importacion"] | null }> {
+    return request("/api/v1/biblioteca/importaciones/activa", { method: "GET" });
+  },
+
+  discardBibliotecaImport(id: string): Promise<Envelope & { importacion_id: string; estado: string }> {
+    return request(`/api/v1/biblioteca/importaciones/${encodeURIComponent(id)}/descartar`, {
+      method: "POST", body: "{}",
+    });
+  },
+
+  getActiveExternalRecipeCompletion(importId: string): Promise<Envelope & { importacion_id: string; batch: Record<string, any> | null }> {
+    return request(`/api/v1/biblioteca/importaciones/${encodeURIComponent(importId)}/completado-recetas-activo`, {
+      method: "GET",
+    });
   },
 
   getBibliotecaImportProposals(id: string): Promise<BibliotecaImportProposalsResponse> {

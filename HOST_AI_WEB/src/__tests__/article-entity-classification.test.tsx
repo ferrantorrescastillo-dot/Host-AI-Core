@@ -20,7 +20,7 @@ it("separa artículos comprables sin precio de costes derivados", async () => {
   });
 
   render(<MemoryRouter><ArticulosPage /></MemoryRouter>);
-  fireEvent.click(screen.getByRole("button", { name: "Artículos sin precio" }));
+  fireEvent.click(screen.getByRole("button", { name: "Artículos incompletos" }));
 
   expect(await screen.findByText("Corvina")).toBeInTheDocument();
   expect(screen.getByText("Ceviche").closest("section")).toHaveAttribute("aria-label", "Costes derivados");

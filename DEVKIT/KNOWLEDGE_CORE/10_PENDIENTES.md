@@ -1291,6 +1291,14 @@ Próxima revisión:
 
 ---
 
+# 52.1 PENDIENTES NO BLOQUEANTES DE PRODUCTION-READY
+
+La Fase 1 de Importación Inteligente quedó cerrada y certificada el 5 de septiembre de 2026. Los puntos siguientes son posteriores y no reabren la fase ni autorizan iniciar Fase 1.5.
+
+- `P2 / VALIDACIÓN`: validar posteriormente la calidad culinaria de propuestas sobre recetas reales; los fixtures automáticos solo certifican transporte, políticas, persistencia y cálculo.
+- `P2 / ESCALABILIDAD`: ampliar la prueba física de carga desde las 52 recetas certificadas a perfiles de 100, 300 y 1000, manteniendo los límites defensivos del XLSX. La arquitectura ya opera por lote y no existe un límite funcional de 30/34.
+- `P2 / UX`: estudiar virtualización o paginación del detalle de propuestas para lotes cercanos al máximo; no bloquea el resumen y los filtros por excepción actuales.
+
 # 53. ESTATUS OFICIAL
 
 Ruta oficial:

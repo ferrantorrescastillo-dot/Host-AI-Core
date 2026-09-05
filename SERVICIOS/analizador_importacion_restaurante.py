@@ -549,6 +549,11 @@ class RestaurantDataImportAnalyzer:
                     or table.context_title
                     or self._value(row, table.mapping, "nombre")
                 )
+                if _norm(recipe_name) == "tapa":
+                    # En los escandallos físicos, TAPA es un rótulo de sección
+                    # y no una elaboración identificable. Los nombres específicos
+                    # (p. ej. "Tapa de anchoa") sí se conservan.
+                    continue
                 ingredient = self._value(row, table.mapping, "ingrediente")
                 if not ingredient and table.context_title:
                     ingredient = self._value(row, table.mapping, "nombre")

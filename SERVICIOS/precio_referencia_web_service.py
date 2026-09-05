@@ -60,8 +60,38 @@ class PrecioReferenciaWebService:
 
     def confirm_imported(self, *, article_id: str, result: dict[str, Any], preview_token: str, context: AuthorizedExecutionContext) -> dict[str, Any]:
         with self._lock:
-            if preview_token in self._completed: return {**self._completed[preview_token], "idempotente": True}
-            preview = self.preview_imported(article_id=article_id, result=result, context=context)
+            if preview_token in self._completed:
+                return {**self._completed[preview_token], "idempotente": True, "datos_reales_modificados": False}
+            self._authorize(context)
+            article = self._article(article_id)
+            reference = self.normalize_imported_candidate(result, context)
+            matching_index = self._matching_reference_index(article, reference)
+            if matching_index is not None:
+                current_token = self._token(article, reference, context)
+                before = dict(article)
+                previous_references = list(before.get("precios_referencia") or [])
+                previous_references.pop(matching_index)
+                if previous_references:
+                    before["precios_referencia"] = previous_references
+                else:
+                    before.pop("precios_referencia", None)
+                prior_token = self._token(before, reference, context)
+                if preview_token not in {current_token, prior_token}:
+                    raise PrecioReferenciaWebError("stale_or_invalid_preview", "La referencia cambió desde la vista previa.")
+                response = {
+                    "ok": True,
+                    "estado": "CONFIRMADO",
+                    "articulo": article,
+                    "referencia": list(article.get("precios_referencia") or [])[matching_index],
+                    "precio_real_modificado": False,
+                    "proveedor_real_modificado": False,
+                    "lectura_posterior_verificada": True,
+                    "idempotente": True,
+                    "datos_reales_modificados": False,
+                }
+                self._completed[preview_token] = response
+                return response
+            preview = self.preview_imported(article_id=article_id, result=reference, context=context)
             if preview_token != preview["preview_token"]: raise PrecioReferenciaWebError("stale_or_invalid_preview", "La referencia cambió desde la vista previa.")
             values = self._read()
             for article in values:
@@ -71,6 +101,27 @@ class PrecioReferenciaWebService:
             reread = self._article(article_id)
             response = {"ok": True, "estado": "CONFIRMADO", "articulo": reread, "referencia": reread["precios_referencia"][-1], "precio_real_modificado": False, "proveedor_real_modificado": False, "lectura_posterior_verificada": reread["precios_referencia"][-1] == preview["referencia_propuesta"], "idempotente": False, "datos_reales_modificados": True}
             self._completed[preview_token] = response; return response
+
+    @classmethod
+    def _matching_reference_index(cls, article: dict[str, Any], proposed: dict[str, Any]) -> int | None:
+        target = cls._reference_fingerprint(proposed)
+        for index, reference in enumerate(article.get("precios_referencia") or []):
+            if isinstance(reference, dict) and cls._reference_fingerprint(reference) == target:
+                return index
+        return None
+
+    @staticmethod
+    def _reference_fingerprint(reference: dict[str, Any]) -> str:
+        stable_fields = (
+            "tipo", "origen", "producto", "precio_comercial", "moneda",
+            "cantidad_formato", "unidad_formato", "formato_comercial",
+            "precio_normalizado", "unidad_normalizada", "tienda_referencia",
+            "url", "evidencia", "confianza", "fuente", "autoridad",
+        )
+        stable = {field: reference.get(field) for field in stable_fields}
+        return hashlib.sha256(
+            json.dumps(stable, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode()
+        ).hexdigest()
 
     def confirm(self, *, article_id: str, result: dict[str, Any], preview_token: str, context: AuthorizedExecutionContext) -> dict[str, Any]:
         with self._lock:
@@ -174,7 +225,11 @@ class PrecioReferenciaWebService:
 
     @staticmethod
     def _token(article: dict[str, Any], reference: dict[str, Any], context: AuthorizedExecutionContext) -> str:
-        raw = json.dumps({"article": article, "reference": reference, "actor": context.user_id, "tenant": context.tenant_id}, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+        stable_reference = {
+            key: value for key, value in dict(reference or {}).items()
+            if key != "registrado_en"
+        }
+        raw = json.dumps({"article": article, "reference": stable_reference, "actor": context.user_id, "tenant": context.tenant_id}, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
         return hashlib.sha256(raw.encode()).hexdigest()
 
 

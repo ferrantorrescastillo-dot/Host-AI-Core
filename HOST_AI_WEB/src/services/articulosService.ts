@@ -37,6 +37,8 @@ export const articulosService = {
   exportWithoutPrice: hostAiApiClient.exportArticlesWithoutPrice,
   previewImportedReferences: hostAiApiClient.previewImportedReferences,
   confirmImportedReferences: hostAiApiClient.confirmImportedReferences,
+  importedReferencesState: hostAiApiClient.getImportedReferencesState,
+  discardImportedReferences: hostAiApiClient.discardImportedReferences,
   previewWebPrice: hostAiApiClient.previewWebPrice,
   confirmWebPrice: hostAiApiClient.confirmWebPrice,
 };

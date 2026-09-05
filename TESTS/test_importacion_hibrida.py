@@ -241,6 +241,21 @@ def test_warnings_tecnicos_no_incrementan_decisiones_usuario(tmp_path: Path):
     assert result["resumen"]["decisiones_usuario"] == 2
 
 
+def test_historico_descarta_rotulo_tapa_de_menu_y_conserva_nombre_especifico():
+    recipes = HybridRestaurantImportAnalyzer._recipes({"fichas": [
+        {
+            "accion": "CREAR", "estado": "PREPARADA", "nombre": "TAPA",
+            "hoja": "M.P Menú finde", "ingredientes": [],
+        },
+        {
+            "accion": "CREAR", "estado": "PREPARADA", "nombre": "Tapa de anchoa",
+            "hoja": "M.P Menú finde", "ingredientes": [],
+        },
+    ]}, "escandallos.xlsx")
+
+    assert [item["nombre"] for item in recipes] == ["Tapa de anchoa"]
+
+
 def test_ia_es_opt_in_y_layout_repetido_solo_resuelve_una_vez():
     class Resolver:
         def __init__(self): self.calls = 0

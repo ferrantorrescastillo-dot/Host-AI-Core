@@ -44,7 +44,14 @@ def test_menu601_se_lista_y_detalla_sin_convertirse_en_receta(tmp_path: Path):
 def test_receta_deriva_sus_menus_desde_repositorio_canonico(tmp_path: Path):
     _fixture(tmp_path)
     detail = BibliotecaCulinariaReadService(tmp_path).detalle("REC601-000043")["elaboracion"]
-    assert detail["menus"] == [{"menu_id": "MENU601-000010", "nombre": "MENU BODA", "estado": "ACTIVO"}]
+    assert detail["menus"] == [{
+        "menu_id": "MENU601-000010", "nombre": "MENU BODA", "tipo": "",
+        "estado": "ACTIVO", "pax": 100.0,
+        "referencias_receta": [{
+            "tipo_referencia": "RECETA", "referencia": "REC601-000043",
+            "cantidad": 1, "orden": 1,
+        }],
+    }]
 
 
 def test_linea_sin_referencia_da_error_de_dominio_legible(tmp_path: Path):

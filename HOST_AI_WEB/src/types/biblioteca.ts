@@ -16,8 +16,9 @@ export type ElaboracionResumen = {
   raciones?: number | null;
   coste_total?: number | null;
   coste_por_racion?: number | null;
-  estado_coste?: "DISPONIBLE" | "PARCIAL" | "SIN_COSTE" | "SIN_ESCANDALLO";
+  estado_coste?: "DISPONIBLE" | "PROVISIONAL" | "PARCIAL" | "SIN_COSTE" | "SIN_ESCANDALLO";
   coste_completo?: boolean;
+  coste_provisional?: boolean;
   motivo_coste_no_disponible?: string | null;
   fecha_calculo?: string | null;
   tiene_receta: boolean;
@@ -83,6 +84,10 @@ export type IngredienteReceta = {
   coste_linea?: number | null;
   unidad_precio?: string | null;
   origen_precio?: string | null;
+  clasificacion_precio?: "REAL" | "CONFIRMADO" | "REFERENCIA" | "NO_DISPONIBLE" | string | null;
+  precio_provisional?: boolean;
+  tienda_referencia?: string | null;
+  referencia_precio?: Record<string, unknown> | null;
   proveedor_precio?: string | null;
   fecha_precio?: string | null;
   factor_conversion?: number | null;
@@ -100,6 +105,11 @@ export type EscandalloElaboracion = {
   id?: string | null;
   estado?: string | null;
   estado_coste: string;
+  coste_provisional?: boolean;
+  precios_reales?: number;
+  precios_confirmados?: number;
+  precios_referencia?: number;
+  completitud_coste_porcentaje?: number;
   lineas: IngredienteReceta[];
   coste_ingredientes?: number | null;
   coste_ingredientes_parcial?: number | null;
@@ -108,11 +118,15 @@ export type EscandalloElaboracion = {
   coste_total_parcial?: number | null;
   rendimiento?: number | null;
   coste_por_racion?: number | null;
+  coste_por_unidad_rendimiento?: number | null;
+  unidad_coste_rendimiento?: string | null;
   precio_objetivo?: number | null;
   margen?: number | null;
   fecha_calculo?: string | null;
   desactualizado: boolean;
   ingredientes_sin_coste: number;
+  ingredientes_sin_precio?: Array<string | null>;
+  ingredientes_pendientes_coste?: Array<string | null>;
   ingredientes_sin_conversion: number;
   incidencias: Record<string, unknown>[];
 };
@@ -174,6 +188,8 @@ export type ElaboracionDetalle = ElaboracionResumen & {
     utensilios: string[];
     produccion: ProduccionElaboracion;
     documentos: DocumentoElaboracion[];
+    procedencia_campos?: Record<string, { tipo?: string; actor_id?: string | null; fecha?: string | null; estado_revision?: string | null }>;
+    historial_procedencia?: Array<Record<string, unknown>>;
     version?: number | null;
     actualizado_en?: string | null;
     campos_pendientes: string[];
@@ -330,6 +346,9 @@ export type BibliotecaImportEntity = {
 };
 
 export type BibliotecaImportSession = {
+  schema_version?: number;
+  created_at?: string;
+  updated_at?: string;
   documento: {
     id: string;
     nombre: string;

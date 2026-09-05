@@ -66,9 +66,11 @@ def test_agente_no_modifica_executor_ni_datos_y_limita_resultados():
     assert executor.__dict__ == before
 
 
-def test_feature_flag_off_preserva_flujo_y_on_usa_agente(monkeypatch):
+def test_feature_flag_off_preserva_flujo_y_on_usa_agente(monkeypatch, tmp_path):
     from SERVICIOS.chat_host_ai_shell_service import ServicioChatHostAIShell
-    orchestrator = SimpleNamespace(host_ai_engine=SimpleNamespace(default_provider="OPENAI"))
+    orchestrator = SimpleNamespace(host_ai_engine=SimpleNamespace(
+        default_provider="OPENAI", base_dir=tmp_path,
+    ))
     chat = ServicioChatHostAIShell(orchestrator)
     chat.general_agent = SimpleNamespace(engine=object(), run=lambda *_args, **_kwargs: SimpleNamespace(ok=True, text="Respuesta del agente", request_id="R", provider="FAKE", model="fake", steps=4, executed_tools=["consultar_produccion"], datos_reales_modificados=False))
     monkeypatch.delenv("HOST_AI_GENERAL_AGENT_READ", raising=False)

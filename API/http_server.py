@@ -215,6 +215,14 @@ def create_app(platform_api: HostAIPlatformAPI | None = None) -> FastAPI:
     async def post_referencias_importadas_confirmar(request: Request) -> JSONResponse:
         return await _delegate(request, body=await _json_body(request))
 
+    @app.get("/api/v1/articulos/referencias-importadas/estado")
+    async def get_referencias_importadas_estado(request: Request) -> JSONResponse:
+        return await _delegate(request)
+
+    @app.post("/api/v1/articulos/referencias-importadas/descartar")
+    async def post_referencias_importadas_descartar(request: Request) -> JSONResponse:
+        return await _delegate(request, body=await _json_body(request))
+
     @app.get("/api/v1/eventos/{evento_id}")
     async def get_evento(evento_id: str, request: Request) -> JSONResponse:
         return await _delegate(request)
@@ -488,6 +496,14 @@ def create_app(platform_api: HostAIPlatformAPI | None = None) -> FastAPI:
 
     @app.post("/api/v1/biblioteca/recetas/completado-ia/iniciar")
     async def post_recipe_batch_start(request: Request) -> JSONResponse:
+        return await _delegate(request, body=await _json_body(request))
+
+    @app.post("/api/v1/biblioteca/recetas/completado-externo/exportar")
+    async def post_recipe_completion_export(request: Request) -> JSONResponse:
+        return await _delegate(request, body=await _json_body(request))
+
+    @app.post("/api/v1/biblioteca/recetas/completado-externo/importar")
+    async def post_recipe_completion_import(request: Request) -> JSONResponse:
         return await _delegate(request, body=await _json_body(request))
 
     @app.get("/api/v1/biblioteca/recetas/completado-ia/{batch_id}/estado")

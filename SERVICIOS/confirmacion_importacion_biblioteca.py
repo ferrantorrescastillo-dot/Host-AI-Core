@@ -21,6 +21,7 @@ from SERVICIOS.repository_initialization_policy import non_persistent_repository
 
 
 STORE_PATH = "DATOS/db/biblioteca_importaciones_web.json"
+IMPORT_STORE_SCHEMA_VERSION = 2
 DOMAIN_PATHS = (
     "DATOS/db/articulos.json",
     "DATOS/db/biblioteca_recetas_601.json",
@@ -43,6 +44,7 @@ class ImportSessionRepository:
         self.base_dir = Path(base_dir).resolve()
         self.path = self.base_dir / STORE_PATH
         self.persistent = persistent
+        self.created_at = ""
 
     def load_all(self) -> dict[str, dict[str, Any]]:
         if not self.persistent:
@@ -51,6 +53,7 @@ class ImportSessionRepository:
             payload = json.loads(self.path.read_text(encoding="utf-8"))
         except (FileNotFoundError, json.JSONDecodeError, OSError):
             return {}
+        self.created_at = str(payload.get("created_at") or "") if isinstance(payload, dict) else ""
         sessions = payload.get("sesiones") if isinstance(payload, dict) else {}
         return deepcopy(sessions) if isinstance(sessions, dict) else {}
 
@@ -58,9 +61,21 @@ class ImportSessionRepository:
         if not self.persistent:
             return
         motor = MotorEscrituraSeguraI1342(self.base_dir, [STORE_PATH])
-        result = motor.ejecutar({STORE_PATH: {"version": 1, "sesiones": sessions}})
+        result = motor.ejecutar({STORE_PATH: self.envelope(sessions)})
         if result.estado != "COMMIT":
             raise RuntimeError(result.error or "No se pudo persistir la importación.")
+
+    def envelope(self, sessions: dict[str, dict[str, Any]]) -> dict[str, Any]:
+        now = _now()
+        if not self.created_at:
+            self.created_at = now
+        return {
+            "version": 1,
+            "schema_version": IMPORT_STORE_SCHEMA_VERSION,
+            "created_at": self.created_at,
+            "updated_at": now,
+            "sesiones": sessions,
+        }
 
 
 class ImportConfirmationService:
@@ -132,6 +147,8 @@ class ImportConfirmationService:
             updated["confirmacion_disponible"] = False
             updated["solo_previsualizacion"] = False
             updated["confirmada_en"] = _now()
+            if int(updated.get("schema_version") or 0) >= IMPORT_STORE_SCHEMA_VERSION:
+                updated["updated_at"] = updated["confirmada_en"]
             updated["confirmada_por"] = user
             report = {
                 "estado": "COMPLETADA",
@@ -148,7 +165,7 @@ class ImportConfirmationService:
             })
             candidate_sessions = deepcopy(sessions)
             candidate_sessions[import_id] = updated
-            changes[STORE_PATH] = {"version": 1, "sesiones": candidate_sessions}
+            changes[STORE_PATH] = self.repository.envelope(candidate_sessions)
             motor = MotorEscrituraSeguraI1342(
                 self.base_dir, list(changes)
             )

@@ -145,6 +145,11 @@ class HybridRestaurantImportAnalyzer:
         for item in preview.get("fichas") or []:
             if item.get("accion") == "OMITIR" or item.get("estado") != "PREPARADA":
                 continue
+            if _name_key(item.get("nombre")) == "tapa":
+                # El preimportador histórico interpreta el rótulo de sección
+                # TAPA como ficha. No es una elaboración
+                # identificable; los nombres específicos sí se conservan.
+                continue
             ingredients = [{
                 "nombre_original": ing.get("nombre"), "cantidad": ing.get("cantidad"),
                 "cantidad_texto": str(ing.get("cantidad") or ""), "unidad": ing.get("unidad"),

@@ -23,6 +23,10 @@ from SERVICIOS.borrador_importacion_biblioteca import (
     IngredientTextNormalizer,
 )
 from SERVICIOS.menu_importacion_biblioteca import project_menu_imports
+from SERVICIOS.catalog_crud_write_service import CatalogCrudWriteService
+from SERVICIOS.host_ai_authorized_execution_context import AuthorizedExecutionContext
+from SERVICIOS.precio_referencia_web_service import PrecioReferenciaWebService
+from SERVICIOS.precio_referencias_import_service import PrecioReferenciasImportService
 
 
 RECIPE_TEXT = """Receta: Salsa verde
@@ -162,6 +166,45 @@ def test_http_importacion_biblioteca_post_get_y_propuestas(tmp_path: Path) -> No
 
     missing = client.get("/api/v1/biblioteca/importaciones/NO-EXISTE")
     assert missing.status_code == 404
+
+
+def test_importacion_activa_sobrevive_reinicio_backend_y_descartar_la_retira(tmp_path: Path) -> None:
+    first_client = TestClient(create_app(HostAIPlatformAPI(base_dir=tmp_path)))
+    created = first_client.post("/api/v1/biblioteca/importaciones", json=_payload()).json()
+    import_id = created["importacion"]["documento"]["id"]
+    store = tmp_path / "DATOS/db/biblioteca_importaciones_web.json"
+
+    assert store.exists()
+    assert created["datos_reales_modificados"] is False
+    persisted = json.loads(store.read_text(encoding="utf-8"))
+    assert persisted["schema_version"] == 2
+    assert persisted["created_at"] and persisted["updated_at"]
+    assert persisted["sesiones"][import_id]["schema_version"] == 2
+    assert persisted["sesiones"][import_id]["created_at"]
+    assert persisted["sesiones"][import_id]["updated_at"]
+
+    restarted_client = TestClient(create_app(HostAIPlatformAPI(base_dir=tmp_path)))
+    listed = restarted_client.get("/api/v1/biblioteca/importaciones")
+    assert listed.status_code == 200
+    assert listed.json()["total"] == 1
+    assert listed.json()["importaciones"][0]["importacion_id"] == import_id
+    assert listed.json()["importaciones"][0]["post_persistence"] is True
+    assert listed.json()["storage_path"] == "DATOS/db/biblioteca_importaciones_web.json"
+    assert listed.json()["datos_reales_modificados"] is False
+    active = restarted_client.get("/api/v1/biblioteca/importaciones/activa")
+    assert active.status_code == 200
+    assert active.json()["importacion"]["documento"]["id"] == import_id
+    assert active.json()["datos_reales_modificados"] is False
+
+    discarded = restarted_client.post(
+        f"/api/v1/biblioteca/importaciones/{import_id}/descartar", json={},
+    )
+    assert discarded.status_code == 200
+    assert discarded.json()["estado"] == "DESCARTADA"
+    assert discarded.json()["datos_reales_modificados"] is False
+
+    after_restart = TestClient(create_app(HostAIPlatformAPI(base_dir=tmp_path)))
+    assert after_restart.get("/api/v1/biblioteca/importaciones/activa").json()["importacion"] is None
 
 
 def test_http_word_genera_sesion_clasificacion_y_propuestas_sin_escribir(
@@ -762,3 +805,87 @@ def test_same_menu_name_with_different_structure_is_not_auto_reused(tmp_path: Pa
 
     assert projection["reutilizar"] == []
     assert projection["pendientes"][0]["id"] == "MENU-DRAFT-001"
+
+
+def test_new_ingredient_article_round_trip_uses_authorized_catalog_and_reference_authorities(tmp_path: Path) -> None:
+    context = AuthorizedExecutionContext(
+        "REQ-ARTICLE-FLOW", "CHEF-TEST", "LOCAL-TEST", ("chef",),
+        frozenset({"articulos:preview", "articulos:write"}),
+    )
+    imports = ImportDocumentService(tmp_path)
+    session = imports.import_document(_payload())["importacion"]
+    import_id = session["documento"]["id"]
+    draft = session["borrador"]
+    draft["recipes"][0]["ingredients"] = [{
+        "id": f'{draft["recipes"][0]["id"]}-ING-001',
+        "original_text": "0.1 kg Perejil", "quantity_raw": "0.1", "quantity": 0.1,
+        "unit_raw": "kg", "unit": "kg", "name_raw": "Perejil",
+        "normalized_name": "perejil", "observations": "", "article_id": None,
+        "article_candidates": [], "relation_status": "SIN_RELACIONAR", "confidence": 0,
+        "source_trace": {}, "validation_errors": [],
+    }]
+    ingredient = draft["recipes"][0]["ingredients"][0]
+    assert ingredient["relation_status"] == "SIN_RELACIONAR"
+    assert ingredient["article_id"] is None
+
+    catalog = CatalogCrudWriteService(tmp_path)
+    article_path = tmp_path / "DATOS/db/articulos.json"
+    before_preview = article_path.read_bytes() if article_path.exists() else None
+    article_preview = catalog.preview(
+        domain="ARTICULO", operation="CREAR", entity_id="", session_id="web",
+        payload={
+            "nombre": ingredient["name_raw"], "codigo": "ART-PEREJIL-FRESCO",
+            "unidad_base": "kg", "unidad_compra": "kg",
+            "estado": "PENDIENTE_DE_COMPLETAR",
+        },
+        context=context,
+    )
+    assert article_preview["datos_reales_modificados"] is False
+    assert "precio" not in article_preview["propuesto"]
+    assert not article_preview["propuesto"].get("proveedor")
+    assert (article_path.read_bytes() if article_path.exists() else None) == before_preview
+
+    created = catalog.confirm(
+        preview_token=article_preview["preview_token"], session_id="web", context=context,
+    )["registro"]
+    assert created["codigo"] == "ART-PEREJIL-FRESCO"
+
+    patched_recipes = json.loads(json.dumps(draft["recipes"]))
+    patched_recipes[0]["ingredients"][0].update(
+        article_id=created["codigo"], relation_status="RELACIONADO",
+    )
+    linked = imports.update_draft(import_id, {
+        "draft_version": draft["draft_version"], "recipes": patched_recipes,
+        "variant_decisions": draft.get("variant_decisions") or [],
+        "article_decisions": draft.get("article_decisions") or [],
+        "menu_decisions": draft.get("menu_decisions") or [],
+    })
+    assert linked["ok"] is True
+    assert linked["datos_reales_modificados"] is False
+    assert linked["borrador"]["recipes"][0]["ingredients"][0]["article_id"] == "ART-PEREJIL-FRESCO"
+
+    references = PrecioReferenciasImportService(tmp_path, PrecioReferenciaWebService(tmp_path))
+    missing = references.missing_articles()
+    assert [item["article_id"] for item in missing["articulos"]] == ["ART-PEREJIL-FRESCO"]
+    exported = references.export_text()
+    assert "proveedor_referencia" in exported["texto"]
+    assert "no es el proveedor real" in exported["texto"]
+    reference_preview = references.preview(
+        "article_id,artículo,producto,proveedor_referencia,formato,precio,moneda,url\n"
+        "ART-PEREJIL-FRESCO,Perejil,Perejil,Proveedor externo,100 g,2.50,EUR,https://example.test/perejil",
+        context,
+    )
+    assert reference_preview["datos_reales_modificados"] is False
+    assert reference_preview["precio_real_modificado"] is False
+    assert reference_preview["proveedor_real_modificado"] is False
+    assert reference_preview["listas"][0]["referencia"]["tienda_referencia"] == "Proveedor externo"
+
+    confirmed = references.confirm(reference_preview["listas"], context)
+    stored = json.loads(article_path.read_text(encoding="utf-8"))[0]
+    assert confirmed["lectura_posterior_verificada"] is True
+    assert confirmed["precio_real_modificado"] is False
+    assert confirmed["proveedor_real_modificado"] is False
+    assert stored.get("precio") in (None, "")
+    assert stored.get("proveedor") in (None, "")
+    assert stored["precios_referencia"][0]["tienda_referencia"] == "Proveedor externo"
+    assert imports.get_import(import_id)["importacion"]["estado"] != "CONFIRMADA"

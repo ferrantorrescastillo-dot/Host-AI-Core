@@ -1337,12 +1337,13 @@ Debe mantenerse alineado con:
 
 ## Registro — Fase 1 Importación Inteligente
 
-- Versión base: `af3642d2`; cambios técnicos sin commit al emitir este registro.
-- Tipo: certificación técnica de importador e IA.
-- Nivel: C7 dentro del alcance automático.
-- Evidencia: `DEVKIT/CERTIFICACION_TECNICA_FASE1_IMPORTACION.md` y tests focales de Fase 1.
-- Datos: sintéticos y temporales; sin uso de `DATOS/` como repositorio de prueba.
-- Estado: vigente; validación manual en curso tras aplicar correcciones derivadas del primer Excel real.
+- Versión base histórica: `86e1f1a0`; el cierre definitivo corresponde al commit posterior al smoke humano final.
+- Tipo: certificación técnica y validación humana del flujo de importación inteligente.
+- Nivel: C7 dentro del alcance técnico y funcional validado.
+- Evidencia: `DEVKIT/CERTIFICACION_TECNICA_FASE1_IMPORTACION.md`, tests focales, regresión frontend, E2E Chrome y smoke humano final aprobado.
+- Datos: fixtures y runtimes temporales; ninguna confirmación ni WRITE sobre `DATOS/` real durante la validación de cierre.
+- Estado: `CERRADA / CERTIFICADA` el 5 de septiembre de 2026.
+- Alcance excluido: Fase 1.5 no iniciada y calidad culinaria de propuestas automáticas sujeta a validación operativa posterior.
 
 ---
 

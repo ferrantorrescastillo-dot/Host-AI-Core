@@ -8,6 +8,7 @@ import re
 import tempfile
 import unicodedata
 from copy import deepcopy
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Protocol
 from uuid import uuid4
@@ -44,6 +45,7 @@ from SERVICIOS.lector_word_documentos import WordDocumentReadError, WordDocument
 from SERVICIOS.confirmacion_importacion_biblioteca import (
     ImportConfirmationService,
     ImportSessionRepository,
+    STORE_PATH,
 )
 from SERVICIOS.canonicalizacion_recetas_legacy_service import (
     LEGACY_WITHOUT_CANONICAL,
@@ -384,6 +386,7 @@ class ReviewOnlyProposalBuilder:
 class ImportDocumentService:
     ALLOWED_EXTENSIONS = {".pdf", ".docx", ".xlsx", ".jpg", ".jpeg", ".png", ".txt"}
     MAX_BYTES = 10 * 1024 * 1024
+    SESSION_SCHEMA_VERSION = 2
 
     def __init__(
         self,
@@ -394,6 +397,7 @@ class ImportDocumentService:
         proposal_builder: ProposalBuilder | None = None,
         ambiguity_resolver: ImportAmbiguityResolver | None = None,
         ai_document_interpreter: AIImportDocumentInterpreter | None = None,
+        persistent_sessions: bool = False,
     ) -> None:
         self.base_dir = Path(base_dir).resolve()
         self.classifier = classifier or RuleBasedDocumentClassifier()
@@ -405,9 +409,73 @@ class ImportDocumentService:
         self.proposal_builder = proposal_builder or ReviewOnlyProposalBuilder()
         self.ambiguity_resolver = ambiguity_resolver
         self.ai_document_interpreter = ai_document_interpreter
-        self.repository = ImportSessionRepository(base_dir, persistent=False)
+        self.repository = ImportSessionRepository(base_dir, persistent=persistent_sessions)
         self.confirmations = ImportConfirmationService(base_dir, self.repository)
         self._sessions = self.repository.load_all()
+
+    def _active_sessions(self) -> list[dict[str, Any]]:
+        active = [
+            session for session in self._sessions.values()
+            if str(session.get("estado") or "") not in {"CONFIRMADA", "DESCARTADA"}
+        ]
+        return sorted(
+            active,
+            key=lambda session: str(session.get("updated_at") or session.get("created_at") or ""),
+            reverse=True,
+        )
+
+    def _persist_session(self, session: dict[str, Any]) -> None:
+        if int(session.get("schema_version") or 0) >= self.SESSION_SCHEMA_VERSION:
+            session["updated_at"] = datetime.now(timezone.utc).isoformat()
+        self.repository.save_all(self._sessions)
+
+    @staticmethod
+    def _list_item(session: dict[str, Any]) -> dict[str, Any]:
+        document = dict(session.get("documento") or {})
+        summary = dict(session.get("resumen") or {})
+        return {
+            "importacion_id": str(document.get("id") or ""),
+            "estado": str(session.get("estado") or ""),
+            "schema_version": int(session.get("schema_version") or 0),
+            "created_at": str(session.get("created_at") or ""),
+            "updated_at": str(session.get("updated_at") or ""),
+            "post_persistence": int(session.get("schema_version") or 0) >= 2,
+            "documento": {
+                "id": str(document.get("id") or ""),
+                "nombre": str(document.get("nombre") or document.get("filename") or ""),
+                "origen": str(document.get("origen") or document.get("source") or ""),
+            },
+            "resumen": {
+                "recetas_detectadas": int(summary.get("recetas_detectadas") or 0),
+                "propuestas": int(summary.get("propuestas") or 0),
+            },
+        }
+
+    def get_active_import(self) -> dict[str, Any]:
+        active = next(iter(self._active_sessions()), None)
+        return {"ok": True, "importacion": deepcopy(active) if active else None}
+
+    def list_imports(self) -> dict[str, Any]:
+        items = [self._list_item(session) for session in self._active_sessions()]
+        return {
+            "ok": True,
+            "importaciones": items,
+            "total": len(items),
+            "storage_path": STORE_PATH.replace("\\", "/"),
+            "schema_version": self.SESSION_SCHEMA_VERSION,
+            "datos_reales_modificados": False,
+        }
+
+    def discard_import(self, import_id: str) -> dict[str, Any]:
+        session = self._sessions.get(str(import_id or ""))
+        if not session:
+            raise KeyError("Importación no encontrada.")
+        session["estado"] = "DESCARTADA"
+        history = list(session.get("historial") or [])
+        history.append({"estado": "DESCARTADA", "fecha": datetime.now(timezone.utc).isoformat()})
+        session["historial"] = history
+        self._persist_session(session)
+        return {"ok": True, "importacion_id": import_id, "estado": "DESCARTADA", "datos_reales_modificados": False}
 
     def import_document(self, payload: dict[str, Any]) -> dict[str, Any]:
         with non_persistent_repository_initialization():
@@ -490,6 +558,9 @@ class ImportDocumentService:
             warnings=list(interpreted.advertencias or []),
         )
         session = {
+            "schema_version": self.SESSION_SCHEMA_VERSION,
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "updated_at": datetime.now(timezone.utc).isoformat(),
             "documento": document.to_dict(),
             "resumen": {
                 "secciones": len(sections),
@@ -547,7 +618,7 @@ class ImportDocumentService:
             len(interpreted.advertencias or []),
         )
         self._sessions[import_id] = session
-        self.repository.save_all(self._sessions)
+        self._persist_session(session)
         return {"ok": True, "importacion": session}
 
     def _import_restaurant_data(self, payload: dict[str, Any]) -> dict[str, Any]:
@@ -667,6 +738,9 @@ class ImportDocumentService:
             "advertencias": [], "contenido_almacenado": False,
         }
         session = {
+            "schema_version": self.SESSION_SCHEMA_VERSION,
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "updated_at": datetime.now(timezone.utc).isoformat(),
             "documento": document, "resumen": summary,
             "propuestas": [item.to_dict() for item in proposals],
             "analisis_restaurante": analysis, "solo_previsualizacion": True,
@@ -767,7 +841,7 @@ class ImportDocumentService:
             and not session["preview_global"]["contadores"]["pendientes"]
         )
         self._sessions[import_id] = session
-        self.repository.save_all(self._sessions)
+        self._persist_session(session)
         return {"ok": True, "importacion": session, "datos_operativos_modificados": False}
 
     @staticmethod
@@ -1219,7 +1293,7 @@ class ImportDocumentService:
             return self._error("invalid_draft", str(exc), 400)
         session["borrador"] = updated
         self._project_current_draft_decisions(session)
-        self.repository.save_all(self._sessions)
+        self._persist_session(session)
         return {
             "ok": True,
             "importacion_id": import_id,

@@ -40,6 +40,28 @@ export const bibliotecaService = {
   getRecipeBatch: hostAiApiClient.getRecipeBatch,
   advanceRecipeBatch: hostAiApiClient.advanceRecipeBatch,
   recipeBatchAction: hostAiApiClient.recipeBatchAction,
+  exportRecipeCompletion: async (recipeIds: string[], importId: string) => {
+    const response = await hostAiApiClient.exportRecipeCompletion({ recipe_ids: recipeIds, scope: "IMPORTACION", import_id: importId });
+    const binary = atob(String(response.contenido_base64 || ""));
+    const bytes = Uint8Array.from(binary, (character) => character.charCodeAt(0));
+    return {
+      ...response,
+      blob: new Blob([bytes], { type: String(response.tipo_mime || "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") }),
+      filename: String(response.filename || "hostai-completado-recetas.xlsx"),
+    };
+  },
+  importRecipeCompletion: async (file: File, recipeIds: string[], importId: string, origin: string) => {
+    const bytes = new Uint8Array(await file.arrayBuffer());
+    let binary = "";
+    const chunkSize = 0x8000;
+    for (let index = 0; index < bytes.length; index += chunkSize) {
+      binary += String.fromCharCode(...bytes.subarray(index, index + chunkSize));
+    }
+    return hostAiApiClient.importRecipeCompletion({
+      filename: file.name, contenido_base64: btoa(binary), recipe_ids: recipeIds,
+      scope: "IMPORTACION", import_id: importId, origen_propuesta: origin,
+    });
+  },
   importDocument: async (file: File) => {
     const buffer = new Uint8Array(await file.arrayBuffer());
     let binary = "";
@@ -102,6 +124,10 @@ export const bibliotecaService = {
     return { blob: await response.blob(), filename };
   },
   importDetail: (id: string) => hostAiApiClient.getBibliotecaImport(id),
+  listImports: () => hostAiApiClient.listBibliotecaImports(),
+  activeImport: () => hostAiApiClient.getActiveBibliotecaImport(),
+  discardImport: (id: string) => hostAiApiClient.discardBibliotecaImport(id),
+  activeExternalRecipeCompletion: (importId: string) => hostAiApiClient.getActiveExternalRecipeCompletion(importId),
   importProposals: (id: string) => hostAiApiClient.getBibliotecaImportProposals(id),
   importDraft: (id: string) => hostAiApiClient.getBibliotecaImportDraft(id),
   updateImportDraft: (

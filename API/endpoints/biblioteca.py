@@ -49,17 +49,42 @@ def batch_documentation_handle(request: ApiRequest, facade: CorePublicFacade) ->
     parts = request.path.rstrip("/").split("/")
     operation = parts[-1]
     batch_id = "" if operation in {"resumen", "iniciar"} else parts[-2]
-    operation = {"resumen": "summary", "iniciar": "start", "estado": "get", "siguiente": "next", "cancelar": "cancel", "seleccion": "select", "preview": "preview", "confirmar": "confirm"}[operation]
+    operation = {"resumen": "summary", "iniciar": "start", "estado": "get", "siguiente": "next", "cancelar": "cancel", "reintentar": "retry", "reintentar-fallidas": "retry_failed", "seleccion": "select", "preview": "preview", "confirmar": "confirm"}[operation]
     return _response(facade.documentacion_recetas_masiva(batch_id, request.body, _internal_context(request), operation=operation))
+
+
+def external_completion_handle(request: ApiRequest, facade: CorePublicFacade) -> ApiResponse:
+    operation = str(request.path or "").rstrip("/").rsplit("/", 1)[-1]
+    if operation == "exportar":
+        return _response(facade.exportar_completado_recetas(request.body))
+    return _response(facade.importar_completado_recetas(request.body))
 
 
 def import_create_handle(request: ApiRequest, facade: CorePublicFacade) -> ApiResponse:
     return _response(facade.crear_importacion_biblioteca(request.body))
 
 
+def import_list_handle(request: ApiRequest, facade: CorePublicFacade) -> ApiResponse:
+    return _response(facade.listar_importaciones_biblioteca())
+
+
+def import_active_handle(request: ApiRequest, facade: CorePublicFacade) -> ApiResponse:
+    return _response(facade.importacion_biblioteca_activa())
+
+
 def import_detail_handle(request: ApiRequest, facade: CorePublicFacade) -> ApiResponse:
     import_id = str(request.path or "").split("/importaciones/", 1)[-1].split("/", 1)[0]
     return _response(facade.importacion_biblioteca(import_id))
+
+
+def import_external_completion_active_handle(request: ApiRequest, facade: CorePublicFacade) -> ApiResponse:
+    import_id = str(request.path or "").split("/importaciones/", 1)[-1].split("/", 1)[0]
+    return _response(facade.completado_externo_activo_importacion(import_id))
+
+
+def import_discard_handle(request: ApiRequest, facade: CorePublicFacade) -> ApiResponse:
+    import_id = str(request.path or "").split("/importaciones/", 1)[-1].split("/", 1)[0]
+    return _response(facade.descartar_importacion_biblioteca(import_id))
 
 
 def import_proposals_handle(request: ApiRequest, facade: CorePublicFacade) -> ApiResponse:

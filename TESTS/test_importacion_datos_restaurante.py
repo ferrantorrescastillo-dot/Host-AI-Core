@@ -498,6 +498,23 @@ def test_structural_overlap_deduplicates_by_physical_origin_but_real_repeat_rema
     assert {item["trazabilidad"]["fila"] for item in recipe_b["ingredientes_estructurados"]} == {20, 21}
 
 
+def test_generic_tapa_heading_is_not_a_recipe_but_specific_name_is_preserved():
+    analyzer = RestaurantDataImportAnalyzer()
+    mapping = [{"columna": "ARTICULO", "destino": "nombre"}]
+    tables = [
+        ParsedTable(
+            "fixture.xlsx", "M.P Menú finde", [{"ARTICULO": "Tomate", "_fila": 10}],
+            mapping, "RECETAS", region_id="REGION-1", context_title="TAPA",
+        ),
+        ParsedTable(
+            "fixture.xlsx", "M.P Menú finde", [{"ARTICULO": "Anchoa", "_fila": 20}],
+            mapping, "RECETAS", region_id="REGION-2", context_title="Tapa de anchoa",
+        ),
+    ]
+    recipes = analyzer._recipes(tables)
+    assert [item["nombre"] for item in recipes] == ["Tapa de anchoa"]
+
+
 def test_recipe_blocks_end_before_the_next_recipe():
     result = RestaurantDataImportAnalyzer().analyze({
         "archivos": [_file("bloques.xlsx", _three_recipe_blocks_xlsx())]

@@ -30,6 +30,7 @@ from SERVICIOS.stock_lote_write_service import StockLoteWriteError, StockLoteWri
 from SERVICIOS.escandallo_editor_service import EscandalloEditorError, EscandalloEditorService
 from SERVICIOS.receta_documentacion_write_service import HostAIRecipeProposalGenerator, RecetaDocumentacionError, RecetaDocumentacionWriteService
 from SERVICIOS.receta_documentacion_batch_service import RecetaDocumentacionBatchService
+from SERVICIOS.recipe_completion_exchange_service import RecipeCompletionExchangeService
 from SERVICIOS.articulo_documentacion_write_service import ArticuloDocumentacionError, ArticuloDocumentacionWriteService, HostAIArticleProposalGenerator
 from SERVICIOS.precio_referencia_web_service import PrecioReferenciaWebError, PrecioReferenciaWebService
 from SERVICIOS.precio_referencias_import_service import PrecioReferenciasImportService
@@ -61,6 +62,7 @@ class CatalogPublicFacade(CorePublicApi02Facade):
         self._costing_editor_service: EscandalloEditorService | None = None
         self._recipe_docs_service: RecetaDocumentacionWriteService | None = None
         self._recipe_docs_batch_service: RecetaDocumentacionBatchService | None = None
+        self._recipe_completion_exchange_service: RecipeCompletionExchangeService | None = None
         self._article_docs_service: ArticuloDocumentacionWriteService | None = None
         self._manual_price_service: PrecioReferenciaWebService | None = None
         self._price_import_service: PrecioReferenciasImportService | None = None
@@ -177,6 +179,12 @@ class CatalogPublicFacade(CorePublicApi02Facade):
         method = self._get_price_import_service().confirm if confirm else self._get_price_import_service().preview
         kwargs = {"context": context, "rows": list(payload.get("rows") or [])} if confirm else {"context": context, "raw": str(payload.get("raw") or "")}
         return {**self._base_payload(), **method(**kwargs)}
+
+    def estado_referencias_precio(self, context: AuthorizedExecutionContext) -> dict[str, Any]:
+        return {**self._base_payload(), **self._get_price_import_service().active(context)}
+
+    def descartar_referencias_precio(self, context: AuthorizedExecutionContext) -> dict[str, Any]:
+        return {**self._base_payload(), **self._get_price_import_service().discard(context)}
 
     def ai_cost_summary(self, query: dict[str, Any]) -> dict[str, Any]:
         payload = dict(query or {})
@@ -309,25 +317,69 @@ class CatalogPublicFacade(CorePublicApi02Facade):
         return self._safe_operational_call(method, **kwargs)
 
     def documentacion_recetas_masiva(self, batch_id: str, body: dict[str, Any], context: AuthorizedExecutionContext, *, operation: str) -> dict[str, Any]:
-        if self._recipe_docs_batch_service is None:
-            self._recipe_docs_batch_service = RecetaDocumentacionBatchService(self.base_dir, recipe_service=self._get_recipe_docs_service())
-        service = self._recipe_docs_batch_service
+        service = self._get_recipe_docs_batch_service()
         payload = dict(body or {})
         methods = {
             "summary": lambda: service.summary(),
-            "start": lambda: service.start(recipe_ids=list(payload.get("recipe_ids") or [])),
+            "start": lambda: service.start(
+                recipe_ids=(list(payload.get("recipe_ids") or []) if "recipe_ids" in payload else None)
+            ),
             "get": lambda: service.get(batch_id),
             "next": lambda: service.next(batch_id, session_id=str(payload.get("session_id") or "")),
             "cancel": lambda: service.cancel(batch_id),
-            "select": lambda: service.select(batch_id, dict(payload.get("selections") or {})),
+            "retry": lambda: service.retry(batch_id, str(payload.get("recipe_id") or "")),
+            "retry_failed": lambda: service.retry_failed(batch_id),
+            "select": lambda: service.select(
+                batch_id,
+                dict(payload.get("selections") or {}),
+                (dict(payload.get("individual_selections") or {}) if "individual_selections" in payload else None),
+            ),
             "preview": lambda: service.preview(batch_id, context=context),
             "confirm": lambda: service.confirm(batch_id, fingerprint=str(payload.get("fingerprint") or ""), context=context),
         }
         return self._safe_operational_call(methods[operation])
 
+    def _get_recipe_docs_batch_service(self) -> RecetaDocumentacionBatchService:
+        if self._recipe_docs_batch_service is None:
+            self._recipe_docs_batch_service = RecetaDocumentacionBatchService(
+                self.base_dir, recipe_service=self._get_recipe_docs_service(),
+            )
+        return self._recipe_docs_batch_service
+
+    def _get_recipe_completion_exchange_service(self) -> RecipeCompletionExchangeService:
+        if self._recipe_completion_exchange_service is None:
+            recipe_service = self._get_recipe_docs_service()
+            batch_service = self._get_recipe_docs_batch_service()
+            self._recipe_completion_exchange_service = RecipeCompletionExchangeService(
+                self.base_dir, recipe_service=recipe_service,
+                repository=recipe_service.repository, batch_service=batch_service,
+            )
+        return self._recipe_completion_exchange_service
+
+    def exportar_completado_recetas(self, body: dict[str, Any]) -> dict[str, Any]:
+        payload = dict(body or {})
+        return self._safe_operational_call(
+            self._get_recipe_completion_exchange_service().export,
+            recipe_ids=list(payload.get("recipe_ids") or []),
+            scope=str(payload.get("scope") or "BIBLIOTECA"),
+            import_id=str(payload.get("import_id") or ""),
+        )
+
+    def importar_completado_recetas(self, body: dict[str, Any]) -> dict[str, Any]:
+        payload = dict(body or {})
+        return self._safe_operational_call(
+            self._get_recipe_completion_exchange_service().import_package,
+            filename=str(payload.get("filename") or ""),
+            content_base64=str(payload.get("contenido_base64") or ""),
+            expected_recipe_ids=(list(payload.get("recipe_ids") or []) if "recipe_ids" in payload else None),
+            scope=str(payload.get("scope") or "BIBLIOTECA"),
+            import_id=str(payload.get("import_id") or ""),
+            source=str(payload.get("origen_propuesta") or "ARCHIVO_EXTERNO"),
+        )
+
     def _safe_operational_call(self, operation: Any, *args: Any, **kwargs: Any) -> dict[str, Any]:
         try: return {**self._base_payload(), **operation(*args, **kwargs)}
-        except (StockLoteWriteError, StockAjusteError, EscandalloEditorError, RecetaDocumentacionError, ArticuloDocumentacionError, PrecioReferenciaWebError, WebPriceSearchError) as exc:
+        except (StockLoteWriteError, StockAjusteError, EscandalloEditorError, RecetaDocumentacionError, ArticuloDocumentacionError, PrecioReferenciaWebError) as exc:
             status = 403 if exc.code == "unauthorized" else 404 if exc.code.endswith("not_found") else 409 if "preview" in exc.code or "overwrite" in exc.code else 422
             error = self._error_payload(code=exc.code, message=str(exc)); error["error"]["status"] = status; return error
 
@@ -523,8 +575,38 @@ class CatalogPublicFacade(CorePublicApi02Facade):
 
     def _get_biblioteca_import_service(self) -> ImportDocumentService:
         if self._biblioteca_import_service is None:
-            self._biblioteca_import_service = ImportDocumentService(self.base_dir)
+            self._biblioteca_import_service = ImportDocumentService(
+                self.base_dir, persistent_sessions=True,
+            )
         return self._biblioteca_import_service
+
+    def importacion_biblioteca_activa(self) -> dict[str, Any]:
+        return self._library_call(
+            self._get_biblioteca_import_service().get_active_import,
+            error_code="library_import_failed",
+            operation_name="consultar la importación activa de Biblioteca",
+        )
+
+    def listar_importaciones_biblioteca(self) -> dict[str, Any]:
+        return self._library_call(
+            self._get_biblioteca_import_service().list_imports,
+            error_code="library_import_failed",
+            operation_name="listar las importaciones de Biblioteca",
+        )
+
+    def descartar_importacion_biblioteca(self, importacion_id: str) -> dict[str, Any]:
+        return self._library_call(
+            self._get_biblioteca_import_service().discard_import,
+            importacion_id,
+            error_code="library_import_failed",
+            operation_name="descartar una importación de Biblioteca",
+        )
+
+    def completado_externo_activo_importacion(self, importacion_id: str) -> dict[str, Any]:
+        return self._safe_operational_call(
+            self._get_recipe_docs_batch_service().active_external,
+            importacion_id,
+        )
 
     def crear_importacion_biblioteca(self, body: dict[str, Any]) -> dict[str, Any]:
         return self._library_call(
@@ -535,12 +617,19 @@ class CatalogPublicFacade(CorePublicApi02Facade):
         )
 
     def importacion_biblioteca(self, importacion_id: str) -> dict[str, Any]:
-        return self._library_call(
+        result = self._library_call(
             self._get_biblioteca_import_service().get_import,
             importacion_id,
             error_code="library_import_failed",
             operation_name="consultar una importación de Biblioteca",
         )
+        if result.get("ok") and isinstance(result.get("importacion"), dict):
+            active = self._get_recipe_docs_batch_service().active_external(importacion_id)
+            result["importacion"] = {
+                **result["importacion"],
+                "completado_recetas_activo": active.get("batch"),
+            }
+        return result
 
     def propuestas_importacion_biblioteca(self, importacion_id: str) -> dict[str, Any]:
         return self._library_call(

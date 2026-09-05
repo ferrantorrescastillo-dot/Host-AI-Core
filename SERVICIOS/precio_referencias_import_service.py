@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import csv
+from copy import deepcopy
+from datetime import datetime, timezone
 import io
 import json
 from pathlib import Path
@@ -9,6 +11,7 @@ from typing import Any
 
 from SERVICIOS.host_ai_authorized_execution_context import AuthorizedExecutionContext
 from SERVICIOS.precio_referencia_web_service import PrecioReferenciaWebError, PrecioReferenciaWebService
+from SERVICIOS.motor_escritura_segura_i1342 import MotorEscrituraSeguraI1342
 from SERVICIOS.clasificacion_entidad_catalogo import (
     AuditorClasificacionLegada,
     normalizar_tipo,
@@ -16,11 +19,64 @@ from SERVICIOS.clasificacion_entidad_catalogo import (
 )
 
 
+REFERENCE_IMPORT_STORE_PATH = "DATOS/db/biblioteca_precio_referencias_importaciones.json"
+
+
+class PriceReferenceImportWorkflowRepository:
+    """Persistencia de previews externos; nunca contiene autoridad sobre precio/proveedor real."""
+
+    def __init__(self, base_dir: Path | str, *, persistent: bool = True) -> None:
+        self.base_dir = Path(base_dir).resolve()
+        self.path = self.base_dir / REFERENCE_IMPORT_STORE_PATH
+        self.persistent = persistent
+        self.created_at = ""
+
+    def load(self) -> dict[str, dict[str, Any]]:
+        if not self.persistent:
+            return {}
+        try:
+            payload = json.loads(self.path.read_text(encoding="utf-8"))
+        except (FileNotFoundError, json.JSONDecodeError, OSError):
+            return {}
+        self.created_at = str(payload.get("created_at") or "") if isinstance(payload, dict) else ""
+        states = payload.get("states") if isinstance(payload, dict) else {}
+        return deepcopy(states) if isinstance(states, dict) else {}
+
+    def save(self, states: dict[str, dict[str, Any]]) -> None:
+        if not self.persistent:
+            return
+        now = datetime.now(timezone.utc).isoformat(timespec="seconds")
+        if not self.created_at:
+            self.created_at = now
+        result = MotorEscrituraSeguraI1342(self.base_dir, [REFERENCE_IMPORT_STORE_PATH]).ejecutar({
+            REFERENCE_IMPORT_STORE_PATH: {
+                "version": 1,
+                "schema_version": 1,
+                "created_at": self.created_at,
+                "updated_at": now,
+                "states": states,
+            },
+        })
+        if result.estado != "COMMIT":
+            raise RuntimeError(result.error or "No se pudo persistir el workflow de referencias externas.")
+
+
 class PrecioReferenciasImportService:
     """Flujo determinista y seguro para referencias externas aportadas por el usuario."""
 
-    def __init__(self, base_dir: Path | str, references: PrecioReferenciaWebService) -> None:
+    def __init__(
+        self,
+        base_dir: Path | str,
+        references: PrecioReferenciaWebService,
+        *,
+        state_repository: PriceReferenceImportWorkflowRepository | None = None,
+        persistent_state: bool = True,
+    ) -> None:
         self.base_dir = Path(base_dir).resolve(); self.references = references
+        self.state_repository = state_repository or PriceReferenceImportWorkflowRepository(
+            self.base_dir, persistent=persistent_state,
+        )
+        self._states = self.state_repository.load()
 
     def missing_articles(self) -> dict[str, Any]:
         articles = self._articles(); recipes = self._recipe_usage()
@@ -32,13 +88,13 @@ class PrecioReferenciasImportService:
                 derived.append(self._derived_cost_state(article))
                 continue
             refs = list(article.get("precios_referencia") or [])
-            values.append({"article_id": article_id, "codigo": article.get("codigo") or article_id, "articulo": article.get("nombre") or "", "tipo_entidad": normalizar_tipo(article.get("tipo_entidad")), "unidad_base": article.get("unidad_base"), "unidad_compra": article.get("unidad_compra"), "cantidad_formato": article.get("cantidad_formato"), "unidad_formato": article.get("unidad_formato"), "recetas": sorted(recipes.get(article_id, set())), "usado_en_recetas": len(recipes.get(article_id, set())), "precio_real": None, "referencia": refs[-1] if refs else None, "estado": "CON_REFERENCIA" if refs else "SIN_PRECIO"})
+            values.append({"article_id": article_id, "codigo": article.get("codigo") or article_id, "articulo": article.get("nombre") or "", "tipo_entidad": normalizar_tipo(article.get("tipo_entidad")), "unidad_base": article.get("unidad_base"), "unidad_compra": article.get("unidad_compra"), "cantidad_formato": article.get("cantidad_formato"), "unidad_formato": article.get("unidad_formato"), "recetas": sorted(recipes.get(article_id, set())), "usado_en_recetas": len(recipes.get(article_id, set())), "precio_real": None, "proveedor_real": article.get("proveedor") or article.get("proveedor_preferente") or None, "referencia": refs[-1] if refs else None, "estado": "CON_REFERENCIA" if refs else "SIN_PRECIO"})
         values.sort(key=lambda item: (str(item["articulo"]).casefold(), item["article_id"]))
         return {"ok": True, "articulos": values, "total": len(values), "costes_derivados": derived, "total_costes_derivados": len(derived), "consolidado_por": "ARTICLE_ID", "datos_reales_modificados": False, "coste_ia_usd": "0.00000000"}
 
     def export_text(self) -> dict[str, Any]:
         rows = self.missing_articles()["articulos"]
-        lines = ["Necesito referencias actuales de precios en España para los siguientes artículos de hostelería.", "", "Devuelve una tabla con:", "article_id | artículo | producto encontrado | tienda | formato | precio | moneda | URL/fuente | fecha", "", "No inventes precios. La tienda encontrada es una referencia, no proveedor real del restaurante.", "", "Artículos:"]
+        lines = ["Necesito referencias actuales de precios en España para los siguientes artículos de hostelería.", "", "Devuelve una tabla con:", "article_id | artículo | producto encontrado | proveedor_referencia | formato | precio | moneda | URL/fuente | fecha", "", "No inventes precios. El proveedor o tienda encontrado es solo una referencia externa: no es el proveedor real del restaurante.", "", "Artículos:"]
         for row in rows:
             fmt = self._format(row)
             lines.append(f'{row["article_id"]} | {row["articulo"]} | unidad base {row.get("unidad_base") or "pendiente"} | formato {fmt}')
@@ -80,16 +136,49 @@ class PrecioReferenciasImportService:
             try:
                 reference = self.references.normalize_imported_candidate(row, context)
                 preview = self.references.preview_imported(article_id=article_id, result=reference, context=context)
-                valid.append({"fila": index, "article_id": article_id, "articulo": articles[article_id].get("nombre"), "referencia": preview["referencia_propuesta"], "preview_token": preview["preview_token"], "incluir": True})
+                valid.append({"fila": index, "article_id": article_id, "articulo": articles[article_id].get("nombre"), "precio_real_actual": articles[article_id].get("precio"), "proveedor_real_actual": articles[article_id].get("proveedor") or articles[article_id].get("proveedor_preferente"), "referencia": preview["referencia_propuesta"], "preview_token": preview["preview_token"], "incluir": True})
             except PrecioReferenciaWebError as exc: invalid.append({"fila": index, "datos": row, "motivo": exc.code})
-        return {"ok": True, "formato_detectado": detected, "listas": valid, "ambiguas": ambiguous, "invalidas": invalid, "resumen": {"listas": len(valid), "ambiguas": len(ambiguous), "invalidas": len(invalid)}, "requiere_confirmacion": True, "datos_reales_modificados": False, "coste_ia_usd": "0.00000000"}
+        result = {"ok": True, "formato_detectado": detected, "listas": valid, "ambiguas": ambiguous, "invalidas": invalid, "resumen": {"listas": len(valid), "ambiguas": len(ambiguous), "invalidas": len(invalid)}, "requiere_confirmacion": True, "datos_reales_modificados": False, "precio_real_modificado": False, "proveedor_real_modificado": False, "coste_ia_usd": "0.00000000"}
+        self._save_state(context, {"estado": "LISTO_PARA_CONFIRMAR", "preview": result})
+        return result
 
     def confirm(self, rows: list[dict[str, Any]], context: AuthorizedExecutionContext) -> dict[str, Any]:
         confirmed = []
         for row in rows:
             if row.get("incluir") is False: continue
             confirmed.append(self.references.confirm_imported(article_id=str(row.get("article_id") or ""), result=dict(row.get("referencia") or {}), preview_token=str(row.get("preview_token") or ""), context=context))
-        return {"ok": True, "confirmadas": len(confirmed), "resultados": confirmed, "lectura_posterior_verificada": all(item.get("lectura_posterior_verificada") for item in confirmed), "datos_reales_modificados": bool(confirmed), "coste_ia_usd": "0.00000000"}
+        result = {"ok": True, "confirmadas": len(confirmed), "resultados": confirmed, "lectura_posterior_verificada": all(item.get("lectura_posterior_verificada") for item in confirmed), "datos_reales_modificados": any(bool(item.get("datos_reales_modificados")) for item in confirmed), "precio_real_modificado": False, "proveedor_real_modificado": False, "coste_ia_usd": "0.00000000"}
+        current = dict(self._states.get(self._tenant(context)) or {})
+        self._save_state(context, {**current, "estado": "CONFIRMADO", "confirmacion": result})
+        return result
+
+    def active(self, context: AuthorizedExecutionContext) -> dict[str, Any]:
+        self._authorize(context)
+        state = deepcopy(self._states.get(self._tenant(context)))
+        if state and state.get("estado") == "DESCARTADO":
+            state = None
+        return {"ok": True, "workflow": state, "datos_reales_modificados": False}
+
+    def discard(self, context: AuthorizedExecutionContext) -> dict[str, Any]:
+        self._authorize(context)
+        self._save_state(context, {"estado": "DESCARTADO", "preview": None})
+        return {"ok": True, "estado": "DESCARTADO", "datos_reales_modificados": False}
+
+    def _save_state(self, context: AuthorizedExecutionContext, state: dict[str, Any]) -> None:
+        self._authorize(context)
+        now = datetime.now(timezone.utc).isoformat(timespec="seconds")
+        self._states[self._tenant(context)] = {**deepcopy(state), "updated_at": now}
+        self.state_repository.save(self._states)
+
+    @staticmethod
+    def _tenant(context: AuthorizedExecutionContext) -> str:
+        return str(context.tenant_id or "").strip()
+
+    @staticmethod
+    def _authorize(context: AuthorizedExecutionContext) -> None:
+        valid, _ = context.validate() if isinstance(context, AuthorizedExecutionContext) else (False, "")
+        if not valid or "articulos:write" not in context.scopes:
+            raise PrecioReferenciaWebError("unauthorized", "Actor no autorizado.")
 
     def _parse(self, raw: str) -> tuple[list[dict[str, Any]], str]:
         text = str(raw or "").strip()
@@ -116,7 +205,7 @@ class PrecioReferenciasImportService:
         fmt = str(normalized.get("formato") or "").strip()
         match = re.search(r"([0-9]+(?:[.,][0-9]+)?)\s*(kg|g|ml|l|u)\b", fmt, re.I)
         price = str(normalized.get("precio") or normalized.get("precio_comercial") or "").replace("€", "").strip().replace(",", ".")
-        return {"article_id": normalized.get("article_id") or normalized.get("codigo"), "articulo": normalized.get("artículo") or normalized.get("articulo"), "producto": normalized.get("producto_encontrado") or normalized.get("producto") or normalized.get("artículo") or normalized.get("articulo"), "tienda_referencia": normalized.get("tienda") or normalized.get("tienda_referencia"), "cantidad_formato": normalized.get("cantidad_formato") or (match.group(1).replace(",", ".") if match else None), "unidad_formato": normalized.get("unidad_formato") or (match.group(2).lower() if match else None), "formato_comercial": fmt, "precio_comercial": price, "moneda": normalized.get("moneda") or "EUR", "url": normalized.get("url/fuente") or normalized.get("url") or normalized.get("fuente"), "consultado_en": normalized.get("fecha") or normalized.get("consultado_en")}
+        return {"article_id": normalized.get("article_id") or normalized.get("codigo"), "articulo": normalized.get("artículo") or normalized.get("articulo"), "producto": normalized.get("producto_encontrado") or normalized.get("producto") or normalized.get("artículo") or normalized.get("articulo"), "tienda_referencia": normalized.get("proveedor_referencia") or normalized.get("proveedor/tienda_de_referencia") or normalized.get("proveedor") or normalized.get("tienda") or normalized.get("tienda_referencia"), "cantidad_formato": normalized.get("cantidad_formato") or (match.group(1).replace(",", ".") if match else None), "unidad_formato": normalized.get("unidad_formato") or (match.group(2).lower() if match else None), "formato_comercial": fmt, "precio_comercial": price, "moneda": normalized.get("moneda") or "EUR", "url": normalized.get("url/fuente") or normalized.get("url") or normalized.get("fuente"), "consultado_en": normalized.get("fecha") or normalized.get("consultado_en")}
 
     def _articles(self) -> list[dict[str, Any]]:
         path = self.base_dir / "DATOS" / "db" / "articulos.json"
@@ -151,4 +240,4 @@ class PrecioReferenciasImportService:
         return f"{amount:g} {unit}" if isinstance(amount, (int, float)) and unit else f"{amount or ''} {unit or ''}".strip() or str(row.get("unidad_compra") or "pendiente")
 
 
-__all__ = ["PrecioReferenciasImportService"]
+__all__ = ["PrecioReferenciasImportService", "PriceReferenceImportWorkflowRepository", "REFERENCE_IMPORT_STORE_PATH"]
