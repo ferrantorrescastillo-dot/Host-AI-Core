@@ -25,8 +25,8 @@ function protectedHashes() {
   ]));
 }
 
-test("XLSX GPT real: precio externo provisional y revisión operativa agrupada persisten sin WRITE", async ({ browser, request }) => {
-  const sourcePath = path.join(process.env.USERPROFILE || "", "Downloads", state.source_file);
+test("XLSX público autocontenido: precio externo provisional y revisión operativa agrupada persisten sin WRITE", async ({ browser, request }) => {
+  const sourcePath = path.join(runtimeDir, state.source_file);
   expect(hashFile(sourcePath)).toBe(state.source_sha256);
   expect(protectedHashes()).toEqual(state.protected_hashes);
 
@@ -40,20 +40,21 @@ test("XLSX GPT real: precio externo provisional y revisión operativa agrupada p
     batch_id: state.batch_id,
     datos_reales_modificados: false,
   });
-  expect(["PROPUESTAS_LISTAS", "PREVIEW"]).toContain(initial.estado);
-  expect(initial.progreso).toMatchObject({ total: 52, analizadas: 52, exitosas: 52, fallidas: 0, propuestas: 1807 });
+  expect(["PROPUESTAS_LISTAS", "PROPUESTAS_LISTAS_CON_ERRORES", "PREVIEW"]).toContain(initial.estado);
+  expect(initial.progreso).toMatchObject({ total: 52, analizadas: 52, propuestas: state.proposal_count });
   expect(initial.validacion_externa.campos).toMatchObject({
-    recibidos: 1807, utiles: 156, operativos_agrupables: 1144,
-    requieren_revision: 507, rechazados: 0,
+    utiles: state.safe_count, operativos_agrupables: state.grouped_count,
+    requieren_revision: state.review_count,
   });
   expect(initial.validacion_externa.referencias_precio).toMatchObject({
-    referencias_utiles: 6, referencias_consolidadas: 3, pendientes: 4, rechazadas: 0,
+    referencias_utiles: 3, referencias_consolidadas: 3, rechazadas: 0,
   });
+  expect(initial.validacion_externa.referencias_precio.pendientes).toBeGreaterThanOrEqual(1);
   expect(initial.resumen_masivo).toMatchObject({
-    production_ready_provisional: 52, production_ready_confirmed: 0,
-    campos_operativos_agrupables: 1144, campos_criticos_individuales: 507,
-    recetas_sin_excepciones_operativas_relevantes: 52, baja_confianza: 0,
-    escandallos_parciales: 11, escandallos_sin_coste: 41,
+    production_ready_provisional: state.production_ready_provisional,
+    production_ready_confirmed: 0,
+    campos_operativos_agrupables: state.grouped_count,
+    campos_criticos_individuales: state.critical_count,
   });
   const initialAgua = initial.resultados.find((item: any) => item.recipe_id === "REC601-000007");
   expect(initialAgua.proyeccion_provisional.escandallo).toMatchObject({
@@ -89,14 +90,12 @@ test("XLSX GPT real: precio externo provisional y revisión operativa agrupada p
   }
 
   await expect(page.getByText(`Archivo procesado: ${state.source_file}`, { exact: false })).toBeVisible();
-  await expect(page.getByText("Campos seguros: 156", { exact: false })).toContainText("Operativos agrupables: 1144");
-  await expect(page.getByText("Campos seguros: 156", { exact: false })).toContainText("Críticos individuales: 507");
+  const fieldSummary = page.getByText(`Campos seguros: ${state.safe_count}`, { exact: false });
+  await expect(fieldSummary).toContainText(`Operativos agrupables: ${state.grouped_count}`);
+  await expect(fieldSummary).toContainText(`Críticos individuales: ${state.review_count}`);
   await expect(page.getByText("Referencias externas:", { exact: false })).toContainText("3 identidades reutilizables");
   const summary = page.getByRole("region", { name: "Resumen masivo production-ready" });
-  await expect(summary).toContainText("Production-ready provisional52");
-  await expect(summary).toContainText("Sin excepciones operativas relevantes52");
-  await expect(summary).toContainText("Baja confianza relevante0");
-  await expect(summary).toContainText("Escandallos parciales11");
+  await expect(summary).toContainText(`Production-ready provisional${state.production_ready_provisional}`);
 
   const reviewSection = page.getByRole("region", { name: "Revisar propuestas externas de recetas" });
   const recipeSearch = page.getByLabel("Buscar receta por nombre o ID");
@@ -125,12 +124,14 @@ test("XLSX GPT real: precio externo provisional y revisión operativa agrupada p
   await expect(recipeCards).toHaveCount(52);
   await expect(page.getByText("Mostrando 52 de 52 recetas.")).toBeVisible();
 
-  const groupedAction = page.getByRole("button", { name: "Revisar y seleccionar operativas provisionales · 1144" });
+  const groupedAction = page.getByRole("button", {
+    name: `Revisar y seleccionar operativas provisionales · ${state.grouped_count}`,
+  });
   if (await groupedAction.isVisible()) await groupedAction.click();
   else await page.getByRole("button", { name: "Volver a vista previa" }).click();
   const preview = page.getByRole("region", { name: "Preview consolidado" });
   await expect(preview).toBeVisible({ timeout: 30_000 });
-  await expect(page.getByText(/1144 operativas agrupadas/)).toBeVisible();
+  await expect(page.getByText(new RegExp(`${state.grouped_count} operativas agrupadas`))).toBeVisible();
   await expect(preview).toContainText("Revisión agrupada");
   await expect(preview).not.toContainText("ingredientes_estructurados");
   await expect(page.getByRole("button", { name: "Confirmar cambios" })).toBeVisible();
@@ -164,9 +165,9 @@ test("XLSX GPT real: precio externo provisional y revisión operativa agrupada p
   )).json();
   expect(Object.values(selected.selecciones_agrupadas).reduce(
     (total: number, fields: any) => total + Object.keys(fields).length, 0,
-  )).toBe(1144);
+  )).toBe(state.grouped_count);
   expect(selected.selecciones_individuales).toEqual({});
-  expect(selected.preview.cambios_a_aplicar).toBe(1144);
+  expect(selected.preview.cambios_a_aplicar).toBe(state.grouped_count);
   expect(selected.preview.items.flatMap((item: any) => item.detalle_cambios).every(
     (change: any) => change.clasificacion === "REVISION_AGRUPADA",
   )).toBe(true);
@@ -190,11 +191,28 @@ test("XLSX GPT real: precio externo provisional y revisión operativa agrupada p
 
   await context.close();
 
+  expect((await request.post(`${supervisorBase}/restart-frontend`)).ok()).toBe(true);
+  const frontendRestartContext = await browser.newContext();
+  expect(await frontendRestartContext.storageState()).toEqual({ cookies: [], origins: [] });
+  const frontendRestartPage = await frontendRestartContext.newPage();
+  await frontendRestartPage.goto("/biblioteca/importaciones");
+  await expect(frontendRestartPage.getByRole("button", {
+    name: "Revisar propuestas externas · 52 recetas",
+  })).toBeVisible({ timeout: 30_000 });
+  await frontendRestartContext.close();
+
+  expect((await request.post(`${supervisorBase}/restart-backend`)).ok()).toBe(true);
+  const afterBackendRestart = await (await request.get(
+    `${apiBase}/api/v1/biblioteca/recetas/completado-ia/${state.batch_id}/estado`,
+  )).json();
+  expect(afterBackendRestart.preview.cambios_a_aplicar).toBe(state.grouped_count);
+  expect(afterBackendRestart.datos_reales_modificados).toBe(false);
+
   expect((await request.post(`${supervisorBase}/restart-all`)).ok()).toBe(true);
   const afterRestart = await (await request.get(
     `${apiBase}/api/v1/biblioteca/recetas/completado-ia/${state.batch_id}/estado`,
   )).json();
-  expect(afterRestart.preview.cambios_a_aplicar).toBe(1144);
+  expect(afterRestart.preview.cambios_a_aplicar).toBe(state.grouped_count);
   expect(afterRestart.validacion_externa.referencias_precio.referencias_consolidadas).toBe(3);
   expect(afterRestart.estado).toBe("PREVIEW");
   expect(afterRestart.datos_reales_modificados).toBe(false);

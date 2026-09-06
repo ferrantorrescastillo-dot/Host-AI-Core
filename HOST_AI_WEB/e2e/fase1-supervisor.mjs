@@ -32,18 +32,26 @@ function prepare() {
   if (result.status !== 0) throw new Error(`No se pudo preparar el runtime E2E (${result.status}).`);
 }
 
-function startChildren() {
+function startBackend() {
   backend = spawn("python", [pythonScript, "--serve-only"], {
     cwd: projectRoot,
     env: childEnv,
     stdio: "inherit",
   });
+}
+
+function startFrontend() {
   frontend = spawn("cmd.exe", ["/d", "/s", "/c", `npm.cmd run dev -- --host 127.0.0.1 --port ${frontendPort}`], {
     cwd: webRoot,
     env: { ...childEnv, VITE_HOST_AI_API_BASE_URL: `http://127.0.0.1:${backendPort}` },
     stdio: "inherit",
     windowsHide: true,
   });
+}
+
+function startChildren() {
+  startBackend();
+  startFrontend();
 }
 
 function terminateTree(child) {
@@ -90,6 +98,18 @@ async function restartAll() {
   await waitUntilReady();
 }
 
+async function restartBackend() {
+  await terminateTree(backend);
+  startBackend();
+  await waitUntilReady();
+}
+
+async function restartFrontend() {
+  await terminateTree(frontend);
+  startFrontend();
+  await waitUntilReady();
+}
+
 async function shutdown() {
   if (stopping) return;
   stopping = true;
@@ -113,9 +133,13 @@ const server = http.createServer(async (request, response) => {
     response.end(JSON.stringify({ ok: ready }));
     return;
   }
-  if (request.method === "POST" && request.url === "/restart-all") {
+  const restart = request.url === "/restart-all" ? restartAll
+    : request.url === "/restart-backend" ? restartBackend
+      : request.url === "/restart-frontend" ? restartFrontend
+        : null;
+  if (request.method === "POST" && restart) {
     try {
-      await restartAll();
+      await restart();
       response.writeHead(200, { "Content-Type": "application/json" });
       response.end(JSON.stringify({ ok: true }));
     } catch (error) {

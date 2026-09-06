@@ -2149,6 +2149,14 @@ Evidencia: backend focal 83/83, backend Fase 1 227/227, frontend focal 49/49, fr
 
 Estado vigente: `ESCANDALLO CORREGIDO — LISTO PARA SMOKE HUMANO FINAL`; Fase 1 sigue abierta y Fase 1.5 no se ha iniciado.
 
+## Hotfix de reproducibilidad post-publicación (6 de septiembre de 2026)
+
+La certificación desde un clon limpio de `875f75387903c7f60c4695939acd02c217cb2019` reprodujo un defecto exclusivo del harness E2E: `economic-exceptions-real.spec.ts` dependía de `source_file`, `source_sha256` y `protected_hashes` creados durante el smoke humano, y buscaba el XLSX en `%USERPROFILE%/Downloads`. El preparador versionado no producía esos campos y además iniciaba ese runtime con 30 recetas, por lo que la prueba fallaba desde cero antes de ejercer el producto.
+
+El escenario económico genera ahora dentro de `.test-runs` un XLSX 0.3 autocontenido de 52 recetas y tres referencias controladas para Agua de jamaica. El coste esperado sigue siendo calculado por el motor: 0,5 kg × 15,90 EUR/kg + 1 kg × 2,79 EUR/kg + 1 kg × 0,89 EUR/kg = 11,63 EUR, con Agua sin precio, estado `PARCIAL`, cobertura 75 % y autoridad `REFERENCIA_EXTERNA`/`REFERENCIA_NO_REAL`. El test protege recetas y artículos por hash y comprueba F5, Chrome limpio y reinicios separados de frontend, backend y conjunto. No cambia código de producto, contratos ni políticas de WRITE.
+
+Evidencia previa a republicación: backend Fase 1 227/227, frontend completo 284/284, lote masivo 52 recetas 1/1, sentinel económico autocontenido 1/1, typecheck, build de 330 módulos, compilación Python y `git diff --check` correctos. `DATOS` real no se usó ni se modificó. Fase 1.5 permanece sin iniciar.
+
 **Fin del documento oficial `09_ESTADO_ACTUAL.md`.**
 
 ## Actualización — contrato maestro autosuficiente de Fase 1 (5 de septiembre de 2026)

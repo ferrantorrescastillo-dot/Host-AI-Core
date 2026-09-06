@@ -317,3 +317,11 @@ El smoke humano reveló una divergencia dentro del mismo batch `RECIPE-BATCH-27A
 Evidencia: backend focal 83/83, backend Fase 1 227/227, frontend focal 49/49, frontend completo 284/284 y E2E Chrome del XLSX GPT real 1/1 con F5, reinicio completo y navegador limpio. Agua de jamaica conserva 11,63 EUR, 75 %, tres referencias no reales y Agua pendiente; el batch sigue con 52/52 provisionalmente listas, 1.807 propuestas, 1.144 agrupadas, 507 críticas y 11 escandallos parciales. No hubo confirmación ni WRITE real.
 
 Estado técnico: `ESCANDALLO CORREGIDO — LISTO PARA SMOKE HUMANO FINAL`; Fase 1 no se cierra automáticamente y Fase 1.5 no se inicia.
+
+## Hotfix de reproducibilidad del sentinel económico (6 de septiembre de 2026)
+
+Un checkout limpio del SHA publicado `875f75387903c7f60c4695939acd02c217cb2019` demostró que la prueba económica final no era reproducible sin el XLSX y el manifiesto del smoke humano conservados fuera de Git. El fallo era del escenario de certificación: el preparador creaba 30 recetas y no publicaba `source_file`, `source_sha256` ni `protected_hashes`; el test intentaba resolver `Downloads/undefined`. La aplicación y el E2E independiente del contrato público sí completaron correctamente el recorrido limpio de 52 recetas.
+
+El harness versionado prepara ahora su propio XLSX físico y sus referencias de control dentro del runtime aislado. La aserción económica conserva el sentinel exacto de Agua de jamaica (11,63 EUR conocidos, `PARCIAL`, 75 %, tres referencias externas y Agua pendiente), prueba búsqueda 52→1→52 en revisión y preview, F5, contextos Chrome limpios, reinicio de frontend, reinicio de backend y reinicio conjunto. Las referencias permanecen `REFERENCIA_NO_REAL` y nunca `CONFIRMADO` ni precio real de compra; los hashes protegidos verifican ausencia de WRITE de dominio.
+
+Regresión previa a republicación: backend Fase 1 227/227, frontend completo 284/284, E2E masivo 1/1 y E2E económico autocontenido 1/1, typecheck, build, compilación Python y `git diff --check` correctos. El cambio afecta solo a `TESTS/fase1_e2e_server.py`, `HOST_AI_WEB/e2e/fase1-supervisor.mjs` y `HOST_AI_WEB/e2e/economic-exceptions-real.spec.ts`; no modifica producto ni `DATOS` real. Fase 1.5 no se inicia.

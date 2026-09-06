@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import re
@@ -145,6 +146,51 @@ def _seed_articles(runtime: Path) -> None:
         "unidad_base": "kg", "unidad_compra": "kg", "precio": 1.8,
         "proveedor": "Proveedor fixture", "estado": "ACTIVO", "activo": True,
     }], ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def _prepare_economic_sentinel(runtime: Path) -> None:
+    """Remove real-price authority so the XLSX references drive the sentinel."""
+    path = runtime / "DATOS/db/articulos.json"
+    articles = json.loads(path.read_text(encoding="utf-8"))
+    sentinel_names = {"Flor de hibiscus", "Limones", "Azúcar"}
+    for article in articles:
+        if str(article.get("nombre") or "") in sentinel_names:
+            article["precio"] = None
+            article["proveedor"] = ""
+    path.write_text(json.dumps(articles, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def _complete_economic_references(workbook, recipe_id: str) -> None:
+    references = workbook["PRECIOS_REFERENCIA"]
+    headers = {cell.value: cell.column for cell in references[1]}
+    fixtures = {
+        "Flor de hibiscus": ("Hibisco flor a granel 1 kg", "Herbolínea", 15.9),
+        "Limones": ("Limones malla 1 kg", "Alcampo", 2.79),
+        "Azúcar": ("Azúcar blanco 1 kg", "Alcampo", 0.89),
+    }
+    completed: set[str] = set()
+    for row in range(2, references.max_row + 1):
+        name = str(references.cell(row, headers["nombre_canonico"]).value or "")
+        fixture = fixtures.get(name)
+        if not fixture:
+            continue
+        product, supplier, price = fixture
+        values = {
+            "producto_encontrado": product, "comercio_fuente": supplier,
+            "precio_observado": price, "moneda": "EUR", "formato_envase": "1 kg",
+            "cantidad_envase": 1, "unidad_envase": "kg", "precio_normalizado": price,
+            "unidad_precio_normalizado": "kg",
+            "url_fuente": f"https://example.test/{name.casefold().replace(' ', '-')}",
+            "fecha_consulta": "2026-09-05",
+            "observacion_equivalencia": "Referencia externa controlada para el sentinel E2E",
+            "confianza": 0.9, "price_basis": "IVA_INCLUIDO",
+            "procedencia": "REFERENCIA_EXTERNA", "estado_referencia": "REFERENCIA_PROPUESTA",
+        }
+        for field, value in values.items():
+            references.cell(row, headers[field]).value = value
+        completed.add(name)
+    assert completed == set(fixtures)
+    assert recipe_id
 
 
 def _seed_import(runtime: Path, recipe_ids: list[str]) -> str:
@@ -401,7 +447,10 @@ def _seed_external_batch(runtime: Path, recipe_ids: list[str], import_id: str) -
         critical_count = 9 if index < 17 else 8
         for field, value in list(critical_values.items())[:critical_count]:
             sheet.cell(row, headers[f"{field}_propuesto"]).value = value
-        if runtime.name in {"fase1-mass-e2e", "fase1-mass-smoke", "fase1-contract-e2e"}:
+        if runtime.name in {
+            "fase1-mass-e2e", "fase1-mass-smoke", "fase1-contract-e2e",
+            "fase1-economic-exceptions-e2e", "fase1-economic-exceptions-smoke",
+        }:
             recipe = recipes_by_id[recipe_id]
             structured = []
             for ingredient_index, ingredient_name in enumerate(recipe.get("ingredientes") or []):
@@ -444,7 +493,9 @@ def _seed_external_batch(runtime: Path, recipe_ids: list[str], import_id: str) -
                     "modelo": "MOCK_GPT_MASS_E2E",
                 } for field in operational
             }, ensure_ascii=False)
-            if index == 0:
+            if index == 0 and runtime.name not in {
+                "fase1-economic-exceptions-e2e", "fase1-economic-exceptions-smoke",
+            }:
                 sheet.cell(row, headers["recipe_fingerprint"]).value = "stale-e2e"
         if recipe_id == agua_recipe_id:
             agua = recipes_by_id[recipe_id]
@@ -485,6 +536,15 @@ def _seed_external_batch(runtime: Path, recipe_ids: list[str], import_id: str) -
                 "regeneracion": "NO_APLICA",
                 "ingredientes_estructurados": structured,
             }
+            if runtime.name in {"fase1-economic-exceptions-e2e", "fase1-economic-exceptions-smoke"}:
+                operational["ingredientes_estructurados"].append({
+                    "line_id": f"{recipe_id}-AGUA-PENDIENTE",
+                    "nombre_original": "Agua", "name_raw": "Agua",
+                    "cantidad": 8, "unidad": "l", "cantidad_normalizada": 8,
+                    "unidad_normalizada": "l", "estado_relacion": "CANDIDATO_NUEVO",
+                    "dato_provisional": True,
+                    "procedencia_propuesta": {"origen": "IA_PROPUESTA", "confianza": 0.9},
+                })
             for field, value in operational.items():
                 sheet.cell(row, headers[f"{field}_propuesto"]).value = (
                     json.dumps(value, ensure_ascii=False) if isinstance(value, (dict, list)) else value
@@ -497,6 +557,8 @@ def _seed_external_batch(runtime: Path, recipe_ids: list[str], import_id: str) -
                 }
                 for field in operational
             }, ensure_ascii=False)
+    if runtime.name in {"fase1-economic-exceptions-e2e", "fase1-economic-exceptions-smoke"}:
+        _complete_economic_references(workbook, agua_recipe_id)
     physical_path = runtime / "fixture-completado-externo.xlsx"
     workbook.save(physical_path)
     encoded = __import__("base64").b64encode(physical_path.read_bytes()).decode("ascii")
@@ -535,10 +597,17 @@ def _seed_external_batch(runtime: Path, recipe_ids: list[str], import_id: str) -
         agua_ready = bool((agua_result.get("completitud") or {}).get("production_ready_provisional"))
         assert agua_ready is True
     assert validation["filas_recibidas"] == len(included_ids)
-    if runtime.name in {"fase1-mass-e2e", "fase1-mass-smoke", "fase1-contract-e2e"}:
+    if runtime.name in {
+        "fase1-mass-e2e", "fase1-mass-smoke", "fase1-contract-e2e",
+        "fase1-economic-exceptions-e2e", "fase1-economic-exceptions-smoke",
+    }:
         assert validation["filas_recibidas"] >= 50
-        assert validation["filas_rechazadas"] == 1
-        assert any("RECETA_CAMBIO_DESDE_EXPORTACION" in row["errores"] for row in validation["filas"])
+        expected_rejected = 0 if runtime.name in {
+            "fase1-economic-exceptions-e2e", "fase1-economic-exceptions-smoke",
+        } else 1
+        assert validation["filas_rechazadas"] == expected_rejected
+        if expected_rejected:
+            assert any("RECETA_CAMBIO_DESDE_EXPORTACION" in row["errores"] for row in validation["filas"])
         assert any("puede_congelarse:invalid_boolean" in row["errores"] for row in validation["filas"])
         assert any(row.get("campos_imposibles_estimar") for row in validation["filas"])
     else:
@@ -556,6 +625,7 @@ def _seed_external_batch(runtime: Path, recipe_ids: list[str], import_id: str) -
         "safe_count": int(validation["campos"]["utiles"]),
         "grouped_count": expected_grouped,
         "critical_count": expected_critical,
+        "review_count": int(validation["campos"]["requieren_revision"]),
         "proposal_count": int(imported["batch"]["progreso"]["propuestas"]),
         "recipe_count": len(included_ids),
         "agua_recipe_id": agua_recipe_id,
@@ -572,6 +642,8 @@ def _seed_external_batch(runtime: Path, recipe_ids: list[str], import_id: str) -
         "mass_no_aplica": int(imported["batch"]["resumen_masivo"]["no_aplica"]),
         "agua_production_ready_provisional": agua_ready,
         "recipe_names": expected_names,
+        "source_file": physical_path.name,
+        "source_sha256": hashlib.sha256(physical_path.read_bytes()).hexdigest().upper(),
         "name_audit": {
             "canonical_matches_xlsx": xlsx_names == expected_names,
             "xlsx_matches_batch": batch_names == xlsx_names,
@@ -592,9 +664,12 @@ def prepare() -> dict[str, object]:
         recipe_count = 52 if runtime.name in {
             "fase1-mass-e2e", "fase1-mass-smoke", "fase1-download-e2e",
             "fase1-download-clean-e2e", "fase1-contract-e2e", "fase1-master-contract-e2e",
+            "fase1-economic-exceptions-e2e", "fase1-economic-exceptions-smoke",
         } else 30
         recipe_ids = _seed_recipes(runtime, recipe_count)
         import_id = _seed_import(runtime, recipe_ids)
+        if runtime.name in {"fase1-economic-exceptions-e2e", "fase1-economic-exceptions-smoke"}:
+            _prepare_economic_sentinel(runtime)
         metrics = {"detected_recipes": recipe_count, "menus": 0, "ap_excluded": 0}
     if runtime.name == "fase1-download-clean-e2e":
         state = {
@@ -614,6 +689,7 @@ def prepare() -> dict[str, object]:
             "safe_count": batch["safe_count"],
             "grouped_count": batch["grouped_count"],
             "critical_count": batch["critical_count"],
+            "review_count": batch["review_count"],
             "proposal_count": batch["proposal_count"],
             "agua_recipe_id": batch["agua_recipe_id"],
             "xlsx_version": batch["xlsx_version"],
@@ -624,10 +700,18 @@ def prepare() -> dict[str, object]:
             "mass_no_aplica": batch["mass_no_aplica"],
             "agua_production_ready_provisional": batch["agua_production_ready_provisional"],
             "recipe_names": batch["recipe_names"],
+            "source_file": batch["source_file"],
+            "source_sha256": batch["source_sha256"],
             "name_audit": batch["name_audit"],
             "has_external_batch": True,
             **metrics,
         }
+        if runtime.name in {"fase1-economic-exceptions-e2e", "fase1-economic-exceptions-smoke"}:
+            protected = ("biblioteca_recetas_601.json", "articulos.json")
+            state["protected_hashes"] = {
+                filename: hashlib.sha256((runtime / "DATOS/db" / filename).read_bytes()).hexdigest().upper()
+                for filename in protected
+            }
     (runtime / "e2e-state.json").write_text(json.dumps(state, indent=2), encoding="utf-8")
     return state
 
