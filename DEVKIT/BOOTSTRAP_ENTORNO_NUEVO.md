@@ -1,7 +1,9 @@
 # Bootstrap de Host AI en un entorno nuevo
 
-Estado: procedimiento canónico de aprovisionamiento local  
-Versión Python certificada: 3.13.14  
+Estado: procedimiento canónico de aprovisionamiento local
+
+Versión Python certificada: 3.13.14
+
 Rama de referencia: `feature/compras-web`
 
 ## Requisitos
