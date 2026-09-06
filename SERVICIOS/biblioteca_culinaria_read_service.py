@@ -850,6 +850,8 @@ class BibliotecaCulinariaReadService:
         self, elaboracion_id: str, *, propuestas: dict[str, Any],
         metadatos_propuestas: dict[str, dict[str, Any]] | None = None,
         completitud: dict[str, Any] | None = None,
+        campos_revision_individual: list[str] | None = None,
+        referencias_precio: list[dict[str, Any]] | None = None,
     ) -> dict[str, Any]:
         """Proyecta ficha y escandallo con propuestas sin persistir el dominio."""
         identity = self._norm(elaboracion_id)
@@ -904,7 +906,9 @@ class BibliotecaCulinariaReadService:
                 "id": f"PREVIEW-{recipe.get('id') or recipe.get('codigo')}",
                 "estado": "PROVISIONAL", "lineas": [], "otros_costes": 0,
             }
-        ingredients = self._ingredients(recipe, esc)
+        ingredients = self._ingredients(
+            recipe, esc, referencias_precio=referencias_precio or [],
+        )
         costing = self._costing(
             recipe, esc, ingredients, context=self._cost_context([
                 recipe if item is current else item for item in all_recipes
@@ -922,6 +926,7 @@ class BibliotecaCulinariaReadService:
             "procedencias_provisionales": field_origins,
             "campos_criticos_pendientes_revision": [
                 field for field, value in metadata.items()
+                if field in set(campos_revision_individual or [])
                 if str((value or {}).get("estado_revision") or "").upper()
                 == "REQUIERE_REVISION_HUMANA"
             ],
@@ -931,7 +936,9 @@ class BibliotecaCulinariaReadService:
                 "PROVISIONAL" if costing.get("coste_total") is not None
                 else costing.get("estado_coste")
             )
-            costing["coste_provisional"] = costing.get("coste_total") is not None
+            costing["coste_provisional"] = bool(
+                costing.get("coste_provisional") or costing.get("coste_total") is not None
+            )
             costing["motivos_provisionalidad"] = [
                 {
                     "campo": field,
@@ -1128,7 +1135,10 @@ class BibliotecaCulinariaReadService:
             warnings.append("Sin documentos asociados.")
         return warnings
 
-    def _ingredients(self, receta: dict[str, Any], esc: dict[str, Any] | None) -> list[dict[str, Any]]:
+    def _ingredients(
+        self, receta: dict[str, Any], esc: dict[str, Any] | None,
+        *, referencias_precio: list[dict[str, Any]] | None = None,
+    ) -> list[dict[str, Any]]:
         catalog = self.articulos.listar_productos(incluir_archivados=True)
         by_name: dict[str, list[dict[str, Any]]] = {}
         by_code: dict[str, dict[str, Any]] = {}
@@ -1138,6 +1148,16 @@ class BibliotecaCulinariaReadService:
             if code:
                 by_code[code] = article
         esc_lines = list((esc or {}).get("lineas") or [])
+        references_by_article = {
+            str(reference.get("article_id") or "").strip(): reference
+            for reference in (referencias_precio or []) if reference.get("article_id")
+        }
+        references_by_identity = {
+            (self._norm(reference.get("nombre_canonico")), self._unit_family(reference.get("unidad_normalizada"))): reference
+            for reference in (referencias_precio or [])
+            if self._norm(reference.get("nombre_canonico"))
+            and self._unit_family(reference.get("unidad_normalizada"))
+        }
         structured = list(
             receta.get("_ingredientes_estructurados")
             or receta.get("ingredientes_estructurados") or []
@@ -1145,6 +1165,19 @@ class BibliotecaCulinariaReadService:
         output = []
         names = list(receta.get("ingredientes") or [])
         amounts = list(receta.get("cantidades") or [])
+        # En una proyección externa puede haber candidatos nuevos al final de
+        # la estructura. Se muestran y costean como pendientes, sin convertirlos
+        # en artículos ni alterar la lista documental persistida.
+        for source in structured[len(names):]:
+            if not isinstance(source, dict):
+                continue
+            candidate_name = str(
+                source.get("nombre_original") or source.get("name_raw")
+                or source.get("nombre") or ""
+            ).strip()
+            if candidate_name:
+                names.append(candidate_name)
+                amounts.append(source.get("cantidad") or source.get("cantidad_original") or "")
         for index, name in enumerate(names):
             source = structured[index] if index < len(structured) and isinstance(structured[index], dict) else {}
             line = esc_lines[index] if index < len(esc_lines) and isinstance(esc_lines[index], dict) else {}
@@ -1176,7 +1209,7 @@ class BibliotecaCulinariaReadService:
             matches = [direct] if direct else by_name.get(self._norm(name), [])
             linked = matches[0] if len(matches) == 1 else None
             linked_article = linked if component_type == "ARTICULO" else None
-            output.append({
+            ingredient_record = {
                 "tipo_componente": component_type,
                 "articulo_id": (
                     str(linked_article.get("codigo")) if linked_article else None
@@ -1257,8 +1290,30 @@ class BibliotecaCulinariaReadService:
                     if matches
                     else "sin_relacionar"
                 ),
-            })
+            }
+            ingredient_unit = self._unit_family(
+                ingredient_record.get("unidad_normalizada") or ingredient_record.get("unidad")
+            )
+            external_reference = references_by_article.get(str(ingredient_record.get("articulo_id") or ""))
+            if external_reference is None:
+                external_reference = references_by_identity.get((self._norm(name), ingredient_unit))
+            if external_reference is not None:
+                ingredient_record["referencia_precio_externa"] = self._public_value(
+                    deepcopy(external_reference)
+                )
+                ingredient_record["clave_coste_provisional"] = str(
+                    ingredient_record.get("articulo_id")
+                    or external_reference.get("article_key") or ""
+                )
+                if ingredient_record["estado_relacion"] == "sin_relacionar" and str(source.get("estado_relacion") or "").upper() == "CANDIDATO_NUEVO":
+                    ingredient_record["estado_relacion"] = "candidato_nuevo"
+            output.append(ingredient_record)
         return output
+
+    @staticmethod
+    def _unit_family(value: Any) -> str:
+        unit = str(value or "").strip().casefold()
+        return "kg" if unit in {"kg", "g"} else "l" if unit in {"l", "ml", "cl"} else "u" if unit in {"u", "ud", "uds"} else ""
 
     def _costing(
         self,
@@ -1311,9 +1366,9 @@ class BibliotecaCulinariaReadService:
                     # El motor solo recibe una identidad cuando la relación pública
                     # ya es estable; nunca se le permite enlazar por parecido.
                     "producto_codigo": (
-                        item.get("articulo_id")
+                        item.get("clave_coste_provisional") or item.get("articulo_id")
                         if item.get("tipo_componente") == "ARTICULO"
-                        and item.get("estado_relacion") == "relacionado"
+                        and (item.get("estado_relacion") == "relacionado" or item.get("referencia_precio_externa"))
                         else f"__SIN_RELACION_{index}"
                     ),
                     "nombre_mostrado": (
@@ -1321,8 +1376,18 @@ class BibliotecaCulinariaReadService:
                         if item.get("tipo_componente") == "ELABORACION"
                         else
                         item.get("nombre_original")
-                        if item.get("estado_relacion") == "relacionado"
+                        if item.get("estado_relacion") == "relacionado" or item.get("referencia_precio_externa")
                         else ""
+                    ),
+                    "producto_provisional": (
+                        {
+                            "codigo": item.get("clave_coste_provisional"),
+                            "nombre": item.get("nombre_original"),
+                            "unidad_base": (item.get("referencia_precio_externa") or {}).get("unidad_normalizada"),
+                            "estado": "REFERENCIA_EXTERNA",
+                        }
+                        if item.get("referencia_precio_externa") and item.get("estado_relacion") != "relacionado"
+                        else None
                     ),
                     "cantidad_neta": item.get("cantidad_neta") or item.get("cantidad"),
                     "cantidad_texto": item.get("cantidad_texto"),
@@ -1627,13 +1692,32 @@ class BibliotecaCulinariaReadService:
         """Adapta el mismo contrato público que alimenta la ficha de Artículos."""
         prices: dict[str, dict[str, Any]] = {}
         for ingredient in ingredients:
-            code = str(ingredient.get("articulo_id") or "")
+            code = str(
+                ingredient.get("articulo_id")
+                or ingredient.get("clave_coste_provisional") or ""
+            )
             if not code or code in prices:
                 continue
-            response = self.catalogo_articulos.obtener(code)
+            response = self.catalogo_articulos.obtener(str(ingredient.get("articulo_id") or code))
             article = dict(response.get("articulo") or {}) if response.get("ok") else {}
             price = self._number(article.get("precio"))
             if price is None:
+                reference = dict(ingredient.get("referencia_precio_externa") or {})
+                reference_price = self._number(reference.get("precio_normalizado"))
+                reference_unit = self._unit_family(reference.get("unidad_normalizada"))
+                if reference_price is not None and reference_unit:
+                    prices[code] = {
+                        "precio_neto_unidad_base": reference_price,
+                        "unidad_base": reference_unit,
+                        "proveedor": reference.get("tienda_referencia") or "",
+                        "fecha": reference.get("consultado_en") or "",
+                        "provisional": True,
+                        "precio_incluye_iva": reference.get("price_basis") == "IVA_INCLUIDO",
+                        "fuente": "referencia_externa",
+                        "precio_original": reference.get("precio_comercial"),
+                        "unidad_precio_original": reference.get("unidad_formato"),
+                        **reference,
+                    }
                 continue
             product = self.articulos.obtener_producto(code) or {}
             normalized_price, normalized_unit, normalization_issues = (
@@ -1716,7 +1800,7 @@ class BibliotecaCulinariaReadService:
                 "motivo_sin_coste": "El motor económico actual no calcula subelaboraciones recursivamente",
             })
             return output
-        if ingredient.get("estado_relacion") != "relacionado":
+        if ingredient.get("estado_relacion") != "relacionado" and not ingredient.get("referencia_precio_externa"):
             output.update({
                 "articulo_codigo": ingredient.get("articulo_id"),
                 "articulo_nombre": ingredient.get("nombre_articulo") or ingredient.get("nombre_original"),

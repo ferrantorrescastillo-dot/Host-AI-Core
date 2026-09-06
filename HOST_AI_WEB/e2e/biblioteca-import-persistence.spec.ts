@@ -26,6 +26,8 @@ test("importación POST-FIX aparece sin pista local tras reiniciar backend y fro
   const prepared = JSON.parse(readFileSync(stateFile, "utf-8"));
   const importId = prepared.import_id as string;
   const batchId = prepared.batch_id as string;
+  const proposalCount = Number(prepared.proposal_count);
+  const safeCount = Number(prepared.safe_count);
   const domainBefore = sha256(recipeStore);
   let browserImports = 0;
 
@@ -39,25 +41,25 @@ test("importación POST-FIX aparece sin pista local tras reiniciar backend y fro
   await expect(summaryCta).toBeVisible();
   await summaryCta.click();
   await expect(page.getByRole("status").filter({ hasText: "Filas recibidas: 30" })).toContainText("Requieren revisión: 30");
-  await expect(page.getByRole("region", { name: "Revisar propuestas externas de recetas" })).toContainText("Propuestas generadas: 340");
+  await expect(page.getByRole("region", { name: "Revisar propuestas externas de recetas" })).toContainText(`Propuestas generadas: ${proposalCount}`);
 
   await page.getByRole("button", { name: "Aceptar propuestas seguras de todas" }).click();
   let preview = page.getByRole("region", { name: "Preview consolidado" });
-  await expect(preview).toContainText("Recetas afectadas: 30 · Cambios a aplicar: 83");
+  await expect(preview).toContainText(`Recetas afectadas: 30 · Cambios a aplicar: ${safeCount}`);
   await preview.getByRole("button", { name: "Volver a propuestas" }).click();
 
   const ensaladilla = page.locator("details").filter({ hasText: "Ensaladilla · CON_PROPUESTAS" });
-  await ensaladilla.locator("summary").click();
+  await ensaladilla.locator(":scope > summary").click();
   await ensaladilla.getByRole("button", { name: "Usar solo propuestas seguras de esta receta" }).click();
   preview = page.getByRole("region", { name: "Preview consolidado" });
   await expect(preview).toContainText("Recetas afectadas: 1 · Cambios a aplicar: 2");
   await preview.getByRole("button", { name: "Volver a propuestas" }).click();
-  await ensaladilla.locator("summary").click();
+  await ensaladilla.locator(":scope > summary").click();
   await ensaladilla.getByRole("button", { name: "Validar y seleccionar este campo" }).first().click();
   preview = page.getByRole("region", { name: "Preview consolidado" });
   await expect(preview).toContainText("Cambios a aplicar: 3");
   await preview.getByRole("button", { name: "Volver a propuestas" }).click();
-  await ensaladilla.locator("summary").click();
+  await ensaladilla.locator(":scope > summary").click();
   await ensaladilla.getByRole("button", { name: "Usar solo propuestas seguras de esta receta" }).click();
   preview = page.getByRole("region", { name: "Preview consolidado" });
   await expect(preview).toContainText("Recetas afectadas: 1 · Cambios a aplicar: 2");
@@ -78,7 +80,7 @@ test("importación POST-FIX aparece sin pista local tras reiniciar backend y fro
   expect(afterRestartList.importaciones[0].importacion_id).toBe(importId);
   const afterRestartDetail = await (await request.get(`${apiBase}/api/v1/biblioteca/importaciones/${importId}`)).json();
   expect(afterRestartDetail.importacion.completado_recetas_activo.batch_id).toBe(batchId);
-  expect(afterRestartDetail.importacion.completado_recetas_activo.progreso.propuestas).toBe(340);
+  expect(afterRestartDetail.importacion.completado_recetas_activo.progreso.propuestas).toBe(proposalCount);
   expect(afterRestartDetail.importacion.completado_recetas_activo.preview.cambios_a_aplicar).toBe(2);
 
   const cleanContext = await browser.newContext();
@@ -102,7 +104,7 @@ test("importación POST-FIX aparece sin pista local tras reiniciar backend y fro
   expect(persistedImports.schema_version).toBe(2);
   expect(persistedImports.created_at).toBeTruthy();
   expect(persistedImports.updated_at).toBeTruthy();
-  expect(persistedBatches.schema_version).toBe(2);
+  expect(persistedBatches.schema_version).toBe(3);
   expect(Object.keys(persistedBatches.batches)).toHaveLength(1);
   expect(browserImports).toBe(0);
   expect(sha256(recipeStore)).toBe(domainBefore);

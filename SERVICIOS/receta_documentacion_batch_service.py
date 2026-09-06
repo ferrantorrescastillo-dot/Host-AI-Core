@@ -15,15 +15,16 @@ from SERVICIOS.biblioteca_culinaria_read_service import BibliotecaCulinariaReadS
 from SERVICIOS.host_ai_authorized_execution_context import AuthorizedExecutionContext
 from SERVICIOS.motor_escritura_segura_i1342 import MotorEscrituraSeguraI1342
 from SERVICIOS.receta_documentacion_write_service import (
+    BATCH_GROUP_REVIEW_FIELDS,
     BATCH_MASS_SAFE_FIELDS,
     RecetaDocumentacionError,
     RecetaDocumentacionWriteService,
-    classify_recipe_proposals,
+    classify_recipe_proposals_for_review,
     recipe_completion_fingerprint,
 )
 
 BATCH_STORE_PATH = "DATOS/db/biblioteca_completado_recetas_batches.json"
-BATCH_STORE_SCHEMA_VERSION = 2
+BATCH_STORE_SCHEMA_VERSION = 3
 
 
 class RecipeCompletionBatchRepository:
@@ -99,6 +100,29 @@ class RecetaDocumentacionBatchService:
         self.read_service = BibliotecaCulinariaReadService(base_dir)
         self._batches, self._completed_confirms = self.state_repository.load()
         for batch in self._batches.values():
+            batch["schema_version"] = BATCH_STORE_SCHEMA_VERSION
+            batch.setdefault("selecciones_agrupadas", {})
+            batch.setdefault("referencias_precio_externas", [])
+            batch.setdefault("archivo_externo", None)
+            for item in (batch.get("resultados") or {}).values():
+                proposals = dict(item.get("datos_propuestos_ia") or {})
+                safe, grouped, individual = classify_recipe_proposals_for_review(
+                    proposals
+                )
+                item["datos_propuestos_seguros_masivo"] = safe
+                item["datos_operativos_agrupables"] = grouped
+                item["datos_requieren_revision_individual"] = individual
+                if proposals and batch["referencias_precio_externas"]:
+                    refreshed = self._provisional_projection(
+                        str(item.get("recipe_id") or ""), proposals,
+                        dict(item.get("metadatos_propuestas") or {}),
+                        dict(item.get("completitud") or {}),
+                        price_references=batch["referencias_precio_externas"],
+                    )
+                    if refreshed is not None:
+                        item["proyeccion_provisional"] = refreshed
+            self._refresh_preview_projection(batch)
+        for batch in self._batches.values():
             # Un proceso interrumpido se reanuda desde la cola persistida.
             batch["procesando"] = ""
             batch["confirmando"] = False
@@ -131,6 +155,8 @@ class RecetaDocumentacionBatchService:
         *,
         proposal_results: list[dict[str, Any]],
         validation: dict[str, Any],
+        price_references: list[dict[str, Any]] | None = None,
+        file_receipt: dict[str, Any] | None = None,
         import_id: str = "",
         scope: str = "BIBLIOTECA",
     ) -> dict[str, Any]:
@@ -145,6 +171,8 @@ class RecetaDocumentacionBatchService:
         batch["import_id"] = str(import_id or validation.get("import_id") or "")
         batch["scope"] = str(scope or validation.get("scope") or "BIBLIOTECA")
         batch["validacion_externa"] = dict(validation or {})
+        batch["referencias_precio_externas"] = deepcopy(price_references or [])
+        batch["archivo_externo"] = deepcopy(file_receipt) if file_receipt else None
         for item in proposal_results:
             recipe_id = str(item.get("recipe_id") or "")
             current = self.repository.obtener(recipe_id)
@@ -164,20 +192,25 @@ class RecetaDocumentacionBatchService:
             recipe_id = str(row.get("recipe_id") or "")
             if not recipe_id or recipe_id in batch["resultados"]:
                 continue
-            batch["resultados"][recipe_id] = {
+            validation_failed = bool(row.get("errores")) or row.get("estado") == "RECHAZADA"
+            validation_only_result = {
                 "recipe_id": recipe_id,
                 "nombre": (self.repository.obtener(recipe_id) or {}).get("nombre", recipe_id),
-                "estado": "ERROR_VALIDACION",
+                "estado": "ERROR_VALIDACION" if validation_failed else "NECESITA_USUARIO",
                 "datos_propuestos_ia": {}, "datos_propuestos_seguros_masivo": {},
+                "datos_operativos_agrupables": {},
                 "datos_requieren_revision_individual": {},
+                "propuestas_bloqueadas_revision": deepcopy(row.get("campos_bloqueados") or []),
                 "campos_pendientes_no_proponibles": [],
-                "error": {
-                    "code": "external_row_rejected",
-                    "message": " | ".join(row.get("errores") or ["Fila externa rechazada."]),
-                },
                 "validacion_fila": deepcopy(row),
                 "completitud": {"production_ready_provisional": False, "production_ready_confirmed": False},
             }
+            if validation_failed:
+                validation_only_result["error"] = {
+                    "code": "external_row_rejected",
+                    "message": " | ".join(row.get("errores") or ["Fila externa rechazada."]),
+                }
+            batch["resultados"][recipe_id] = validation_only_result
         self._finish_generation(batch)
         self._persist()
         return self._public(batch)
@@ -299,6 +332,7 @@ class RecetaDocumentacionBatchService:
         batch_id: str,
         selections: dict[str, dict[str, Any]],
         individual_selections: dict[str, dict[str, Any]] | None = None,
+        grouped_selections: dict[str, dict[str, Any]] | None = None,
     ) -> dict[str, Any]:
         batch = self._batch(batch_id)
         clean: dict[str, dict[str, Any]] = {}
@@ -315,6 +349,15 @@ class RecetaDocumentacionBatchService:
                     if key in proposed and value == proposed[key]
                 }
             batch["selecciones_individuales"] = reviewed
+        if grouped_selections is not None:
+            grouped: dict[str, dict[str, Any]] = {}
+            for recipe_id, fields in dict(grouped_selections or {}).items():
+                proposed = dict((batch["resultados"].get(recipe_id) or {}).get("datos_operativos_agrupables") or {})
+                grouped[recipe_id] = {
+                    key: value for key, value in dict(fields or {}).items()
+                    if key in proposed and value == proposed[key]
+                }
+            batch["selecciones_agrupadas"] = grouped
         batch["preview"] = None
         self._persist()
         return self._public(batch)
@@ -323,7 +366,8 @@ class RecetaDocumentacionBatchService:
         batch = self._batch(batch_id)
         items = []
         recipe_ids = list(dict.fromkeys([
-            *batch["selecciones"].keys(), *batch["selecciones_individuales"].keys(),
+            *batch["selecciones"].keys(), *batch["selecciones_agrupadas"].keys(),
+            *batch["selecciones_individuales"].keys(),
         ]))
         for recipe_id in recipe_ids:
             current = self.repository.obtener(recipe_id)
@@ -333,6 +377,7 @@ class RecetaDocumentacionBatchService:
                     raise RecetaDocumentacionError("stale_external_recipe", f"La receta {recipe_id} cambio desde la exportacion externa.")
             selected = {
                 **dict(batch["selecciones"].get(recipe_id) or {}),
+                **dict(batch["selecciones_agrupadas"].get(recipe_id) or {}),
                 **dict(batch["selecciones_individuales"].get(recipe_id) or {}),
             }
             if not selected:
@@ -356,6 +401,7 @@ class RecetaDocumentacionBatchService:
             current = dict(item.get("receta_antes") or current or {})
             source = dict(item.get("procedencia_propuesta") or source)
             individual_fields = set((batch["selecciones_individuales"].get(recipe_id) or {}).keys())
+            grouped_fields = set((batch["selecciones_agrupadas"].get(recipe_id) or {}).keys())
             change_details = []
             for field, proposed_value in changes.items():
                 current_value = current.get(field)
@@ -366,7 +412,11 @@ class RecetaDocumentacionBatchService:
                     "valor_actual": current_value,
                     "valor_propuesto": proposed_value,
                     "procedencia": {**source, **field_metadata},
-                    "clasificacion": "REVISION_INDIVIDUAL" if field in individual_fields else "SELECCION_MASIVA",
+                    "clasificacion": (
+                        "REVISION_INDIVIDUAL" if field in individual_fields
+                        else "REVISION_AGRUPADA" if field in grouped_fields
+                        else "SELECCION_MASIVA"
+                    ),
                     "sobrescribe": bool(current_present and current_value != proposed_value),
                     "completa": not current_present,
                 })
@@ -378,12 +428,11 @@ class RecetaDocumentacionBatchService:
                 "preview_token": item["preview_token"],
                 "proposal_source": source,
                 "metadatos_propuestas": proposal_metadata_by_field,
-                "proyeccion_provisional": (
-                    self._provisional_projection(
-                        recipe_id, changes, proposal_metadata_by_field,
-                        result_record.get("completitud"),
-                    )
-                    if set(changes) - BATCH_MASS_SAFE_FIELDS else None
+                # La ficha y el escandallo describen la proyección provisional
+                # completa de la receta. El detalle de cambios sigue limitado a
+                # la selección autorizada y es la única entrada de confirm().
+                "proyeccion_provisional": deepcopy(
+                    result_record.get("proyeccion_provisional")
                 ),
             })
         fingerprint = hashlib.sha256(json.dumps(items, ensure_ascii=False, sort_keys=True).encode()).hexdigest()
@@ -436,18 +485,25 @@ class RecetaDocumentacionBatchService:
             coverage = dict(item.get("completitud") or {})
             individual = set((item.get("datos_requieren_revision_individual") or {}).keys())
             selected_individual = set((batch.get("selecciones_individuales", {}).get(item.get("recipe_id")) or {}).keys())
-            confidences = [
-                float(value.get("confianza"))
-                for value in (item.get("metadatos_propuestas") or {}).values()
-                if isinstance(value, dict) and value.get("confianza") not in (None, "")
-            ]
+            grouped = set((item.get("datos_operativos_agrupables") or {}).keys())
+            selected_grouped = set((batch.get("selecciones_agrupadas", {}).get(item.get("recipe_id")) or {}).keys())
+            low_confidence_fields = []
+            for field, value in (item.get("metadatos_propuestas") or {}).items():
+                if not isinstance(value, dict) or value.get("confianza") in (None, ""):
+                    continue
+                try:
+                    if float(value["confianza"]) < 0.5:
+                        low_confidence_fields.append(field)
+                except (TypeError, ValueError):
+                    low_confidence_fields.append(field)
             costing = dict((item.get("proyeccion_provisional") or {}).get("escandallo") or {})
             resolution = dict(coverage.get("resolucion_campos") or {})
             exceptions = {
                 "bloqueada": not bool(coverage.get("production_ready_provisional")),
                 "no_production_ready": not bool(coverage.get("production_ready_provisional")),
                 "criticos": bool(individual - selected_individual),
-                "baja_confianza": any(value < 0.65 for value in confidences),
+                "baja_confianza": bool(low_confidence_fields),
+                "operativas_agrupables": bool(grouped - selected_grouped),
                 "pendientes": bool(coverage.get("pendientes")),
                 "no_aplica": bool(coverage.get("no_aplica")),
                 "error": bool(
@@ -464,6 +520,7 @@ class RecetaDocumentacionBatchService:
                 ),
             }
             item["excepciones"] = exceptions
+            item["campos_baja_confianza_relevante"] = sorted(low_confidence_fields)
             item["estado_operativo"] = (
                 "PRODUCTION_READY_PROVISIONAL"
                 if coverage.get("production_ready_provisional") else item.get("estado")
@@ -502,11 +559,34 @@ class RecetaDocumentacionBatchService:
                 bool((item.get("completitud") or {}).get("production_ready_confirmed")) for item in results
             ),
             "criticos_pendientes": sum(bool(item["excepciones"]["criticos"]) for item in results),
+            "campos_criticos_individuales": sum(
+                len(item.get("datos_requieren_revision_individual") or {}) for item in results
+            ),
+            "campos_operativos_agrupables": sum(
+                len(item.get("datos_operativos_agrupables") or {}) for item in results
+            ),
+            "recetas_sin_excepciones_operativas_relevantes": sum(
+                not any(item["excepciones"].get(key) for key in (
+                    "bloqueada", "baja_confianza", "error", "imposible_estimar",
+                )) for item in results
+            ),
             "articulos_precios_pendientes": sum(bool(item["excepciones"]["precios_proveedores"]) for item in results),
             "baja_confianza": sum(bool(item["excepciones"]["baja_confianza"]) for item in results),
             "errores": provider_failed + validation_error_rows,
             "imposibles_estimar": sum(bool(item["excepciones"]["imposible_estimar"]) for item in results),
             "no_aplica": sum(bool(item["excepciones"]["no_aplica"]) for item in results),
+            "escandallos_provisionales": sum(
+                ((item.get("proyeccion_provisional") or {}).get("escandallo") or {}).get("estado_coste") == "PROVISIONAL"
+                for item in results
+            ),
+            "escandallos_parciales": sum(
+                ((item.get("proyeccion_provisional") or {}).get("escandallo") or {}).get("estado_coste") == "PARCIAL"
+                for item in results
+            ),
+            "escandallos_sin_coste": sum(
+                ((item.get("proyeccion_provisional") or {}).get("escandallo") or {}).get("estado_coste") == "SIN_COSTE"
+                for item in results
+            ),
             "datos_reales_modificados": False,
         }
         return {
@@ -560,6 +640,11 @@ class RecetaDocumentacionBatchService:
             str(item.get("estado") or "").startswith("ERROR")
             for item in batch["resultados"].values()
         )
+        has_errors = has_errors or any(
+            bool(row.get("errores"))
+            for row in (batch.get("validacion_externa") or {}).get("filas") or []
+            if isinstance(row, dict)
+        )
         batch["estado"] = "PROPUESTAS_LISTAS_CON_ERRORES" if has_errors else "PROPUESTAS_LISTAS"
 
     def _create_batch(self, queue: list[str]) -> dict[str, Any]:
@@ -567,9 +652,12 @@ class RecetaDocumentacionBatchService:
         batch = {
             "batch_id": batch_id, "estado": "GENERANDO", "recipe_ids": list(queue),
             "schema_version": BATCH_STORE_SCHEMA_VERSION,
-            "resultados": {}, "selecciones": {}, "selecciones_individuales": {},
+            "resultados": {}, "selecciones": {}, "selecciones_agrupadas": {},
+            "selecciones_individuales": {},
             "intentos_provider": {}, "fuentes_propuesta": {}, "fingerprints_externos": {}, "preview": None,
             "procesando": "", "modo_generacion": "HOST_AI_API",
+            "archivo_externo": None,
+            "referencias_precio_externas": [],
             "cancelado": False, "confirmando": False, "creado_en": self._now(),
             "created_at": self._now(), "updated_at": self._now(),
         }
@@ -587,16 +675,18 @@ class RecetaDocumentacionBatchService:
     ) -> None:
         proposals = dict(result.get("datos_propuestos_ia") or {})
         proposal_metadata_by_field = dict(result.get("metadatos_propuestas") or {})
-        safe_mass, individual_review = classify_recipe_proposals(proposals)
+        safe_mass, grouped_review, individual_review = classify_recipe_proposals_for_review(proposals)
         result["datos_propuestos_ia"] = proposals
         batch["resultados"][recipe_id] = {
             **result, "recipe_id": recipe_id, "nombre": current.get("nombre", recipe_id),
             "estado": "CON_PROPUESTAS" if proposals else "NECESITA_USUARIO",
             "datos_propuestos_seguros_masivo": safe_mass,
+            "datos_operativos_agrupables": grouped_review,
             "datos_requieren_revision_individual": individual_review,
             "intentos": attempts,
             "proyeccion_provisional": self._provisional_projection(
                 recipe_id, proposals, proposal_metadata_by_field, result.get("completitud"),
+                price_references=batch.get("referencias_precio_externas") or [],
             ),
             "propuestas_estructuradas": [{
                 "recipe_id": recipe_id, "campo": field, "valor_actual": current.get(field),
@@ -609,15 +699,39 @@ class RecetaDocumentacionBatchService:
     def _provisional_projection(
         self, recipe_id: str, proposals: dict[str, Any],
         metadata: dict[str, dict[str, Any]], completeness: dict[str, Any] | None,
+        *, price_references: list[dict[str, Any]] | None = None,
     ) -> dict[str, Any] | None:
         try:
             response = self.read_service.proyectar_provisional(
                 recipe_id, propuestas=proposals,
                 metadatos_propuestas=metadata, completitud=dict(completeness or {}),
+                campos_revision_individual=sorted(set(proposals) - BATCH_MASS_SAFE_FIELDS - BATCH_GROUP_REVIEW_FIELDS),
+                referencias_precio=deepcopy(price_references or []),
             )
             return response if response.get("ok") else None
         except Exception:
             return None
+
+    @staticmethod
+    def _refresh_preview_projection(batch: dict[str, Any]) -> None:
+        """Rehidrata derivados del preview sin ampliar los cambios confirmables."""
+        preview = batch.get("preview")
+        if not isinstance(preview, dict):
+            return
+        items = preview.get("items")
+        if not isinstance(items, list):
+            return
+        results = dict(batch.get("resultados") or {})
+        for item in items:
+            if not isinstance(item, dict):
+                continue
+            result = dict(results.get(str(item.get("recipe_id") or "")) or {})
+            item["proyeccion_provisional"] = deepcopy(
+                result.get("proyeccion_provisional")
+            )
+        preview["fingerprint"] = hashlib.sha256(
+            json.dumps(items, ensure_ascii=False, sort_keys=True).encode()
+        ).hexdigest()
 
     def _batch(self, batch_id: str) -> dict[str, Any]:
         batch = self._batches.get(str(batch_id))

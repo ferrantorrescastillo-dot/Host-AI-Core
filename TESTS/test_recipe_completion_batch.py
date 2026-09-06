@@ -239,7 +239,8 @@ def test_clasificacion_segura_excluye_criticos_y_exige_seleccion_individual(tmp_
     item = batch["resultados"][0]
 
     assert set(item["datos_propuestos_seguros_masivo"]) == {"descripcion", "elaboracion", "observaciones"}
-    assert set(item["datos_requieren_revision_individual"]) == {"alergenos", "vida_util_refrigerado", "regeneracion", "numero_raciones", "tiempo_total"}
+    assert set(item["datos_operativos_agrupables"]) == {"numero_raciones", "tiempo_total"}
+    assert set(item["datos_requieren_revision_individual"]) == {"alergenos", "vida_util_refrigerado", "regeneracion"}
 
     selected = service.select(batch["batch_id"], {"A": item["datos_propuestos_ia"]})
     assert set(selected["selecciones"]["A"]) == {"descripcion", "elaboracion", "observaciones"}
@@ -255,13 +256,22 @@ def test_clasificacion_segura_excluye_criticos_y_exige_seleccion_individual(tmp_
 
     reviewed = service.select(
         batch["batch_id"], selected["selecciones"],
-        {"A": {"alergenos": ["gluten"], "numero_raciones": 4}},
+        {"A": {"alergenos": ["gluten"]}},
+        {"A": {"numero_raciones": 4}},
     )
-    assert reviewed["selecciones_individuales"]["A"] == {"alergenos": ["gluten"], "numero_raciones": 4}
+    assert reviewed["selecciones_individuales"]["A"] == {"alergenos": ["gluten"]}
+    assert reviewed["selecciones_agrupadas"]["A"] == {"numero_raciones": 4}
     assert reviewed["preview"] is None
     reviewed_preview = service.preview(batch["batch_id"], context=_context())
     details = reviewed_preview["preview"]["items"][0]["detalle_cambios"]
-    assert {detail["campo"] for detail in details if detail["clasificacion"] == "REVISION_INDIVIDUAL"} == {"alergenos", "numero_raciones"}
+    assert {detail["campo"] for detail in details if detail["clasificacion"] == "REVISION_INDIVIDUAL"} == {"alergenos"}
+    assert {detail["campo"] for detail in details if detail["clasificacion"] == "REVISION_AGRUPADA"} == {"numero_raciones"}
+    assert repository.items == before
+    restarted = RecetaDocumentacionBatchService(
+        tmp_path, repository=repository, recipe_service=CriticalRecipeService(repository),
+    ).get(batch["batch_id"])
+    assert restarted["selecciones_agrupadas"]["A"] == {"numero_raciones": 4}
+    assert restarted["preview"]["cambios_a_aplicar"] == 5
     assert repository.items == before
 
 
@@ -356,7 +366,7 @@ def test_resumen_masivo_y_excepciones_se_calculan_sin_abrir_recetas(tmp_path: Pa
                 "datos_propuestos_ia": {"elaboracion": f"Propuesta {recipe_id}", "alergenos": ["gluten"]},
                 "datos_propuestos_seguros_masivo": {"elaboracion": f"Propuesta {recipe_id}"},
                 "campos_pendientes_no_proponibles": [],
-                "metadatos_propuestas": {"elaboracion": {"confianza": 0.5 if recipe_id == "B" else 0.9}},
+                "metadatos_propuestas": {"elaboracion": {"confianza": 0.49 if recipe_id == "B" else 0.9}},
                 "completitud": {
                     "production_ready_provisional": ready,
                     "production_ready_confirmed": False,

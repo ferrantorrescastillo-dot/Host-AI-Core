@@ -2109,4 +2109,64 @@ El alcance cerrado conserva pipeline determinista primero, IA opcional limitada 
 
 `DATOS` permanece en 376 archivos y hash `B7C5917CC518D331E6D8F0F41E78ADEF2C00CC95DFA9BCD319DC25FB77440E14`. Fase 1.5 no iniciada.
 
+## Hotfix post-cierre - reimportación XLSX visible (5 de septiembre de 2026)
+
+Tras el cierre formal, un smoke comercial detectó que el importador específico de `HOSTAI_RECIPE_COMPLETION_PACKAGE 0.3` quedaba oculto cuando la importación ya tenía un batch externo activo. El endpoint y el servicio de validación seguían operativos; el bloqueo estaba limitado a la rama de render de React.
+
+La revisión del batch muestra ahora siempre la acción inequívoca `Importar XLSX completado`, separada del importador genérico JSON. La acción acepta únicamente `.xlsx`, reutiliza el endpoint y servicio existentes, reemplaza en pantalla el batch por el identificador devuelto y muestra archivo, validación, propuestas y ausencia de cambios reales. No ejecuta selección, preview, confirmación ni WRITE de forma automática.
+
+Evidencia técnica previa al smoke humano: backend focal 30/30, frontend focal 47/47, suite frontend completa 282/282, Playwright Chrome de upload físico 1/1, descarga física 1/1 y smoke de nombres/`NO_APLICA`/readiness/ficha/escandallo/F5/reinicio 1/1; typecheck y build correctos. `DATOS` real permanece protegido por el baseline de 376 archivos y hash `B7C5917CC518D331E6D8F0F41E78ADEF2C00CC95DFA9BCD319DC25FB77440E14`.
+
+Estado: `HOTFIX IMPLEMENTADO Y VALIDADO TÉCNICAMENTE; PENDIENTE SMOKE HUMANO`. Fase 1 continúa cerrada/certificada y Fase 1.5 no se ha iniciado.
+
+## Hotfix post-cierre - contrato ChatGPT/XLSX autocontenido (5 de septiembre de 2026)
+
+La primera prueba comercial con el XLSX completado por ChatGPT sí atravesó la subida, pero expuso tres insuficiencias del contrato: el JSON global de metadatos podía superar el límite genérico de texto y ocultar los motivos de `NO_APLICA`; el libro no publicaba de forma machine-readable tipos, shapes, enums, unidades y claves canónicas pendientes; y el normalizador de ingredientes exigía cantidad/orden idénticos, impidiendo proponer candidatos nuevos. Además, dos patrones genéricos de texto clasificaban falsamente como críticos avisos sobre alérgenos y lotes.
+
+La exportación 0.3 incorpora ahora `SCHEMA`, ejemplos estructurados y reglas completas dentro del propio libro. El parser acepta la representación escalar histórica inequívoca y el objeto documentado, pero normaliza siempre a `{estado: "NO_APLICA"}`. Conserva cada ingrediente documental por identidad normalizada y proyecta líneas adicionales como candidatos pendientes de alta autorizada, sin crear artículos ni precio/proveedor reales. Los rechazos exponen mensajes accionables. La importación histórica 0.1/0.2/0.3 sigue soportada.
+
+Evidencia final: archivo humano auditado por SHA-256 `0624F4C00FF2560CB5BF411A5F4E170A33EAEFC69475311BB0BA641DAC81E22C`; backend focal 38/38 y regresión Fase 1 235/235; frontend focal 47/47 y completa 282/282; Playwright físico descarga+subida 2/2 y contrato público realista 1/1. El último escenario deja 52/52 recetas `production_ready_provisional`, 1.820 propuestas, 52 con `NO_APLICA`, 0 rechazadas/bloqueadas/erróneas y 0 confirmadas; valida Agua de jamaica, candidato de artículo, ficha, escandallo parcial, F5, reinicio y navegador limpio. `DATOS` real no se escribió.
+
+Estado: `LISTA PARA ÚLTIMO SMOKE HUMANO DEL CIRCUITO REAL`; no constituye commit ni inicio de Fase 1.5.
+
+## Cierre autónomo del hotfix con artefacto GPT real (5 de septiembre de 2026)
+
+La validación sintética 52/52 demuestra el contrato, pero no representa el resultado del primer fichero GPT comercial. El runtime de smoke contiene ahora el artefacto real exacto (SHA-256 `0624F4C00FF2560CB5BF411A5F4E170A33EAEFC69475311BB0BA641DAC81E22C`) en el mismo `IMPWEB-6F402EBB0868`, con batch durable `RECIPE-BATCH-7B15EDEEADBC` y recibo de origen rehidratable.
+
+El resultado real es 52 filas útiles, 1.736 propuestas aceptadas (156 seguras y 1.580 individuales), 136 rechazos trazables, 1 receta provisionalmente lista, 0 confirmadas, 13 con error y 34 con `NO_APLICA`. Agua de jamaica queda lista provisionalmente, con Agua como candidato nuevo y ficha/escandallo de solo lectura `SIN_COSTE`; no se inventan precios o proveedores. La UI recupera el nombre y SHA del archivo, batch, validación y propuestas desde servidor después de F5, navegador limpio y reinicio, sin depender de storage local.
+
+Evidencia final: backend Fase 1 273/273, frontend 282/282, typecheck, compilación Python y build correctos; E2E de fronteras, rehidratación, persistencia, flujo continuo y smoke final GPT real correctos. `DATOS` permanece en 376 archivos y hash `B7C5917CC518D331E6D8F0F41E78ADEF2C00CC95DFA9BCD319DC25FB77440E14`. No hubo confirmación, WRITE real, staging, commit, push ni inicio de Fase 1.5.
+
+Estado vigente: `FASE 1 LISTA PARA SMOKE HUMANO FINAL`.
+
+## Corrección del snapshot económico del preview (6 de septiembre de 2026)
+
+El batch real `RECIPE-BATCH-27AD1C3C567B` conservaba dos derivados incoherentes: la proyección integral de `resultados` calculaba Agua de jamaica como `PARCIAL` con 11,63 EUR, 75 % y tres referencias, mientras el snapshot persistido en `preview.items` decía `SIN_COSTE`. La causa era que el preview se había calculado solo con los campos agrupados seleccionados; `ingredientes_estructurados`, correctamente crítico y no confirmable sin revisión individual, no participaba en ese cálculo aunque sus referencias se mostraban.
+
+El preview reutiliza y rehidrata ahora la proyección integral solo-lectura, sin ampliar su conjunto de cambios confirmables. La UI distingue coste total parcial conocido de un total completo, muestra cobertura y Agua pendiente. F5, reinicio completo y Chrome limpio conservan el mismo batch, 52/52 recetas listas provisionalmente, 1.807 propuestas, 1.144 agrupadas, 507 críticas, 11 escandallos parciales y cero modificaciones reales.
+
+Evidencia: backend focal 83/83, backend Fase 1 227/227, frontend focal 49/49, frontend completo 284/284, E2E económico/buscador post-reinicio 1/1, typecheck, build y compilación Python correctos.
+
+Estado vigente: `ESCANDALLO CORREGIDO — LISTO PARA SMOKE HUMANO FINAL`; Fase 1 sigue abierta y Fase 1.5 no se ha iniciado.
+
 **Fin del documento oficial `09_ESTADO_ACTUAL.md`.**
+
+## Actualización — contrato maestro autosuficiente de Fase 1 (5 de septiembre de 2026)
+
+El objetivo durable queda fijado como importación masiva + completado masivo con IA + ficha técnica + escandallo + revisión por excepciones. `recipe_completion_contract.py` centraliza el contrato versionado y el XLSX 0.3 incorpora un único `PROMPT_IA`, schema explicativo de 36 campos y hojas públicas de artículos/precios consolidados. La importación valida referencias externas sin elevarlas a precio/proveedor real ni escribir datos.
+
+Evidencia: backend focal 66/66, backend Fase 1 245/245, frontend focal 47/47 y suite frontend completa correcta; Playwright valida descarga/subida física, contrato público >50, referencia externa, `NO_APLICA`, candidato, ficha, escandallo, readiness, F5, reinicio, navegador limpio, persistencia e aislamiento. Typecheck, build y compilación Python correctos.
+
+Estado preciso: `ESPERANDO XLSX GPT REAL`. Se generó un paquete nuevo de 52 recetas desde `IMPWEB-6F402EBB0868`; no se reutiliza el XLSX GPT anterior. Fase 1 permanece abierta, sin commit, push, staging ni Fase 1.5.
+
+## Cierre del circuito económico y revisión por excepciones (6 de septiembre de 2026)
+
+El XLSX GPT real nuevo `hostai-completado-recetas-IMPWEB-6F402EBB0868_COMPLETADO_GPT_NUEVO.xlsx` (SHA-256 `72CF33170BB034A9C389DE1639669D7B7E22E27E4BF5BBBE08683EFF61988274`) reveló que las referencias de `PRECIOS_REFERENCIA` se validaban pero no se transferían al batch ni a la proyección. El batch schema 3 persiste ahora referencias consolidadas y selecciones operativas agrupadas. La proyección reutiliza una referencia por identidad exacta nombre+familia de unidad, admite candidatos nuevos declarados en el mismo libro y conserva la prioridad `REAL/CONFIRMADO > REFERENCIA_EXTERNA > SIN_PRECIO`; nunca crea precio, proveedor o artículo real.
+
+Resultado real aislado: 52/52 recetas, 1.807 propuestas, 156 seguras, 1.144 operativas agrupables, 507 críticas individuales, 0 rechazadas y 0 bloqueadas. Las seis filas de precio válidas se consolidan en tres identidades; producen 11 escandallos `PARCIAL` y 41 `SIN_COSTE`. Agua de jamaica usa tres referencias, calcula 11,63 EUR parciales y conserva Agua sin coste. Las 52 recetas siguen production-ready provisionales y 0 confirmadas; la baja confianza relevante baja de un falso 52/52 a 0 sin alterar las confianzas originales.
+
+La UI presenta un resumen de excepciones, permite incorporar los 1.144 campos operativos a un único preview y mantiene vida útil, conservación, refrigeración/congelación, regeneración/descongelación, alérgenos e ingredientes/artículos en revisión individual. Seleccionar agrupados no confirma ni escribe. Chrome limpio verificó selección, preview, exclusión de ingredientes no seleccionados, F5 y reinicio sobre `RECIPE-BATCH-27AD1C3C567B`.
+
+Evidencia final: regresión Fase 1 206/206, frontend focal 48/48 y completo 283/283. Playwright cubre contrato adversarial 4/4, persistencia/artículo/referencia 2/2, rehidratación 1/1, lote masivo 1/1, recorrido Boronat 1/1 y XLSX GPT real económico 1/1. Typecheck, compilación Python y build correctos. No hubo confirmación ni escritura sobre `DATOS` real, staging, commit, push o Fase 1.5.
+
+Estado: `FASE 1 LISTA PARA SMOKE HUMANO FINAL DE ESCANDALLO Y EXCEPCIONES`.

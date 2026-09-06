@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 import logging
+import math
 import re
 import unicodedata
 from datetime import datetime
@@ -16,34 +17,29 @@ from SERVICIOS.biblioteca_recetas_601 import RepositorioBibliotecaRecetas601
 from SERVICIOS.host_ai_authorized_execution_context import AuthorizedExecutionContext
 from SERVICIOS.host_ai_engine.models import HostAIEngineRequest
 from SERVICIOS.host_ai_engine.service import HostAIEngine
+from SERVICIOS.recipe_completion_contract import (
+    BATCH_GROUP_REVIEW_FIELDS,
+    BATCH_INDIVIDUAL_REVIEW_FIELDS,
+    BATCH_MASS_SAFE_FIELDS,
+    FIELD_CONTRACTS,
+    NO_APLICA_FIELDS,
+    PRODUCTION_READINESS_BASE_FIELDS,
+    PRODUCTION_READINESS_CONDITIONAL_FIELDS,
+    RECIPE_BOOLEAN_FIELDS,
+    RECIPE_DOCUMENTATION_FIELDS,
+    RECIPE_ENUM_FIELDS,
+    RECIPE_INGREDIENT_UNITS,
+    RECIPE_JSON_FIELDS,
+    RECIPE_NUMBER_FIELDS,
+    RECIPE_OPERATIONAL_UNITS,
+    RECIPE_TIME_FIELDS,
+    RECIPE_UNIT_FIELDS,
+)
 
 
 logger = logging.getLogger(__name__)
 
 
-RECIPE_DOCUMENTATION_FIELDS = frozenset({
-    "categoria", "tipo_elaboracion", "descripcion", "elaboracion",
-    "tiempo_preparacion", "tiempo_activo", "tiempo_pasivo", "tiempo_coccion",
-    "tiempo_reposo", "tiempo_enfriamiento", "tiempo_total",
-    "puede_congelarse", "puede_refrigerarse", "vida_util_refrigerado",
-    "vida_util_congelado", "tiempo_descongelacion", "regeneracion", "conservacion",
-    "observaciones", "alergenos", "rendimiento", "unidad_rendimiento",
-    "rendimiento_neto", "merma", "numero_raciones", "cantidad_por_racion",
-    "produccion_maxima", "unidad_tanda", "rendimiento_por_tanda", "limitacion_tanda",
-    "personal_recomendado", "intervencion_activa", "recursos_necesarios",
-    "estacion_zona", "cuello_botella", "ingredientes_estructurados",
-})
-
-# Solo estos campos pueden formar parte de una seleccion masiva. Aun asi, su
-# texto pasa por el filtro semantico de defensa en profundidad definido abajo.
-BATCH_MASS_SAFE_FIELDS = frozenset({"descripcion", "elaboracion", "observaciones"})
-BATCH_INDIVIDUAL_REVIEW_FIELDS = RECIPE_DOCUMENTATION_FIELDS - BATCH_MASS_SAFE_FIELDS
-NO_APLICA_FIELDS = frozenset({
-    "rendimiento_neto", "merma", "tiempo_pasivo", "tiempo_coccion",
-    "tiempo_reposo", "tiempo_enfriamiento", "tiempo_descongelacion",
-    "vida_util_congelado", "regeneracion", "limitacion_tanda",
-    "intervencion_activa", "estacion_zona", "cuello_botella",
-})
 NO_APLICA_VALUE = {"estado": "NO_APLICA"}
 
 
@@ -57,6 +53,18 @@ def classify_recipe_proposals(proposals: dict[str, Any]) -> tuple[dict[str, Any]
     values = dict(proposals or {})
     return (
         {key: value for key, value in values.items() if key in BATCH_MASS_SAFE_FIELDS},
+        {key: value for key, value in values.items() if key not in BATCH_MASS_SAFE_FIELDS},
+    )
+
+
+def classify_recipe_proposals_for_review(
+    proposals: dict[str, Any],
+) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
+    """Separa selecciÃ³n segura, revisiÃ³n operativa agrupable y crÃ­tica individual."""
+    values = dict(proposals or {})
+    return (
+        {key: value for key, value in values.items() if key in BATCH_MASS_SAFE_FIELDS},
+        {key: value for key, value in values.items() if key in BATCH_GROUP_REVIEW_FIELDS},
         {key: value for key, value in values.items() if key in BATCH_INDIVIDUAL_REVIEW_FIELDS},
     )
 
@@ -113,17 +121,10 @@ def critical_free_text_findings(field: str, value: Any) -> list[str]:
         ("VIDA_UTIL_EMBEBIDA", r"\b(?:vida\s+util|caducidad|consumir\s+en\s+\d+|conservar\s+(?:durante|hasta)\s+\d+|\d+\s*(?:horas?|dias?|semanas?|meses?)\s+(?:a|en)\s+(?:[^.\n]{0,12})?(?:refrigeracion|nevera|frio|[^a-z0-9\s]?\s*\d{1,2}\s*[^a-z0-9\s]?\s*c))\b"),
         ("TEMPERATURA_SEGURIDAD_EMBEBIDA", r"\b(?:temperatura\s+interna|alcan(?:z|c)[a-z]*|mantener|conservar)\b[^.\n]{0,48}\b\d{1,3}\s*[^a-z0-9\s]?\s*c\b"),
         ("HACCP_SANITARIO_EMBEBIDO", r"\b(?:haccp|appcc|seguridad\s+alimentaria|criterio\s+sanitario|requisito\s+sanitario)\b"),
-        ("ALERGENOS_TRAZAS_EMBEBIDOS", r"\b(?:alergenos?|trazas\s+de|puede\s+contener)\b"),
-        ("DATOS_COMERCIALES_EMBEBIDOS", r"\b(?:precio\s+(?:de\s+)?compra|coste\s+(?:unitario|total)|stock\s+disponible|proveedor|numero\s+de\s+lote|lote\s+[a-z0-9-]+)\b"),
+        ("ALERGENOS_TRAZAS_EMBEBIDOS", r"\b(?:trazas\s+de|puede\s+contener|contiene\s+(?:los\s+)?alergenos?|declaracion\s+de\s+alergenos?)\b"),
+        ("DATOS_COMERCIALES_EMBEBIDOS", r"\b(?:precio\s+(?:de\s+)?compra|coste\s+(?:unitario|total)|stock\s+disponible|proveedor|numero\s+de\s+lote|lote\s+[a-z-]*\d[a-z0-9-]*)\b"),
     )
     findings = [code for code, pattern in patterns if re.search(pattern, text, flags=re.IGNORECASE)]
-    # En descripcion/observaciones, una enumeracion explicita de alergenos es
-    # critica. En elaboracion no se bloquea el simple nombre de un ingrediente.
-    if field in {"descripcion", "observaciones"} and re.search(
-        r"\b(?:gluten|crustaceos|huevos?|pescado|cacahuetes|soja|lacteos|leche|frutos\s+secos|apio|mostaza|sesamo|sulfitos|altramuces|moluscos)\b",
-        text,
-    ):
-        findings.append("ALERGENOS_EMBEBIDOS")
     return list(dict.fromkeys(findings))
 
 
@@ -259,27 +260,7 @@ class HostAIRecipeProposalGenerator:
         logger.info("recipe_ai_proposal_filter %s", json.dumps(diagnostics, ensure_ascii=False, sort_keys=True))
         return GeneratedProposals(final, diagnostics)
 
-    FIELD_LABELS = {
-        "categoria": "Categoría", "tipo_elaboracion": "Tipo de elaboración",
-        "descripcion": "Descripción", "elaboracion": "Elaboración paso a paso",
-        "tiempo_preparacion": "Tiempo de preparación", "tiempo_activo": "Tiempo activo",
-        "tiempo_pasivo": "Tiempo pasivo", "tiempo_coccion": "Tiempo de cocción o proceso",
-        "tiempo_reposo": "Tiempo de reposo", "tiempo_enfriamiento": "Tiempo de enfriamiento",
-        "tiempo_total": "Tiempo total",
-        "puede_congelarse": "Puede congelarse", "puede_refrigerarse": "Puede refrigerarse",
-        "vida_util_refrigerado": "Vida útil refrigerada", "vida_util_congelado": "Vida útil congelada",
-        "tiempo_descongelacion": "Tiempo de descongelación", "regeneracion": "Tiempo de regeneración",
-        "conservacion": "Conservación", "observaciones": "Observaciones", "alergenos": "Alérgenos",
-        "rendimiento": "Rendimiento", "unidad_rendimiento": "Unidad de rendimiento",
-        "rendimiento_neto": "Rendimiento neto", "merma": "Merma",
-        "numero_raciones": "Número de raciones", "cantidad_por_racion": "Cantidad por ración",
-        "produccion_maxima": "Producción máxima por tanda", "unidad_tanda": "Unidad de tanda",
-        "rendimiento_por_tanda": "Rendimiento por tanda", "limitacion_tanda": "Limitación de tanda",
-        "personal_recomendado": "Personal recomendado", "intervencion_activa": "Intervención activa estimada",
-        "recursos_necesarios": "Recursos necesarios", "estacion_zona": "Estación o zona",
-        "cuello_botella": "Cuello de botella",
-        "ingredientes_estructurados": "Cantidades, unidades y conversiones de ingredientes",
-    }
+    FIELD_LABELS = {key: str(spec["label"]) for key, spec in FIELD_CONTRACTS.items()}
     MISSING_FIELD_KEYS = {label.casefold(): key for key, label in FIELD_LABELS.items()}
 
     @staticmethod
@@ -308,6 +289,192 @@ class RecetaDocumentacionWriteService:
         self.repository = repository or RepositorioBibliotecaRecetas601(base_dir)
         self.generator = generator or HostAIRecipeProposalGenerator(base_dir)
         self._completed: dict[str, dict[str, Any]] = {}
+
+    def pending_field_keys(self, recipe: dict[str, Any]) -> list[str]:
+        """Claves canónicas pendientes para contratos externos y providers."""
+        return sorted(field for field in self.FIELDS if not self._field_complete(recipe, field))
+
+    def normalize_proposed_value(self, field: str, value: Any) -> Any:
+        """Autoridad tipada compartida por IA interna, XLSX y readiness."""
+        if field not in self.FIELDS:
+            raise RecetaDocumentacionError("unsupported_field", f"Campo no admitido: {field}.")
+        if is_no_aplica(value):
+            if field not in NO_APLICA_FIELDS:
+                raise RecetaDocumentacionError("no_aplica_no_permitido", f"El campo {field} no admite NO_APLICA.")
+            return deepcopy(NO_APLICA_VALUE)
+        if isinstance(value, str) and self._normalized_text(value) in {
+            "texto culinario provisional", "texto provisional", "por determinar", "sin dato",
+        }:
+            raise RecetaDocumentacionError("placeholder_value", "El valor es un comodín y no aporta información operativa.")
+        if field in RECIPE_BOOLEAN_FIELDS:
+            if isinstance(value, bool):
+                return value
+            normalized = str(value).strip().casefold()
+            if normalized in {"true", "si", "sí", "yes", "1"}:
+                return True
+            if normalized in {"false", "no", "0"}:
+                return False
+            raise RecetaDocumentacionError("invalid_boolean", "Use true o false para este campo booleano.")
+        if field in RECIPE_NUMBER_FIELDS:
+            if isinstance(value, bool):
+                raise RecetaDocumentacionError("invalid_number", "Use un número, no un booleano.")
+            try:
+                number = float(str(value).replace(",", "."))
+            except (TypeError, ValueError):
+                raise RecetaDocumentacionError("invalid_number", "Use un número válido.")
+            if not math.isfinite(number):
+                raise RecetaDocumentacionError("invalid_number", "Use un número finito válido.")
+            if field == "merma":
+                if number < 0 or number >= 1:
+                    raise RecetaDocumentacionError("invalid_percentage", "La merma debe estar entre 0 y 1.")
+            elif number <= 0:
+                raise RecetaDocumentacionError("invalid_number", "El número debe ser mayor que cero.")
+            return int(number) if number.is_integer() else number
+        if field in RECIPE_TIME_FIELDS:
+            text = str(value or "").strip()
+            match = re.fullmatch(
+                r"(\d+(?:[.,]\d+)?)\s*(?:h|horas?|min(?:uto)?s?|d[ií]as?|semanas?|mes(?:es)?)",
+                self._normalized_text(text), flags=re.IGNORECASE,
+            )
+            if not match or not math.isfinite(float(match.group(1).replace(",", "."))) \
+                    or float(match.group(1).replace(",", ".")) <= 0:
+                raise RecetaDocumentacionError(
+                    "invalid_duration", "Use una duración con número y unidad, por ejemplo '30 minutos'.",
+                )
+            return text
+        if field in RECIPE_ENUM_FIELDS:
+            normalized = self._normalized_text(value).replace(" ", "_").upper()
+            if normalized not in RECIPE_ENUM_FIELDS[field]:
+                allowed = ", ".join(RECIPE_ENUM_FIELDS[field])
+                raise RecetaDocumentacionError("invalid_enum", f"Valor no admitido; use uno de: {allowed}.")
+            return normalized
+        if field in RECIPE_UNIT_FIELDS:
+            normalized = self._normalized_unit(value)
+            if normalized not in RECIPE_OPERATIONAL_UNITS:
+                allowed = ", ".join(sorted(RECIPE_OPERATIONAL_UNITS))
+                raise RecetaDocumentacionError("invalid_unit", f"Unidad no admitida; use una de: {allowed}.")
+            return normalized
+        if field in RECIPE_JSON_FIELDS:
+            parsed = value
+            if isinstance(value, str):
+                try:
+                    parsed = json.loads(value)
+                except ValueError:
+                    raise RecetaDocumentacionError("invalid_structured_value", "Use JSON válido con el shape publicado.")
+            if field == "ingredientes_estructurados":
+                if not isinstance(parsed, list) or not parsed:
+                    raise RecetaDocumentacionError("invalid_ingredient_proposal", "Los ingredientes deben ser una lista JSON no vacía.")
+                return parsed
+            if field == "cantidad_por_racion":
+                if not isinstance(parsed, dict):
+                    raise RecetaDocumentacionError("invalid_structured_shape", "Use {\"cantidad\": número, \"unidad\": unidad}.")
+                quantity = self._positive_number(parsed.get("cantidad") or parsed.get("valor"))
+                unit = self._normalized_unit(parsed.get("unidad"))
+                if quantity is None or unit not in RECIPE_OPERATIONAL_UNITS:
+                    raise RecetaDocumentacionError("invalid_structured_shape", "Cantidad por ración necesita cantidad positiva y unidad admitida.")
+                return {"cantidad": quantity, "unidad": unit}
+            if field == "personal_recomendado":
+                if not isinstance(parsed, dict):
+                    raise RecetaDocumentacionError("invalid_structured_shape", "Use {\"personas\": número, \"rol\": texto}.")
+                people = self._positive_number(parsed.get("personas"))
+                role = str(parsed.get("rol") or "").strip()
+                if people is None or not role:
+                    raise RecetaDocumentacionError("invalid_structured_shape", "Personal recomendado necesita personas y rol.")
+                return {"personas": int(people) if people.is_integer() else people, "rol": role}
+            if field == "recursos_necesarios":
+                if not isinstance(parsed, list) or not parsed or any(not isinstance(item, str) or not item.strip() for item in parsed):
+                    raise RecetaDocumentacionError("invalid_structured_shape", "Recursos necesarios debe ser una lista JSON de textos no vacíos.")
+                return list(dict.fromkeys(item.strip() for item in parsed))
+        if field == "alergenos":
+            parsed = value
+            if isinstance(value, str):
+                text = value.strip()
+                try:
+                    parsed = json.loads(text)
+                except ValueError:
+                    raise RecetaDocumentacionError("invalid_allergen_list", "Use una lista JSON de alérgenos.")
+            if not isinstance(parsed, (list, tuple)) or not parsed:
+                raise RecetaDocumentacionError("empty_allergen_list", "Una lista vacía no afirma ausencia de alérgenos; deje la celda vacía.")
+            if any(not isinstance(item, str) or not item.strip() for item in parsed):
+                raise RecetaDocumentacionError("invalid_allergen_list", "Los alérgenos deben ser textos no vacíos.")
+            allergens = list(dict.fromkeys(item.strip() for item in parsed))
+            if any(self._normalized_text(item) in {"ninguno", "no aplica", "sin dato"} for item in allergens):
+                raise RecetaDocumentacionError("invalid_allergen_list", "No use valores genéricos para afirmar ausencia de alérgenos.")
+            return allergens
+        if not isinstance(value, str):
+            raise RecetaDocumentacionError("invalid_string", "Use texto para este campo.")
+        text = value.strip()
+        if not text:
+            raise RecetaDocumentacionError("empty_value", "El valor está vacío.")
+        return text
+
+    def proposal_consistency_issues(
+        self, current: dict[str, Any], proposals: dict[str, Any],
+    ) -> dict[str, str]:
+        """Contradicciones objetivas; nunca infiere política culinaria subjetiva."""
+        effective = lambda field: proposals.get(field) if field in proposals else current.get(field)
+        issues: dict[str, str] = {}
+
+        def reject(preferred: str, fallback: str, code: str) -> None:
+            field = preferred if self._present(effective(preferred)) else fallback
+            if self._present(effective(field)):
+                issues.setdefault(field, code)
+
+        active = self._duration_minutes(effective("tiempo_activo"))
+        total = self._duration_minutes(effective("tiempo_total"))
+        passive_value = effective("tiempo_pasivo")
+        passive = None if is_no_aplica(passive_value) else self._duration_minutes(passive_value)
+        intervention = effective("intervencion_activa")
+        if (intervention is False or is_no_aplica(intervention)) and active is not None and active > 0:
+            reject("intervencion_activa", "tiempo_activo", "contradiction_active_intervention")
+        if total is not None and active is not None and total < active:
+            reject("tiempo_total", "tiempo_activo", "contradiction_total_below_active")
+        if total is not None and passive is not None and total < passive:
+            reject("tiempo_total", "tiempo_pasivo", "contradiction_total_below_passive")
+
+        refrigerated = effective("puede_refrigerarse")
+        refrigerated_life = effective("vida_util_refrigerado")
+        if refrigerated is False and self._present(refrigerated_life) and not is_no_aplica(refrigerated_life):
+            reject("vida_util_refrigerado", "puede_refrigerarse", "contradiction_refrigerated_life")
+        if refrigerated is True and is_no_aplica(refrigerated_life):
+            reject("vida_util_refrigerado", "puede_refrigerarse", "contradiction_refrigerated_no_aplica")
+
+        frozen = effective("puede_congelarse")
+        for dependent in ("vida_util_congelado", "tiempo_descongelacion"):
+            dependent_value = effective(dependent)
+            if frozen is False and self._present(dependent_value) and not is_no_aplica(dependent_value):
+                reject(dependent, "puede_congelarse", f"contradiction_{dependent}")
+            if frozen is True and is_no_aplica(dependent_value):
+                reject(dependent, "puede_congelarse", f"contradiction_{dependent}_no_aplica")
+
+        yield_value = self._positive_number(effective("rendimiento"))
+        portions = self._positive_number(effective("numero_raciones"))
+        yield_unit = self._normalized_unit(effective("unidad_rendimiento"))
+        if yield_unit in {"raciones", "porciones"} and yield_value and portions and abs(yield_value - portions) > 1e-9:
+            reject("rendimiento", "numero_raciones", "contradiction_yield_portions")
+        portion_value = effective("cantidad_por_racion")
+        if isinstance(portion_value, dict) and yield_value and portions:
+            portion_quantity = self._positive_number(
+                portion_value.get("cantidad") or portion_value.get("valor")
+            )
+            portion_unit = self._normalized_unit(portion_value.get("unidad"))
+            normalized_portion, normalized_portion_unit = self._normalize_standard_quantity(
+                portion_quantity or 0, portion_unit,
+            )
+            normalized_yield, normalized_yield_unit = self._normalize_standard_quantity(
+                yield_value, yield_unit,
+            )
+            if (
+                portion_quantity and normalized_portion_unit == normalized_yield_unit
+                and normalized_portion_unit in {"kg", "l", "u"}
+                and abs((normalized_portion * portions) - normalized_yield) > 1e-9
+            ):
+                reject("cantidad_por_racion", "rendimiento", "contradiction_portion_quantity_yield")
+        batch_yield = self._positive_number(effective("rendimiento_por_tanda"))
+        maximum = self._positive_number(effective("produccion_maxima"))
+        if batch_yield and maximum and batch_yield > maximum:
+            reject("rendimiento_por_tanda", "produccion_maxima", "contradiction_batch_above_maximum")
+        return issues
 
     def proposal(self, *, recipe_id: str, proposed: dict[str, Any], detected_allergens: list[str] | None = None, session_id: str = "") -> dict[str, Any]:
         current = self._recipe(recipe_id)
@@ -578,12 +745,13 @@ class RecetaDocumentacionWriteService:
             ):
                 value = raw.get("valor")
                 envelope = raw
-            if field == "ingredientes_estructurados":
-                try:
+            try:
+                value = self.normalize_proposed_value(field, value)
+                if field == "ingredientes_estructurados":
                     value = self._normalize_ingredient_proposal(current, value)
-                except RecetaDocumentacionError as exc:
-                    discarded.append({"key": field, "reason": exc.code})
-                    continue
+            except RecetaDocumentacionError as exc:
+                discarded.append({"key": field, "reason": exc.code})
+                continue
             if not self._present(value):
                 continue
             clean[field] = value
@@ -605,6 +773,12 @@ class RecetaDocumentacionWriteService:
                 )
                 if is_no_aplica(value):
                     metadata[field]["estado_campo"] = "NO_APLICA"
+        for field, reason in self.proposal_consistency_issues(current, clean).items():
+            if field not in clean:
+                continue
+            clean.pop(field, None)
+            metadata.pop(field, None)
+            discarded.append({"key": field, "reason": reason})
         return clean, metadata, discarded
 
     def _normalize_ingredient_proposal(
@@ -617,21 +791,51 @@ class RecetaDocumentacionWriteService:
             current.get("ingredientes_estructurados")
             or current.get("_ingredientes_estructurados") or []
         )
-        if len(value) != len(names):
-            raise RecetaDocumentacionError("ingredient_count_mismatch", "La propuesta no conserva todos los ingredientes originales.")
-        output: list[dict[str, Any]] = []
-        for index, proposed_line in enumerate(value):
+        if not names and existing:
+            names = [
+                str(item.get("nombre_original") or item.get("name_raw") or item.get("nombre") or "").strip()
+                for item in existing if isinstance(item, dict)
+            ]
+        proposed_lines = []
+        for proposed_line in value:
             if not isinstance(proposed_line, dict):
                 raise RecetaDocumentacionError("invalid_ingredient_line", "Cada ingrediente propuesto debe ser estructurado.")
+            proposed_lines.append(deepcopy(proposed_line))
+        unused = set(range(len(proposed_lines)))
+        output: list[dict[str, Any]] = []
+        for index, original in enumerate(names):
             base = deepcopy(existing[index]) if index < len(existing) and isinstance(existing[index], dict) else {}
-            original_name = str(names[index] or "").strip()
-            proposed_name = str(
-                proposed_line.get("nombre_original") or proposed_line.get("name_raw")
-                or proposed_line.get("nombre") or original_name
+            original_name = str(original or "").strip()
+            match = next((candidate_index for candidate_index in unused if self._normalized_text(
+                proposed_lines[candidate_index].get("nombre_original")
+                or proposed_lines[candidate_index].get("name_raw")
+                or proposed_lines[candidate_index].get("nombre") or ""
+            ) == self._normalized_text(original_name)), None)
+            if match is None:
+                raise RecetaDocumentacionError("ingredient_original_missing", "La propuesta no conserva todos los ingredientes originales.")
+            proposed_line = proposed_lines[match]
+            unused.remove(match)
+            base_line_id = str(base.get("line_id") or "").strip()
+            proposed_line_id = str(proposed_line.get("line_id") or "").strip()
+            if base_line_id and proposed_line_id and proposed_line_id != base_line_id:
+                raise RecetaDocumentacionError(
+                    "ingredient_line_id_changed", "La identidad line_id de un ingrediente documental no se puede cambiar.",
+                )
+            base_article_id = str(base.get("articulo_id") or base.get("article_id") or "").strip()
+            proposed_article_id = str(
+                proposed_line.get("articulo_id") or proposed_line.get("article_id") or ""
             ).strip()
-            if self._normalized_text(proposed_name) != self._normalized_text(original_name):
-                raise RecetaDocumentacionError("ingredient_identity_changed", "La propuesta intentó cambiar la identidad de un ingrediente.")
+            if proposed_article_id and proposed_article_id != base_article_id:
+                raise RecetaDocumentacionError(
+                    "ingredient_article_link_unauthorized",
+                    "Una propuesta externa no puede crear ni cambiar el enlace canónico a un artículo.",
+                )
             line = {**base, **deepcopy(proposed_line)}
+            if base_line_id:
+                line["line_id"] = base_line_id
+            if base_article_id:
+                line["articulo_id"] = base_article_id
+                line.pop("article_id", None)
             line["nombre_original"] = original_name
             line.setdefault("name_raw", original_name)
             current_article = str(base.get("article_id") or base.get("articulo_id") or "").strip()
@@ -651,6 +855,14 @@ class RecetaDocumentacionWriteService:
             normalized_quantity = self._positive_number(line.get("cantidad_normalizada"))
             unit = self._normalized_unit(line.get("unidad") or line.get("unit"))
             normalized_unit = self._normalized_unit(line.get("unidad_normalizada"))
+            if unit and unit not in RECIPE_INGREDIENT_UNITS:
+                raise RecetaDocumentacionError(
+                    "invalid_ingredient_unit", "La unidad del ingrediente no está admitida para normalización y escandallo.",
+                )
+            if normalized_unit and normalized_unit not in {"kg", "l", "u"}:
+                raise RecetaDocumentacionError(
+                    "invalid_ingredient_unit", "La unidad normalizada del ingrediente debe ser kg, l o u.",
+                )
             if quantity is not None:
                 line["cantidad"] = quantity
             if unit:
@@ -681,6 +893,71 @@ class RecetaDocumentacionWriteService:
                 )
             )
             output.append(line)
+        for candidate_index in sorted(unused):
+            proposed_line = proposed_lines[candidate_index]
+            proposed_name = str(
+                proposed_line.get("nombre_original") or proposed_line.get("name_raw")
+                or proposed_line.get("nombre") or ""
+            ).strip()
+            if not proposed_name:
+                raise RecetaDocumentacionError("invalid_ingredient_line", "Cada ingrediente candidato necesita nombre_original.")
+            if proposed_line.get("articulo_id") or proposed_line.get("article_id"):
+                raise RecetaDocumentacionError(
+                    "ingredient_article_link_unauthorized",
+                    "Un candidato nuevo no puede atribuirse un artículo canónico sin alta autorizada.",
+                )
+            normalized_name = self._normalized_text(proposed_name)
+            existing_names = {
+                self._normalized_text(item.get("nombre_original") or item.get("name_raw") or item.get("nombre") or "")
+                for item in output if isinstance(item, dict)
+            }
+            if normalized_name in existing_names:
+                raise RecetaDocumentacionError(
+                    "duplicate_ingredient_candidate", "Un ingrediente no puede repetirse como candidato ni duplicar una línea documental.",
+                )
+            line = deepcopy(proposed_line)
+            line["nombre_original"] = proposed_name
+            line.setdefault("name_raw", proposed_name)
+            line.pop("article_id", None)
+            line.pop("articulo_id", None)
+            quantity = self._positive_number(
+                line.get("cantidad") or line.get("quantity") or line.get("cantidad_original")
+            )
+            unit = self._normalized_unit(line.get("unidad") or line.get("unit"))
+            if quantity is None or unit not in RECIPE_INGREDIENT_UNITS:
+                raise RecetaDocumentacionError(
+                    "invalid_new_ingredient_candidate",
+                    "Un ingrediente nuevo necesita cantidad positiva y una unidad admitida para quedar como candidato provisional.",
+                )
+            line["cantidad"] = quantity
+            line["unidad"] = unit
+            normalized_quantity = self._positive_number(line.get("cantidad_normalizada"))
+            normalized_unit = self._normalized_unit(line.get("unidad_normalizada"))
+            if normalized_unit and normalized_unit not in {"kg", "l", "u"}:
+                raise RecetaDocumentacionError(
+                    "invalid_ingredient_unit", "La unidad normalizada del ingrediente debe ser kg, l o u.",
+                )
+            if normalized_quantity is None or not normalized_unit:
+                normalized_quantity, normalized_unit = self._normalize_standard_quantity(quantity, unit)
+            line["cantidad_normalizada"] = normalized_quantity
+            line["unidad_normalizada"] = normalized_unit
+            line["estado_relacion"] = "CANDIDATO_NUEVO"
+            line["dato_provisional"] = True
+            line["procedencia_propuesta"] = deepcopy(
+                proposed_line.get("procedencia_propuesta")
+                if isinstance(proposed_line.get("procedencia_propuesta"), dict)
+                else proposal_metadata(
+                    origin="IA_PROPUESTA", confidence=self._confidence(proposed_line.get("confianza")),
+                    reason=str(proposed_line.get("motivo") or "Ingrediente nuevo propuesto como candidato; requiere alta autorizada."),
+                )
+            )
+            output.append(line)
+        line_ids = [str(item.get("line_id") or "").strip() for item in output]
+        populated_line_ids = [value for value in line_ids if value]
+        if len(populated_line_ids) != len(set(populated_line_ids)):
+            raise RecetaDocumentacionError(
+                "duplicate_ingredient_line_id", "Cada line_id de ingrediente debe ser único.",
+            )
         return output
 
     def _completion_projection(
@@ -735,31 +1012,26 @@ class RecetaDocumentacionWriteService:
         metadata: dict[str, dict[str, Any]],
     ) -> dict[str, Any]:
         """Calcula suficiencia de planificación sobre datos actuales o una proyección read-only."""
-        required = {
-            "categoria", "tipo_elaboracion", "rendimiento", "unidad_rendimiento",
-            "numero_raciones", "cantidad_por_racion", "ingredientes_estructurados",
-            "tiempo_activo", "tiempo_pasivo", "tiempo_total", "produccion_maxima",
-            "unidad_tanda", "rendimiento_por_tanda", "personal_recomendado",
-            "recursos_necesarios", "puede_refrigerarse", "puede_congelarse",
-            "conservacion", "regeneracion",
-        }
+        required = set(PRODUCTION_READINESS_BASE_FIELDS)
 
         def effective(field: str) -> Any:
             return proposals.get(field) if field in proposals else current.get(field)
 
-        if effective("puede_refrigerarse") is True:
-            required.add("vida_util_refrigerado")
-        if effective("puede_congelarse") is True:
-            required.update({"vida_util_congelado", "tiempo_descongelacion"})
+        for controlling_field, conditions in PRODUCTION_READINESS_CONDITIONAL_FIELDS.items():
+            required.update(conditions.get(effective(controlling_field), ()))
 
-        confirmed_blockers = sorted(
+        confirmed_blockers = {
             field for field in required if not self._field_complete(current, field)
-        )
-        provisional_blockers = sorted(
+        }
+        provisional_blockers = {
             field for field in required
             if not self._field_complete(current, field)
             and not self._proposal_completes_field(current, field, proposals.get(field))
-        )
+        }
+        confirmed_blockers.update(self.proposal_consistency_issues(current, {}))
+        provisional_blockers.update(self.proposal_consistency_issues(current, proposals))
+        confirmed_blockers = sorted(confirmed_blockers)
+        provisional_blockers = sorted(provisional_blockers)
         current_origins = dict(current.get("procedencia_campos") or {})
         origin_states = {
             "DOCUMENTO": "RESUELTO_DOCUMENTO", "IMPORTADO": "RESUELTO_DOCUMENTO",
@@ -806,7 +1078,7 @@ class RecetaDocumentacionWriteService:
             number = float(str(value).replace(",", "."))
         except (TypeError, ValueError):
             return None
-        return number if number > 0 else None
+        return number if math.isfinite(number) and number > 0 else None
 
     @staticmethod
     def _confidence(value: Any) -> float | None:
@@ -814,16 +1086,18 @@ class RecetaDocumentacionWriteService:
             number = float(value)
         except (TypeError, ValueError):
             return None
-        return min(1.0, max(0.0, number))
+        return min(1.0, max(0.0, number)) if math.isfinite(number) else None
 
     @staticmethod
     def _duration_minutes(value: Any) -> float | None:
         text = str(value or "").strip().casefold().replace(",", ".")
-        match = re.search(r"(\d+(?:\.\d+)?)\s*(h|hora|horas|min|minuto|minutos)?", text)
+        match = re.fullmatch(r"(\d+(?:\.\d+)?)\s*(h|hora|horas|min|minuto|minutos)", text)
         if not match:
             return None
         number = float(match.group(1))
-        return number * 60 if str(match.group(2) or "").startswith("h") else number
+        if not math.isfinite(number) or number <= 0:
+            return None
+        return number * 60 if str(match.group(2)).startswith("h") else number
 
     @staticmethod
     def _normalized_text(value: Any) -> str:
@@ -1001,33 +1275,45 @@ class RecetaDocumentacionWriteService:
         state = str(((recipe.get("estados_campos_operativos") or {}).get(field) or {}).get("estado") or "").upper()
         if field in NO_APLICA_FIELDS and state == "NO_APLICA":
             return True
-        if field == "categoria":
-            return self._present(recipe.get("categoria") or recipe.get("familia") or recipe.get("tipo"))
         if field == "ingredientes_estructurados":
             lines = list(
                 recipe.get("ingredientes_estructurados")
                 or recipe.get("_ingredientes_estructurados") or []
             )
             names = list(recipe.get("ingredientes") or [])
-            return bool(names) and len(lines) == len(names) and all(
+            return bool(lines) and len(lines) >= len(names) and all(
                 isinstance(line, dict)
                 and self._positive_number(
                     line.get("cantidad") or line.get("quantity") or line.get("cantidad_original")
                 ) is not None
-                and bool(self._normalized_unit(line.get("unidad") or line.get("unit")))
+                and self._normalized_unit(line.get("unidad") or line.get("unit")) in RECIPE_INGREDIENT_UNITS
                 for line in lines
             )
-        if field in {"rendimiento", "numero_raciones", "produccion_maxima", "rendimiento_por_tanda", "merma"}:
-            return self._positive_number(recipe.get(field)) is not None
-        return self._present(recipe.get(field))
+        value = (
+            recipe.get("categoria") or recipe.get("familia") or recipe.get("tipo")
+            if field == "categoria" else recipe.get(field)
+        )
+        if not self._present(value):
+            return False
+        try:
+            self.normalize_proposed_value(field, value)
+            return True
+        except RecetaDocumentacionError:
+            return False
 
     def _proposal_completes_field(
         self, current: dict[str, Any], field: str, value: Any,
     ) -> bool:
         if is_no_aplica(value):
             return field in NO_APLICA_FIELDS
+        if not self._present(value):
+            return False
         if field != "ingredientes_estructurados":
-            return self._present(value)
+            try:
+                self.normalize_proposed_value(field, value)
+                return True
+            except RecetaDocumentacionError:
+                return False
         if not isinstance(value, list):
             return False
         projected = {**current, "ingredientes_estructurados": value}
@@ -1119,7 +1405,11 @@ __all__ = [
     "RecetaDocumentacionWriteService", "RecetaDocumentacionError",
     "RecipeProposalGenerator", "HostAIRecipeProposalGenerator",
     "BATCH_MASS_SAFE_FIELDS", "BATCH_INDIVIDUAL_REVIEW_FIELDS",
-    "classify_recipe_proposals", "critical_free_text_findings",
+    "classify_recipe_proposals", "classify_recipe_proposals_for_review",
+    "critical_free_text_findings",
     "recipe_completion_fingerprint",
     "NO_APLICA_FIELDS", "NO_APLICA_VALUE", "is_no_aplica",
+    "RECIPE_BOOLEAN_FIELDS", "RECIPE_NUMBER_FIELDS", "RECIPE_TIME_FIELDS",
+    "RECIPE_JSON_FIELDS", "RECIPE_ENUM_FIELDS", "RECIPE_UNIT_FIELDS",
+    "RECIPE_OPERATIONAL_UNITS", "RECIPE_INGREDIENT_UNITS",
 ]

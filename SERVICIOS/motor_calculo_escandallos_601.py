@@ -422,6 +422,22 @@ class MotorCalculoEscandallos601:
                 if encontrados:
                     producto = encontrados[0]
 
+            # Una referencia externa puede costear un candidato sin convertirlo
+            # en artÃ­culo ni persistirlo. La identidad transitoria solo existe
+            # durante este cÃ¡lculo y exige un precio fijado provisional.
+            provisional_product = entrada.get("producto_provisional")
+            if (
+                producto is None and isinstance(provisional_product, dict)
+                and codigo and precios_fijados and codigo in precios_fijados
+            ):
+                producto = {
+                    "codigo": codigo,
+                    "nombre": provisional_product.get("nombre") or nombre_linea,
+                    "unidad_base": provisional_product.get("unidad_base") or "",
+                    "unidad": provisional_product.get("unidad_base") or "",
+                    "estado": "REFERENCIA_EXTERNA",
+                }
+
             if producto is None:
                 linea_inc.append({"tipo": INC_PRODUCTO_INEXISTENTE, "detalle": f"Producto no encontrado: {nombre_linea}"})
                 lineas_salida.append({

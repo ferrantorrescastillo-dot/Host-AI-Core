@@ -57,7 +57,7 @@ test("Fase 1 completa Boronat: análisis, propuestas, artículos, referencia, re
   await expect(page.getByRole("status").filter({ hasText: `Filas recibidas: ${recipeCount}` })).toContainText(`Requieren revisión: ${recipeCount}`);
   await expect(page.getByRole("region", { name: "Revisar propuestas externas de recetas" })).toContainText(`Propuestas generadas: ${proposalCount}`);
   const aguaProposal = page.locator("details").filter({ hasText: "Agua de jamaica" }).first();
-  await aguaProposal.locator("summary").click();
+  await aguaProposal.locator(":scope > summary").click();
   await expect(aguaProposal.getByRole("region", { name: "Completitud de receta" })).toContainText("Documento:");
   await expect(aguaProposal.getByRole("region", { name: "Completitud de receta" })).toContainText("Con propuestas IA:");
   await expect(aguaProposal.getByRole("region", { name: "Ficha técnica y escandallo provisionales" })).toContainText("Ficha técnica provisional");
@@ -87,27 +87,33 @@ test("Fase 1 completa Boronat: análisis, propuestas, artículos, referencia, re
   await expect(recovered.getByRole("region", { name: "Preview consolidado" })).toContainText(`Cambios a aplicar: ${safeCount}`);
   await recovered.getByRole("button", { name: "Volver a propuestas" }).click();
   const recoveredAgua = recovered.locator("details").filter({ hasText: "Agua de jamaica" }).first();
-  const operationalFields = [
+  const groupedOperationalFields = [
     "rendimiento", "unidad_rendimiento", "numero_raciones",
-    "cantidad_por_racion", "tiempo_total", "conservacion",
+    "cantidad_por_racion", "tiempo_total",
     "produccion_maxima", "personal_recomendado",
-    "recursos_necesarios", "tiempo_descongelacion", "ingredientes_estructurados",
+    "recursos_necesarios",
   ];
+  const criticalOperationalFields = ["conservacion", "tiempo_descongelacion", "ingredientes_estructurados"];
   await recoveredAgua.evaluate((element: HTMLDetailsElement) => { element.open = true; });
   const firstOperational = recoveredAgua.locator("li").filter({ hasText: "ingredientes_estructurados" }).first();
   await firstOperational.getByRole("button", { name: "Validar y seleccionar este campo" }).click();
   await expect(recovered.getByRole("region", { name: "Preview consolidado" })).toBeVisible();
   const selectedBatch = await (await request.get(`${apiBase}/api/v1/biblioteca/recetas/completado-ia/${batchId}/estado`)).json();
   const aguaResult = selectedBatch.resultados.find((item: { recipe_id: string }) => item.recipe_id === aguaRecipeId);
-  const operationalSelection = Object.fromEntries(
-    operationalFields.map((field) => [field, aguaResult.datos_requieren_revision_individual[field]]),
+  const groupedOperationalSelection = Object.fromEntries(
+    groupedOperationalFields.map((field) => [field, aguaResult.datos_operativos_agrupables[field]]),
   );
-  expect(Object.values(operationalSelection).every((value) => value !== undefined)).toBe(true);
+  const criticalOperationalSelection = Object.fromEntries(
+    criticalOperationalFields.map((field) => [field, aguaResult.datos_requieren_revision_individual[field]]),
+  );
+  expect(Object.values(groupedOperationalSelection).every((value) => value !== undefined)).toBe(true);
+  expect(Object.values(criticalOperationalSelection).every((value) => value !== undefined)).toBe(true);
   expect((await request.post(
     `${apiBase}/api/v1/biblioteca/recetas/completado-ia/${batchId}/seleccion`,
     { data: {
       selections: { [aguaRecipeId]: selectedBatch.selecciones[aguaRecipeId] },
-      individual_selections: { [aguaRecipeId]: operationalSelection },
+      grouped_selections: { [aguaRecipeId]: groupedOperationalSelection },
+      individual_selections: { [aguaRecipeId]: criticalOperationalSelection },
     } },
   )).ok()).toBe(true);
   expect((await request.post(

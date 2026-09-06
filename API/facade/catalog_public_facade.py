@@ -333,6 +333,7 @@ class CatalogPublicFacade(CorePublicApi02Facade):
                 batch_id,
                 dict(payload.get("selections") or {}),
                 (dict(payload.get("individual_selections") or {}) if "individual_selections" in payload else None),
+                (dict(payload.get("grouped_selections") or {}) if "grouped_selections" in payload else None),
             ),
             "preview": lambda: service.preview(batch_id, context=context),
             "confirm": lambda: service.confirm(batch_id, fingerprint=str(payload.get("fingerprint") or ""), context=context),

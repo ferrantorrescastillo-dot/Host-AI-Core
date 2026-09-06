@@ -249,7 +249,6 @@ function ImportPreview({
   const { documento, resumen, propuestas } = session;
   const analysis = session.analisis_restaurante;
   const recipes = documento.entidades.filter((entity) => entity.kind === "RECETA");
-  const [step, setStep] = useState<"RESUMEN" | "DECISIONES" | "RECETAS" | "ARTICULOS" | "MENUS" | "VARIANTES" | "PENDIENTES" | "CONFIRMAR" | "COMPLETAR_IA" | "COMPLETAR_EXTERNO">("RESUMEN");
   const [canonicalIncomplete, setCanonicalIncomplete] = useState<number | null>(null);
   const [workingDraft, setWorkingDraft] = useState(session.borrador);
   const [workingPreview, setWorkingPreview] = useState(session.preview_global);
@@ -265,6 +264,12 @@ function ImportPreview({
   const restoredExternalBatch = (session as BibliotecaImportSession & {
     completado_recetas_activo?: RecipeBatch | null;
   }).completado_recetas_activo;
+  const [step, setStep] = useState<"RESUMEN" | "DECISIONES" | "RECETAS" | "ARTICULOS" | "MENUS" | "VARIANTES" | "PENDIENTES" | "CONFIRMAR" | "COMPLETAR_IA" | "COMPLETAR_EXTERNO">(() => {
+    const sameSelection = Boolean(restoredExternalBatch?.recipe_ids.length)
+      && restoredExternalBatch!.recipe_ids.every((id) => completionRecipeIds.includes(id));
+    return restoredExternalBatch?.modo_generacion === "ARCHIVO_EXTERNO" && sameSelection
+      ? "COMPLETAR_EXTERNO" : "RESUMEN";
+  });
   const [activeExternalBatch, setActiveExternalBatch] = useState<RecipeBatch | null>(() => {
     if (!restoredExternalBatch) return null;
     const sameSelection = restoredExternalBatch.recipe_ids.length > 0
@@ -616,25 +621,29 @@ type RecipeBatch = {
   batch_id: string; estado: string; recipe_ids: string[];
   modo_generacion?: "HOST_AI_API" | "ARCHIVO_EXTERNO";
   validacion_externa?: ExternalValidation;
+  archivo_externo?: ExternalFileReceipt | null;
   progreso: { total: number; analizadas: number; exitosas: number; fallidas: number; pendientes: number; con_propuestas: number; necesitan_usuario: number; ya_completas: number; propuestas: number };
-  resumen_masivo?: { recetas_procesadas: number; production_ready_provisional: number; production_ready_confirmed: number; criticos_pendientes: number; articulos_precios_pendientes: number; baja_confianza: number; errores: number; imposibles_estimar: number; no_aplica: number; datos_reales_modificados: false };
+  resumen_masivo?: { recetas_procesadas: number; production_ready_provisional: number; production_ready_confirmed: number; criticos_pendientes: number; campos_criticos_individuales?: number; campos_operativos_agrupables?: number; recetas_sin_excepciones_operativas_relevantes?: number; articulos_precios_pendientes: number; baja_confianza: number; errores: number; imposibles_estimar: number; no_aplica: number; escandallos_provisionales?: number; escandallos_parciales?: number; escandallos_sin_coste?: number; datos_reales_modificados: false };
   cola: Array<{ recipe_id: string; estado: "CON_PROPUESTAS" | "NECESITA_USUARIO" | "ERROR_PROVIDER" | "YA_COMPLETA" | "PENDIENTE" | "PROCESANDO" }>;
   resultados: Array<{
     recipe_id: string; nombre: string; estado: string;
     datos_propuestos_ia: Record<string, unknown>;
     datos_propuestos_seguros_masivo: Record<string, unknown>;
+    datos_operativos_agrupables?: Record<string, unknown>;
     datos_requieren_revision_individual: Record<string, unknown>;
     propuestas_bloqueadas_revision?: Array<{ campo: string; motivos: string[] }>;
     metadatos_propuestas?: Record<string, RecipeProposalMetadata>;
     completitud?: RecipeCompletionCoverage;
     proyeccion_provisional?: RecipeProvisionalProjection | null;
     estado_operativo?: string;
-    excepciones?: { bloqueada: boolean; no_production_ready: boolean; criticos: boolean; baja_confianza: boolean; pendientes: boolean; no_aplica: boolean; error: boolean; precios_proveedores: boolean; imposible_estimar: boolean };
+    excepciones?: { bloqueada: boolean; no_production_ready: boolean; criticos: boolean; baja_confianza: boolean; operativas_agrupables?: boolean; pendientes: boolean; no_aplica: boolean; error: boolean; precios_proveedores: boolean; imposible_estimar: boolean };
+    campos_baja_confianza_relevante?: string[];
     campos_pendientes_no_proponibles: string[];
     error?: { code: string; message: string };
     intentos?: number; reintento_disponible?: boolean; backoff_recomendado_segundos?: number;
   }>;
   selecciones: Record<string, Record<string, unknown>>;
+  selecciones_agrupadas?: Record<string, Record<string, unknown>>;
   selecciones_individuales: Record<string, Record<string, unknown>>;
   preview?: {
     fingerprint: string; recetas_afectadas: number; cambios_a_aplicar: number;
@@ -644,7 +653,7 @@ type RecipeBatch = {
       detalle_cambios?: Array<{
         campo: string; valor_actual: unknown; valor_propuesto: unknown;
         procedencia?: RecipeProposalMetadata & { fuente?: string; origen_externo?: string };
-        clasificacion: "SELECCION_MASIVA" | "REVISION_INDIVIDUAL";
+        clasificacion: "SELECCION_MASIVA" | "REVISION_AGRUPADA" | "REVISION_INDIVIDUAL";
         sobrescribe: boolean; completa: boolean; estado_campo?: string;
       }>;
       proyeccion_provisional?: RecipeProvisionalProjection | null;
@@ -682,17 +691,29 @@ type RecipeProvisionalProjection = {
     produccion?: { indicaciones?: Record<string, unknown> };
   };
   escandallo?: {
-    estado_coste?: string; coste_total?: number | null; coste_por_racion?: number | null;
+    estado_coste?: string; coste_total?: number | null; coste_total_parcial?: number | null; coste_por_racion?: number | null;
     ingredientes_sin_coste?: number; ingredientes_sin_conversion?: number;
-    lineas_datos_propuestos?: number; precios_referencia?: number;
-    lineas?: Array<Record<string, unknown>>;
+    lineas_datos_propuestos?: number; precios_referencia?: number; completitud_coste_porcentaje?: number;
+    ingredientes_pendientes_coste?: string[];
+    lineas?: Array<{
+      nombre_original?: string; nombre_articulo?: string; coste_linea?: number | null;
+      precio_unitario?: number | null; unidad_precio?: string | null;
+      proveedor_precio?: string | null; precio_provisional?: boolean;
+      referencia_precio_externa?: { producto?: string; tienda_referencia?: string; origen?: string };
+    }>;
   } | null;
 };
 
 type ExternalValidation = {
   filas_recibidas: number; filas_utiles: number; filas_con_propuestas?: number; filas_requieren_revision: number; filas_rechazadas: number;
-  campos: { recibidos: number; utiles: number; requieren_revision: number; rechazados: number; bloqueados_criticos: number };
-  filas: Array<{ fila: number; recipe_id: string; estado: string; errores: string[]; avisos: string[]; tiene_propuestas_utiles?: boolean; requiere_revision?: boolean }>;
+  campos: { recibidos: number; utiles: number; operativos_agrupables?: number; requieren_revision: number; rechazados: number; bloqueados_criticos: number };
+  referencias_precio?: { filas_recibidas: number; referencias_utiles: number; referencias_consolidadas?: number; pendientes: number; rechazadas: number; duplicadas: number; datos_reales_modificados: false };
+  filas: Array<{
+    fila: number; recipe_id: string; estado: string; errores: string[]; avisos: string[];
+    errores_detallados?: string[]; avisos_detallados?: string[];
+    rechazos_detallados?: Array<{ campo?: string; estado?: string; motivos?: string[]; mensajes?: string[] }>;
+    tiene_propuestas_utiles?: boolean; requiere_revision?: boolean;
+  }>;
 };
 
 type ExternalFileReceipt = { nombre: string; tamano: number; sha256: string };
@@ -737,6 +758,7 @@ function ProvisionalRecipeProjection({ projection }: { projection?: RecipeProvis
   if (!projection) return null;
   const sheet = projection.ficha_tecnica;
   const costing = projection.escandallo;
+  const referenceLines = costing?.lineas?.filter((line) => line.precio_provisional || line.referencia_precio_externa) ?? [];
   return <section aria-label="Ficha técnica y escandallo provisionales" className="inline-notice">
     <h5>Ficha técnica provisional</h5>
     <p><strong>Solo lectura.</strong> Las propuestas se proyectan sin modificar la receta canónica.</p>
@@ -751,8 +773,12 @@ function ProvisionalRecipeProjection({ projection }: { projection?: RecipeProvis
       <dt>Personal recomendado</dt><dd><OperationalFieldValue sheet={sheet} coverage={projection.completitud} field="personal_recomendado" value={sheet?.produccion?.indicaciones?.personal_recomendado} /></dd>
     </dl>
     <h5>Escandallo provisional</h5>
-    {costing ? <><p>Estado: <strong>{costing.estado_coste ?? "INCOMPLETO"}</strong> · Coste total: <strong>{costing.coste_total ?? "No calculable"}</strong> · Coste por ración: <strong>{costing.coste_por_racion ?? "No calculable"}</strong></p>
-      <p>{costing.lineas?.length ?? 0} líneas · {costing.lineas_datos_propuestos ?? 0} con datos propuestos · {costing.precios_referencia ?? 0} con precio de referencia.</p></> : <p>Estado: <strong>SIN_COSTE</strong>. Aún faltan entradas necesarias.</p>}
+    {costing ? <>{costing.coste_total == null && costing.coste_total_parcial != null
+      ? <p>Estado: <strong>{costing.estado_coste ?? "PARCIAL"}</strong> · Coste total provisional conocido: <strong>{costing.coste_total_parcial}</strong> · Cobertura: <strong>{costing.completitud_coste_porcentaje ?? 0}%</strong> · Coste por ración: <strong>Pendiente hasta completar</strong></p>
+      : <p>Estado: <strong>{costing.estado_coste ?? "INCOMPLETO"}</strong> · Coste total: <strong>{costing.coste_total ?? "No calculable"}</strong> · Coste por ración: <strong>{costing.coste_por_racion ?? "No calculable"}</strong></p>}
+      <p>{costing.lineas?.length ?? 0} líneas · {costing.lineas_datos_propuestos ?? 0} con datos propuestos · {costing.precios_referencia ?? 0} con precio de referencia.</p>
+      {costing.ingredientes_pendientes_coste?.length ? <p>Ingredientes pendientes de coste: <strong>{costing.ingredientes_pendientes_coste.join(", ")}</strong>.</p> : null}
+      {referenceLines.length ? <ul aria-label="Referencias externas usadas en el escandallo">{referenceLines.map((line, index) => <li key={`${line.nombre_original ?? line.nombre_articulo ?? "referencia"}-${index}`}><strong>{line.nombre_original ?? line.nombre_articulo ?? "Ingrediente"}</strong>: {line.referencia_precio_externa?.producto ?? "referencia externa"} · proveedor/tienda {line.proveedor_precio ?? line.referencia_precio_externa?.tienda_referencia ?? "no informado"} · {line.precio_unitario ?? "precio no informado"}{line.unidad_precio ? ` €/${line.unidad_precio}` : ""} · REFERENCIA_EXTERNA provisional</li>)}</ul> : null}</> : <p>Estado: <strong>SIN_COSTE</strong>. Aún faltan entradas necesarias.</p>}
     <p className="muted">Procedencias: DOCUMENTO / CALCULADO / IA_PROPUESTA / REFERENCIA_EXTERNA. Nada queda confirmado hasta la acción humana final.</p>
   </section>;
 }
@@ -761,12 +787,21 @@ function recipeBatchDisplayName(name: string | null | undefined): string {
   return String(name || "").trim() || "Receta sin nombre";
 }
 
+function normalizeRecipeSearch(value: string): string {
+  return value.trim().toLocaleLowerCase("es").normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
+function recipeMatchesSearch(name: string | null | undefined, recipeId: string, normalizedQuery: string): boolean {
+  if (!normalizedQuery) return true;
+  return normalizeRecipeSearch(`${name ?? ""} ${recipeId}`).includes(normalizedQuery);
+}
+
 function ExternalRecipeCompletion({ importId, recipeIds, initialBatch, onBatchChange, onClose, onCountChange }: { importId: string; recipeIds: string[]; initialBatch?: RecipeBatch; onBatchChange: (batch: RecipeBatch | null) => void; onClose: () => void; onCountChange: (value: number) => void }) {
   const fileRef = useRef<HTMLInputElement>(null);
   const [origin, setOrigin] = useState("CHATGPT");
   const [batch, setBatch] = useState<RecipeBatch | null>(initialBatch ?? null);
   const [validation, setValidation] = useState<ExternalValidation | null>(initialBatch?.validacion_externa ?? null);
-  const [receipt, setReceipt] = useState<ExternalFileReceipt | null>(null);
+  const [receipt, setReceipt] = useState<ExternalFileReceipt | null>(initialBatch?.archivo_externo ?? null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
@@ -781,7 +816,7 @@ function ExternalRecipeCompletion({ importId, recipeIds, initialBatch, onBatchCh
   }
 
   async function importPackage(file: File) {
-    setBusy(true); setError("");
+    setBusy(true); setError(""); setMessage("");
     try {
       const response = await bibliotecaService.importRecipeCompletion(file, recipeIds, importId, origin) as any;
       setValidation(response.validacion as ExternalValidation);
@@ -789,25 +824,38 @@ function ExternalRecipeCompletion({ importId, recipeIds, initialBatch, onBatchCh
       const importedBatch = response.batch as RecipeBatch;
       setBatch(importedBatch);
       onBatchChange(importedBatch);
+      setMessage(`XLSX completado aceptado · ${importedBatch.progreso.propuestas} propuestas · sin cambios en datos reales`);
     } catch (reason) { setError((reason as Error).message); }
     finally { setBusy(false); if (fileRef.current) fileRef.current.value = ""; }
   }
 
-  if (batch) return <><section className="catalog-section" aria-label="Resultado de validación externa">
+  const importControls = <>
+    <label>Origen de las propuestas externas<select aria-label="Origen de las propuestas externas" value={origin} onChange={(event) => setOrigin(event.target.value)}><option value="CHATGPT">ChatGPT</option><option value="OPENAI_API">OpenAI API</option><option value="OTRO_PROVEEDOR_IA">Otro proveedor IA</option><option value="HUMANO">Completado humano</option><option value="ARCHIVO_EXTERNO">Otro archivo externo</option></select></label>
+    <button className="secondary-action" type="button" disabled={busy} onClick={() => fileRef.current?.click()}>{busy ? "Importando…" : "Importar XLSX completado"}</button>
+    <input ref={fileRef} hidden type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" aria-label="Seleccionar XLSX completado" onChange={(event) => { const file = event.target.files?.[0]; if (file) void importPackage(file); }} />
+    {message ? <p role="status">{message}</p> : null}
+    {error ? <p role="alert">{error}</p> : null}
+  </>;
+
+  if (batch) return <><section className="catalog-section" aria-label="Importar otro XLSX completado">
+    <h4>Actualizar propuestas desde un XLSX completado</h4>
+    <p>Selecciona el archivo completado para validarlo y reemplazar el lote de propuestas visible. No se escribirán datos canónicos ni se confirmará ningún cambio.</p>
+    {importControls}
+  </section><section className="catalog-section" aria-label="Resultado de validación externa">
     <h4>Validación del XLSX externo</h4>
     {receipt ? <p>Archivo procesado: <strong>{receipt.nombre}</strong> · SHA-256 {receipt.sha256.slice(0, 12)}…</p> : null}
-    {validation ? <><p role="status">Filas recibidas: {validation.filas_recibidas} · Con propuestas utilizables: {validation.filas_utiles} · Requieren revisión: {validation.filas_requieren_revision} · Rechazadas: {validation.filas_rechazadas}</p><p>Campos utilizables: {validation.campos.utiles} · Campos críticos para revisión: {validation.campos.requieren_revision} · Rechazados: {validation.campos.rechazados} · Contenido crítico bloqueado: {validation.campos.bloqueados_criticos}</p>{validation.campos.recibidos === 0 ? <p role="alert">El archivo seleccionado no contiene valores en las columnas <code>*_propuesto</code>. Comprueba que has elegido el XLSX completado y no la plantilla vacía.</p> : null}{validation.filas.some((row) => row.requiere_revision || row.estado === "RECHAZADA") ? <details><summary>Ver filas que necesitan atención</summary><ul>{validation.filas.filter((row) => row.requiere_revision || row.estado === "RECHAZADA").map((row) => <li key={`${row.fila}-${row.recipe_id}`}>Fila {row.fila} · {row.recipe_id || "sin ID"} · {row.estado} · {[...row.errores, ...row.avisos].join(", ")}</li>)}</ul></details> : null}</> : null}
-  </section><BulkRecipeCompletion importId={importId} recipeIds={recipeIds} initialBatch={batch} onBatchChange={onBatchChange} onClose={onClose} onCountChange={onCountChange} /></>;
+    {validation ? <><p role="status">Filas recibidas: {validation.filas_recibidas} · Con propuestas utilizables: {validation.filas_utiles} · Requieren revisión: {validation.filas_requieren_revision} · Rechazadas: {validation.filas_rechazadas}</p><p>Campos seguros: {validation.campos.utiles} · Operativos agrupables: {validation.campos.operativos_agrupables ?? 0} · Críticos individuales: {validation.campos.requieren_revision} · Rechazados: {validation.campos.rechazados} · Contenido crítico bloqueado: {validation.campos.bloqueados_criticos}</p>{validation.referencias_precio ? <p>Referencias externas: {validation.referencias_precio.referencias_utiles} filas válidas · {validation.referencias_precio.referencias_consolidadas ?? validation.referencias_precio.referencias_utiles} identidades reutilizables · {validation.referencias_precio.pendientes} pendientes · {validation.referencias_precio.rechazadas} rechazadas. Son provisionales y nunca modifican precios reales.</p> : null}{validation.campos.recibidos === 0 ? <p role="alert">El archivo seleccionado no contiene valores en las columnas <code>*_propuesto</code>. Comprueba que has elegido el XLSX completado y no la plantilla vacía.</p> : null}{validation.filas.some((row) => row.requiere_revision || row.estado === "RECHAZADA") ? <details><summary>Ver filas que necesitan atención</summary><ul>{validation.filas.filter((row) => row.requiere_revision || row.estado === "RECHAZADA").map((row) => {
+      const actionable = [...(row.errores_detallados ?? []), ...(row.avisos_detallados ?? []), ...(row.rechazos_detallados ?? []).flatMap((entry) => entry.mensajes ?? [])];
+      const messages = actionable.length ? Array.from(new Set(actionable)) : [...row.errores, ...row.avisos];
+      return <li key={`${row.fila}-${row.recipe_id}`}>Fila {row.fila} · {row.recipe_id || "sin ID"} · {row.estado}{messages.length ? <ul>{messages.map((message) => <li key={message}>{message}</li>)}</ul> : null}</li>;
+    })}</ul></details> : null}</> : null}
+  </section><BulkRecipeCompletion key={batch.batch_id} importId={importId} recipeIds={recipeIds} initialBatch={batch} onBatchChange={onBatchChange} onClose={onClose} onCountChange={onCountChange} /></>;
 
   return <section className="catalog-section" aria-label="Completar recetas externamente">
     <h4>Completar recetas externamente con XLSX</h4>
     <p>Exporta solo las recetas canónicas incompletas de esta importación. Al volver, Host AI validará el archivo y mostrará una vista previa antes de cualquier escritura.</p>
     <button type="button" disabled={busy || !recipeIds.length} onClick={() => void exportPackage()}>{busy ? "Preparando…" : `Exportar recetas para completar externamente · ${recipeIds.length}`}</button>
-    <label>Origen de las propuestas externas<select aria-label="Origen de las propuestas externas" value={origin} onChange={(event) => setOrigin(event.target.value)}><option value="CHATGPT">ChatGPT</option><option value="OPENAI_API">OpenAI API</option><option value="OTRO_PROVEEDOR_IA">Otro proveedor IA</option><option value="HUMANO">Completado humano</option><option value="ARCHIVO_EXTERNO">Otro archivo externo</option></select></label>
-    <button className="secondary-action" type="button" disabled={busy} onClick={() => fileRef.current?.click()}>Importar recetas completadas</button>
-    <input ref={fileRef} hidden type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" aria-label="Seleccionar XLSX de recetas completadas" onChange={(event) => { const file = event.target.files?.[0]; if (file) void importPackage(file); }} />
-    {message ? <p role="status">{message}</p> : null}
-    {error ? <p role="alert">{error}</p> : null}
+    {importControls}
     <button className="secondary-action" type="button" onClick={onClose}>Volver al resumen</button>
   </section>;
 }
@@ -819,6 +867,7 @@ function BulkRecipeCompletion({ importId, recipeIds, initialBatch, onBatchChange
   const [selecting, setSelecting] = useState(false);
   const [showPreview, setShowPreview] = useState(Boolean(initialBatch?.preview));
   const [recipeFilter, setRecipeFilter] = useState("TODAS");
+  const [recipeSearch, setRecipeSearch] = useState("");
   const cancelRef = useRef(false);
   const confirmRef = useRef(false);
   const startedRef = useRef(false);
@@ -826,11 +875,7 @@ function BulkRecipeCompletion({ importId, recipeIds, initialBatch, onBatchChange
   useEffect(() => {
     if (!batch) return;
     if (batch.modo_generacion === "ARCHIVO_EXTERNO") {
-      if (batch.resultado_confirmacion || batch.estado === "COMPLETADO" || batch.estado === "COMPLETADO_PARCIAL") {
-        onBatchChange?.(null);
-      } else {
-        onBatchChange?.(batch);
-      }
+      onBatchChange?.(batch);
     }
   }, [batch, onBatchChange]);
 
@@ -857,6 +902,7 @@ function BulkRecipeCompletion({ importId, recipeIds, initialBatch, onBatchChange
   async function selectAndPreview(
     selections: Record<string, Record<string, unknown>>,
     individualSelections?: Record<string, Record<string, unknown>>,
+    groupedSelections?: Record<string, Record<string, unknown>>,
   ) {
     if (!batch || selecting) return;
     setSelecting(true); setError("");
@@ -864,12 +910,14 @@ function BulkRecipeCompletion({ importId, recipeIds, initialBatch, onBatchChange
     try {
       const body: Record<string, unknown> = { selections };
       if (individualSelections !== undefined) body.individual_selections = individualSelections;
+      if (groupedSelections !== undefined) body.grouped_selections = groupedSelections;
       const selected = await bibliotecaService.recipeBatchAction(batch.batch_id, "seleccion", body) as unknown as RecipeBatch;
       selectionSaved = true;
       setShowPreview(false);
       setBatch(selected);
       const selectedFields = [
-        ...Object.values(selected.selecciones || {}), ...Object.values(selected.selecciones_individuales || {}),
+        ...Object.values(selected.selecciones || {}), ...Object.values(selected.selecciones_agrupadas || {}),
+        ...Object.values(selected.selecciones_individuales || {}),
       ].reduce((total, fields) => total + Object.keys(fields).length, 0);
       if (selectedFields > 0) {
         const previewed = await bibliotecaService.recipeBatchAction(selected.batch_id, "preview") as unknown as RecipeBatch;
@@ -885,14 +933,14 @@ function BulkRecipeCompletion({ importId, recipeIds, initialBatch, onBatchChange
   async function acceptAll() {
     if (!batch) return;
     const selections = Object.fromEntries(batch.resultados.map((item) => [item.recipe_id, item.datos_propuestos_seguros_masivo]));
-    await selectAndPreview(selections, {});
+    await selectAndPreview(selections, {}, {});
   }
 
   async function acceptRecipe(recipeId: string) {
     if (!batch) return;
     const item = batch.resultados.find((candidate) => candidate.recipe_id === recipeId);
     if (!item) return;
-    await selectAndPreview({ [recipeId]: item.datos_propuestos_seguros_masivo }, {});
+    await selectAndPreview({ [recipeId]: item.datos_propuestos_seguros_masivo }, {}, {});
   }
 
   async function selectIndividual(recipeId: string, field: string, value: unknown) {
@@ -901,7 +949,17 @@ function BulkRecipeCompletion({ importId, recipeIds, initialBatch, onBatchChange
       ...(batch.selecciones_individuales || {}),
       [recipeId]: { ...(batch.selecciones_individuales?.[recipeId] || {}), [field]: value },
     };
-    await selectAndPreview(batch.selecciones || {}, individualSelections);
+    await selectAndPreview(batch.selecciones || {}, individualSelections, batch.selecciones_agrupadas || {});
+  }
+
+  async function selectGroupedOperational() {
+    if (!batch) return;
+    const groupedSelections = Object.fromEntries(
+      batch.resultados.map((item) => [item.recipe_id, item.datos_operativos_agrupables || {}]),
+    );
+    await selectAndPreview(
+      batch.selecciones || {}, batch.selecciones_individuales || {}, groupedSelections,
+    );
   }
 
   async function continuePending(current: RecipeBatch) {
@@ -968,14 +1026,21 @@ function BulkRecipeCompletion({ importId, recipeIds, initialBatch, onBatchChange
   const hasSafeProposals = Boolean(batch?.resultados.some((item) => Object.keys(item.datos_propuestos_seguros_masivo || {}).length));
   const hasRetryableFailures = Boolean(batch?.resultados.some((item) => item.estado === "ERROR_PROVIDER" && item.reintento_disponible));
   const hasSelections = Boolean(batch && [
-    ...Object.values(batch.selecciones || {}), ...Object.values(batch.selecciones_individuales || {}),
+    ...Object.values(batch.selecciones || {}), ...Object.values(batch.selecciones_agrupadas || {}),
+    ...Object.values(batch.selecciones_individuales || {}),
   ].some((fields) => Object.keys(fields).length));
   const safeProposalCount = batch?.resultados.reduce((total, item) => total + Object.keys(item.datos_propuestos_seguros_masivo || {}).length, 0) ?? 0;
   const safeSelectionCount = Object.values(batch?.selecciones || {}).reduce((total, fields) => total + Object.keys(fields).length, 0);
+  const groupedProposalCount = batch?.resultados.reduce((total, item) => total + Object.keys(item.datos_operativos_agrupables || {}).length, 0) ?? 0;
+  const groupedSelectionCount = Object.values(batch?.selecciones_agrupadas || {}).reduce((total, fields) => total + Object.keys(fields).length, 0);
   const individualSelectionCount = Object.values(batch?.selecciones_individuales || {}).reduce((total, fields) => total + Object.keys(fields).length, 0);
   const allSafeSelected = safeProposalCount > 0 && safeSelectionCount === safeProposalCount;
   const external = batch?.modo_generacion === "ARCHIVO_EXTERNO" || initialBatch?.modo_generacion === "ARCHIVO_EXTERNO";
+  const normalizedRecipeSearch = normalizeRecipeSearch(recipeSearch);
+  const searchMatchedResults = (batch?.resultados ?? []).filter((item) =>
+    recipeMatchesSearch(item.nombre, item.recipe_id, normalizedRecipeSearch));
   const filteredResults = (batch?.resultados ?? []).filter((item) => {
+    if (!recipeMatchesSearch(item.nombre, item.recipe_id, normalizedRecipeSearch)) return false;
     if (recipeFilter === "TODAS") return true;
     const keyByFilter: Record<string, keyof NonNullable<typeof item.excepciones>> = {
       BLOQUEADAS: "bloqueada", NO_PRODUCTION_READY: "no_production_ready", CRITICOS: "criticos",
@@ -985,37 +1050,50 @@ function BulkRecipeCompletion({ importId, recipeIds, initialBatch, onBatchChange
     const key = keyByFilter[recipeFilter];
     return key ? Boolean(item.excepciones?.[key]) : true;
   });
+  const filteredPreviewItems = (batch?.preview?.items ?? []).filter((item) =>
+    recipeMatchesSearch(item.nombre, item.recipe_id, normalizedRecipeSearch));
+  const visibleRecipeCount = showPreview && batch?.preview ? filteredPreviewItems.length : filteredResults.length;
 
   return <section className="catalog-section" aria-label={external ? "Revisar propuestas externas de recetas" : "Completar recetas con IA"}>
     <h4>{external ? "Revisar propuestas externas" : "Completar recetas con IA"}</h4>
     {!batch ? <p role="status">Releyendo Biblioteca y preparando la cola…</p> : <>
       <p role="status">Analizadas: {batch.progreso.analizadas} / {batch.progreso.total} · Propuestas generadas: {batch.progreso.propuestas}</p>
-      {batch.resumen_masivo ? <section aria-label="Resumen masivo production-ready" className="inline-notice"><h5>Resumen del lote</h5><dl className="detail-grid"><dt>Recetas procesadas</dt><dd>{batch.resumen_masivo.recetas_procesadas}</dd><dt>Production-ready provisional</dt><dd>{batch.resumen_masivo.production_ready_provisional}</dd><dt>Production-ready confirmado</dt><dd>{batch.resumen_masivo.production_ready_confirmed}</dd><dt>Críticos pendientes</dt><dd>{batch.resumen_masivo.criticos_pendientes}</dd><dt>Artículos/precios pendientes</dt><dd>{batch.resumen_masivo.articulos_precios_pendientes}</dd><dt>Baja confianza</dt><dd>{batch.resumen_masivo.baja_confianza}</dd><dt>Errores</dt><dd>{batch.resumen_masivo.errores}</dd><dt>Imposibles de estimar</dt><dd>{batch.resumen_masivo.imposibles_estimar}</dd><dt>Con NO_APLICA</dt><dd>{batch.resumen_masivo.no_aplica}</dd></dl><p>Ningún dato real ha sido modificado.</p></section> : null}
-      {hasSelections ? <p role="status">{safeSelectionCount} propuestas seguras seleccionadas{individualSelectionCount ? ` · ${individualSelectionCount} críticas validadas individualmente` : ""}. Aún no se ha escrito ningún dato.</p> : null}
+      {batch.resumen_masivo ? <section aria-label="Resumen masivo production-ready" className="inline-notice"><h5>Resumen del lote y excepciones</h5><dl className="detail-grid"><dt>Recetas procesadas</dt><dd>{batch.resumen_masivo.recetas_procesadas}</dd><dt>Production-ready provisional</dt><dd>{batch.resumen_masivo.production_ready_provisional}</dd><dt>Production-ready confirmado</dt><dd>{batch.resumen_masivo.production_ready_confirmed}</dd><dt>Sin excepciones operativas relevantes</dt><dd>{batch.resumen_masivo.recetas_sin_excepciones_operativas_relevantes ?? 0}</dd><dt>Campos operativos agrupables</dt><dd>{batch.resumen_masivo.campos_operativos_agrupables ?? 0}</dd><dt>Campos críticos individuales</dt><dd>{batch.resumen_masivo.campos_criticos_individuales ?? 0}</dd><dt>Recetas con críticos pendientes</dt><dd>{batch.resumen_masivo.criticos_pendientes}</dd><dt>Baja confianza relevante</dt><dd>{batch.resumen_masivo.baja_confianza}</dd><dt>Artículos/precios pendientes</dt><dd>{batch.resumen_masivo.articulos_precios_pendientes}</dd><dt>Escandallos provisionales</dt><dd>{batch.resumen_masivo.escandallos_provisionales ?? 0}</dd><dt>Escandallos parciales</dt><dd>{batch.resumen_masivo.escandallos_parciales ?? 0}</dd><dt>Escandallos sin coste</dt><dd>{batch.resumen_masivo.escandallos_sin_coste ?? 0}</dd><dt>Errores</dt><dd>{batch.resumen_masivo.errores}</dd><dt>Imposibles de estimar</dt><dd>{batch.resumen_masivo.imposibles_estimar}</dd><dt>Con NO_APLICA</dt><dd>{batch.resumen_masivo.no_aplica}</dd></dl><p>Ningún dato real ha sido modificado.</p></section> : null}
+      {hasSelections ? <p role="status">{safeSelectionCount} propuestas seguras seleccionadas{groupedSelectionCount ? ` · ${groupedSelectionCount} operativas agrupadas` : ""}{individualSelectionCount ? ` · ${individualSelectionCount} críticas validadas individualmente` : ""}. Aún no se ha escrito ningún dato.</p> : null}
+      <div className="recipe-review-toolbar" role="search" aria-label="Buscar recetas en revisión">
+        <label className="recipe-review-search">Buscar receta por nombre o ID
+          <input value={recipeSearch} placeholder="Buscar receta por nombre o ID…" onChange={(event) => setRecipeSearch(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") event.preventDefault(); if (event.key === "Escape") { event.preventDefault(); setRecipeSearch(""); } }} />
+        </label>
+        {!showPreview ? <label>Filtrar recetas<select aria-label="Filtrar recetas del lote" value={recipeFilter} onChange={(event) => setRecipeFilter(event.target.value)}><option value="TODAS">Todas</option><option value="BLOQUEADAS">Solo bloqueadas</option><option value="NO_PRODUCTION_READY">Solo no production-ready</option><option value="CRITICOS">Solo críticos</option><option value="BAJA_CONFIANZA">Solo baja confianza</option><option value="PENDIENTES">Solo pendientes</option><option value="NO_APLICA">Solo NO_APLICA</option><option value="ERRORES">Solo errores</option><option value="PRECIOS_PROVEEDORES">Solo precios/proveedores pendientes</option><option value="IMPOSIBLES">Solo imposibles de estimar</option></select></label> : null}
+        <button type="button" className="secondary-action" disabled={!recipeSearch} onClick={() => setRecipeSearch("")}>Limpiar</button>
+        <p className="muted" aria-live="polite">Mostrando {visibleRecipeCount} de {batch.resultados.length} recetas.</p>
+      </div>
       {!showPreview ? <>
-      <p>Las acciones seguras reemplazan la selección actual. Los campos críticos solo se añaden al pulsar explícitamente “Validar y seleccionar este campo”.</p>
+      <p>Las propuestas seguras y operativas pueden seleccionarse por grupos para una única vista previa. Esto no las confirma. Los campos sanitarios, alérgenos, ingredientes/artículos y demás críticos reales siguen exigiendo validación individual explícita.</p>
       <dl className="detail-grid"><dt>Exitosas</dt><dd>{batch.progreso.exitosas}</dd><dt>Fallidas</dt><dd>{batch.progreso.fallidas}</dd><dt>Pendientes</dt><dd>{batch.progreso.pendientes}</dd><dt>Con propuestas IA</dt><dd>{batch.progreso.con_propuestas}</dd><dt>Necesitan usuario</dt><dd>{batch.progreso.necesitan_usuario}</dd><dt>Ya completas al releer</dt><dd>{batch.progreso.ya_completas}</dd></dl>
-      <label>Filtrar recetas<select aria-label="Filtrar recetas del lote" value={recipeFilter} onChange={(event) => setRecipeFilter(event.target.value)}><option value="TODAS">Todas</option><option value="BLOQUEADAS">Solo bloqueadas</option><option value="NO_PRODUCTION_READY">Solo no production-ready</option><option value="CRITICOS">Solo críticos</option><option value="BAJA_CONFIANZA">Solo baja confianza</option><option value="PENDIENTES">Solo pendientes</option><option value="NO_APLICA">Solo NO_APLICA</option><option value="ERRORES">Solo errores</option><option value="PRECIOS_PROVEEDORES">Solo precios/proveedores pendientes</option><option value="IMPOSIBLES">Solo imposibles de estimar</option></select></label><p className="muted">Mostrando {filteredResults.length} de {batch.resultados.length} recetas.</p>
       {!external && running ? <button type="button" onClick={() => { cancelRef.current = true; void bibliotecaService.recipeBatchAction(batch.batch_id, "cancelar"); }}>Cancelar generación</button> : null}
       {!external && !running && batch.progreso.pendientes > 0 && batch.estado !== "CANCELADO" ? <button type="button" onClick={() => void continuePending(batch)}>Reanudar pendientes</button> : null}
       {!external && !running && hasRetryableFailures ? <button type="button" onClick={() => void retryFailed()}>Reintentar todas las fallidas</button> : null}
-      {filteredResults.map((item) => <details key={item.recipe_id}>
-        <summary>{recipeBatchDisplayName(item.nombre)} · {item.estado_operativo ?? item.estado} · {Object.keys(item.datos_propuestos_ia || {}).length} propuestas</summary>
+      {!filteredResults.length && normalizedRecipeSearch && !searchMatchedResults.length ? <p role="status">No se encontraron recetas con ese nombre o ID.</p> : null}
+      {filteredResults.map((item) => <details key={item.recipe_id} data-recipe-view="review" data-recipe-id={item.recipe_id}>
+        <summary>{recipeBatchDisplayName(item.nombre)} · {item.estado_operativo ?? item.estado} · {Object.keys(item.datos_propuestos_ia || {}).length} propuestas · {item.recipe_id}</summary>
         <p className="muted">{item.recipe_id}</p>
         <RecipeCoverage coverage={item.completitud} />
         <ProvisionalRecipeProjection projection={item.proyeccion_provisional} />
         {item.estado === "ERROR_PROVIDER" ? <><p role="alert">{item.error?.message || "Error del proveedor IA"}</p>{item.reintento_disponible ? (!running ? <button type="button" onClick={() => void retryRecipe(item.recipe_id)}>Reintentar esta receta</button> : null) : <p>Se alcanzó el límite de reintentos.</p>}</> : null}
         {Object.keys(item.datos_propuestos_seguros_masivo || {}).length ? <><h5>Propuestas culinarias aptas para selección masiva</h5><ul>{Object.entries(item.datos_propuestos_seguros_masivo).map(([field, value]) => { const metadata = item.metadatos_propuestas?.[field]; return <li key={field}><strong>{field}</strong>: {formatRecipePreviewValue(value)} <span className="badge">{metadata?.origen ?? "IA_PROPUESTA"}</span>{metadata?.confianza != null ? ` · confianza ${Math.round(metadata.confianza * 100)}%` : ""}</li>; })}</ul>{Object.entries(item.datos_propuestos_seguros_masivo).every(([field, value]) => batch.selecciones?.[item.recipe_id]?.[field] === value) ? (individualSelectionCount > 0 || safeSelectionCount > Object.keys(item.datos_propuestos_seguros_masivo).length ? <button type="button" disabled={selecting} onClick={() => void acceptRecipe(item.recipe_id)}>Usar solo propuestas seguras de esta receta</button> : <p>Propuestas seguras de esta receta seleccionadas.</p>) : <button type="button" disabled={selecting} onClick={() => void acceptRecipe(item.recipe_id)}>Aceptar propuestas seguras de esta receta</button>}</> : null}
-        {Object.keys(item.datos_requieren_revision_individual || {}).length ? <><h5>Requieren validación humana individual</h5><p className="muted">Estos datos participan en la ficha provisional, pero quedan fuera de la confirmación hasta validarlos uno a uno.</p><ul>{Object.entries(item.datos_requieren_revision_individual).map(([field, value]) => { const metadata = item.metadatos_propuestas?.[field]; return <li key={field}><strong>{field}</strong>: {formatRecipePreviewValue(value)} <span className="badge">{metadata?.estado_campo ?? metadata?.origen ?? "PROPUESTO"}</span>{metadata?.confianza != null ? ` · confianza ${Math.round(metadata.confianza * 100)}%` : ""}{metadata?.motivo ? ` · ${metadata.motivo}` : ""} {batch.selecciones_individuales?.[item.recipe_id]?.[field] === value ? <span>Seleccionado para confirmación.</span> : <button type="button" disabled={selecting} onClick={() => void selectIndividual(item.recipe_id, field, value)}>Validar y seleccionar este campo</button>}</li>; })}</ul></> : null}
+        {Object.keys(item.datos_operativos_agrupables || {}).length ? <details><summary>{Object.keys(item.datos_operativos_agrupables || {}).length} propuestas operativas provisionales agrupables</summary><p className="muted">Pueden incorporarse juntas a la vista previa; conservan procedencia y confianza y no quedan confirmadas por seleccionarlas.</p><ul>{Object.entries(item.datos_operativos_agrupables || {}).map(([field, value]) => { const metadata = item.metadatos_propuestas?.[field]; return <li key={field}><strong>{field}</strong>: {formatRecipePreviewValue(value)}{metadata?.confianza != null ? ` · confianza ${Math.round(metadata.confianza * 100)}%` : ""}</li>; })}</ul></details> : null}
+        {Object.keys(item.datos_requieren_revision_individual || {}).length ? <><h5>Requieren validación humana individual</h5><p className="muted">Solo quedan aquí sanitario, alérgenos, ingredientes/artículos y otros críticos reales. Participan provisionalmente en la ficha, pero quedan fuera de confirmación hasta validarlos uno a uno.</p><ul>{Object.entries(item.datos_requieren_revision_individual).map(([field, value]) => { const metadata = item.metadatos_propuestas?.[field]; return <li key={field}><strong>{field}</strong>: {formatRecipePreviewValue(value)} <span className="badge">{metadata?.estado_campo ?? metadata?.origen ?? "PROPUESTO"}</span>{metadata?.confianza != null ? ` · confianza ${Math.round(metadata.confianza * 100)}%` : ""}{metadata?.motivo ? ` · ${metadata.motivo}` : ""} {batch.selecciones_individuales?.[item.recipe_id]?.[field] === value ? <span>Seleccionado para confirmación.</span> : <button type="button" disabled={selecting} onClick={() => void selectIndividual(item.recipe_id, field, value)}>Validar y seleccionar este campo</button>}</li>; })}</ul></> : null}
         {item.propuestas_bloqueadas_revision?.length ? <p>Contenido crítico bloqueado: {item.propuestas_bloqueadas_revision.map((entry) => entry.campo).join(", ")}.</p> : null}
         {item.campos_pendientes_no_proponibles?.length ? <p>Necesita usuario: {item.campos_pendientes_no_proponibles.join(", ")}</p> : null}
       </details>)}
-      {!running && hasSafeProposals && (!allSafeSelected || individualSelectionCount > 0) ? <button type="button" disabled={selecting} onClick={() => void acceptAll()}>{selecting ? "Preparando vista previa…" : allSafeSelected ? "Usar solo propuestas seguras de todas" : "Aceptar propuestas seguras de todas"}</button> : null}
-      {allSafeSelected && individualSelectionCount === 0 ? <p>Las propuestas seguras disponibles ya están seleccionadas.</p> : null}
+      {!running && hasSafeProposals && (!allSafeSelected || individualSelectionCount > 0 || groupedSelectionCount > 0) ? <button type="button" disabled={selecting} onClick={() => void acceptAll()}>{selecting ? "Preparando vista previa…" : allSafeSelected ? "Usar solo propuestas seguras de todas" : "Aceptar propuestas seguras de todas"}</button> : null}
+      {allSafeSelected && individualSelectionCount === 0 && groupedSelectionCount === 0 ? <p>Las propuestas seguras disponibles ya están seleccionadas.</p> : null}
+      {!running && groupedProposalCount > groupedSelectionCount ? <button type="button" disabled={selecting} onClick={() => void selectGroupedOperational()}>{selecting ? "Preparando vista previa…" : `Revisar y seleccionar operativas provisionales · ${groupedProposalCount}`}</button> : null}
       {hasSelections && !batch.preview ? <button type="button" disabled={selecting} onClick={() => void preview()}>{selecting ? "Preparando vista previa…" : "Revisar cambios antes de guardar"}</button> : null}
       {batch.preview ? <button type="button" onClick={() => setShowPreview(true)}>Volver a vista previa</button> : null}
       </> : null}
-      {showPreview && batch.preview ? <section aria-label="Preview consolidado"><h5>Vista previa de cambios</h5><p>Recetas afectadas: {batch.preview.recetas_afectadas} · Cambios a aplicar: {batch.preview.cambios_a_aplicar}</p><p>Aún no se ha escrito ningún dato. Los campos críticos no seleccionados quedan fuera.</p>{batch.preview.items.map((item) => <article key={item.recipe_id}><h6>{recipeBatchDisplayName(item.nombre)}</h6><p className="muted">{item.recipe_id}</p><ProvisionalRecipeProjection projection={item.proyeccion_provisional} /><table><thead><tr><th>Campo</th><th>Valor actual</th><th>Valor propuesto</th><th>Estado</th><th>Procedencia</th><th>Confianza</th><th>Motivo</th><th>Clasificación</th><th>Acción</th></tr></thead><tbody>{(item.detalle_cambios || Object.entries(item.cambios).map(([campo, valor]) => ({ campo, valor_actual: undefined, valor_propuesto: valor, procedencia: item.proposal_source, clasificacion: "SELECCION_MASIVA" as const, sobrescribe: false, completa: true }))).map((change) => <tr key={change.campo}><td>{change.campo}</td><td>{formatRecipePreviewValue(change.valor_actual)}</td><td>{formatRecipePreviewValue(change.valor_propuesto)}</td><td>{change.procedencia?.estado_campo ?? (formatRecipePreviewValue(change.valor_propuesto) === "NO_APLICA" ? "NO_APLICA" : "PROPUESTO")}</td><td>{[change.procedencia?.origen, change.procedencia?.fuente, change.procedencia?.origen_externo].filter(Boolean).join(" · ") || "No informada"}</td><td>{change.procedencia?.confianza != null ? `${Math.round(change.procedencia.confianza * 100)}%` : "No informada"}</td><td>{change.procedencia?.motivo || "No informado"}</td><td>{change.clasificacion === "REVISION_INDIVIDUAL" ? "Revisión individual" : "Selección masiva"}</td><td>{change.sobrescribe ? "Sobrescribe" : change.completa ? "Completa" : "Actualiza"}</td></tr>)}</tbody></table></article>)}<button type="button" className="secondary-action" onClick={() => setShowPreview(false)}>Volver a propuestas</button><button type="button" onClick={() => void confirm()}>Confirmar cambios</button></section> : null}
+      {showPreview && batch.preview ? <section aria-label="Preview consolidado"><h5>Vista previa de cambios</h5><p>Recetas afectadas: {batch.preview.recetas_afectadas} · Cambios a aplicar: {batch.preview.cambios_a_aplicar}</p><p>Aún no se ha escrito ningún dato. Los campos críticos no seleccionados quedan fuera.</p>{!filteredPreviewItems.length ? <p role="status">No se encontraron recetas con ese nombre o ID.</p> : null}{filteredPreviewItems.map((item) => <article key={item.recipe_id} data-recipe-view="preview" data-recipe-id={item.recipe_id}><h6>{recipeBatchDisplayName(item.nombre)}</h6><p className="muted">{item.recipe_id}</p><ProvisionalRecipeProjection projection={item.proyeccion_provisional} /><table><thead><tr><th>Campo</th><th>Valor actual</th><th>Valor propuesto</th><th>Estado</th><th>Procedencia</th><th>Confianza</th><th>Motivo</th><th>Clasificación</th><th>Acción</th></tr></thead><tbody>{(item.detalle_cambios || Object.entries(item.cambios).map(([campo, valor]) => ({ campo, valor_actual: undefined, valor_propuesto: valor, procedencia: item.proposal_source, clasificacion: "SELECCION_MASIVA" as const, sobrescribe: false, completa: true }))).map((change) => <tr key={change.campo}><td>{change.campo}</td><td>{formatRecipePreviewValue(change.valor_actual)}</td><td>{formatRecipePreviewValue(change.valor_propuesto)}</td><td>{change.procedencia?.estado_campo ?? (formatRecipePreviewValue(change.valor_propuesto) === "NO_APLICA" ? "NO_APLICA" : "PROPUESTO")}</td><td>{[change.procedencia?.origen, change.procedencia?.fuente, change.procedencia?.origen_externo].filter(Boolean).join(" · ") || "No informada"}</td><td>{change.procedencia?.confianza != null ? `${Math.round(change.procedencia.confianza * 100)}%` : "No informada"}</td><td>{change.procedencia?.motivo || "No informado"}</td><td>{change.clasificacion === "REVISION_INDIVIDUAL" ? "Revisión individual" : change.clasificacion === "REVISION_AGRUPADA" ? "Revisión agrupada" : "Selección masiva"}</td><td>{change.sobrescribe ? "Sobrescribe" : change.completa ? "Completa" : "Actualiza"}</td></tr>)}</tbody></table></article>)}<button type="button" className="secondary-action" onClick={() => setShowPreview(false)}>Volver a propuestas</button><button type="button" onClick={() => void confirm()}>Confirmar cambios</button></section> : null}
       {batch.resultado_confirmacion ? <p role="status">Completado: {batch.resultado_confirmacion.aplicadas.length} recetas actualizadas; {batch.resultado_confirmacion.fallidas.length} fallidas.</p> : null}
     </>}
     {error ? <p role="alert">{error}</p> : null}

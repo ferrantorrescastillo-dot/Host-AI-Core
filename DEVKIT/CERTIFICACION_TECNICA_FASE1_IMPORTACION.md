@@ -253,3 +253,67 @@ Reconciliación de contadores: `1070` es el número de propuestas críticas pres
 Evidencia final existente: backend XLSX/API 30/30, frontend focal 46/46, frontend completo 281/281, Playwright de descarga física 1/1 y Playwright de nombres/`NO_APLICA`/F5/reinicio 1/1, typecheck, build y `git diff --check` correctos. La validación técnica y humana no escribió en `DATOS` real; baseline final: 376 archivos y hash `B7C5917CC518D331E6D8F0F41E78ADEF2C00CC95DFA9BCD319DC25FB77440E14`.
 
 Estado final: `FASE 1 CERRADA Y CERTIFICADA`. Fase 1.5 no iniciada.
+
+## Hotfix post-cierre - acceso visible a la reimportación XLSX (5 de septiembre de 2026)
+
+Se corrige una regresión de alcance UX posterior al cierre: con un batch externo activo, `ExternalRecipeCompletion` retornaba directamente la revisión de propuestas y ocultaba el input ya conectado al importador XLSX. La autoridad certificada no cambia: continúa siendo `POST /api/v1/biblioteca/recetas/completado-externo/importar` sobre `RecipeCompletionExchangeService.import_package`.
+
+La UI mantiene visible `Importar XLSX completado`, conserva separado el importador genérico JSON, acepta solo el MIME/extensión XLSX soportado y remonta la revisión con el nuevo `batch_id` retornado. El acuse declara propuestas importadas y ausencia de cambios reales. El flujo sigue sin confirmación ni WRITE automáticos.
+
+Validación técnica: 30/30 backend focales, 47/47 frontend focales, suite frontend completa 282/282, 1/1 Playwright de upload físico con file chooser, 1/1 descarga física y 1/1 regresión Chrome de nombres, `NO_APLICA`, readiness, ficha/escandallo, F5 y reinicio. Typecheck y build correctos. Pendiente únicamente el smoke humano del hotfix antes de preparar su commit separado; staging, commit y push permanecen vacíos/no ejecutados.
+
+## Hotfix de robustez del contrato ChatGPT → XLSX → Host AI (5 de septiembre de 2026)
+
+La auditoría del primer XLSX comercial (SHA-256 `0624F4C00FF2560CB5BF411A5F4E170A33EAEFC69475311BB0BA641DAC81E22C`) separa defectos del fichero de insuficiencias exportadas. Los 219 rechazos originales se distribuyen en: 52 `categoria/EXISTING_VALUE`, 52 `ingredientes_estructurados/ingredient_count_mismatch`, 28 `tiempo_descongelacion`, 26 `vida_util_congelado`, 20 `regeneracion`, 14 `tiempo_enfriamiento`, 6 `tiempo_reposo`, 6 `tiempo_coccion` y 2 `vida_util_refrigerado` por `missing_no_aplica_reason`, más 13 `alergenos/EMPTY_VALUE`. Los 63 bloqueos eran 52 `observaciones` con dos falsos positivos simultáneos (`ALERGENOS_TRAZAS_EMBEBIDOS` y `DATOS_COMERCIALES_EMBEBIDOS`) y 11 `descripcion/ALERGENOS_EMBEBIDOS` legítimos.
+
+La causa en `NO_APLICA` era el rechazo completo de `metadatos_propuestas` al superar 8.000 caracteres: el parser dejaba de ver el motivo por campo y rechazaba en cascada los 102 estados. La causa de ingredientes era la igualdad estricta de longitud/posición: el fichero real omitía/reemplazaba originales en 51 filas y añadía Agua en la receta sentinel. El contrato 0.3 publica ahora hoja `SCHEMA`, claves pendientes canónicas, shapes, enums, unidades, políticas y ejemplos. El parser limita por separado el mapa de metadatos, normaliza `NO_APLICA` como estado estructurado, preserva ingredientes originales por nombre y admite extras como `CANDIDATO_NUEVO`; no relaja las prohibiciones de overwrite ni las declaraciones críticas reales.
+
+El replay del fichero humano corregido por código acepta 1.745 propuestas y conserva como excepciones explicables 52 categorías ya existentes, 51 recetas que realmente omitieron su ingrediente documental, 13 arrays vacíos de alérgenos y 11 descripciones con alérgenos explícitos. El contrato público nuevo se valida aparte con 52 recetas sin importar constantes privadas: 52/52 provisionales, 0 confirmadas, 0 errores, 0 imposibles, 0 rechazos, 0 bloqueos y 52 con `NO_APLICA`. Agua de jamaica conserva Flor de hibiscus, Limones y Azúcar, añade Agua de proceso como candidato, muestra ficha provisional y escandallo parcial (75%, un coste pendiente).
+
+Evidencia: backend focal 38/38; backend Fase 1 235/235; frontend focal 47/47; frontend completa 282/282; Playwright descarga/subida 2/2; Playwright de contrato realista, `NO_APLICA` visual, F5, reinicio y navegador limpio 1/1; typecheck y build correctos. Ninguna confirmación o escritura real. Estado técnico: `LISTA PARA ÚLTIMO SMOKE HUMANO DEL CIRCUITO REAL`, pendiente de validación humana y sin iniciar Fase 1.5.
+
+## Cierre técnico autónomo con el XLSX GPT real (5 de septiembre de 2026)
+
+La evidencia sintética anterior queda acotada a la validación del contrato público y no se utiliza como prueba del resultado comercial. El fichero GPT real `hostai-completado-recetas-IMPWEB-6F402EBB0868_COMPLETADO_GPT.xlsx`, SHA-256 `0624F4C00FF2560CB5BF411A5F4E170A33EAEFC69475311BB0BA641DAC81E22C`, se reimportó por el endpoint público en el runtime aislado de cierre y originó `RECIPE-BATCH-7B15EDEEADBC`, vinculado a `IMPWEB-6F402EBB0868`.
+
+Resultado real: 52/52 filas útiles, 1.872 campos recibidos, 156 seguros, 1.580 de revisión individual, 136 rechazados con motivo y 1.736 propuestas aceptadas. Hay 1 receta `production_ready_provisional`, 0 confirmadas, 13 recetas con error trazable, 0 imposibles y 34 con `NO_APLICA`. Esta diferencia respecto al completador sintético es evidencia válida: Host AI no rebaja tipos, coherencia ni protección de valores existentes para inflar readiness.
+
+Agua de jamaica es la receta provisionalmente lista. Conserva Flor de hibiscus, Limones y Azúcar y añade Agua como `CANDIDATO_NUEVO`; presenta descripción/elaboración GPT, `regeneracion`, `tiempo_descongelacion` y `vida_util_congelado` como estados `NO_APLICA`, ficha técnica provisional y escandallo `SIN_COSTE`. El runtime final no contiene precio/proveedor de fixture en esa proyección y ninguna propuesta se confirmó.
+
+La regresión final terminó con 76/76 focales backend, 273/273 backend Fase 1, 47/47 frontend focales, 282/282 frontend completas y todos los E2E aislados requeridos: contrato adversarial 4/4, selección/preview/confirmación aislada 1/1, rehidratación limpia 1/1, persistencia/artículos/referencias 2/2, recorrido continuo 1/1 y smoke final GPT real/F5/reinicio 1/1. Typecheck, compilación Python y build correctos. El runtime humano conservó exactamente su huella durante el smoke de solo lectura y `DATOS` real mantuvo 376 archivos y hash `B7C5917CC518D331E6D8F0F41E78ADEF2C00CC95DFA9BCD319DC25FB77440E14`.
+
+Estado técnico: `FASE 1 LISTA PARA SMOKE HUMANO FINAL`. No equivale a confirmación culinaria, no ejecuta WRITE, no inicia Fase 1.5 y no incluye staging, commit ni push.
+
+## Pausa de certificación — nuevo contrato maestro autosuficiente (5 de septiembre de 2026)
+
+La prueba comercial anterior no certifica el nuevo contrato. La autoridad declarativa queda centralizada en `recipe_completion_contract.py`; el XLSX 0.3 deriva de ella un único `PROMPT_IA`, `SCHEMA` de 36 campos y el circuito consolidado `ARTICULOS_PENDIENTES`/`PRECIOS_REFERENCIA`/`SCHEMA_PRECIOS`. Las referencias reimportadas se validan como `REFERENCIA_EXTERNA`/`REFERENCIA_NO_REAL`, sin WRITE.
+
+Evidencia previa a la pausa: backend focal 66/66 y Fase 1 245/245; frontend focal 47/47 y suite completa correcta; E2E físicos de descarga/subida y contrato público, persistencia, artículo/referencia, Chrome limpio/F5, lote 52 y recorrido continuo correctos; typecheck, build, compilación Python y `git diff --check` correctos. El paquete nuevo `hostai-completado-recetas-IMPWEB-6F402EBB0868.xlsx` contiene 52 recetas, 36 contratos de campo y 10 artículos consolidados pendientes, sin propuestas prefabricadas ni fórmulas.
+
+Estado: `ESPERANDO XLSX GPT REAL`. No se ha ejecutado confirmación, commit, push, staging ni Fase 1.5.
+
+## Ampliación técnica: precio externo en escandallo y revisión agrupada (6 de septiembre de 2026)
+
+El artefacto GPT real nuevo `hostai-completado-recetas-IMPWEB-6F402EBB0868_COMPLETADO_GPT_NUEVO.xlsx`, SHA-256 `72CF33170BB034A9C389DE1639669D7B7E22E27E4BF5BBBE08683EFF61988274`, conserva 52 filas útiles y 1.807 propuestas sin WRITE. El contrato separa 156 seguras, 1.144 operativas agrupables y 507 críticas individuales.
+
+Las referencias de precio se consolidan por identidad exacta y se persisten en el batch schema 3. Seis filas válidas representan tres identidades reutilizables; el lote obtiene 11 escandallos parciales y 41 sin coste. El motor recibe candidatos transitorios solo cuando existe una referencia coincidente y nunca los persiste. Un precio canónico/confirmado prevalece sobre la referencia externa. Los costes parciales con referencia quedan marcados explícitamente como provisionales.
+
+La revisión agrupada dispone de canal de selección propio, preview común y persistencia tras F5/reinicio. No confirma automáticamente y no rebaja los campos críticos reales. Evidencia: backend Fase 1 206/206, frontend 283/283, build/typecheck/compile correctos y diez escenarios Playwright finales verdes distribuidos entre contrato, persistencia, rehidratación, masivo, Boronat y artefacto GPT real. Estado técnico: `LISTA PARA SMOKE HUMANO FINAL DE ESCANDALLO Y EXCEPCIONES`; Fase 1 no se cierra automáticamente.
+
+## Navegación final del lote por receta (6 de septiembre de 2026)
+
+La revisión y el preview consolidado comparten un buscador local por nombre o `recipe_id`, insensible a mayúsculas, espacios exteriores y diacríticos. La búsqueda no inspecciona ingredientes, elaboración ni metadatos, no modifica selecciones o preview y no realiza llamadas al backend. La barra muestra el contador visible/total, permite limpiar con botón o Escape y permanece accesible durante el desplazamiento.
+
+El primer smoke humano falló porque el E2E ejercitaba el buscador antes de reiniciar frontend/backend y cerraba ese contexto; el nuevo proceso dejado en `55718` no recibía después ninguna verificación de navegador. La afirmación inicial de smoke-ready queda revocada. El E2E se reordenó para abrir un Chrome limpio después del reinicio y dejar activo exactamente ese proceso comprobado. Sus aserciones exigen 52 bloques iniciales, uno tras buscar `agua`, `REC601-000007`, escandallo visible y ausencia explícita de Ensaladilla, Crema de calabaza, Gazpacho de tomate, Salmorejo cordobés, Salsa romesco y Paella de alcachofas; Limpiar restaura 52.
+
+Evidencia corregida: test focal frontend 49/49, frontend completo 284/284, Playwright Chrome post-reinicio sobre el lote GPT real 1/1, typecheck y build correctos. Estado técnico: `BUSCADOR CORREGIDO — LISTO PARA REPETIR SMOKE HUMANO`; Fase 1.5 no iniciada.
+
+## Corrección del escandallo en preview rehidratado (6 de septiembre de 2026)
+
+El smoke humano reveló una divergencia dentro del mismo batch `RECIPE-BATCH-27AD1C3C567B`: `resultados` exponía correctamente Agua de jamaica como `PARCIAL`, 11,63 EUR conocidos, 75 % de cobertura y tres referencias, pero `preview.items` conservaba el snapshot `SIN_COSTE` calculado únicamente con los campos operativos seleccionados. Las referencias seguían visibles en las líneas del snapshot, produciendo la contradicción visual.
+
+`RecetaDocumentacionBatchService` reutiliza ahora la proyección integral y solo-lectura del resultado tanto al crear como al rehidratar el preview; los 1.144 cambios confirmables permanecen separados y `ingredientes_estructurados` continúa fuera del preview de confirmación. `BibliotecaImportPage` presenta el coste parcial conocido, cobertura e ingrediente pendiente sin rotularlo como no calculable. La prioridad económica canónica permanece `REAL/CONFIRMADO > REFERENCIA_EXTERNA > SIN_PRECIO`.
+
+Evidencia: backend focal 83/83, backend Fase 1 227/227, frontend focal 49/49, frontend completo 284/284 y E2E Chrome del XLSX GPT real 1/1 con F5, reinicio completo y navegador limpio. Agua de jamaica conserva 11,63 EUR, 75 %, tres referencias no reales y Agua pendiente; el batch sigue con 52/52 provisionalmente listas, 1.807 propuestas, 1.144 agrupadas, 507 críticas y 11 escandallos parciales. No hubo confirmación ni WRITE real.
+
+Estado técnico: `ESCANDALLO CORREGIDO — LISTO PARA SMOKE HUMANO FINAL`; Fase 1 no se cierra automáticamente y Fase 1.5 no se inicia.

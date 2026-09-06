@@ -41,7 +41,9 @@ def _runtime_dir() -> Path:
     if runtime.parent != allowed_parent or runtime.name not in {
         "fase1-e2e", "fase1-articles-e2e", "fase1-closing-e2e", "fase1-closing-smoke",
         "fase1-mass-e2e", "fase1-mass-smoke", "fase1-download-e2e",
-        "fase1-download-clean-e2e",
+        "fase1-download-clean-e2e", "fase1-contract-e2e",
+        "fase1-rehydration-e2e", "fase1-persistence-e2e", "fase1-master-contract-e2e",
+        "fase1-economic-exceptions-e2e", "fase1-economic-exceptions-smoke",
     }:
         raise RuntimeError(f"Directorio E2E no autorizado: {runtime}")
     return runtime
@@ -330,6 +332,10 @@ def _seed_external_batch(runtime: Path, recipe_ids: list[str], import_id: str) -
     assert included_ids
     workbook = load_workbook(BytesIO(__import__("base64").b64decode(exported["contenido_base64"])))
     assert dict(workbook["METADATA"].values)["version"] == "0.3"
+    assert "PROMPT_IA" in workbook.sheetnames
+    assert "Procesa TODAS las recetas" in str(workbook["PROMPT_IA"].cell(2, 3).value or "")
+    assert "PRECIOS_REFERENCIA" in workbook.sheetnames
+    assert "SCHEMA_PRECIOS" in workbook.sheetnames
     assert "INSTRUCCIONES" in workbook.sheetnames
     assert any(
         "NO_APLICA" in str(cell.value or "")
@@ -380,10 +386,11 @@ def _seed_external_batch(runtime: Path, recipe_ids: list[str], import_id: str) -
             assert agua_export_context["menus"] and agua_export_context["servicio"]
         assert all("nombre_original" in item for item in agua_export_context["ingredientes"])
     critical_values = {
-        "alergenos": '["gluten"]', "vida_util_refrigerado": "24 horas",
-        "vida_util_congelado": "30 dias", "puede_congelarse": "true",
+        "vida_util_refrigerado": "24 horas", "vida_util_congelado": "30 dias",
+        "puede_congelarse": "true",
         "puede_refrigerarse": "true", "regeneracion": "Regenerar y validar",
-        "tiempo_activo": "30", "tiempo_pasivo": "60", "tiempo_total": "90",
+        "tiempo_activo": "30 minutos", "tiempo_pasivo": "60 minutos",
+        "tiempo_total": "90 minutos", "numero_raciones": 10,
     }
     for index, recipe_id in enumerate(included_ids):
         row = index + 2
@@ -394,7 +401,7 @@ def _seed_external_batch(runtime: Path, recipe_ids: list[str], import_id: str) -
         critical_count = 9 if index < 17 else 8
         for field, value in list(critical_values.items())[:critical_count]:
             sheet.cell(row, headers[f"{field}_propuesto"]).value = value
-        if runtime.name in {"fase1-mass-e2e", "fase1-mass-smoke"}:
+        if runtime.name in {"fase1-mass-e2e", "fase1-mass-smoke", "fase1-contract-e2e"}:
             recipe = recipes_by_id[recipe_id]
             structured = []
             for ingredient_index, ingredient_name in enumerate(recipe.get("ingredientes") or []):
@@ -465,10 +472,14 @@ def _seed_external_batch(runtime: Path, recipe_ids: list[str], import_id: str) -
                 "rendimiento": 10,
                 "unidad_rendimiento": "raciones", "numero_raciones": 10,
                 "cantidad_por_racion": {"valor": 250, "unidad": "ml"},
-                "tiempo_total": "90 minutos",
+                "tiempo_activo": "25 minutos", "tiempo_pasivo": "65 minutos",
+                "tiempo_total": "90 minutos", "intervencion_activa": True,
                 "produccion_maxima": 20, "unidad_tanda": "raciones",
-                "rendimiento_por_tanda": 20, "personal_recomendado": 1,
+                "rendimiento_por_tanda": 20,
+                "personal_recomendado": {"personas": 1, "rol": "cocinero"},
                 "recursos_necesarios": ["Olla", "Colador", "Camara frigorifica"],
+                "puede_refrigerarse": True, "vida_util_refrigerado": "48 horas",
+                "puede_congelarse": False, "vida_util_congelado": "NO_APLICA",
                 "conservacion": "Conservar refrigerada; propuesta pendiente de validacion sanitaria.",
                 "tiempo_descongelacion": "NO_APLICA",
                 "regeneracion": "NO_APLICA",
@@ -507,6 +518,10 @@ def _seed_external_batch(runtime: Path, recipe_ids: list[str], import_id: str) -
         len(item.get("datos_propuestos_seguros_masivo") or {})
         for item in imported["batch"]["resultados"]
     )
+    expected_grouped = sum(
+        len(item.get("datos_operativos_agrupables") or {})
+        for item in imported["batch"]["resultados"]
+    )
     expected_critical = sum(
         len(item.get("datos_requieren_revision_individual") or {})
         for item in imported["batch"]["resultados"]
@@ -520,7 +535,7 @@ def _seed_external_batch(runtime: Path, recipe_ids: list[str], import_id: str) -
         agua_ready = bool((agua_result.get("completitud") or {}).get("production_ready_provisional"))
         assert agua_ready is True
     assert validation["filas_recibidas"] == len(included_ids)
-    if runtime.name in {"fase1-mass-e2e", "fase1-mass-smoke"}:
+    if runtime.name in {"fase1-mass-e2e", "fase1-mass-smoke", "fase1-contract-e2e"}:
         assert validation["filas_recibidas"] >= 50
         assert validation["filas_rechazadas"] == 1
         assert any("RECETA_CAMBIO_DESDE_EXPORTACION" in row["errores"] for row in validation["filas"])
@@ -535,10 +550,11 @@ def _seed_external_batch(runtime: Path, recipe_ids: list[str], import_id: str) -
         len(row.get("campos_imposibles_estimar") or []) for row in validation["filas"]
     )
     assert validation["campos"]["requieren_revision"] == expected_critical + expected_impossible
-    assert imported["batch"]["progreso"]["propuestas"] == expected_safe + expected_critical
+    assert imported["batch"]["progreso"]["propuestas"] == expected_safe + expected_grouped + expected_critical
     return {
         "batch_id": str(imported["batch"]["batch_id"]),
         "safe_count": int(validation["campos"]["utiles"]),
+        "grouped_count": expected_grouped,
         "critical_count": expected_critical,
         "proposal_count": int(imported["batch"]["progreso"]["propuestas"]),
         "recipe_count": len(included_ids),
@@ -575,7 +591,7 @@ def prepare() -> dict[str, object]:
         _seed_articles(runtime)
         recipe_count = 52 if runtime.name in {
             "fase1-mass-e2e", "fase1-mass-smoke", "fase1-download-e2e",
-            "fase1-download-clean-e2e",
+            "fase1-download-clean-e2e", "fase1-contract-e2e", "fase1-master-contract-e2e",
         } else 30
         recipe_ids = _seed_recipes(runtime, recipe_count)
         import_id = _seed_import(runtime, recipe_ids)
@@ -596,6 +612,7 @@ def prepare() -> dict[str, object]:
             "batch_id": batch["batch_id"],
             "recipe_count": batch["recipe_count"],
             "safe_count": batch["safe_count"],
+            "grouped_count": batch["grouped_count"],
             "critical_count": batch["critical_count"],
             "proposal_count": batch["proposal_count"],
             "agua_recipe_id": batch["agua_recipe_id"],

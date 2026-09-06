@@ -2525,3 +2525,15 @@ Para el propietario:
 
 
 Ese es el criterio principal de diseño de Host AI V1.
+
+## Contrato durable de Fase 1 — importación y completado masivos
+
+La experiencia de producto de Fase 1 es **importación masiva de recetas + completado masivo con IA + ficha técnica + escandallo + revisión por excepciones**. La IA trabaja el lote completo y el humano revisa excepciones; no se convierte el proceso en un formulario por receta. El flujo conserva las fronteras `PROPONER != SELECCIONAR != PREVIEW != CONFIRMAR != WRITE`.
+
+El paquete externo `HOSTAI_RECIPE_COMPLETION_PACKAGE 0.3` debe ser autosuficiente: un único `PROMPT_IA` para el lote, instrucciones, schema público por campo, contexto por receta y, cuando proceda, artículos consolidados y referencias externas de precio. Una estimación válida es `IA_PROPUESTA`, no dato real. Un precio obtenido fuera del restaurante es `REFERENCIA_EXTERNA`, nunca precio o proveedor real. Ficha y escandallo se proyectan automáticamente; no se crean manualmente receta por receta.
+
+Este objetivo es una decisión de producto. Cambiarlo por trabajo principalmente individual, omitir ficha/escandallo o confundir propuestas/referencias con datos confirmados requiere una decisión de producto explícita.
+
+La revisión masiva se divide por política en propuestas seguras, operativas provisionales agrupables, críticas individuales y excepciones. Agrupar una selección solo prepara el preview: no equivale a confirmar ni autoriza WRITE. La baja confianza se considera excepción cuando es significativa para la operativa; no se infla elevando artificialmente la confianza ni convierte automáticamente toda propuesta conservadora en bloqueo.
+
+El escandallo provisional aplica la jerarquía `precio real/confirmado > referencia externa > sin precio`. Las referencias externas pueden vincularse a candidatos consolidados por identidad exacta y reutilizarse en varias recetas. Conservan producto, tienda/proveedor de referencia, formato, precio normalizado, URL, fecha, equivalencia, confianza y procedencia, pero nunca se convierten por sí mismas en precio o proveedor real.

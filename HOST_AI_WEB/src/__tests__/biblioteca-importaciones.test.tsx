@@ -2035,6 +2035,74 @@ describe("Importador Inteligente de Biblioteca", () => {
     expect(within(summary.closest("details") as HTMLElement).getByText("REC601-SIN-NOMBRE")).toBeInTheDocument();
   });
 
+  it("mantiene visible la reimportación XLSX con un batch externo activo y reemplaza sus propuestas sin confirmar", async () => {
+    const imported: any = structuredClone(response);
+    imported.importacion.borrador.recipes[0].selected_canonical_recipe_id = "REC601-A";
+    imported.importacion.resumen.recetas_completables_ia = 1;
+    const activeBatch: any = {
+      batch_id: "RECIPE-BATCH-ACTIVO", estado: "PROPUESTAS_LISTAS", modo_generacion: "ARCHIVO_EXTERNO",
+      archivo_externo: { nombre: "lote-anterior.xlsx", tamano: 21000, sha256: "fedcba9876543210" },
+      recipe_ids: ["REC601-A"], selecciones: {}, selecciones_individuales: {}, preview: null,
+      progreso: { total: 1, analizadas: 1, exitosas: 1, fallidas: 0, pendientes: 0, con_propuestas: 1, necesitan_usuario: 0, ya_completas: 0, propuestas: 2 },
+      cola: [{ recipe_id: "REC601-A", estado: "CON_PROPUESTAS" }],
+      resultados: [{
+        recipe_id: "REC601-A", nombre: "Salsa verde", estado: "CON_PROPUESTAS",
+        datos_propuestos_ia: { elaboracion: "Mezclar." }, datos_propuestos_seguros_masivo: { elaboracion: "Mezclar." },
+        datos_requieren_revision_individual: {}, campos_pendientes_no_proponibles: [],
+      }],
+    };
+    imported.importacion.completado_recetas_activo = activeBatch;
+    const replacementBatch = {
+      ...activeBatch,
+      batch_id: "RECIPE-BATCH-REIMPORTADO",
+      progreso: { ...activeBatch.progreso, propuestas: 3 },
+      resultados: [{ ...activeBatch.resultados[0], datos_propuestos_ia: { elaboracion: "Mezclar.", observaciones: "Servir fría." }, datos_propuestos_seguros_masivo: { elaboracion: "Mezclar.", observaciones: "Servir fría." } }],
+    };
+    const external = {
+      ...response, datos_reales_modificados: false,
+      archivo: { nombre: "completado-real.xlsx", tamano: 22000, sha256: "abc123def4567890" },
+      validacion: {
+        filas_recibidas: 1, filas_con_propuestas: 1, filas_utiles: 1, filas_requieren_revision: 1, filas_rechazadas: 0,
+        campos: { recibidos: 4, utiles: 3, requieren_revision: 0, rechazados: 1, bloqueados_criticos: 0 },
+        referencias_precio: { filas_recibidas: 2, referencias_utiles: 1, pendientes: 1, rechazadas: 0, duplicadas: 0, datos_reales_modificados: false },
+        filas: [{
+          fila: 2, recipe_id: "REC601-A", estado: "UTIL_Y_REQUIERE_REVISION", errores: [], avisos: [], requiere_revision: true,
+          rechazos_detallados: [{ campo: "categoria", estado: "RECHAZADO", motivos: ["EXISTING_VALUE"], mensajes: ["categoria: El campo ya tiene un valor; deje vacía su columna *_propuesto para no sobrescribirlo."] }],
+        }],
+      },
+      batch: replacementBatch,
+    };
+    const fetchMock = spyOnImportFetch()
+      .mockResolvedValueOnce({ ok: true, status: 200, json: async () => imported } as Response)
+      .mockResolvedValueOnce({ ok: true, status: 200, json: async () => external } as Response);
+    sessionStorage.setItem("hostai.active_import_session_id", "IMPWEB-1");
+    render(<MemoryRouter initialEntries={["/biblioteca/importaciones"]}><App /></MemoryRouter>);
+
+    expect(await screen.findByRole("button", { name: "Revisar propuestas externas · 1 recetas" })).toBeVisible();
+    expect(screen.getByRole("button", { name: "Importar XLSX completado" })).toBeVisible();
+    expect(screen.getByText(/Archivo procesado:/)).toHaveTextContent("lote-anterior.xlsx");
+    expect(screen.getByText(/Archivo procesado:/)).toHaveTextContent("fedcba987654");
+    const input = screen.getByLabelText("Seleccionar XLSX completado");
+    expect(input).toHaveAttribute("accept", ".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+    const completed = new File(["xlsx"], "completado-real.xlsx", { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+    Object.defineProperty(completed, "arrayBuffer", { value: async () => new TextEncoder().encode("xlsx").buffer });
+    fireEvent.change(input, { target: { files: [completed] } });
+
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
+    expect(await screen.findByText("XLSX completado aceptado · 3 propuestas · sin cambios en datos reales")).toBeVisible();
+    expect(screen.getByText(/Archivo procesado:/)).toHaveTextContent("completado-real.xlsx");
+    expect(screen.getByText(/Filas recibidas: 1/)).toHaveTextContent("Con propuestas utilizables: 1");
+    expect(screen.getByText(/Referencias externas:/)).toHaveTextContent("1 filas válidas · 1 identidades reutilizables · 1 pendientes · 0 rechazadas");
+    expect(screen.getByText(/Referencias externas:/)).toHaveTextContent("nunca modifican precios reales");
+    fireEvent.click(screen.getByText("Ver filas que necesitan atención"));
+    expect(screen.getByText(/categoria: El campo ya tiene un valor/)).toBeVisible();
+    expect(screen.getByRole("region", { name: "Revisar propuestas externas de recetas" })).toHaveTextContent("Propuestas generadas: 3");
+    expect(String(fetchMock.mock.calls[1][0])).toContain("/completado-externo/importar");
+    const body = JSON.parse(String((fetchMock.mock.calls[1][1] as RequestInit).body));
+    expect(body).toMatchObject({ import_id: "IMPWEB-1", recipe_ids: ["REC601-A"] });
+    expect(fetchMock.mock.calls.some(([input]) => String(input).includes("/confirmar"))).toBe(false);
+  });
+
   it("aísla selección segura por receta y permite volver al batch externo desde el resumen", async () => {
     const imported: any = structuredClone(response);
     imported.importacion.borrador.recipes[0].procedure = [];
@@ -2058,9 +2126,22 @@ describe("Importador Inteligente de Biblioteca", () => {
         produccion: { indicaciones: { produccion_maxima: 20, personal_recomendado: 1 } }, campos_pendientes: [],
       },
       escandallo: {
-        estado_coste: "PROVISIONAL", coste_total: 8, coste_por_racion: 0.8,
-        ingredientes_sin_coste: 0, ingredientes_sin_conversion: 0,
-        lineas_datos_propuestos: 3, precios_referencia: 1, lineas: [{ nombre_original: "Flor de hibiscus" }],
+        estado_coste: "PARCIAL", coste_total: null, coste_total_parcial: 11.63, coste_por_racion: null,
+        ingredientes_sin_coste: 1, ingredientes_sin_conversion: 0,
+        lineas_datos_propuestos: 3, precios_referencia: 3, completitud_coste_porcentaje: 75,
+        ingredientes_pendientes_coste: ["Agua"], lineas: [{
+          nombre_original: "Flor de hibiscus", precio_unitario: 15.9, unidad_precio: "kg",
+          precio_provisional: true, proveedor_precio: "Herbolínea",
+          referencia_precio_externa: { producto: "Flor de Jamaica 1 kg", tienda_referencia: "Herbolínea" },
+        }, {
+          nombre_original: "Limones", precio_unitario: 2.79, unidad_precio: "kg",
+          precio_provisional: true, proveedor_precio: "Alcampo",
+          referencia_precio_externa: { producto: "Limones malla 1 kg", tienda_referencia: "Alcampo" },
+        }, {
+          nombre_original: "Azúcar", precio_unitario: 0.89, unidad_precio: "kg",
+          precio_provisional: true, proveedor_precio: "Alcampo",
+          referencia_precio_externa: { producto: "Azúcar blanco 1 kg", tienda_referencia: "Alcampo" },
+        }, { nombre_original: "Agua", precio_unitario: null }],
       },
     };
     const item = {
@@ -2128,6 +2209,8 @@ describe("Importador Inteligente de Biblioteca", () => {
       .mockResolvedValueOnce({ ok: true, status: 200, json: async () => previewCritical } as Response)
       .mockResolvedValueOnce({ ok: true, status: 200, json: async () => selectedSafeAgain } as Response)
       .mockResolvedValueOnce({ ok: true, status: 200, json: async () => previewSafeAgain } as Response);
+    Object.defineProperty(URL, "createObjectURL", { configurable: true, value: vi.fn() });
+    Object.defineProperty(URL, "revokeObjectURL", { configurable: true, value: vi.fn() });
     vi.spyOn(URL, "createObjectURL").mockReturnValue("blob:completion-flow");
     vi.spyOn(URL, "revokeObjectURL").mockImplementation(() => undefined);
     vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => undefined);
@@ -2139,11 +2222,12 @@ describe("Importador Inteligente de Biblioteca", () => {
     fireEvent.change(await screen.findByLabelText("Origen de las propuestas externas"), { target: { value: "HUMANO" } });
     const completed = new File(["xlsx"], "completado.xlsx", { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
     Object.defineProperty(completed, "arrayBuffer", { value: async () => new TextEncoder().encode("xlsx").buffer });
-    fireEvent.change(screen.getByLabelText("Seleccionar XLSX de recetas completadas"), { target: { files: [completed] } });
+    fireEvent.change(screen.getByLabelText("Seleccionar XLSX completado"), { target: { files: [completed] } });
 
     expect(await screen.findByText(/Filas recibidas: 30/)).toHaveTextContent("Con propuestas utilizables: 30");
     expect(screen.getByText(/Filas recibidas: 30/)).toHaveTextContent("Requieren revisión: 30");
-    expect(screen.getByText(/Campos utilizables: 83/)).toHaveTextContent("Campos críticos para revisión: 257");
+    expect(screen.getByText(/Campos seguros: 83/)).toHaveTextContent("Operativos agrupables: 0");
+    expect(screen.getByText(/Campos seguros: 83/)).toHaveTextContent("Críticos individuales: 257");
     expect(screen.getByText(/Archivo procesado:/)).toHaveTextContent("completado-30.xlsx");
     expect(screen.getByText(/Archivo procesado:/)).toHaveTextContent("bd21abcdef12");
     expect(screen.getByText(/Analizadas: 30 \/ 30/)).not.toHaveTextContent("0 / 0");
@@ -2155,8 +2239,14 @@ describe("Importador Inteligente de Biblioteca", () => {
     expect(screen.getByRole("region", { name: "Revisar propuestas externas de recetas" })).toHaveTextContent("tiempo_descongelacion: NO_APLICA");
     expect(screen.getByRole("region", { name: "Revisar propuestas externas de recetas" })).toHaveTextContent("confianza 90%");
     expect(screen.getByText("Ficha técnica provisional").parentElement).toHaveTextContent("Solo lectura");
-    expect(screen.getByText("Escandallo provisional").parentElement).toHaveTextContent("PROVISIONAL");
-    expect(screen.getByText("Escandallo provisional").parentElement).toHaveTextContent("0.8");
+    expect(screen.getByText("Escandallo provisional").parentElement).toHaveTextContent("PARCIAL");
+    expect(screen.getByText("Escandallo provisional").parentElement).toHaveTextContent("Coste total provisional conocido: 11.63");
+    expect(screen.getByText("Escandallo provisional").parentElement).toHaveTextContent("Cobertura: 75%");
+    expect(screen.getByText("Escandallo provisional").parentElement).toHaveTextContent("4 líneas · 3 con datos propuestos · 3 con precio de referencia");
+    expect(screen.getByText("Escandallo provisional").parentElement).toHaveTextContent("Ingredientes pendientes de coste: Agua");
+    expect(screen.getByText("Escandallo provisional").parentElement).not.toHaveTextContent("No calculable");
+    expect(screen.getByRole("list", { name: "Referencias externas usadas en el escandallo" })).toHaveTextContent("Herbolínea");
+    expect(screen.getByRole("list", { name: "Referencias externas usadas en el escandallo" })).toHaveTextContent("REFERENCIA_EXTERNA provisional");
     expect(screen.getAllByText("IA_PROPUESTA").length).toBeGreaterThan(0);
     expect(String(fetchMock.mock.calls[1][0])).toContain("/completado-externo/exportar");
     expect(String(fetchMock.mock.calls[2][0])).toContain("/completado-externo/importar");
@@ -2176,7 +2266,12 @@ describe("Importador Inteligente de Biblioteca", () => {
     expect(previewRegion).toHaveTextContent("ARCHIVO_EXTERNO · HUMANO");
     expect(previewRegion).toHaveTextContent("Selección masiva");
     expect(previewRegion).toHaveTextContent("Cambios a aplicar: 2");
-    expect(within(previewRegion).getByRole("region", { name: "Ficha técnica y escandallo provisionales" })).toHaveTextContent("Coste total: 8");
+    const previewProjection = within(previewRegion).getByRole("region", { name: "Ficha técnica y escandallo provisionales" });
+    expect(previewProjection).toHaveTextContent("Estado: PARCIAL");
+    expect(previewProjection).toHaveTextContent("Coste total provisional conocido: 11.63");
+    expect(previewProjection).toHaveTextContent("3 con precio de referencia");
+    expect(previewProjection).not.toHaveTextContent("SIN_COSTE");
+    expect(previewProjection).not.toHaveTextContent("No calculable");
     for (const field of Object.keys(critical)) expect(previewRegion).not.toHaveTextContent(field);
     expect(screen.queryByRole("button", { name: "Aceptar propuestas seguras de todas" })).not.toBeInTheDocument();
 
@@ -2236,7 +2331,7 @@ describe("Importador Inteligente de Biblioteca", () => {
     fireEvent.click(await screen.findByRole("button", { name: "Completar externamente con XLSX · 1" }));
     const blank = new File(["xlsx"], "plantilla-vacia.xlsx", { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
     Object.defineProperty(blank, "arrayBuffer", { value: async () => new TextEncoder().encode("xlsx").buffer });
-    fireEvent.change(await screen.findByLabelText("Seleccionar XLSX de recetas completadas"), { target: { files: [blank] } });
+    fireEvent.change(await screen.findByLabelText("Seleccionar XLSX completado"), { target: { files: [blank] } });
 
     expect(await screen.findByRole("alert")).toHaveTextContent("no contiene valores en las columnas *_propuesto");
     expect(screen.getByText(/Archivo procesado:/)).toHaveTextContent("plantilla-vacia.xlsx");
@@ -2351,6 +2446,45 @@ describe("Importador Inteligente de Biblioteca", () => {
     expect(fetchMock.mock.calls.some(([input]) => String(input).endsWith("/catalogo/confirmar"))).toBe(false);
   });
 
+  it("selecciona operativas agrupadas en una sola acción sin confirmar ni escribir", async () => {
+    const fixture: any = structuredClone(response);
+    fixture.importacion.borrador.recipes[0].procedure = [];
+    fixture.importacion.borrador.recipes[0].servings = null;
+    fixture.importacion.borrador.recipes[0].selected_canonical_recipe_id = "REC601-A";
+    const grouped = { tiempo_total: "45 minutos", numero_raciones: 8 };
+    const item = {
+      recipe_id: "REC601-A", nombre: "Salsa", estado: "CON_PROPUESTAS",
+      datos_propuestos_ia: { ...grouped, alergenos: ["gluten"] },
+      datos_propuestos_seguros_masivo: {}, datos_operativos_agrupables: grouped,
+      datos_requieren_revision_individual: { alergenos: ["gluten"] },
+      campos_pendientes_no_proponibles: [],
+    };
+    const batch: any = {
+      batch_id: "RECIPE-BATCH-GROUP", estado: "PROPUESTAS_LISTAS", modo_generacion: "ARCHIVO_EXTERNO",
+      recipe_ids: ["REC601-A"], resultados: [item], selecciones: {}, selecciones_agrupadas: {}, selecciones_individuales: {},
+      progreso: { total: 1, analizadas: 1, exitosas: 1, fallidas: 0, pendientes: 0, con_propuestas: 1, necesitan_usuario: 0, ya_completas: 0, propuestas: 3 },
+    };
+    fixture.importacion.completado_recetas_activo = batch;
+    fixture.importacion.resumen.recetas_completables_ia = 1;
+    const selected = { ...response, ...batch, selecciones_agrupadas: { "REC601-A": grouped } };
+    const preview = { ...response, ...selected, estado: "PREVIEW", preview: { fingerprint: "grouped", recetas_afectadas: 1, cambios_a_aplicar: 2, items: [{ recipe_id: "REC601-A", nombre: "Salsa", cambios: grouped, detalle_cambios: Object.entries(grouped).map(([campo, valor_propuesto]) => ({ campo, valor_actual: null, valor_propuesto, clasificacion: "REVISION_AGRUPADA", sobrescribe: false, completa: true })) }] } };
+    const fetchMock = spyOnImportFetch()
+      .mockResolvedValueOnce({ ok: true, status: 200, json: async () => fixture } as Response)
+      .mockResolvedValueOnce({ ok: true, status: 200, json: async () => selected } as Response)
+      .mockResolvedValueOnce({ ok: true, status: 200, json: async () => preview } as Response);
+    sessionStorage.setItem("hostai.active_import_session_id", "IMPWEB-1");
+    render(<MemoryRouter initialEntries={["/biblioteca/importaciones"]}><App /></MemoryRouter>);
+
+    fireEvent.click(await screen.findByRole("button", { name: "Revisar propuestas externas · 1 recetas" }));
+    fireEvent.click(screen.getByRole("button", { name: "Revisar y seleccionar operativas provisionales · 2" }));
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(3));
+    const payload = JSON.parse(String((fetchMock.mock.calls[1][1] as RequestInit).body));
+    expect(payload.grouped_selections).toEqual({ "REC601-A": grouped });
+    expect(payload.individual_selections).toEqual({});
+    expect(screen.getByText(/2 operativas agrupadas/)).toBeInTheDocument();
+    expect(fetchMock.mock.calls.some(([input]) => String(input).endsWith("/confirmar"))).toBe(false);
+  });
+
   it("muestra resumen production-ready y filtra excepciones del lote sin abrir recetas", async () => {
     const fixture: any = structuredClone(response);
     const baseRecipe = fixture.importacion.borrador.recipes[0];
@@ -2361,6 +2495,7 @@ describe("Importador Inteligente de Biblioteca", () => {
     const baseItem = {
       estado: "CON_PROPUESTAS", datos_propuestos_ia: { elaboracion: "Preparar." },
       datos_propuestos_seguros_masivo: { elaboracion: "Preparar." },
+      datos_operativos_agrupables: {},
       datos_requieren_revision_individual: {}, campos_pendientes_no_proponibles: [],
       completitud: { production_ready_provisional: true, production_ready_confirmed: false, pendientes: [], no_aplica: ["regeneracion"], production_ready: { bloqueos_provisionales: [] } },
       estado_operativo: "PRODUCTION_READY_PROVISIONAL",
@@ -2368,9 +2503,9 @@ describe("Importador Inteligente de Biblioteca", () => {
     };
     const batch: any = {
       batch_id: "RECIPE-BATCH-MASS", estado: "PROPUESTAS_LISTAS", modo_generacion: "ARCHIVO_EXTERNO",
-      recipe_ids: ["REC-READY", "REC-BLOCKED"], selecciones: {}, selecciones_individuales: {}, preview: null,
+      recipe_ids: ["REC-READY", "REC-BLOCKED"], selecciones: {}, selecciones_agrupadas: {}, selecciones_individuales: {}, preview: null,
       progreso: { total: 2, analizadas: 2, exitosas: 2, fallidas: 0, pendientes: 0, con_propuestas: 2, necesitan_usuario: 0, ya_completas: 0, propuestas: 2 },
-      resumen_masivo: { recetas_procesadas: 52, production_ready_provisional: 1, production_ready_confirmed: 0, criticos_pendientes: 1, articulos_precios_pendientes: 1, baja_confianza: 1, errores: 2, imposibles_estimar: 1, no_aplica: 1, datos_reales_modificados: false },
+      resumen_masivo: { recetas_procesadas: 52, production_ready_provisional: 1, production_ready_confirmed: 0, recetas_sin_excepciones_operativas_relevantes: 1, campos_operativos_agrupables: 12, campos_criticos_individuales: 4, criticos_pendientes: 1, articulos_precios_pendientes: 1, baja_confianza: 1, escandallos_provisionales: 0, escandallos_parciales: 1, escandallos_sin_coste: 1, errores: 2, imposibles_estimar: 1, no_aplica: 1, datos_reales_modificados: false },
       resultados: [
         { ...baseItem, recipe_id: "REC-READY", nombre: "Agua de jamaica" },
         { ...baseItem, recipe_id: "REC-BLOCKED", nombre: "Receta bloqueada", estado_operativo: "CON_PROPUESTAS", completitud: { production_ready_provisional: false, production_ready_confirmed: false, pendientes: ["unidad_tanda"], no_aplica: [], production_ready: { bloqueos_provisionales: ["unidad_tanda"] } }, excepciones: { bloqueada: true, no_production_ready: true, criticos: true, baja_confianza: true, pendientes: true, no_aplica: false, error: false, precios_proveedores: true, imposible_estimar: true } },
@@ -2386,10 +2521,89 @@ describe("Importador Inteligente de Biblioteca", () => {
     const summary = screen.getByRole("region", { name: "Resumen masivo production-ready" });
     expect(summary).toHaveTextContent("Recetas procesadas52");
     expect(summary).toHaveTextContent("Production-ready provisional1");
-    expect(summary).toHaveTextContent("Críticos pendientes1");
+    expect(summary).toHaveTextContent("Recetas con críticos pendientes1");
+    expect(summary).toHaveTextContent("Campos operativos agrupables12");
+    expect(summary).toHaveTextContent("Baja confianza relevante1");
     fireEvent.change(screen.getByLabelText("Filtrar recetas del lote"), { target: { value: "NO_PRODUCTION_READY" } });
     expect(screen.getByText(/Receta bloqueada · CON_PROPUESTAS/)).toBeInTheDocument();
     expect(screen.queryByText(/Agua de jamaica · PRODUCTION_READY_PROVISIONAL/)).not.toBeInTheDocument();
     expect(screen.getByText("Mostrando 1 de 2 recetas.")).toBeInTheDocument();
+  });
+
+  it("busca por nombre o ID sin diacríticos en revisión y preview sin alterar el batch", async () => {
+    const fixture: any = structuredClone(response);
+    const ids = Array.from({ length: 52 }, (_, index) => `REC601-${String(index + 1).padStart(6, "0")}`);
+    const names: Record<string, string> = {
+      "REC601-000007": "Agua de jamaica",
+      "REC601-000008": "Puré de patata",
+      "REC601-000009": "Salmorejo cordobés",
+      "REC601-000010": "Crema de calabaza",
+      "REC601-000011": "Crema de puerros",
+      "REC601-000012": "Crema catalana",
+    };
+    const baseDraft = fixture.importacion.borrador.recipes[0];
+    fixture.importacion.borrador.recipes = ids.map((recipeId, index) => ({
+      ...structuredClone(baseDraft), id: `DRAFT-SEARCH-${index + 1}`, title: names[recipeId] ?? `Receta ${index + 1}`,
+      procedure: [], servings: null, yield_value: null, selected_canonical_recipe_id: recipeId,
+    }));
+    const results = ids.map((recipeId, index) => ({
+      recipe_id: recipeId, nombre: names[recipeId] ?? `Receta ${index + 1}`, estado: "CON_PROPUESTAS",
+      estado_operativo: "PRODUCTION_READY_PROVISIONAL", datos_propuestos_ia: { tiempo_total: "45 minutos" },
+      datos_propuestos_seguros_masivo: {}, datos_operativos_agrupables: { tiempo_total: "45 minutos" },
+      datos_requieren_revision_individual: {}, campos_pendientes_no_proponibles: [],
+      excepciones: { bloqueada: false, no_production_ready: false, criticos: false, baja_confianza: false, pendientes: false, no_aplica: false, error: false, precios_proveedores: false, imposible_estimar: false },
+    }));
+    const previewItems = results.map((item) => ({
+      recipe_id: item.recipe_id, nombre: item.nombre, cambios: { tiempo_total: "45 minutos" },
+      detalle_cambios: [{ campo: "tiempo_total", valor_actual: null, valor_propuesto: "45 minutos", clasificacion: "REVISION_AGRUPADA", sobrescribe: false, completa: true }],
+    }));
+    const batch: any = {
+      batch_id: "RECIPE-BATCH-SEARCH", estado: "PREVIEW", modo_generacion: "ARCHIVO_EXTERNO",
+      recipe_ids: ids, resultados: results, selecciones: {},
+      selecciones_agrupadas: { "REC601-000007": { tiempo_total: "45 minutos" } }, selecciones_individuales: {},
+      progreso: { total: 52, analizadas: 52, exitosas: 52, fallidas: 0, pendientes: 0, con_propuestas: 52, necesitan_usuario: 0, ya_completas: 0, propuestas: 52 },
+      preview: { fingerprint: "search", recetas_afectadas: 52, cambios_a_aplicar: 52, items: previewItems },
+    };
+    fixture.importacion.completado_recetas_activo = batch;
+    fixture.importacion.resumen.recetas_completables_ia = 52;
+    const fetchMock = spyOnImportFetch().mockResolvedValue({ ok: true, status: 200, json: async () => fixture } as Response);
+    sessionStorage.setItem("hostai.active_import_session_id", "IMPWEB-1");
+    render(<MemoryRouter initialEntries={["/biblioteca/importaciones"]}><App /></MemoryRouter>);
+
+    fireEvent.click(await screen.findByRole("button", { name: "Revisar propuestas externas · 52 recetas" }));
+    const search = screen.getByLabelText("Buscar receta por nombre o ID");
+    const clear = screen.getByRole("button", { name: "Limpiar" });
+    const preview = screen.getByRole("region", { name: "Preview consolidado" });
+    expect(within(preview).getAllByRole("article")).toHaveLength(52);
+    expect(screen.getByText("Mostrando 52 de 52 recetas.")).toBeInTheDocument();
+
+    fireEvent.change(search, { target: { value: "  AGUA  " } });
+    const filteredPreviewRecipes = within(preview).getAllByRole("article");
+    expect(filteredPreviewRecipes).toHaveLength(1);
+    expect(filteredPreviewRecipes[0]).toHaveAttribute("data-recipe-view", "preview");
+    expect(filteredPreviewRecipes[0]).toHaveAttribute("data-recipe-id", "REC601-000007");
+    expect(within(preview).getByRole("heading", { name: "Agua de jamaica" })).toBeVisible();
+    expect(within(preview).queryByRole("heading", { name: "Crema de calabaza" })).not.toBeInTheDocument();
+    expect(screen.getByText("Mostrando 1 de 52 recetas.")).toBeInTheDocument();
+
+    fireEvent.change(search, { target: { value: "REC601-000007" } });
+    expect(within(preview).getByRole("heading", { name: "Agua de jamaica" })).toBeVisible();
+    fireEvent.change(search, { target: { value: "pure" } });
+    expect(within(preview).getByRole("heading", { name: "Puré de patata" })).toBeVisible();
+    fireEvent.change(search, { target: { value: "no-existe" } });
+    expect(screen.getByText("No se encontraron recetas con ese nombre o ID.")).toBeVisible();
+
+    fireEvent.click(clear);
+    expect(within(preview).getAllByRole("article")).toHaveLength(52);
+    fireEvent.click(within(preview).getByRole("button", { name: "Volver a propuestas" }));
+    fireEvent.change(search, { target: { value: "cordobes" } });
+    expect(screen.getByText(/Salmorejo cordobés · PRODUCTION_READY_PROVISIONAL/)).toBeVisible();
+    expect(screen.getByText(/Salmorejo cordobés · PRODUCTION_READY_PROVISIONAL/)).toHaveTextContent("REC601-000009");
+    expect(screen.queryByText(/Agua de jamaica · PRODUCTION_READY_PROVISIONAL/)).not.toBeInTheDocument();
+    fireEvent.keyDown(search, { key: "Escape" });
+    expect(screen.getByText("Mostrando 52 de 52 recetas.")).toBeInTheDocument();
+    expect(screen.getByText(/1 operativas agrupadas/)).toBeVisible();
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock.mock.calls.some(([input]) => String(input).includes("/confirmar"))).toBe(false);
   });
 });

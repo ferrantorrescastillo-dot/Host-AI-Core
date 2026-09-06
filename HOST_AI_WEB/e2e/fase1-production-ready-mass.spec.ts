@@ -48,7 +48,7 @@ test("lote físico 52: excepciones aisladas, preview, confirmación aislada, rei
   await expect(summary).toContainText("Con NO_APLICA51");
 
   const aguaProposal = page.locator("details").filter({ hasText: "Agua de jamaica" }).first();
-  await aguaProposal.locator("summary").click();
+  await aguaProposal.locator(":scope > summary").click();
   await expect(aguaProposal.getByRole("region", { name: "Completitud de receta" })).toContainText("Production-ready provisional: Sí");
   const aguaProjection = aguaProposal.getByRole("region", { name: "Ficha técnica y escandallo provisionales" });
   await expect(aguaProjection).toContainText("Ficha técnica provisional");

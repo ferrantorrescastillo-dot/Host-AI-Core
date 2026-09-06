@@ -1259,6 +1259,12 @@ legend { padding-inline: 6px; color: #29434c; font-weight: 750; }
 
 .catalog-filters { display: grid; grid-template-columns: minmax(220px, 2fr) repeat(3, minmax(140px, 1fr)); gap: 12px; align-items: end; margin: 22px 0; padding: 16px; border-radius: var(--radius); background: var(--surface-2); }
 .catalog-filters label { display: grid; gap: 6px; }
+.recipe-review-toolbar { position: sticky; top: 10px; z-index: 6; display: flex; align-items: end; gap: 12px; flex-wrap: wrap; margin: 20px 0; padding: 14px; border: 1px solid var(--border); border-radius: var(--radius); background: rgba(247,250,251,.97); box-shadow: var(--shadow-sm); }
+.recipe-review-toolbar label { display: grid; gap: 6px; min-width: 190px; }
+.recipe-review-toolbar .recipe-review-search { flex: 2 1 300px; }
+.recipe-review-toolbar input, .recipe-review-toolbar select { min-width: 0; padding: 9px; border: 1px solid #cbd8dc; border-radius: 7px; background: white; }
+.recipe-review-toolbar button { margin: 0; }
+.recipe-review-toolbar p { margin: 0 0 8px; white-space: nowrap; }
 .catalog-table-wrap, .table-wrap { max-width: 100%; overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius); }
 .catalog-table, table { width: 100%; border-collapse: collapse; }
 .catalog-table th, table th { padding: 11px 14px; border-bottom: 1px solid var(--border); background: #f5f8f9; color: #53666e; font-size: .75rem; font-weight: 750; letter-spacing: .035em; text-align: left; text-transform: uppercase; }

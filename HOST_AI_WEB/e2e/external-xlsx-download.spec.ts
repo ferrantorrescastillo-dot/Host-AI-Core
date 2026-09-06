@@ -4,7 +4,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { expect, test } from "@playwright/test";
 
-const runtimeName = process.env.HOST_AI_E2E_RUNTIME_NAME || "fase1-mass-smoke";
+const runtimeName = process.env.HOST_AI_E2E_RUNTIME_NAME || "fase1-contract-e2e";
 const currentDir = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.resolve(currentDir, "../..");
 const stateFile = path.join(projectRoot, ".test-runs", runtimeName, "e2e-state.json");
@@ -22,7 +22,9 @@ function inspectWorkbook(filename: string) {
     "rows = list(sheet.iter_rows(values_only=True))",
     "headers = list(rows[0])",
     "items = [dict(zip(headers, row)) for row in rows[1:]]",
-    "print(json.dumps({'sheets': book.sheetnames, 'metadata': metadata, 'headers': headers, 'rows': len(items), 'import_ids': sorted(set(str(item.get('import_id') or '') for item in items)), 'context_rows': sum(bool(item.get('contexto_documental')) and bool(item.get('ingredientes_contexto')) for item in items), 'names': {str(item.get('recipe_id') or ''): str(item.get('nombre') or '') for item in items}}, ensure_ascii=False))",
+    "prompt_rows = list(book['PROMPT_IA'].iter_rows(min_row=2, values_only=True))",
+    "price_rows = max(0, book['PRECIOS_REFERENCIA'].max_row - 1)",
+    "print(json.dumps({'sheets': book.sheetnames, 'metadata': metadata, 'headers': headers, 'rows': len(items), 'prompt_rows': len(prompt_rows), 'prompt': str(prompt_rows[0][2] if prompt_rows else ''), 'price_rows': price_rows, 'import_ids': sorted(set(str(item.get('import_id') or '') for item in items)), 'context_rows': sum(bool(item.get('contexto_documental')) and bool(item.get('ingredientes_contexto')) for item in items), 'names': {str(item.get('recipe_id') or ''): str(item.get('nombre') or '') for item in items}}, ensure_ascii=False))",
   ].join("; ");
   const result = spawnSync("python", ["-c", script, filename], {
     cwd: projectRoot,
@@ -43,7 +45,11 @@ test("el CTA principal descarga y conserva el batch externo sin duplicarlo", asy
   expect(detailBeforeResponse.status()).toBe(200);
   const detailBefore = await detailBeforeResponse.json();
   const batchBefore = detailBefore.importacion.completado_recetas_activo?.batch_id ?? null;
-  expect(batchBefore).toBe(hasExternalBatch ? prepared.batch_id : null);
+  if (hasExternalBatch) {
+    expect(batchBefore).toMatch(/^RECIPE-BATCH-/);
+  } else {
+    expect(batchBefore).toBeNull();
+  }
 
   const context = await browser.newContext({ acceptDownloads: true });
   expect(await context.storageState()).toEqual({ cookies: [], origins: [] });
@@ -91,7 +97,10 @@ test("el CTA principal descarga y conserva el batch externo sin duplicarlo", asy
     expect(await download.failure()).toBeNull();
     expect(existsSync(savedAs)).toBe(true);
     const workbook = inspectWorkbook(savedAs);
-    expect(workbook.sheets).toEqual(["METADATA", "INSTRUCCIONES", "RECETAS"]);
+    expect(workbook.sheets).toEqual([
+      "METADATA", "PROMPT_IA", "INSTRUCCIONES", "SCHEMA", "ARTICULOS_PENDIENTES",
+      "PRECIOS_REFERENCIA", "SCHEMA_PRECIOS", "RECETAS",
+    ]);
     expect(workbook.metadata).toMatchObject({
       format: "HOSTAI_RECIPE_COMPLETION_PACKAGE",
       version: "0.3",
@@ -99,12 +108,17 @@ test("el CTA principal descarga y conserva el batch externo sin duplicarlo", asy
       import_id: importId,
     });
     expect(workbook.rows).toBe(52);
+    expect(workbook.prompt_rows).toBe(1);
+    expect(workbook.prompt).toContain("Procesa TODAS las recetas");
+    expect(workbook.prompt).toContain("REFERENCIA_EXTERNA");
+    expect(workbook.price_rows).toBeGreaterThan(0);
     expect(workbook.import_ids).toEqual([importId]);
     expect(workbook.context_rows).toBe(52);
     expect(workbook.names).toEqual(prepared.recipe_names);
     expect(Object.values(workbook.names).every((name) => !/^Receta\s+\d+$/.test(String(name)))).toBe(true);
     expect(workbook.headers).toEqual(expect.arrayContaining([
       "recipe_id", "import_id", "contexto_documental", "ingredientes_contexto",
+      "campos_pendientes_claves",
       "articulos_relacionados", "menus_contexto", "contexto_servicio",
       "tipo_elaboracion_propuesto", "rendimiento_neto_propuesto",
       "personal_recomendado_propuesto", "recursos_necesarios_propuesto",
