@@ -2157,6 +2157,8 @@ El escenario económico genera ahora dentro de `.test-runs` un XLSX 0.3 autocont
 
 Evidencia previa a republicación: backend Fase 1 227/227, frontend completo 284/284, lote masivo 52 recetas 1/1, sentinel económico autocontenido 1/1, typecheck, build de 330 módulos, compilación Python y `git diff --check` correctos. `DATOS` real no se usó ni se modificó. Fase 1.5 permanece sin iniciar.
 
+La repetición desde el primer hotfix encontró además seis pruebas backend que leían dos JSON privados bajo `Documentos/Importaciones`, ruta ignorada por Git. Esas pruebas se ejecutaban en el working copy histórico pero fallaban en remoto limpio. Se sustituyó esa dependencia por un prototipo público representativo construido en memoria y el fixture Boronat seguro ya versionado en `TESTS/fixtures`; los documentos privados no se copiaron ni se publicaron. La focal resultante pasa 48/48 y la regresión Fase 1 vuelve a pasar 227/227.
+
 **Fin del documento oficial `09_ESTADO_ACTUAL.md`.**
 
 ## Actualización — contrato maestro autosuficiente de Fase 1 (5 de septiembre de 2026)

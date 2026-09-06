@@ -1,8 +1,5 @@
 from __future__ import annotations
 
-import json
-from pathlib import Path
-
 from fastapi.testclient import TestClient
 
 from API.app import HostAIPlatformAPI
@@ -15,20 +12,81 @@ from SERVICIOS.hostai_chatgpt_import_v01_converter import (
 from SERVICIOS.hostai_import_package_adapter import PreparedImportPackageAdapter
 
 
-ROOT = Path(__file__).resolve().parents[1]
-PACK_DIR = ROOT / "Documentos/Importaciones/HOSTAI_BORONAT_Codex_Pack (1)"
-PROTOTYPE = PACK_DIR / "BORONAT_HOSTAI_IMPORT_CHATGPT.json"
-
-
 def _prototype() -> dict:
-    return json.loads(PROTOTYPE.read_text(encoding="utf-8"))
+    def ingredient(name: str, quantity: float = 1) -> dict:
+        return {
+            "nombre": name, "cantidad_origen": quantity,
+            "unidad_columna_origen": "KG", "source_row": 10,
+        }
+
+    def recipe(name: str, *, group: str | None = None, quantity: float = 1,
+               yield_value: int = 10, row: int = 10) -> dict:
+        return {
+            "nombre": name, "nombre_normalizado_chatgpt": name.casefold(),
+            "rendimiento": yield_value, "unidad_rendimiento_origen": "raciones",
+            "coste_total_origen": None, "coste_unitario_origen": None,
+            "coste_unitario_label_origen": "Coste ración",
+            "ingredientes": [ingredient(f"Ingrediente {name}", quantity)],
+            "entity_type_chatgpt": "ELABORACION_INTERNA_CANDIDATE",
+            "confidence_extraction": "HIGH", "variant_group_id": group,
+            "occurrences": [{"sheet": "Fixture público", "recipe_row": row}],
+        }
+
+    recipes = [
+        recipe("Agua de jamaica", row=1),
+        recipe("Tabla de quesos", group="tabla", yield_value=10, row=2),
+        recipe("Tabla de quesos", group="tabla", yield_value=58, row=3),
+        recipe("Patatas bravas", group="bravas", quantity=1, row=4),
+        recipe("Patatas bravas", group="bravas", quantity=2, row=5),
+        recipe("Botifarra con mongetes del ganxet", group="botifarra", quantity=1, row=6),
+        recipe("Botifarra con mongetes del ganxet", group="botifarra", quantity=2, row=7),
+        recipe("Salsa romesco para calçots", group="romesco", quantity=1, row=8),
+        recipe("Salsa romesco para calçots", group="romesco", quantity=2, row=9),
+    ]
+    return {
+        "schema_version": PROTOTYPE_SCHEMA,
+        "generator": {"name": "Fixture público", "write_policy": "READ_ONLY_EXTRACTION"},
+        "source_document": {"filename": "fixture-publico.xlsx"},
+        "interpretation_contract": {"principles": ["PREVIEW -> CONFIRM -> WRITE"]},
+        "extraction_summary": {
+            "catalog_items_exported": 2, "recipe_structural_versions": 9,
+            "recipe_blocks_raw_detected": 9, "menu_blocks_detected": 1,
+        },
+        "catalog_items": [{
+            "codigo_origen": "ART-FLOR", "nombre": "Flor de hibiscus",
+            "familia_origen": "Materia prima", "proveedor_origen": "Proveedor fixture",
+            "precio_origen": None, "source_row": 1,
+            "clasificacion_chatgpt": "ARTICULO_COMPRADO_CANDIDATE",
+            "confidence_classification": "HIGH",
+        }, {
+            "codigo_origen": None, "nombre": "A.P Salsa interna",
+            "precio_origen": None, "source_row": 2,
+            "clasificacion_chatgpt": "ELABORACION_O_APERITIVO_INTERNO_CANDIDATE",
+            "confidence_classification": "MEDIUM",
+        }],
+        "ignored_source_rows": [], "recipes_and_elaborations": recipes,
+        "variant_groups": [],
+        "menus_and_containers": [{
+            "nombre": "Menú fixture", "source": {"sheet": "Menú"},
+            "items": [{"nombre": "Agua de jamaica"}], "confidence_extraction": "HIGH",
+        }],
+        "supplemental_complex_context": [{
+            "sheet": "Contexto fixture", "classification": "COMPLEX_MENU_OR_TEMPLATE_CONTEXT",
+            "rows": [{"row": 1, "values": ["TAPA"]}],
+        }],
+        "hostai_expected_next_stage": {"steps": ["PREVIEW", "CONFIRM", "WRITE"]},
+        "semantic_findings": [{
+            "type": "REQUIERE_REVISION", "source_token": "Salsa romesco",
+            "finding": "Título copiado que requiere revisar su variante.", "confidence": "MEDIUM",
+        }],
+    }
 
 
 def _converted() -> dict:
     return ChatGPTImportV01Converter().convert(_prototype())
 
 
-def test_full_boronat_prototype_converts_and_validates_without_massive_loss():
+def test_representative_public_prototype_converts_and_validates_without_loss():
     source = _prototype()
     package = _converted()
     validated = PreparedImportPackageAdapter.validate(package)
@@ -45,12 +103,13 @@ def test_full_boronat_prototype_converts_and_validates_without_massive_loss():
     assert package["metadata"]["migration_warnings"] == []
 
 
-def test_semantics_keep_labels_menus_real_variants_and_suspicious_romesco():
+def test_semantics_keep_labels_menus_variants_and_suspicious_romesco():
     package = _converted()
     recipe_names = [str(item.get("name") or "").casefold() for item in package["recipes"]]
     variant_names = {str(item.get("name") or "").strip(". ").casefold() for item in package["variant_groups"]}
     assert "tapa" not in recipe_names
-    assert all(item["kind"] == "MENU" for item in package["menus"][:12])
+    assert package["menus"][0]["kind"] == "MENU"
+    assert any(item["kind"] == "CONTEXT" for item in package["menus"])
     assert "patatas bravas" in variant_names
     assert "botifarra con mongetes del ganxet" in variant_names
     assert "salsa romesco para calçots" in variant_names

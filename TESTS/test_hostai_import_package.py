@@ -725,9 +725,16 @@ def test_boronat_reference_fixture_is_safe_and_separates_context_menu_and_varian
     assert analysis["coste_ia"]["llamadas"] == 0
 
 
-def test_boronat_corrected_package_analyzes_read_only_and_uses_real_ingredient_matches(tmp_path: Path):
-    fixture = Path(__file__).parents[1] / "Documentos/Importaciones/HOSTAI_BORONAT_Codex_Pack (1)/BORONAT_HOSTAI_IMPORT_PACKAGE_0.1.json"
+def test_boronat_reference_package_analyzes_read_only_and_uses_real_ingredient_matches(tmp_path: Path):
+    fixture = Path(__file__).parent / "fixtures/hostai_import_package_boronat_reference.json"
     package = json.loads(fixture.read_text(encoding="utf-8"))
+    package["articles"].append({
+        "source_code": "BORONAT-AP-SALSA", "name": "A.P Salsa interna",
+        "interpretation": {"classification": "ELABORACION_O_APERITIVO_INTERNO_CANDIDATE"},
+    })
+    for menu in package["menus"]:
+        menu["items"] = [item if isinstance(item, dict) else {"name": item} for item in menu["items"]]
+    stored = RepositorioProductosMaestro601(tmp_path).crear_producto({"nombre": "Naranja", "unidad_base": "kg"})
     before = {path.relative_to(tmp_path): path.read_bytes() for path in tmp_path.rglob("*") if path.is_file()}
     session = ImportDocumentService(tmp_path).import_document({"hostai_import_package": package})["importacion"]
     ingredients = [
@@ -742,7 +749,9 @@ def test_boronat_corrected_package_analyzes_read_only_and_uses_real_ingredient_m
         item for item in session["borrador"]["catalogo"]["articulos"]
         if "ELABORACION" in str(item.get("tipo_semantico") or "")
     ]
-    assert session["resumen"]["ingredientes_detectados"] == 228
+    assert session["resumen"]["ingredientes_detectados"] == len(ingredients)
+    assert ingredients
+    assert ingredients[0]["article_id"] == stored["codigo"]
     assert all(item.get("name_raw") != "25" for item in ingredients)
     assert session["resumen"]["ingredientes_relacionados"] == real_related
     assert suspicious
