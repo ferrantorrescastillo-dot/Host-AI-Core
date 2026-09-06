@@ -68,13 +68,18 @@ Desde la raíz, con el backend detenido para evitar colisiones de puertos:
 
 ```powershell
 .\.venv\Scripts\python.exe -m compileall -q API CORE MODELOS MOTORES PIPELINES SERVICIOS TESTS
-.\.venv\Scripts\python.exe -m pytest -q --basetemp=.test-runs\bootstrap-pytest TESTS\test_fase1_importacion_certificacion.py
+$pytestTemp = Join-Path ([System.IO.Path]::GetTempPath()) "host-ai-bootstrap-pytest"
+.\.venv\Scripts\python.exe -m pytest -q --basetemp=$pytestTemp TESTS\test_fase1_importacion_certificacion.py
 
 Set-Location HOST_AI_WEB
 npm test -- --run
 npm run typecheck
 npm run build
 ```
+
+La raíz temporal corta evita superar `MAX_PATH` en Windows cuando el clon está
+dentro de una ruta profunda. No contiene datos de dominio y pytest la recrea para
+cada ejecución.
 
 Los E2E de Fase 1 levantan su propio runtime aislado. Para ejecutarlos con el
 Python del entorno nuevo, active primero el entorno o anteponga `.venv\Scripts`
