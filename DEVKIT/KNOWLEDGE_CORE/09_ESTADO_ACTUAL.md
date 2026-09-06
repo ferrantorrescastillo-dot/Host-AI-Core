@@ -2159,6 +2159,8 @@ Evidencia previa a republicación: backend Fase 1 227/227, frontend completo 284
 
 La repetición desde el primer hotfix encontró además seis pruebas backend que leían dos JSON privados bajo `Documentos/Importaciones`, ruta ignorada por Git. Esas pruebas se ejecutaban en el working copy histórico pero fallaban en remoto limpio. Se sustituyó esa dependencia por un prototipo público representativo construido en memoria y el fixture Boronat seguro ya versionado en `TESTS/fixtures`; los documentos privados no se copiaron ni se publicaron. La focal resultante pasa 48/48 y la regresión Fase 1 vuelve a pasar 227/227.
 
+La siguiente repetición limpia detectó que el escenario de descarga sin batch generaba correctamente 52 nombres humanos en el XLSX, pero omitía `recipe_names` en su manifiesto de prueba y comparaba el resultado contra `undefined`. El preparador incluye ahora ese mapa nominal en el estado aislado. Descarga limpia, subida física, contrato público, rehidratación y persistencia/artículo/referencia pasan respectivamente 1/1, 1/1, 1/1, 1/1 y 2/2.
+
 **Fin del documento oficial `09_ESTADO_ACTUAL.md`.**
 
 ## Actualización — contrato maestro autosuficiente de Fase 1 (5 de septiembre de 2026)

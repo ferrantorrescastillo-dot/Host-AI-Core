@@ -676,6 +676,10 @@ def prepare() -> dict[str, object]:
             "import_id": import_id,
             "batch_id": None,
             "recipe_count": len(recipe_ids),
+            "recipe_names": {
+                recipe_id: _fixture_recipe_name(index)
+                for index, recipe_id in enumerate(recipe_ids)
+            },
             "xlsx_version": "0.3",
             "has_external_batch": False,
             **metrics,
