@@ -1,0 +1,8 @@
+-r requirements-http.txt
+
+# Test HTTP client used by FastAPI/Starlette TestClient.
+httpx>=0.27,<1.0
+
+# Backend test runner. Keep the next major explicit so clean environments do not
+# acquire an unreviewed pytest compatibility change.
+pytest>=8.0,<10.0

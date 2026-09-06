@@ -12,16 +12,22 @@ Exponer por HTTP la fachada existente `HostAIPlatformAPI` sin mover logica de ne
 - FastAPI (servidor HTTP y tipado)
 - Uvicorn (arranque ASGI)
 
-## Dependencias HTTP
+## Dependencias Python
 
-Archivo:
+Host AI usa el sistema `requirements` ya existente:
 
-- `API/requirements-http.txt`
+- `API/requirements-http.txt`: runtime backend, importadores e integraciones.
+- `API/requirements-dev.txt`: runtime más dependencias de test/desarrollo.
 
-Instalacion exacta en Windows PowerShell (desde la raiz del repo):
+La versión certificada y el procedimiento completo para una máquina nueva están en
+`DEVKIT/BOOTSTRAP_ENTORNO_NUEVO.md`.
+
+Instalación de desarrollo en Windows PowerShell, desde la raíz del repositorio:
 
 ```powershell
-"c:/PROYECTO HOST IA/Proyecto Host AI  6.0/Host AI 6.0/.venv/Scripts/python.exe" -m pip install -r API/requirements-http.txt
+py -3.13 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install --upgrade pip
+.\.venv\Scripts\python.exe -m pip install -r API\requirements-dev.txt
 ```
 
 ## Punto de entrada HTTP
@@ -34,7 +40,7 @@ Instalacion exacta en Windows PowerShell (desde la raiz del repo):
 Desde la raiz del repo:
 
 ```powershell
-"c:/PROYECTO HOST IA/Proyecto Host AI  6.0/Host AI 6.0/.venv/Scripts/python.exe" -m uvicorn API.http_server:app --host 127.0.0.1 --port 8000
+.\.venv\Scripts\python.exe -m uvicorn API.http_server:app --host 127.0.0.1 --port 8000
 ```
 
 Host y puerto esperados:

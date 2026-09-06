@@ -2182,3 +2182,9 @@ La UI presenta un resumen de excepciones, permite incorporar los 1.144 campos op
 Evidencia final: regresión Fase 1 206/206, frontend focal 48/48 y completo 283/283. Playwright cubre contrato adversarial 4/4, persistencia/artículo/referencia 2/2, rehidratación 1/1, lote masivo 1/1, recorrido Boronat 1/1 y XLSX GPT real económico 1/1. Typecheck, compilación Python y build correctos. No hubo confirmación ni escritura sobre `DATOS` real, staging, commit, push o Fase 1.5.
 
 Estado: `FASE 1 LISTA PARA SMOKE HUMANO FINAL DE ESCANDALLO Y EXCEPCIONES`.
+
+## Aprovisionamiento reproducible de Python (6 de septiembre de 2026)
+
+El baseline `c5279f4a74462c51c981a690fc5e301bb75474f4` conservaba un manifiesto `requirements` válido pero incompleto y un README ligado a un venv personal. Se mantiene `API/requirements-http.txt` como autoridad runtime, se añaden sus imports directos ausentes y `API/requirements-dev.txt` lo extiende con las dependencias de test. El bootstrap canónico de máquina nueva queda documentado en `DEVKIT/BOOTSTRAP_ENTORNO_NUEVO.md` para Python 3.13.x, sin `PYTHONPATH`, site-packages globales, documentos privados o estado previo.
+
+La prueba previa a publicación se realizó en un venv vacío con Python 3.13.14 e instalación sin caché: imports, `pip check`, startup HTTP aislado, compilación, 281 pruebas backend y tres E2E integrados (contrato XLSX, 52 recetas y sentinel económico) resultaron correctos. No cambia producto ni `DATOS`; Fase 1 permanece congelada y Fase 1.5 no se inicia.
